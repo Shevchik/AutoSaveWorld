@@ -47,16 +47,19 @@ public class AutoSaveConfig {
 	
 	protected String extpath;
 	protected boolean backupEnabled = false;
-	protected int backupInterval =  21600;
+	protected int backupInterval =  60*60*6;
 	protected int MaxNumberOfBackups = 30;
 	protected boolean backupBroadcast = true;
 	protected boolean donotbackuptointfld = true;
-	protected boolean backuppluginsfolder = true;
+	protected boolean backuppluginsfolder = false;
 	protected boolean slowbackup = false;
 	protected boolean backupwarn = false;
 	protected List<Integer> backupWarnTimes = null;
 	protected boolean backupzip = false;
 	protected boolean javanio = false;
+	protected int purgeInterval = 60*60*24;
+	protected int purgeAwayTime = 60*60*24*30;
+	protected boolean purgeEnabled = false;
 	
 	
 	protected List<String> extfolders;
@@ -128,6 +131,11 @@ public class AutoSaveConfig {
 			backupWarnTimes.add(0);
 			config.set("backup.warntime", backupWarnTimes);
 		}
+		
+		//purge variables
+		purgeInterval = config.getInt("purge.interval", purgeInterval);
+		purgeAwayTime = config.getInt("purge.awaytime", purgeAwayTime);
+		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		save();
 	}
 	protected long datesec;
@@ -221,6 +229,11 @@ public class AutoSaveConfig {
 		config.set("backup.warn", backupwarn);
 		config.set("backup.zip",backupzip);
 		config.set("backup.warntime", backupWarnTimes);
+		
+		//purge variables
+		config.set("purge.interval", purgeInterval);
+		config.set("purge.awaytime", purgeAwayTime);
+		config.set("purge.enabled", purgeEnabled);
 
 		
 						try {
