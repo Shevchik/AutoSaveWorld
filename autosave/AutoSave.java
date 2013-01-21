@@ -36,6 +36,7 @@ private static final Logger log = Logger.getLogger("Minecraft");
 public AutoSaveThread saveThread = null;
 public AutoBackupThread6 backupThread6 = null;
 public AutoBackupThread7 backupThread7 = null;
+public AutoPurgeThread purgeThread = null;
 private AutoSaveConfigMSG configmsg;
 private AutoSaveConfig config;
 private ASWEventListener eh;
@@ -62,7 +63,7 @@ stopThread(ThreadType.SAVE);
 if (config.javanio)
 {stopThread(ThreadType.BACKUP7);}
 else {stopThread(ThreadType.BACKUP6);}
-
+stopThread(ThreadType.PURGE);
 log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),getDescription().getVersion()));
 
 }
@@ -103,6 +104,8 @@ if (config.javanio) {
 startThread(ThreadType.BACKUP7); }
 else {
 startThread(ThreadType.BACKUP6);}
+//Start AutoPurgeThread
+startThread(ThreadType.PURGE);
 // Notify on logger load
 log.info(String.format("[%s] Version %s is enabled: %s", getDescription().getName(), getDescription().getVersion(), config.varUuid.toString()));
 }
@@ -127,6 +130,12 @@ case BACKUP7:
 if (backupThread7 == null || !backupThread7.isAlive()) {
 backupThread7 = new AutoBackupThread7(this, config, configmsg);
 backupThread7.start();
+}
+return true;
+case PURGE:
+if (purgeThread == null || !purgeThread.isAlive()) {
+purgeThread = new AutoPurgeThread(this, config, configmsg);
+purgeThread.start();
 }
 return true;
 default:
@@ -175,6 +184,20 @@ backupThread7 = null;
 return true;
 } catch (InterruptedException e) {
 warn("Could not stop AutoBackupThread", e);
+return false;
+}
+}
+case PURGE:
+if (purgeThread == null) {
+return true;
+} else {
+purgeThread.setRun(false);
+try {
+purgeThread.join(5000);
+purgeThread = null;
+return true;
+} catch (InterruptedException e) {
+warn("Could not stop AutoPurgeThread", e);
 return false;
 }
 }

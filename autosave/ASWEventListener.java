@@ -105,6 +105,7 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.sendMessage(sender,"&f/asw help&7 - &3Shows this help");
 		plugin.sendMessage(sender,"&f/asw save&7 - &3Saves all worlds");
 		plugin.sendMessage(sender,"&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds)");
+		plugin.sendMessage(sender,"&f/asw purge&7 - &3Purges plugins info from inactive players");
 		plugin.sendMessage(sender,"&f/asw reload&7 - &3Reload all configs)");
 		plugin.sendMessage(sender,"&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
 		plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
@@ -125,6 +126,10 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		{plugin.backupThread6
 			.startbackup();}
 		return true;
+		} else
+		//purge command
+		if (args.length==1 && args[0].equalsIgnoreCase("purge")) {
+		plugin.purgeThread.startpurge();
 		} else
 		//reload command
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {

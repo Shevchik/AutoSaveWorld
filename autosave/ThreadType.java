@@ -22,5 +22,5 @@
 package autosave;
 
 public enum ThreadType {
-	SAVE, BACKUP6, BACKUP7;
+	SAVE, BACKUP6, BACKUP7, PURGE;
 }

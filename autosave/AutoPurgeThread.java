@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.command.ConsoleCommandSender;
 
+import com.griefcraft.lwc.LWCPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.databases.ProtectionDatabaseException;
@@ -32,7 +34,7 @@ public class AutoPurgeThread extends Thread {
 		this.run = run;
 	}
 	private int runnow;
-	public void startsave()
+	public void startpurge()
 	{
 	command = true;
 	runnow = config.purgeInterval;
@@ -84,42 +86,77 @@ public class AutoPurgeThread extends Thread {
 	}
 	
 	public void performPurge() {
+		plugin.debug("Purge started");
 		if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)){
+		plugin.debug("WE found, purging");
 		WGpurge();}
+		if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null)){
+		plugin.debug("LWC found purging");
+			LWCpurge();}
 		command = false;
+		plugin.debug("Purge finished");
 	}
 	
 	public void WGpurge() {
-		int awaytime = config.purgeAwayTime;
+		long awaytime = config.purgeAwayTime;
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		for(World w : Bukkit.getWorlds()) {
+		plugin.debug("Checking WG protections in world "+w.toString());
 		RegionManager m = wg.getRegionManager(w);
 		for(ProtectedRegion rg : m.getRegions().values()) {
+			plugin.debug("Checking region "+rg.getId());
 			DefaultDomain dd = rg.getOwners();
 			ArrayList<String> pltodelete = new ArrayList<String>();
 			for (String checkPlayer : dd.getPlayers()) {
-				if (!Bukkit.getOfflinePlayer(checkPlayer).hasPlayedBefore()) {
-				Player pl = Bukkit.getOfflinePlayer(checkPlayer).getPlayer();
-				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime)
+				plugin.debug("Checking player "+checkPlayer);
+				if (Bukkit.getOfflinePlayer(checkPlayer).hasPlayedBefore()) {
+				long timelp = Bukkit.getOfflinePlayer(checkPlayer).getLastPlayed();
+				if (System.currentTimeMillis() - timelp >= awaytime)
 				{
 					pltodelete.add(checkPlayer);
+					plugin.debug(checkPlayer+" is inactive");
 				}
 				}
 			}
 			if (dd.getPlayers().size() <= pltodelete.size()) {
 				m.removeRegion(rg.getId());
+				plugin.debug("No active owners for region " +rg.getId() + " Removing region");
 			} else {
 				if (pltodelete.size() != 0) {
 					for (String plrem : pltodelete) {
-					dd.removePlayer(plrem);}
+					dd.removePlayer(plrem);
+					plugin.debug("There is still some active owners in region " +rg.getId() + " Removing inactive owners");
+					}
 					rg.setOwners(dd);
 				}
 				
 			}
-			try {m.save();} catch (ProtectionDatabaseException e) {e.printStackTrace();}
+			try {m.save();
+			plugin.debug("Saving WG database");
+			} catch (ProtectionDatabaseException e) {e.printStackTrace();}
 			
 			}
 		}
 	}
+	
+	public void LWCpurge() {
+		long awaytime = config.purgeAwayTime;
+		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
+		ConsoleCommandSender sender = Bukkit.getConsoleSender();
+		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
+		for (OfflinePlayer pl : checkPlayers)
+		{
+			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+				plugin.debug(pl.toString()+" is inactive Removing all LWC protections");
+				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.toString(), true);
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	
 	
 }
