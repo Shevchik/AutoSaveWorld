@@ -1,12 +1,9 @@
 package autosave;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -87,7 +84,8 @@ public class AutoPurgeThread extends Thread {
 	}
 	
 	public void performPurge() {
-		WGpurge();
+		if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)){
+		WGpurge();}
 		command = false;
 	}
 	
