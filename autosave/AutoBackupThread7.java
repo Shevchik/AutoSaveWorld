@@ -21,7 +21,7 @@ public class AutoBackupThread7 extends Thread {
 		this.configmsg = configmsg;
 	}
 	
-	String dt=new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
+	String dt=new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance().getTime());
 
 	
 	
@@ -30,6 +30,7 @@ public class AutoBackupThread7 extends Thread {
 	private AutoSave plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
+	private Zip zipfld = null;
     public long datesec;
     private List<Long> tempnames = new ArrayList<Long>();
     private int runnow;
@@ -142,44 +143,35 @@ public class AutoBackupThread7 extends Thread {
 		Files.walkFileTree(sourceLocation.toPath(), new CopyFileVisitor(targetLocation));} catch(Exception e) {};}
 		
 	//all==true- * in worlds list; ext==true - copy external folders
-		private int backupWorlds(List<String> worldNames,boolean ext) {
+		private int backupWorlds(List<String> worldNames,boolean ext, boolean zip) {
 			// Save our worlds...
 			boolean all= false;
 			if (config.varWorlds.contains("*")) {all = true;}
-			if (ext)
-				{
 				int i = 0;
 				List<World> worlds = plugin.getServer().getWorlds();
 				for (World world : worlds) {
 				if (worldNames.contains(world.getName())||all) {
 				plugin.debug(String.format("Backuping world: %s", world.getName()));
+				if (ext) {
 				try {
 					copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					if (zip) zipfld.ZipFolder(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+					if (zip) deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+				
+				} catch (IOException e) {e.printStackTrace();} 
+				
+				} else {
+					
+					try {
+						copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+						if (zip) zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+						if (zip) deleteDirectory(new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+					} catch (IOException e) {e.printStackTrace();}
+				} 
 				i++;
 				}
 				}
 				return i;	
-				} else {
-			int i = 0;
-			List<World> worlds = plugin.getServer().getWorlds();
-			for (World world : worlds) {
-			if (worldNames.contains(world.getName())||all) {
-			plugin.debug(String.format("Backuping world: %s", world.getName()));
-			try {
-				copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			i++;
-			}
-			}
-			
-			return i;}
 			}
 
 	public void deleteDirectory(File file)
@@ -198,16 +190,22 @@ public class AutoBackupThread7 extends Thread {
 	    }
 	  }
 	
+
 	public void performBackup() {
-		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
+
 		if (plugin.backupInProgress) {
 		plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
 		return;
 		}	else {
-
+		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
+		boolean zip = config.backupzip;
+		if (zip) {
+		if (zipfld == null) {zipfld = new Zip();}	
+		}
 		// Lock
 		plugin.saveInProgress = true;
 		plugin.backupInProgress = true;
+		plugin.broadcastb(configmsg.messageBroadcastBackupPre);
 		datesec = System.currentTimeMillis();
 		int saved = 0;
 		//config
@@ -224,6 +222,7 @@ public class AutoBackupThread7 extends Thread {
 		//delete oldest backup if needed
 		if (!(config.MaxNumberOfBackups == 0) && (config.numberofbackups >= config.MaxNumberOfBackups))
 		{try {
+			plugin.debug("Deleting oldest backup");
 			deleteDirectory(new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+config.backupnames.get(0).toString()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -233,8 +232,8 @@ public class AutoBackupThread7 extends Thread {
 		config.numberofbackups--;}
 		
 		//do backup
-		plugin.broadcastb(configmsg.messageBroadcastBackupPre);
-		saved += backupWorlds(config.varWorlds, false);
+
+		saved += backupWorlds(config.varWorlds, false, zip);
 		plugin.debug(String.format("Backup %d Worlds", saved));
 		config.backupnames.add(datesec);
 		config.numberofbackups++;
@@ -243,23 +242,23 @@ public class AutoBackupThread7 extends Thread {
 		config.datesec = datesec;
 		config.getbackupdate();
 		if (config.backuppluginsfolder) {
-		try {
+			try {
+			plugin.debug("Backuping plugins");
 			copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File("backups"+File.separator+datesec+File.separator+"plugins"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			if (zip) zipfld.ZipFolder(new File("backups"+File.separator+datesec+File.separator+"plugins"));
+			if (zip) deleteDirectory(new File("backups"+File.separator+datesec+File.separator+"plugins"));
+			} catch (IOException e) {
 			e.printStackTrace();
-		} }
-		//end of black magic
-
+			}
+		}
+		}
 		//now backup to ext folders
 		//config
-		}
 		if (config.backuptoextfolders) {
 		if (config.varDebug) {plugin.debug("start extbackup");};
 		config.loadbackupextfolderconfig();
-		if (!(config.extfolders.size() == 0)) {
-		for (int i=0; i<config.extfolders.size(); i++) {
-		config.extpath = config.extfolders.get(i);
+		for (String extpath : config.extfolders) {
+		config.extpath = extpath;
 		if (config.varDebug){plugin.debug("Path is:"+config.extpath);};
 		config.loadConfigBackupExt();
 		//check if the backups are still here
@@ -272,29 +271,31 @@ public class AutoBackupThread7 extends Thread {
 		if(config.varDebug){plugin.debug("configuring done");};
 		//delete oldest backup if needed
 		if (!(config.MaxNumberOfBackups == 0) && (config.numberofbackupsext >= config.MaxNumberOfBackups)) {
+			plugin.debug("Deleting oldest backup");
 			deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+config.backupnamesext.get(0).toString())); 		
 			config.backupnamesext.remove(0);
 			config.numberofbackupsext--;}
 		//do backup
 		saved = 0;
-		saved += backupWorlds(config.varWorlds, true);
+		saved += backupWorlds(config.varWorlds, true, zip);
 		plugin.debug(String.format("Backup %d Worlds", saved));
 		config.backupnamesext.add(datesec);
 		config.numberofbackupsext++;
-		//black magic...
 		config.saveConfigBackupExt(); 
 		config.datesec = datesec;
 		config.getbackupdateext(); 
-		if (config.backuppluginsfolder) {
-		//end of black magic
-		try {
-			copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		}
-		}
+			if (config.backuppluginsfolder) {
+
+				try {
+					plugin.debug("Backuping plugins");
+					copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
+					if (zip) zipfld.ZipFolder(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
+					if (zip) deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			
+			}
 		}
 		}
 		plugin.broadcastb(configmsg.messageBroadcastBackupPost);
@@ -302,8 +303,8 @@ public class AutoBackupThread7 extends Thread {
 		plugin.saveInProgress = false;
 		plugin.backupInProgress = false;
 		if (config.varDebug) {plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");}
-		}
 		if (config.slowbackup) {setPriority(Thread.NORM_PRIORITY);}
+		}
 		}
 
 }

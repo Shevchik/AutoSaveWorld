@@ -191,14 +191,14 @@ sender.sendMessage(Generic.parseColor(message));
 }
 
 public void broadcasta(String message) {
-if (!message.equals("") && (config.varBroadcast == true)) {
+if (!message.equals("") && (config.varBroadcast)) {
 getServer().broadcastMessage(Generic.parseColor(message));
 log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
 }
 
 }
 public void broadcastb(String message) {
-if (!message.equals("") && (config.backupBroadcast == true)) {
+if (!message.equals("") && (config.backupBroadcast)) {
 getServer().broadcastMessage(Generic.parseColor(message));
 log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
 }

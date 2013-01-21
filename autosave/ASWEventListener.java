@@ -30,7 +30,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 import de.bananaco.bpermissions.api.ApiLayer;
@@ -59,8 +58,6 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.saveThread.startsave();}
 		}
 		
-		
-		
 		private String world;
 		private String perm;
 		private boolean hasRight(Player player, String perm, String world) {
@@ -86,7 +83,7 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		// Player, lets check if player isOp()
 		player = (Player) sender;
 
-		if (commandName.equals("autosaveworld")) {perm="autosaveworld."+args[0];}
+		if (commandName.equals("autosaveworld")){ if (args.length == 0) {perm="autosaveworld.autosaveworld";} else {perm="autosaveworld."+args[0];}}
 		
 		// Check Permissions
 		if (!player.isOp() && !hasRight(player, perm, world)) 

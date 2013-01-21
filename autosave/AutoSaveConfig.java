@@ -55,7 +55,7 @@ public class AutoSaveConfig {
 	protected boolean slowbackup = false;
 	protected boolean backupwarn = false;
 	protected List<Integer> backupWarnTimes = null;
-	
+	protected boolean backupzip = false;
 	protected boolean javanio = false;
 	
 	
@@ -116,6 +116,7 @@ public class AutoSaveConfig {
 		backuptoextfolders = config.getBoolean("backup.toextfolders", backuptoextfolders);
 		donotbackuptointfld = config.getBoolean("backup.disableintfolder", donotbackuptointfld);
 		backuppluginsfolder = config.getBoolean("backup.pluginsfolder", backuppluginsfolder);
+		backupzip = config.getBoolean("backup.zip", backupzip);
 		varWorlds = config.getStringList("backup.worlds");
 		backupwarn = config.getBoolean("backup.warn", backupwarn);
 		if (varWorlds.size() == 0) {
@@ -219,6 +220,7 @@ public class AutoSaveConfig {
 		config.set("backup.worlds", varWorlds);
 		config.set("backup.warn", backupwarn);
 		config.set("backup.warntime", backupWarnTimes);
+		config.set("backup.zip",backupzip);
 						try {
 					config.save(new File("plugins/AutoSaveWorld/config.yml"));
 				} catch (IOException ex) {;

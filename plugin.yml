@@ -1,0 +1,13 @@
+name: AutoSaveWorld
+main: autosave.AutoSave
+version: 4.0
+author: Shevchik
+description: >
+             Provides automatic world saves at defined intervals.  The focus
+             of the plugin is to provide a method to flush changes to disk.
+             Also provides automatic world backups.
+commands:
+  autosaveworld:
+    description: All AutoSaveWorld commands
+    aliases: asw
+    usage: Use /asw help  to show all commands availible in plugin.
