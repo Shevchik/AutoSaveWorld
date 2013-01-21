@@ -103,7 +103,8 @@ public class AutoSaveThread extends Thread {
 				}
 			}
 
-			performSave();
+			plugin.getServer().getScheduler().runTask(plugin, new Runnable() { 
+				public void run() {performSave();}});
 		}
 	}
 	private void savePlayers() {

@@ -21,7 +21,7 @@ public class AutoBackupThread7 extends Thread {
 		this.configmsg = configmsg;
 	}
 	
-	String dt=new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance().getTime());
+	
 
 	
 	
@@ -157,7 +157,6 @@ public class AutoBackupThread7 extends Thread {
 					copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
 					if (zip) zipfld.ZipFolder(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
 					if (zip) deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-				
 				} catch (IOException e) {e.printStackTrace();} 
 				
 				} else {
@@ -176,7 +175,7 @@ public class AutoBackupThread7 extends Thread {
 
 	public void deleteDirectory(File file)
 	  {
-	    if(!file.exists())
+    if(!file.exists())
 	      return;
 	    if(file.isDirectory())
 	    {
@@ -198,6 +197,7 @@ public class AutoBackupThread7 extends Thread {
 		return;
 		}	else {
 		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
+		//creating local copy of variables in case somebody changes them while backup is running
 		boolean zip = config.backupzip;
 		if (zip) {
 		if (zipfld == null) {zipfld = new Zip();}	
@@ -223,6 +223,7 @@ public class AutoBackupThread7 extends Thread {
 		if (!(config.MaxNumberOfBackups == 0) && (config.numberofbackups >= config.MaxNumberOfBackups))
 		{try {
 			plugin.debug("Deleting oldest backup");
+			//Delete directory
 			deleteDirectory(new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+config.backupnames.get(0).toString()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -219,8 +219,10 @@ public class AutoSaveConfig {
 		config.set("backup.slowbackup", slowbackup);
 		config.set("backup.worlds", varWorlds);
 		config.set("backup.warn", backupwarn);
-		config.set("backup.warntime", backupWarnTimes);
 		config.set("backup.zip",backupzip);
+		config.set("backup.warntime", backupWarnTimes);
+
+		
 						try {
 					config.save(new File("plugins/AutoSaveWorld/config.yml"));
 				} catch (IOException ex) {;
