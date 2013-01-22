@@ -151,7 +151,7 @@ return true;
 } else {
 saveThread.setRun(false);
 try {
-saveThread.join(5000);
+saveThread.join();
 saveThread = null;
 return true;
 } catch (InterruptedException e) {
@@ -165,7 +165,7 @@ return true;
 } else {
 backupThread6.setRun(false);
 try {
-backupThread6.join(5000);
+backupThread6.join();
 backupThread6 = null;
 return true;
 } catch (InterruptedException e) {
@@ -179,7 +179,7 @@ return true;
 } else {
 backupThread7.setRun(false);
 try {
-backupThread7.join(5000);
+backupThread7.join();
 backupThread7 = null;
 return true;
 } catch (InterruptedException e) {
@@ -193,7 +193,7 @@ return true;
 } else {
 purgeThread.setRun(false);
 try {
-purgeThread.join(5000);
+purgeThread.join();
 purgeThread = null;
 return true;
 } catch (InterruptedException e) {
@@ -222,6 +222,13 @@ log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor
 }
 public void broadcastb(String message) {
 if (!message.equals("") && (config.backupBroadcast)) {
+getServer().broadcastMessage(Generic.parseColor(message));
+log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
+}
+
+}
+public void broadcastc(String message) {
+if (!message.equals("") && (config.purgeBroadcast)) {
 getServer().broadcastMessage(Generic.parseColor(message));
 log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
 }

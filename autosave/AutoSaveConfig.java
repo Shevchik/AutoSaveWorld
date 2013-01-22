@@ -60,6 +60,7 @@ public class AutoSaveConfig {
 	protected int purgeInterval = 60*60*24;
 	protected int purgeAwayTime = 60*60*24*30;
 	protected boolean purgeEnabled = false;
+	protected boolean purgeBroadcast = true;
 	
 	
 	protected List<String> extfolders;
@@ -136,6 +137,7 @@ public class AutoSaveConfig {
 		purgeInterval = config.getInt("purge.interval", purgeInterval);
 		purgeAwayTime = config.getInt("purge.awaytime", purgeAwayTime);
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
+		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
 		save();
 	}
 	protected long datesec;
@@ -234,6 +236,7 @@ public class AutoSaveConfig {
 		config.set("purge.interval", purgeInterval);
 		config.set("purge.awaytime", purgeAwayTime);
 		config.set("purge.enabled", purgeEnabled);
+		config.set("purge.broadcast",purgeBroadcast);
 
 		
 						try {

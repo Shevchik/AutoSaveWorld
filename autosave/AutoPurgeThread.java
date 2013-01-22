@@ -1,6 +1,11 @@
 package autosave;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -86,28 +91,36 @@ public class AutoPurgeThread extends Thread {
 	}
 	
 	public void performPurge() {
+		plugin.broadcastc(configmsg.messagePurgePre);
+		long awaytime = config.purgeAwayTime;
 		plugin.debug("Purge started");
 		if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)){
 		plugin.debug("WE found, purging");
-		WGpurge();}
+		WGpurge(awaytime);}
 		if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null)){
-		plugin.debug("LWC found purging");
-			LWCpurge();}
+		plugin.debug("LWC found, purging");
+			LWCpurge(awaytime);}
+		plugin.debug("Purging player dat files");
+		DelPlayerDatFile(awaytime);
 		command = false;
 		plugin.debug("Purge finished");
+		plugin.broadcastc(configmsg.messagePurgePost);
 	}
 	
-	public void WGpurge() {
-		long awaytime = config.purgeAwayTime;
+	public void WGpurge(long awaytime) {
+		//don't know if all of this is thread safe, so creating values for everyfing before iterating.
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
-		for(World w : Bukkit.getWorlds()) {
-		plugin.debug("Checking WG protections in world "+w.toString());
+		List<World> worldlist = Bukkit.getWorlds();
+		for(World w : worldlist) {
+		plugin.debug("Checking WG protections in world "+w.getName());
 		RegionManager m = wg.getRegionManager(w);
-		for(ProtectedRegion rg : m.getRegions().values()) {
+		Collection<ProtectedRegion> rgm = m.getRegions().values();
+		for(ProtectedRegion rg : rgm) {
 			plugin.debug("Checking region "+rg.getId());
 			DefaultDomain dd = rg.getOwners();
 			ArrayList<String> pltodelete = new ArrayList<String>();
-			for (String checkPlayer : dd.getPlayers()) {
+			Set<String> ddpl = dd.getPlayers();
+			for (String checkPlayer : ddpl) {
 				plugin.debug("Checking player "+checkPlayer);
 				if (Bukkit.getOfflinePlayer(checkPlayer).hasPlayedBefore()) {
 				long timelp = Bukkit.getOfflinePlayer(checkPlayer).getLastPlayed();
@@ -118,7 +131,7 @@ public class AutoPurgeThread extends Thread {
 				}
 				}
 			}
-			if (dd.getPlayers().size() <= pltodelete.size()) {
+			if (ddpl.size() <= pltodelete.size()) {
 				m.removeRegion(rg.getId());
 				plugin.debug("No active owners for region " +rg.getId() + " Removing region");
 			} else {
@@ -139,22 +152,41 @@ public class AutoPurgeThread extends Thread {
 		}
 	}
 	
-	public void LWCpurge() {
-		long awaytime = config.purgeAwayTime;
+	public void LWCpurge(long awaytime) {
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 		ConsoleCommandSender sender = Bukkit.getConsoleSender();
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers)
 		{
 			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
-				plugin.debug(pl.toString()+" is inactive Removing all LWC protections");
-				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.toString(), true);
+				plugin.debug(pl.getName()+" is inactive Removing all LWC protections");
+				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), true);
+				
 			}
 		}
 		
 	}
 	
-	
+	public void DelPlayerDatFile(long awaytime) {
+		List<World> worldlist = Bukkit.getWorlds();
+		for (World world : worldlist) {
+			OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
+			for (OfflinePlayer pl : checkPlayers) {
+				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+					//For thread safety(i don't want to know what will happen if player will join the server while his dat file is deleting from another thread)
+					//The problem is how plugins will react to this, need someone to test this.
+					pl.setBanned(true);
+					try {
+						File pldatFile= new File(new File(".").getCanonicalPath()+File.separator+world.getName()
+								+File.separator+"players"+File.separator+pl.getName()+".dat");
+						if (pldatFile.exists()) {pldatFile.delete(); plugin.debug(pl.getName()+" is inactive. Removing dat file");}
+					} catch (IOException e) {e.printStackTrace();}
+					//Unban after purge
+					pl.setBanned(false);
+				}
+			}
+		}		
+	}
 	
 	
 	
