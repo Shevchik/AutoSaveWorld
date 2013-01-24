@@ -16,7 +16,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import com.griefcraft.lwc.LWCPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.databases.ProtectionDatabaseException;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -53,7 +52,7 @@ public class AutoPurgeThread extends Thread {
 		}
 
 		log.info(String
-				.format("[%s] AutoSaveThread Started: Interval is %d seconds, Warn Times are %s",
+				.format("[%s] AutoPurgeThread Started: Interval is %d seconds, Warn Times are %s",
 						plugin.getDescription().getName(), config.purgeInterval,
 						Generic.join(",", config.varWarnTimes)));
 		while (run) {
@@ -144,9 +143,7 @@ public class AutoPurgeThread extends Thread {
 				}
 				
 			}
-			try {m.save();
-			plugin.debug("Saving WG database");
-			} catch (ProtectionDatabaseException e) {e.printStackTrace();}
+				try {m.save();} catch (Exception e) {}	
 			
 			}
 		}
