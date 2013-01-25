@@ -58,7 +58,7 @@ public class AutoSaveConfig {
 	protected boolean backupzip = false;
 	protected boolean javanio = false;
 	protected int purgeInterval = 60*60*24;
-	protected int purgeAwayTime = 60*60*24*30;
+	protected long purgeAwayTime = 60*60*24*30;
 	protected boolean purgeEnabled = false;
 	protected boolean purgeBroadcast = true;
 	
@@ -135,7 +135,7 @@ public class AutoSaveConfig {
 		
 		//purge variables
 		purgeInterval = config.getInt("purge.interval", purgeInterval);
-		purgeAwayTime = config.getInt("purge.awaytime", purgeAwayTime);
+		purgeAwayTime = config.getLong("purge.awaytime", purgeAwayTime);
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
 		save();

@@ -172,14 +172,19 @@ public class AutoPurgeThread extends Thread {
 				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 					//For thread safety(i don't want to know what will happen if player will join the server while his dat file is deleting from another thread)
 					//The problem is how plugins will react to this, need someone to test this.
-					pl.setBanned(true);
+					
+					//Check if the player was already banned
+					boolean banned = pl.isBanned();
+					if (!banned) {
+					pl.setBanned(true);}
 					try {
 						File pldatFile= new File(new File(".").getCanonicalPath()+File.separator+world.getName()
 								+File.separator+"players"+File.separator+pl.getName()+".dat");
 						if (pldatFile.exists()) {pldatFile.delete(); plugin.debug(pl.getName()+" is inactive. Removing dat file");}
 					} catch (IOException e) {e.printStackTrace();}
 					//Unban after purge
-					pl.setBanned(false);
+					if (!banned) {
+					pl.setBanned(false);}
 				}
 			}
 		}		
