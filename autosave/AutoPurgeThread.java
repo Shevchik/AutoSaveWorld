@@ -123,7 +123,7 @@ public class AutoPurgeThread extends Thread {
 				plugin.debug("Checking player "+checkPlayer);
 				if (Bukkit.getOfflinePlayer(checkPlayer).hasPlayedBefore()) {
 				long timelp = Bukkit.getOfflinePlayer(checkPlayer).getLastPlayed();
-				if (System.currentTimeMillis() - timelp >= awaytime)
+				if (System.currentTimeMillis() - timelp >= awaytime*1000)
 				{
 					pltodelete.add(checkPlayer);
 					plugin.debug(checkPlayer+" is inactive");
@@ -155,7 +155,7 @@ public class AutoPurgeThread extends Thread {
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers)
 		{
-			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime*1000) {
 				plugin.debug(pl.getName()+" is inactive Removing all LWC protections");
 				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), true);
 				
@@ -169,7 +169,7 @@ public class AutoPurgeThread extends Thread {
 		for (World world : worldlist) {
 			OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 			for (OfflinePlayer pl : checkPlayers) {
-				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime*1000) {
 					//For thread safety(i don't want to know what will happen if player will join the server while his dat file is deleting from another thread)
 					//The problem is how plugins will react to this, need someone to test this.
 					
