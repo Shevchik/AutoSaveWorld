@@ -299,6 +299,7 @@ public class AutoBackupThread7 extends Thread {
 			}
 		}
 		}
+		command = false;
 		plugin.broadcastb(configmsg.messageBroadcastBackupPost);
 		// Release
 		plugin.saveInProgress = false;

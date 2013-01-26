@@ -157,8 +157,9 @@ public class AutoSaveThread extends Thread {
 
 		plugin.broadcasta(configmsg.messageBroadcastPost);
 		} catch (Exception e) 
-		{plugin.broadcasta("&4Save Failed");
+		{plugin.broadcasta("&4AutoSave Failed");
 		if (config.varDebug) {e.printStackTrace();}}
+		command = false;
 		// Release
 		plugin.saveInProgress = false;
 		}
