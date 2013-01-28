@@ -56,7 +56,6 @@ public class AutoSaveConfig {
 	protected boolean backupwarn = false;
 	protected List<Integer> backupWarnTimes = null;
 	protected boolean backupzip = false;
-	protected boolean javanio = false;
 	protected int purgeInterval = 60*60*24;
 	protected long purgeAwayTime = 60*60*24*30;
 	protected boolean purgeEnabled = false;

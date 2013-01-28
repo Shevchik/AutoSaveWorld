@@ -35,7 +35,6 @@ private static final Logger log = Logger.getLogger("Minecraft");
 
 public AutoSaveThread saveThread = null;
 public AutoBackupThread6 backupThread6 = null;
-public AutoBackupThread7 backupThread7 = null;
 public AutoPurgeThread purgeThread = null;
 private AutoSaveConfigMSG configmsg;
 private AutoSaveConfig config;
@@ -60,9 +59,7 @@ debug(String.format("[%s] Stopping Threads",
 getDescription().getName()));
 
 stopThread(ThreadType.SAVE);
-if (config.javanio)
-{stopThread(ThreadType.BACKUP7);}
-else {stopThread(ThreadType.BACKUP6);}
+stopThread(ThreadType.BACKUP6);
 stopThread(ThreadType.PURGE);
 log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),getDescription().getVersion()));
 
@@ -80,17 +77,6 @@ eh = new ASWEventListener(this, config, configmsg);
 //register events and commands
 getCommand("autosaveworld").setExecutor(eh);
 getServer().getPluginManager().registerEvents(eh, this);
-//Check if we have java7.
-try{java.nio.file.Files.class.getMethods();
-config.javanio = true;
-debug("java7");
-	} catch (NoClassDefFoundError e) {
-config.javanio = false;
-debug("java6");
-	} catch (SecurityException e) {
-		// TODO Auto-generated catch block
-		config.javanio = false;
-	}
 //Disable internal autosave
 try {
 for (World name : getServer().getWorlds()) {
@@ -100,10 +86,7 @@ for (World name : getServer().getWorlds()) {
 // Start AutoSave Thread
 startThread(ThreadType.SAVE);
 //Start AutoBackupThread
-if (config.javanio) {
-startThread(ThreadType.BACKUP7); }
-else {
-startThread(ThreadType.BACKUP6);}
+startThread(ThreadType.BACKUP6);
 //Start AutoPurgeThread
 startThread(ThreadType.PURGE);
 // Notify on logger load
@@ -124,12 +107,6 @@ case BACKUP6:
 if (backupThread6 == null || !backupThread6.isAlive()) {
 backupThread6 = new AutoBackupThread6(this, config, configmsg);
 backupThread6.start();
-}
-return true;
-case BACKUP7:
-if (backupThread7 == null || !backupThread7.isAlive()) {
-backupThread7 = new AutoBackupThread7(this, config, configmsg);
-backupThread7.start();
 }
 return true;
 case PURGE:
@@ -167,20 +144,6 @@ backupThread6.setRun(false);
 try {
 backupThread6.join();
 backupThread6 = null;
-return true;
-} catch (InterruptedException e) {
-warn("Could not stop AutoBackupThread", e);
-return false;
-}
-}
-case BACKUP7:
-if (backupThread7 == null) {
-return true;
-} else {
-backupThread7.setRun(false);
-try {
-backupThread7.join();
-backupThread7 = null;
 return true;
 } catch (InterruptedException e) {
 warn("Could not stop AutoBackupThread", e);

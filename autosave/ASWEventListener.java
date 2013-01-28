@@ -119,17 +119,14 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		} else
 		//command to backup worlds
 		if (args.length==1 && args[0].equalsIgnoreCase("backup")) {
-		if (config.javanio) 
-		{plugin.backupThread7
-			.startbackup();}
-		else 
-		{plugin.backupThread6
-			.startbackup();}
+			plugin.backupThread6
+			.startbackup();
 		return true;
 		} else
 		//purge command
 		if (args.length==1 && args[0].equalsIgnoreCase("purge")) {
 		plugin.purgeThread.startpurge();
+		return true;
 		} else
 		//reload command
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {

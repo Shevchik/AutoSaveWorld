@@ -3,7 +3,6 @@ package autosave;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -95,12 +94,21 @@ public class AutoPurgeThread extends Thread {
 		plugin.debug("Purge started");
 		if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)){
 		plugin.debug("WE found, purging");
-		WGpurge(awaytime);}
+		try {
+		WGpurge(awaytime);} catch (Exception e) {
+			e.printStackTrace();
+		}}
 		if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null)){
 		plugin.debug("LWC found, purging");
-			LWCpurge(awaytime);}
+		try {
+			LWCpurge(awaytime);} catch (Exception e) {
+				e.printStackTrace();
+			}}
 		plugin.debug("Purging player dat files");
-		DelPlayerDatFile(awaytime);
+		try {
+		DelPlayerDatFile(awaytime);} catch (Exception e) {
+			e.printStackTrace();
+		}
 		command = false;
 		plugin.debug("Purge finished");
 		plugin.broadcastc(configmsg.messagePurgePost);
@@ -113,8 +121,9 @@ public class AutoPurgeThread extends Thread {
 		for(World w : worldlist) {
 		plugin.debug("Checking WG protections in world "+w.getName());
 		RegionManager m = wg.getRegionManager(w);
-		Collection<ProtectedRegion> rgm = m.getRegions().values();
-		for(ProtectedRegion rg : rgm) {
+		List<String> rgtodel = new ArrayList<String>();
+		for(ProtectedRegion rg
+				: m.getRegions().values()) {
 			plugin.debug("Checking region "+rg.getId());
 			DefaultDomain dd = rg.getOwners();
 			ArrayList<String> pltodelete = new ArrayList<String>();
@@ -128,11 +137,12 @@ public class AutoPurgeThread extends Thread {
 					pltodelete.add(checkPlayer);
 					plugin.debug(checkPlayer+" is inactive");
 				}
-				}
+				} else {pltodelete.add(checkPlayer);
+					plugin.debug(checkPlayer+" is inactive"); }
 			}
 			if (ddpl.size() <= pltodelete.size()) {
-				m.removeRegion(rg.getId());
-				plugin.debug("No active owners for region " +rg.getId() + " Removing region");
+				rgtodel.add(rg.getId());
+				plugin.debug("No active owners for region " +rg.getId() + " Added to removal list");
 			} else {
 				if (pltodelete.size() != 0) {
 					for (String plrem : pltodelete) {
@@ -146,6 +156,11 @@ public class AutoPurgeThread extends Thread {
 				try {m.save();} catch (Exception e) {}	
 			
 			}
+			plugin.debug("Deleting region in removal list");
+			for (String delrg : rgtodel)
+			{plugin.debug("Removing region "+delrg);
+				m.removeRegion(delrg);}
+			try {m.save();} catch (Exception e) {}
 		}
 	}
 	
@@ -192,5 +207,7 @@ public class AutoPurgeThread extends Thread {
 	
 	
 	
-	
+
+
+
 }
