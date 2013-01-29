@@ -1,8 +1,4 @@
 ﻿/**
-*
-* Copyright 2011 MilkBowl (https://github.com/MilkBowl)
-* Copyright 2012 Shevchik
-* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 3
@@ -21,11 +17,8 @@
 
 package autosave;
 
-
-//Java6 is no longer supported, backup with java6 won't have all features that backup with7 will have
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -42,22 +35,15 @@ private ASWEventListener eh;
 protected int numPlayers = 0;
 protected boolean saveInProgress = false;
 protected boolean backupInProgress = false;
-
+protected boolean purgeInProgress = false;
 
 @Override
 public void onDisable() {
 // Perform a Save NOW!
 saveThread.startsave();
-
-try {
-for (World name : getServer().getWorlds()) {
-	name.setAutoSave(true);
-}
-} catch (Exception e) {}
 //Stop threads
 debug(String.format("[%s] Stopping Threads",
 getDescription().getName()));
-
 stopThread(ThreadType.SAVE);
 stopThread(ThreadType.BACKUP6);
 stopThread(ThreadType.PURGE);
@@ -77,12 +63,6 @@ eh = new ASWEventListener(this, config, configmsg);
 //register events and commands
 getCommand("autosaveworld").setExecutor(eh);
 getServer().getPluginManager().registerEvents(eh, this);
-//Disable internal autosave
-try {
-for (World name : getServer().getWorlds()) {
-	name.setAutoSave(false);
-}
-} catch (Exception e) {}
 // Start AutoSave Thread
 startThread(ThreadType.SAVE);
 //Start AutoBackupThread

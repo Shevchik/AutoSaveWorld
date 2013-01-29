@@ -1,3 +1,19 @@
+/**
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 3
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+*
+*/
 package autosave;
 
 import java.io.File;
@@ -89,6 +105,15 @@ public class AutoPurgeThread extends Thread {
 	}
 	
 	public void performPurge() {
+		if (plugin.purgeInProgress) {
+			plugin.warn("Multiple concurrent purges attempted! Purge interval is likely too short!");
+			return;
+			} else if (plugin.saveInProgress) {
+			plugin.warn("AutoSave is in progress. Purge cancelled.");
+			} else if (plugin.backupInProgress) {
+			plugin.warn("AutoBackup is in progress. Purge cancelled.");	
+			}	else {
+		plugin.purgeInProgress = true;
 		plugin.broadcastc(configmsg.messagePurgePre);
 		long awaytime = config.purgeAwayTime;
 		plugin.debug("Purge started");
@@ -112,6 +137,8 @@ public class AutoPurgeThread extends Thread {
 		command = false;
 		plugin.debug("Purge finished");
 		plugin.broadcastc(configmsg.messagePurgePost);
+		plugin.purgeInProgress = false;
+			}
 	}
 	
 	public void WGpurge(long awaytime) {

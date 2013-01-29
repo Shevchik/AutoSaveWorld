@@ -1,7 +1,4 @@
 /**
- * 
- * Copyright 2012 Shevchik
- * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -154,7 +151,6 @@ public class AutoBackupThread6 extends Thread {
 	
 	public void copyDirectory(File sourceLocation , File targetLocation)
 			throws IOException {
-	if (config.varDebug) {plugin.debug("Java 6 backup running");};
 			    if (sourceLocation.isDirectory()) {
 			        if (!targetLocation.exists()) {
 			            targetLocation.mkdirs();
@@ -215,6 +211,10 @@ public class AutoBackupThread6 extends Thread {
 		if (plugin.backupInProgress) {
 		plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
 		return;
+		} else if (plugin.purgeInProgress) {
+		plugin.warn("AutoPurge is in progress. Backup cancelled.");
+		} else if (plugin.saveInProgress) {
+		plugin.warn("AutoSave is in progress. Backup cancelled.");	
 		}	else {
 		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
 		boolean zip = config.backupzip;
