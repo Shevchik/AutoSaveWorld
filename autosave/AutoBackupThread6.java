@@ -213,8 +213,10 @@ public class AutoBackupThread6 extends Thread {
 		return;
 		} else if (plugin.purgeInProgress) {
 		plugin.warn("AutoPurge is in progress. Backup cancelled.");
+		return;
 		} else if (plugin.saveInProgress) {
 		plugin.warn("AutoSave is in progress. Backup cancelled.");	
+		return;
 		}	else {
 		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
 		boolean zip = config.backupzip;

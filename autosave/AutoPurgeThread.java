@@ -110,34 +110,39 @@ public class AutoPurgeThread extends Thread {
 			return;
 			} else if (plugin.saveInProgress) {
 			plugin.warn("AutoSave is in progress. Purge cancelled.");
+			return;
 			} else if (plugin.backupInProgress) {
 			plugin.warn("AutoBackup is in progress. Purge cancelled.");	
+			return;
 			}	else {
+		if (config.slowpurge) {setPriority(Thread.MIN_PRIORITY);}
 		plugin.purgeInProgress = true;
 		plugin.broadcastc(configmsg.messagePurgePre);
-		long awaytime = config.purgeAwayTime;
+		long awaytime = config.purgeAwayTime*1000;
 		plugin.debug("Purge started");
-		if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)){
+		if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) && config.wg){
 		plugin.debug("WE found, purging");
 		try {
 		WGpurge(awaytime);} catch (Exception e) {
 			e.printStackTrace();
 		}}
-		if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null)){
+		if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null) && config.lwc){
 		plugin.debug("LWC found, purging");
 		try {
 			LWCpurge(awaytime);} catch (Exception e) {
 				e.printStackTrace();
 			}}
 		plugin.debug("Purging player dat files");
+		if (config.dat) {
 		try {
 		DelPlayerDatFile(awaytime);} catch (Exception e) {
 			e.printStackTrace();
-		}
+		} }
 		command = false;
 		plugin.debug("Purge finished");
 		plugin.broadcastc(configmsg.messagePurgePost);
 		plugin.purgeInProgress = false;
+		if (config.slowpurge) {setPriority(Thread.NORM_PRIORITY);}
 			}
 	}
 	
@@ -159,7 +164,7 @@ public class AutoPurgeThread extends Thread {
 				plugin.debug("Checking player "+checkPlayer);
 				if (Bukkit.getOfflinePlayer(checkPlayer).hasPlayedBefore()) {
 				long timelp = Bukkit.getOfflinePlayer(checkPlayer).getLastPlayed();
-				if (System.currentTimeMillis() - timelp >= awaytime*1000)
+				if (System.currentTimeMillis() - timelp >= awaytime)
 				{
 					pltodelete.add(checkPlayer);
 					plugin.debug(checkPlayer+" is inactive");
@@ -197,9 +202,9 @@ public class AutoPurgeThread extends Thread {
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers)
 		{
-			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime*1000) {
+			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 				plugin.debug(pl.getName()+" is inactive Removing all LWC protections");
-				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), true);
+				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), false);
 				
 			}
 		}
@@ -207,11 +212,9 @@ public class AutoPurgeThread extends Thread {
 	}
 	
 	public void DelPlayerDatFile(long awaytime) {
-		List<World> worldlist = Bukkit.getWorlds();
-		for (World world : worldlist) {
 			OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 			for (OfflinePlayer pl : checkPlayers) {
-				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime*1000) {
+				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 					//For thread safety(i don't want to know what will happen if player will join the server while his dat file is deleting from another thread)
 					//The problem is how plugins will react to this, need someone to test this.
 					
@@ -220,14 +223,13 @@ public class AutoPurgeThread extends Thread {
 					if (!banned) {
 					pl.setBanned(true);}
 					try {
-						File pldatFile= new File(new File(".").getCanonicalPath()+File.separator+world.getName()
+						File pldatFile= new File(new File(".").getCanonicalPath()+File.separator+Bukkit.getWorlds().get(0).getName()
 								+File.separator+"players"+File.separator+pl.getName()+".dat");
 						if (pldatFile.exists()) {pldatFile.delete(); plugin.debug(pl.getName()+" is inactive. Removing dat file");}
 					} catch (IOException e) {e.printStackTrace();}
 					//Unban after purge
 					if (!banned) {
 					pl.setBanned(false);}
-				}
 			}
 		}		
 	}

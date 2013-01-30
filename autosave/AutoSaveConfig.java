@@ -56,6 +56,10 @@ public class AutoSaveConfig {
 	protected long purgeAwayTime = 60*60*24*30;
 	protected boolean purgeEnabled = false;
 	protected boolean purgeBroadcast = true;
+	protected boolean slowpurge = false;
+	protected boolean wg = true;
+	protected boolean lwc = true;
+	protected boolean dat = true;
 	
 	
 	protected List<String> extfolders;
@@ -133,6 +137,10 @@ public class AutoSaveConfig {
 		purgeAwayTime = config.getLong("purge.awaytime", purgeAwayTime);
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
+		slowpurge = config.getBoolean("purge.slowpurge", slowpurge);
+		wg = config.getBoolean("purge.wg", wg);
+		lwc = config.getBoolean("purge.lwc", lwc);
+		dat = config.getBoolean("purge.dat", dat);
 		save();
 	}
 	protected long datesec;
@@ -232,6 +240,10 @@ public class AutoSaveConfig {
 		config.set("purge.awaytime", purgeAwayTime);
 		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.broadcast",purgeBroadcast);
+		config.set("purge.slowpurge", slowpurge);
+		config.set("purge.wg", wg);
+		config.set("purge.lwc", lwc);
+		config.set("purge.dat", dat);
 
 		
 						try {
