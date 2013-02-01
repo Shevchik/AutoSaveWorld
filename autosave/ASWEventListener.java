@@ -131,17 +131,17 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {
 		config.load();
 		configmsg.loadmsg();
-		plugin.sendMessage(sender,"AutoSaveWorld configurations reloaded");
+		plugin.sendMessage(sender,"[AutoSaveWorld] all configurations reloaded");
 		return true;
 		}
 		if (args.length==1 && args[0].equalsIgnoreCase("reloadconfig")) {
 		config.load();
-		plugin.sendMessage(sender,"AutoSaveWorld configuration reloaded");
+		plugin.sendMessage(sender,"[AutoSaveWorld] main configuration reloaded");
 		return true;
 		}
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {
 		configmsg.loadmsg();
-		plugin.sendMessage(sender,"AutoSaveWorld messages reloaded");
+		plugin.sendMessage(sender,"[AutoSaveWorld] messages reloaded");
 		return true;
 		}
 		if (args.length==1 && args[0].equalsIgnoreCase("version")) {
