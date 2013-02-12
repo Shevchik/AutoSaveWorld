@@ -40,7 +40,7 @@ protected boolean purgeInProgress = false;
 @Override
 public void onDisable() {
 // Perform a Save NOW!
-saveThread.startsave();
+saveThread.performSave();
 //Stop threads
 debug(String.format("[%s] Stopping Threads",
 getDescription().getName()));

@@ -205,10 +205,9 @@ public class AutoPurgeThread extends Thread {
 			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 				plugin.debug(pl.getName()+" is inactive Removing all LWC protections");
 				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), false);
-				
-			}
 		}
-		
+		}
+
 	}
 	
 	public void DelPlayerDatFile(long awaytime) {
@@ -234,9 +233,4 @@ public class AutoPurgeThread extends Thread {
 		}		
 	}
 	
-	
-	
-
-
-
 }

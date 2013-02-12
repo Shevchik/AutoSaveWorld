@@ -2,10 +2,8 @@ package autosave;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -17,63 +15,47 @@ public class Zip {
     
     //don't ask me how did this works, i didn't have time to write my own function, so i copied one.
     
-    public void ZipFolder(File in) {
-    	
-    	List<File> fileList = new ArrayList<File>();
-    	getAllFiles(in, fileList);
-		writeZipFile(in, fileList);
-    }
-    
-    public void getAllFiles(File dir, List<File> fileList) {
-		File[] files = dir.listFiles();
-		for (File file : files) {
-			fileList.add(file);
-			if (file.isDirectory()) {
-				getAllFiles(file, fileList);
-			} 
-		}
-	}
-
-	public void writeZipFile(File directoryToZip, List<File> fileList) {
-
-		try {
-			FileOutputStream fos = new FileOutputStream(directoryToZip+".zip");
-			
-			ZipOutputStream zos = new ZipOutputStream(fos);
-
-			for (File file : fileList) {
-				if (!file.isDirectory()) { // we only zip files, not directories
-					addToZip(directoryToZip, file, zos);
-				}
-			}
-
-			zos.close();
-			fos.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+    public void ZipFolder (File file)
+    {         try {
+        //create a ZipOutputStream to zip the data to 
+        ZipOutputStream zos = new 
+               ZipOutputStream(new FileOutputStream(file+".zip")); 
+        zipDir(file.getName(), zos); 
+		zos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
+		} 
+    } 
+    public void zipDir(String dir2zip, ZipOutputStream zos) 
+    { 
+        try 
+       { 
+                File  zipDir = new File(dir2zip); 
+            String[] dirList = zipDir.list(); 
+            byte[] readBuffer = new byte[2156]; 
+            int bytesIn = 0; 
+            for(int i=0; i<dirList.length; i++) 
+            { 
+                File f = new File(zipDir, dirList[i]); 
+            if(f.isDirectory()) 
+            { 
+                String filePath = f.getPath(); 
+                zipDir(filePath, zos); 
+                continue; 
+            } 
+              FileInputStream fis = new FileInputStream(f); 
+          ZipEntry anEntry = new ZipEntry(f.getPath()); 
+            zos.putNextEntry(anEntry); 
+                while((bytesIn = fis.read(readBuffer)) != -1) 
+                { 
+                    zos.write(readBuffer, 0, bytesIn); 
+                } 
+               fis.close(); 
+        } 
+    } 
+    catch(Exception e) 
+    { 
 
-	public void addToZip(File directoryToZip, File file, ZipOutputStream zos) throws FileNotFoundException,
-			IOException {
-		boolean availible = false;
-		FileInputStream fis = new FileInputStream(file);
-		try { fis.read(); availible = true;} catch (Exception e) {}
-		if (availible) {
-		// we want the zipEntry's path to be a relative path that is relative
-		// to the directory being zipped, so chop off the rest of the path
-		String zipFilePath = file.getCanonicalPath().substring(directoryToZip.getCanonicalPath().length() + 1,
-				file.getCanonicalPath().length());
-		ZipEntry zipEntry = new ZipEntry(zipFilePath);
-		zos.putNextEntry(zipEntry);
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zos.write(bytes, 0, length);
-		}
-		zos.closeEntry();
-		fis.close();}
-	}
+    } 
+    }
 }
