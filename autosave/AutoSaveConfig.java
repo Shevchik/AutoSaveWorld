@@ -48,7 +48,7 @@ public class AutoSaveConfig {
 	protected boolean backupBroadcast = true;
 	protected boolean donotbackuptointfld = true;
 	protected boolean backuppluginsfolder = false;
-	protected boolean slowbackup = false;
+	protected boolean slowbackup = true;
 	protected boolean backupwarn = false;
 	protected List<Integer> backupWarnTimes = null;
 	protected boolean backupzip = false;
@@ -56,11 +56,11 @@ public class AutoSaveConfig {
 	protected long purgeAwayTime = 60*60*24*30;
 	protected boolean purgeEnabled = false;
 	protected boolean purgeBroadcast = true;
-	protected boolean slowpurge = false;
+	protected boolean slowpurge = true;
 	protected boolean wg = true;
 	protected boolean lwc = true;
 	protected boolean dat = true;
-	
+	protected boolean newsheduler=false;
 	
 	protected List<String> extfolders;
 	protected boolean backuptoextfolders = false;

@@ -33,7 +33,7 @@ public class AutoSaveThread extends Thread {
 	private AutoSave plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private boolean command = false;
+	public boolean command = false;
 	// Constructor to define number of seconds to sleep
 	AutoSaveThread(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
@@ -103,8 +103,14 @@ public class AutoSaveThread extends Thread {
 				}
 			}
 
+
+			if (config.newsheduler) {
 			plugin.getServer().getScheduler().runTask(plugin, new Runnable() { 
-				public void run() {performSave();}});
+				public void run() {performSave();}}); }
+			else {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { 
+					public void run() {performSave();}}); }
+				
 		}
 	}
 	private void savePlayers() {

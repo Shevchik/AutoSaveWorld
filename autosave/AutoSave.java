@@ -40,6 +40,7 @@ protected boolean purgeInProgress = false;
 @Override
 public void onDisable() {
 // Perform a Save NOW!
+saveThread.command=true;
 saveThread.performSave();
 //Stop threads
 debug(String.format("[%s] Stopping Threads",
@@ -69,6 +70,15 @@ startThread(ThreadType.SAVE);
 startThread(ThreadType.BACKUP6);
 //Start AutoPurgeThread
 startThread(ThreadType.PURGE);
+//Check sheduler type (support for 1.2.5 and older)
+try {
+org.bukkit.scheduler.BukkitScheduler.class.getMethod("runTask", new Class[] {JavaPlugin.class,Runnable.class});
+config.newsheduler = true;
+debug("New sheduler found");
+} catch (Exception e){
+config.newsheduler = false;
+debug("Old sheduler found");
+}
 // Notify on logger load
 log.info(String.format("[%s] Version %s is enabled: %s", getDescription().getName(), getDescription().getVersion(), config.varUuid.toString()));
 }
