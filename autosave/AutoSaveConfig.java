@@ -68,7 +68,6 @@ public class AutoSaveConfig {
 		config = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/backupextfoldersconfig.yml"));
 		extfolders = config.getStringList("extfolders");
 		config = new YamlConfiguration();
-		config.set("help", "write absolute paths to this file");
 		config.set("extfolders", extfolders);
 		try {
 			config.save(new File("plugins/AutoSaveWorld/backupextfoldersconfig.yml"));
@@ -138,9 +137,9 @@ public class AutoSaveConfig {
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
 		slowpurge = config.getBoolean("purge.slowpurge", slowpurge);
-		wg = config.getBoolean("purge.wg", wg);
-		lwc = config.getBoolean("purge.lwc", lwc);
-		dat = config.getBoolean("purge.dat", dat);
+		wg = config.getBoolean("purge.wg.enabled", wg);
+		lwc = config.getBoolean("purge.lwc.enabled", lwc);
+		dat = config.getBoolean("purge.dat.enabled", dat);
 		save();
 	}
 	protected long datesec;
@@ -241,9 +240,9 @@ public class AutoSaveConfig {
 		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.broadcast",purgeBroadcast);
 		config.set("purge.slowpurge", slowpurge);
-		config.set("purge.wg", wg);
-		config.set("purge.lwc", lwc);
-		config.set("purge.dat", dat);
+		config.set("purge.wg.enabled", wg);
+		config.set("purge.lwc.enabled", lwc);
+		config.set("purge.dat.enabled", dat);
 
 		
 						try {
