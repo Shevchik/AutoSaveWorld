@@ -60,7 +60,8 @@ public class AutoSaveConfig {
 	protected boolean wg = true;
 	protected boolean lwc = true;
 	protected boolean dat = true;
-	protected boolean newsheduler=false;
+	protected boolean switchtolangfile = false;
+	protected String langfileposfix = "ru";
 	
 	protected List<String> extfolders;
 	protected boolean backuptoextfolders = false;
@@ -87,7 +88,7 @@ public class AutoSaveConfig {
 			e.printStackTrace();
 		}
 	}
-	
+	//config load/save functions
 	public void load() {
 		
 		config = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/config.yml"));
@@ -140,8 +141,62 @@ public class AutoSaveConfig {
 		wg = config.getBoolean("purge.wg.enabled", wg);
 		lwc = config.getBoolean("purge.lwc.enabled", lwc);
 		dat = config.getBoolean("purge.dat.enabled", dat);
+		
+		//locale variables
+		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
+		langfileposfix = config.getString("locale.langfilepostfix",langfileposfix);
 		save();
 	}
+
+	public void save() {
+		config = new YamlConfiguration();
+		
+				
+		// Variables
+		config.set("var.debug", varDebug);
+		
+		//save variables
+		config.set("save.broadcast", varBroadcast);
+		config.set("save.interval", varInterval);
+		config.set("save.warn", savewarn);
+		config.set("save.warntime", varWarnTimes);
+
+		
+		//backup variables
+		config.set("backup.enabled", backupEnabled);
+		config.set("backup.interval", backupInterval);
+		config.set("backup.MaxNumberOfBackups", MaxNumberOfBackups);
+		config.set("backup.broadcast", backupBroadcast);
+		config.set("backup.toextfolders", backuptoextfolders);
+		config.set("backup.disableintfolder", donotbackuptointfld);
+		config.set("backup.pluginsfolder", backuppluginsfolder);
+		config.set("backup.slowbackup", slowbackup);
+		config.set("backup.worlds", varWorlds);
+		config.set("backup.warn", backupwarn);
+		config.set("backup.zip",backupzip);
+		config.set("backup.warntime", backupWarnTimes);
+		
+		//purge variables
+		config.set("purge.interval", purgeInterval);
+		config.set("purge.awaytime", purgeAwayTime);
+		config.set("purge.enabled", purgeEnabled);
+		config.set("purge.broadcast",purgeBroadcast);
+		config.set("purge.slowpurge", slowpurge);
+		config.set("purge.wg.enabled", wg);
+		config.set("purge.lwc.enabled", lwc);
+		config.set("purge.dat.enabled", dat);
+		
+		//locale variables
+		config.set("locale.switchtolangfile",switchtolangfile);
+		config.set("locale.langfilepostfix",langfileposfix);
+		
+						try {
+					config.save(new File("plugins/AutoSaveWorld/config.yml"));
+				} catch (IOException ex) {;
+				}
+	}
+	
+	//other functions
 	protected long datesec;
 	public void getbackupdate() {
 		config = new YamlConfiguration();
@@ -203,51 +258,5 @@ public class AutoSaveConfig {
 			config.save(new File("backups"+File.separator+"backups.yml"));
 		} catch (IOException e) {
 		}
-	}
-	
-	
-	public void save() {
-		config = new YamlConfiguration();
-		
-				
-		// Variables
-		config.set("var.debug", varDebug);
-		
-		//save variables
-		config.set("save.broadcast", varBroadcast);
-		config.set("save.interval", varInterval);
-		config.set("save.warn", savewarn);
-		config.set("save.warntime", varWarnTimes);
-
-		
-		//backup variables
-		config.set("backup.enabled", backupEnabled);
-		config.set("backup.interval", backupInterval);
-		config.set("backup.MaxNumberOfBackups", MaxNumberOfBackups);
-		config.set("backup.broadcast", backupBroadcast);
-		config.set("backup.toextfolders", backuptoextfolders);
-		config.set("backup.disableintfolder", donotbackuptointfld);
-		config.set("backup.pluginsfolder", backuppluginsfolder);
-		config.set("backup.slowbackup", slowbackup);
-		config.set("backup.worlds", varWorlds);
-		config.set("backup.warn", backupwarn);
-		config.set("backup.zip",backupzip);
-		config.set("backup.warntime", backupWarnTimes);
-		
-		//purge variables
-		config.set("purge.interval", purgeInterval);
-		config.set("purge.awaytime", purgeAwayTime);
-		config.set("purge.enabled", purgeEnabled);
-		config.set("purge.broadcast",purgeBroadcast);
-		config.set("purge.slowpurge", slowpurge);
-		config.set("purge.wg.enabled", wg);
-		config.set("purge.lwc.enabled", lwc);
-		config.set("purge.dat.enabled", dat);
-
-		
-						try {
-					config.save(new File("plugins/AutoSaveWorld/config.yml"));
-				} catch (IOException ex) {;
-				}
 	}
 }

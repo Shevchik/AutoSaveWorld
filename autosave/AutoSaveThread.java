@@ -104,12 +104,8 @@ public class AutoSaveThread extends Thread {
 			}
 
 
-			if (config.newsheduler) {
-			plugin.getServer().getScheduler().runTask(plugin, new Runnable() { 
-				public void run() {performSave();}}); }
-			else {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { 
-					public void run() {performSave();}}); }
+					public void run() {performSave();}});
 				
 		}
 	}
