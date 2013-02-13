@@ -105,7 +105,7 @@ public class AutoBackupThread6 extends Thread {
 						if (config.varDebug) {
 							log.info(String.format("[%s] Warning Time Reached: %d seconds to go.", plugin.getDescription().getName(), config.backupInterval - runnow));
 						}
-						plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageBackupWarning));
+						if (config.backupEnabled) {plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageBackupWarning));}
 						log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageBackupWarning));
 					}
 					Thread.sleep(1000);
@@ -168,7 +168,7 @@ public class AutoBackupThread6 extends Thread {
 			        OutputStream out = new FileOutputStream(targetLocation);
 			        
 			        // Copy the bits from instream to outstream
-			        byte[] buf = new byte[10240];
+			        byte[] buf = new byte[5120];
 			        int len;
 			        while ((len = in.read(buf)) > 0) {
 			            out.write(buf, 0, len);
@@ -207,7 +207,6 @@ public class AutoBackupThread6 extends Thread {
 	    }
 	  }
 	public void performBackup() {
-
 		if (plugin.backupInProgress) {
 		plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
 		return;
@@ -223,6 +222,7 @@ public class AutoBackupThread6 extends Thread {
 		if (zip) {
 		if (zipfld == null) {zipfld = new Zip();}	
 		}
+		
 		// Lock
 		plugin.saveInProgress = true;
 		plugin.backupInProgress = true;

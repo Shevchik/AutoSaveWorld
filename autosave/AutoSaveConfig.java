@@ -170,10 +170,10 @@ public class AutoSaveConfig {
 		config.set("backup.toextfolders", backuptoextfolders);
 		config.set("backup.disableintfolder", donotbackuptointfld);
 		config.set("backup.pluginsfolder", backuppluginsfolder);
+		config.set("backup.zip",backupzip);
 		config.set("backup.slowbackup", slowbackup);
 		config.set("backup.worlds", varWorlds);
 		config.set("backup.warn", backupwarn);
-		config.set("backup.zip",backupzip);
 		config.set("backup.warntime", backupWarnTimes);
 		
 		//purge variables

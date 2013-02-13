@@ -36,7 +36,6 @@ protected int numPlayers = 0;
 protected boolean saveInProgress = false;
 protected boolean backupInProgress = false;
 protected boolean purgeInProgress = false;
-
 @Override
 public void onDisable() {
 // Perform a Save NOW!
