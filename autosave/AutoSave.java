@@ -36,14 +36,15 @@ protected int numPlayers = 0;
 protected boolean saveInProgress = false;
 protected boolean backupInProgress = false;
 protected boolean purgeInProgress = false;
+protected String LastSave = "No save was since the server start";
+protected String LastBackup = "No backup was since the server start";
 @Override
 public void onDisable() {
 // Perform a Save NOW!
 saveThread.command=true;
 saveThread.performSave();
 //Stop threads
-debug(String.format("[%s] Stopping Threads",
-getDescription().getName()));
+debug("Stopping Threads");
 stopThread(ThreadType.SAVE);
 stopThread(ThreadType.BACKUP6);
 stopThread(ThreadType.PURGE);
@@ -55,7 +56,7 @@ log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),
 public void onEnable() {
 // Load Configuration
 config = new AutoSaveConfig(getConfig());
-configmsg = new AutoSaveConfigMSG(getConfig(), config);
+configmsg = new AutoSaveConfigMSG(config);
 config.load();
 configmsg.loadmsg();
 config.loadbackupextfolderconfig();
@@ -108,7 +109,7 @@ return true;
 } else {
 saveThread.setRun(false);
 try {
-saveThread.join();
+saveThread.join(1000);
 saveThread = null;
 return true;
 } catch (InterruptedException e) {
@@ -122,7 +123,7 @@ return true;
 } else {
 backupThread6.setRun(false);
 try {
-backupThread6.join();
+backupThread6.join(1000);
 backupThread6 = null;
 return true;
 } catch (InterruptedException e) {
@@ -136,7 +137,7 @@ return true;
 } else {
 purgeThread.setRun(false);
 try {
-purgeThread.join();
+purgeThread.join(1000);
 purgeThread = null;
 return true;
 } catch (InterruptedException e) {

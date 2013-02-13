@@ -26,8 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class AutoSaveConfigMSG {
 	private FileConfiguration configmsg;
 	private AutoSaveConfig config;
-	public AutoSaveConfigMSG(FileConfiguration configmsg,AutoSaveConfig config) {
-		this.configmsg = configmsg;
+	public AutoSaveConfigMSG(AutoSaveConfig config) {
 		this.config = config;
 	}
 	// Messages

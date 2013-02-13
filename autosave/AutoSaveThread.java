@@ -162,6 +162,7 @@ public class AutoSaveThread extends Thread {
 		{plugin.broadcasta("&4AutoSave Failed");
 		if (config.varDebug) {e.printStackTrace();}}
 		command = false;
+		plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
 		// Release
 		plugin.saveInProgress = false;
 		}

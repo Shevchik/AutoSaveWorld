@@ -109,6 +109,7 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.sendMessage(sender,"&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
 		plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 		plugin.sendMessage(sender,"&f/asw version&7 - &3Shows plugin version");
+		plugin.sendMessage(sender,"&f/asw info&7 - &3Shows some info");
 		return true;
 		} else
 		//command to save worlds
@@ -118,8 +119,7 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		} else
 		//command to backup worlds
 		if (args.length==1 && args[0].equalsIgnoreCase("backup")) {
-			plugin.backupThread6
-			.startbackup();
+			plugin.backupThread6.startbackup();
 		return true;
 		} else
 		//purge command
@@ -133,22 +133,41 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		configmsg.loadmsg();
 		plugin.sendMessage(sender,"[AutoSaveWorld] all configurations reloaded");
 		return true;
-		}
+		} else
 		if (args.length==1 && args[0].equalsIgnoreCase("reloadconfig")) {
 		config.load();
 		plugin.sendMessage(sender,"[AutoSaveWorld] main configuration reloaded");
 		return true;
-		}
+		} else
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {
 		configmsg.loadmsg();
 		plugin.sendMessage(sender,"[AutoSaveWorld] messages reloaded");
 		return true;
-		}
+		} else
 		if (args.length==1 && args[0].equalsIgnoreCase("version")) {
 		plugin.sendMessage(sender,plugin.getDescription().getName()+" "+plugin.getDescription().getVersion());
 		return true;
-		}
-		
+		} else
+		if (args.length==1 && args[0].equalsIgnoreCase("info")) {
+			plugin.sendMessage(sender,"&9======AutoSaveWorld Info & Status======");
+			if (plugin.saveThread!=null && plugin.saveThread.isAlive()) {
+			plugin.sendMessage(sender,"&2AutoSave is active");
+			plugin.sendMessage(sender,"&2Last save time: "+plugin.LastSave);}
+			else {plugin.sendMessage(sender,"&4AutoSave is dead, i don't know how it happened, but it's dead, jim");}
+			if (config.backupEnabled) {
+				if (plugin.backupThread6!=null && plugin.backupThread6.isAlive()) {
+				plugin.sendMessage(sender,"&2AutoBackup is active");
+				plugin.sendMessage(sender,"&2Last backup time: "+plugin.LastSave);}
+				else {plugin.sendMessage(sender,"&4AutoBackup is dead, i don't know how it happened, but it's dead, jim"); }
+				}
+			else {
+				if (plugin.backupThread6!=null && plugin.backupThread6.isAlive()) {
+				plugin.sendMessage(sender,"&2AutoBackup is inactive"); }
+				else {plugin.sendMessage(sender,"&4AutoBackup is dead, i don't know how it happened, but it's dead, jim");}
+				}
+			plugin.sendMessage(sender,"&9====================================");
+			return true;
+			}
 		}
 		return false;
 		}

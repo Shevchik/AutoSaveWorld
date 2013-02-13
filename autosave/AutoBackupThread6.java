@@ -16,7 +16,6 @@
  */
 
 package autosave;
-//This code is not supported, because java6 is outdated, but i will still keep this class in case somebody can't update to java7.
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -180,17 +179,13 @@ public class AutoBackupThread6 extends Thread {
 					    try {
 							sleep(0);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}}
-			        } catch (IOException e) {System.out.println("Failed to backup file "+sourceLocation);}
+			        } catch (IOException e) {plugin.debug("Failed to backup file "+sourceLocation);}
 
 			    }
 			    }
 			
-
-	
-	
 	public void deleteDirectory(File file)
 	  {
 	    if(!file.exists())
@@ -320,11 +315,12 @@ public class AutoBackupThread6 extends Thread {
 		}
 		}
 		command = false;
+		if (config.varDebug) {plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");}
 		plugin.broadcastb(configmsg.messageBroadcastBackupPost);
+		plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
 		// Release
 		plugin.saveInProgress = false;
 		plugin.backupInProgress = false;
-		if (config.varDebug) {plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");}
 		if (config.slowbackup) {setPriority(Thread.NORM_PRIORITY);}
 		}
 		}
