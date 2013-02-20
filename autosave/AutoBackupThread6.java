@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class AutoBackupThread6 extends Thread {
 
@@ -47,6 +49,8 @@ public class AutoBackupThread6 extends Thread {
     private List<Long> tempnames = new ArrayList<Long>();
     private int runnow;
     private boolean command = false;
+    private List<String> backupfoldersdest = new ArrayList<String>();
+    private FileConfiguration configbackup;
 
     
 	// Allows for the thread to naturally exit if value is false
@@ -117,7 +121,7 @@ public class AutoBackupThread6 extends Thread {
 		}
     
 	//all==true- * in worlds list; ext==true - copy external folders
-	private int backupWorlds(List<String> worldNames,boolean ext, boolean zip) {
+	private int backupWorlds(List<String> worldNames, boolean zip, String extpath) {
 		// Save our worlds...
 		boolean all= false;
 		if (config.varWorlds.contains("*")) {all = true;}
@@ -126,27 +130,27 @@ public class AutoBackupThread6 extends Thread {
 			for (World world : worlds) {
 			if (worldNames.contains(world.getName())||all) {
 			plugin.debug(String.format("Backuping world: %s", world.getName()));
-			if (ext) {
 			try {
-				copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-				if (zip) zipfld.ZipFolder(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-				if (zip) deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+				copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+				if (zip) zipfld.ZipFolder(new File(extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
+				if (zip) deleteDirectory(new File(extpath+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
 			
 			} catch (IOException e) {e.printStackTrace();} 
-			
-			} else {
-				
-				try {
-					copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-					if (zip) zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-					if (zip) deleteDirectory(new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+datesec+File.separator+world.getName()));
-				} catch (IOException e) {e.printStackTrace();}
 			} 
 			i++;
 			}
-			}
 			return i;	
 		}
+	public void backupPlugins(boolean zip, String extpath) {
+		try {
+			plugin.debug("Backuping plugins");
+			copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
+			if (zip) zipfld.ZipFolder(new File(extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
+			if (zip) deleteDirectory(new File(extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void copyDirectory(File sourceLocation , File targetLocation)
 			throws IOException {
@@ -201,6 +205,27 @@ public class AutoBackupThread6 extends Thread {
 	      file.delete();
 	    }
 	  }
+	
+	private int numberofbackupsext = 0;
+	private List<Long> backupnamesext;
+	public void loadConfigBackupExt(String extpath){
+		configbackup = YamlConfiguration.loadConfiguration(new File(extpath+File.separator+"backups.yml"));
+		numberofbackupsext = configbackup.getInt("NOB", 0);
+		backupnamesext = configbackup.getLongList("listnames");
+		
+	}
+	
+	
+	public void saveConfigBackupExt(String extpath){
+		configbackup = new YamlConfiguration();
+		configbackup.set("NOB", numberofbackupsext);
+		configbackup.set("listnames", backupnamesext);
+		try {
+			configbackup.save(new File(extpath+File.separator+"backups.yml"));
+		} catch (IOException e) {
+		}
+	}
+	
 	public void performBackup() {
 		if (plugin.backupInProgress) {
 		plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
@@ -224,95 +249,47 @@ public class AutoBackupThread6 extends Thread {
 		plugin.broadcastb(configmsg.messageBroadcastBackupPre);
 		datesec = System.currentTimeMillis();
 		int saved = 0;
-		//config
-		if (config.donotbackuptointfld && config.backuptoextfolders) {} else {
-		config.loadConfigBackup();
-		//check if the backups are still here
-		tempnames.clear();
-		for (long name : config.backupnames) {
-		if (new File("backups"+File.separator+name).exists()) {tempnames.add(name);};
+		backupfoldersdest.clear();
+		//adding internal folder to list of folders to which we should backup everything 
+		if (config.donotbackuptointfld && config.backuptoextfolders) {} 
+		else {
+			try {backupfoldersdest.add(new File(".").getCanonicalPath());
+			} catch (IOException e) {e.printStackTrace();}
 		}
-		config.backupnames.clear();
-		for (long name : tempnames) {config.backupnames.add(name);}
-		config.numberofbackups = config.backupnames.size();
-		//delete oldest backup if needed
-		if (!(config.MaxNumberOfBackups == 0) && (config.numberofbackups >= config.MaxNumberOfBackups))
-		{try {
-			plugin.debug("Deleting oldest backup");
-			deleteDirectory(new File(new File(".").getCanonicalPath()+File.separator+"backups"+File.separator+config.backupnames.get(0).toString()));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		};
-		config.backupnames.remove(0);
-		config.numberofbackups--;}
-		
-		//do backup
-
-		saved += backupWorlds(config.varWorlds, false, zip);
-		plugin.debug(String.format("Backup %d Worlds", saved));
-		config.backupnames.add(datesec);
-		config.numberofbackups++;
-		//black magic...
-		config.saveConfigBackup();
-		config.datesec = datesec;
-		config.getbackupdate();
-		if (config.backuppluginsfolder) {
-			try {
-			plugin.debug("Backuping plugins");
-			copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File("backups"+File.separator+datesec+File.separator+"plugins"));
-			if (zip) zipfld.ZipFolder(new File("backups"+File.separator+datesec+File.separator+"plugins"));
-			if (zip) deleteDirectory(new File("backups"+File.separator+datesec+File.separator+"plugins"));
-			} catch (IOException e) {
-			e.printStackTrace();
-			}
-		}
-		}
-		//now backup to ext folders
-		//config
+		//adding external folders to list of folders to which we should backup everything 
 		if (config.backuptoextfolders) {
-		if (config.varDebug) {plugin.debug("start extbackup");};
-		config.loadbackupextfolderconfig();
-		for (String extpath : config.extfolders) {
-		config.extpath = extpath;
-		if (config.varDebug){plugin.debug("Path is:"+config.extpath);};
-		config.loadConfigBackupExt();
-		//check if the backups are still here
-		tempnames.clear();
-		for (long name : config.backupnamesext) {
-		if ((new File(config.extpath+File.separator+"backups"+File.separator+name).exists())) {tempnames.add(name);};}
-		config.backupnamesext.clear();
-		for (long name : tempnames) {config.backupnamesext.add(name);}
-		config.numberofbackupsext = config.backupnamesext.size();
-		if(config.varDebug){plugin.debug("configuring done");};
-		//delete oldest backup if needed
-		if (!(config.MaxNumberOfBackups == 0) && (config.numberofbackupsext >= config.MaxNumberOfBackups)) {
-			plugin.debug("Deleting oldest backup");
-			deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+config.backupnamesext.get(0).toString())); 		
-			config.backupnamesext.remove(0);
-			config.numberofbackupsext--;}
-		//do backup
-		saved = 0;
-		saved += backupWorlds(config.varWorlds, true, zip);
-		plugin.debug(String.format("Backup %d Worlds", saved));
-		config.backupnamesext.add(datesec);
-		config.numberofbackupsext++;
-		config.saveConfigBackupExt(); 
-		config.datesec = datesec;
-		config.getbackupdateext(); 
-			if (config.backuppluginsfolder) {
-
-				try {
-					plugin.debug("Backuping plugins");
-					copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
-					if (zip) zipfld.ZipFolder(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
-					if (zip) deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+datesec+File.separator+"plugins"));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			
-			}
+			config.loadbackupextfolderconfig();
+			for (String extpath : config.extfolders) {
+				backupfoldersdest.add(extpath);
+			}	
 		}
+		
+		//backup time	
+		for (String extpath : backupfoldersdest) {
+			//load info about backups stored in file backups.yml
+			loadConfigBackupExt(extpath);
+			//check if the backups are still here
+			tempnames.clear();
+			for (long name : backupnamesext) {
+				if ((new File(extpath+File.separator+"backups"+File.separator+name).exists())) {tempnames.add(name);};}
+			backupnamesext.clear();
+			backupnamesext.addAll(tempnames);
+			numberofbackupsext = backupnamesext.size();
+			//delete oldest backup if needed
+			if (!(config.MaxNumberOfBackups == 0) && (numberofbackupsext >= config.MaxNumberOfBackups)) {
+				plugin.debug("Deleting oldest backup");
+				deleteDirectory(new File(config.extpath+File.separator+"backups"+File.separator+backupnamesext.get(0).toString())); 		
+				backupnamesext.remove(0);
+				numberofbackupsext--;}
+			//do backup
+			saved = 0;
+			saved += backupWorlds(config.varWorlds, zip, extpath);
+			plugin.debug(String.format("Backup %d Worlds", saved));
+			backupnamesext.add(datesec);
+			numberofbackupsext++;
+			if (config.backuppluginsfolder) {backupPlugins(zip,extpath);}
+			//save info about backups
+			saveConfigBackupExt(extpath);
 		}
 		command = false;
 		if (config.varDebug) {plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");}

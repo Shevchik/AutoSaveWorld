@@ -77,17 +77,8 @@ public class AutoSaveConfig {
 			e.printStackTrace();
 		}
 	}
-	public void savebackupextfolderconfig() {
-		config = new YamlConfiguration();
-		config.set("help", "write absolute paths to this file");
-		config.set("extfolders", extfolders);
-		try {
-			config.save(new File("plugins/AutoSaveWorld/backupextfoldersconfig.yml"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
+	
 	//config load/save functions
 	public void load() {
 		
@@ -196,67 +187,4 @@ public class AutoSaveConfig {
 				}
 	}
 	
-	//other functions
-	protected long datesec;
-	public void getbackupdate() {
-		config = new YamlConfiguration();
-		String dt=new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
-		config.set("Backuped at: ",dt);
-		try {
-			config.save(new File("backups"+File.separator+datesec+File.separator+"backupinfo.yml"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		}
-	
-	public void getbackupdateext() {
-		String dt=new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
-		config.set("Backuped at: ",dt);
-		try {
-			config.save(new File(extpath+File.separator+"backups"+File.separator+datesec+File.separator+"backupinfo.yml"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		}
-
-	protected int numberofbackups = 0;
-	protected List<Long> backupnames;
-	public void loadConfigBackup(){
-		config = YamlConfiguration.loadConfiguration(new File("backups"+File.separator+"backups.yml"));
-		numberofbackups = config.getInt("NOB", 0);
-		backupnames = config.getLongList("listnames");
-		
-	}
-	
-	protected int numberofbackupsext = 0;
-	protected List<Long> backupnamesext;
-	public void loadConfigBackupExt(){
-		config = YamlConfiguration.loadConfiguration(new File(extpath+File.separator+"backups.yml"));
-		numberofbackupsext = config.getInt("NOB", 0);
-		backupnamesext = config.getLongList("listnames");
-		
-	}
-	
-	
-	public void saveConfigBackupExt(){
-		config = new YamlConfiguration();
-		config.set("NOB", numberofbackupsext);
-		config.set("listnames", backupnamesext);
-		try {
-			config.save(new File(extpath+File.separator+"backups.yml"));
-		} catch (IOException e) {
-		}
-	}
-	
-	public void saveConfigBackup(){
-		config = new YamlConfiguration();
-		config.set("NOB", numberofbackups);
-		config.set("listnames", backupnames);
-		try {
-			config.save(new File("backups"+File.separator+"backups.yml"));
-		} catch (IOException e) {
-		}
-	}
 }
