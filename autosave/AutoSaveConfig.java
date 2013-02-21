@@ -41,10 +41,10 @@ public class AutoSaveConfig {
 	protected List<String> varWorlds = null;
 	protected boolean savewarn = false;
 	
-	protected String extpath;
 	protected boolean backupEnabled = false;
 	protected int backupInterval =  60*60*6;
-	protected int MaxNumberOfBackups = 30;
+	protected int MaxNumberOfWorldsBackups = 30;
+	protected int MaxNumberOfPluginsBackups = 30;
 	protected boolean backupBroadcast = true;
 	protected boolean donotbackuptointfld = true;
 	protected boolean backuppluginsfolder = false;
@@ -58,7 +58,9 @@ public class AutoSaveConfig {
 	protected boolean purgeBroadcast = true;
 	protected boolean slowpurge = true;
 	protected boolean wg = true;
+	protected boolean wgregenrg = false;
 	protected boolean lwc = true;
+	protected boolean lwcdelprotectedblocks = false;
 	protected boolean dat = true;
 	protected boolean switchtolangfile = false;
 	protected String langfileposfix = "ru";
@@ -104,8 +106,8 @@ public class AutoSaveConfig {
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
 		backupInterval = config.getInt("backup.interval", backupInterval);
 		slowbackup = config.getBoolean("backup.slowbackup", slowbackup);
-		
-		MaxNumberOfBackups = config.getInt("backup.MaxNumberOfBackups", 30);
+		MaxNumberOfWorldsBackups = config.getInt("backup.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
+		MaxNumberOfPluginsBackups = config.getInt("backup.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
 		backuptoextfolders = config.getBoolean("backup.toextfolders", backuptoextfolders);
 		donotbackuptointfld = config.getBoolean("backup.disableintfolder", donotbackuptointfld);
@@ -130,7 +132,9 @@ public class AutoSaveConfig {
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
 		slowpurge = config.getBoolean("purge.slowpurge", slowpurge);
 		wg = config.getBoolean("purge.wg.enabled", wg);
+		wgregenrg = config.getBoolean("purge.wg.regenpurgedregion", wgregenrg);
 		lwc = config.getBoolean("purge.lwc.enabled", lwc);
+		lwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",lwcdelprotectedblocks);
 		dat = config.getBoolean("purge.dat.enabled", dat);
 		
 		//locale variables
@@ -156,11 +160,12 @@ public class AutoSaveConfig {
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
-		config.set("backup.MaxNumberOfBackups", MaxNumberOfBackups);
+		config.set("backup.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
+		config.set("backup.pluginsfolder", backuppluginsfolder);
+		config.set("backup.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
 		config.set("backup.broadcast", backupBroadcast);
 		config.set("backup.toextfolders", backuptoextfolders);
 		config.set("backup.disableintfolder", donotbackuptointfld);
-		config.set("backup.pluginsfolder", backuppluginsfolder);
 		config.set("backup.zip",backupzip);
 		config.set("backup.slowbackup", slowbackup);
 		config.set("backup.worlds", varWorlds);
@@ -174,7 +179,9 @@ public class AutoSaveConfig {
 		config.set("purge.broadcast",purgeBroadcast);
 		config.set("purge.slowpurge", slowpurge);
 		config.set("purge.wg.enabled", wg);
+		config.set("purge.wg.regenpurgedregion", wgregenrg);
 		config.set("purge.lwc.enabled", lwc);
+		config.set("purge.lwc.deletepurgedblocks", lwcdelprotectedblocks);
 		config.set("purge.dat.enabled", dat);
 		
 		//locale variables

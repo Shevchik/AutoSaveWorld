@@ -29,6 +29,10 @@ import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 
 import com.griefcraft.lwc.LWCPlugin;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.LocalWorld;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -190,8 +194,15 @@ public class AutoPurgeThread extends Thread {
 			}
 			plugin.debug("Deleting region in removal list");
 			for (String delrg : rgtodel)
-			{plugin.debug("Removing region "+delrg);
-				m.removeRegion(delrg);}
+			{
+				plugin.debug("Removing region "+delrg);
+				m.removeRegion(delrg);
+				if (config.wgregenrg) {
+					plugin.debug("Regenerating region"+delrg);
+					LocalWorld lw = new BukkitWorld(w);
+					lw.regenerate(new CuboidRegion(lw, m.getRegion(delrg).getMinimumPoint(), m.getRegion(delrg).getMaximumPoint()), new EditSession(lw, Integer.MAX_VALUE));
+				}
+			}
 			try {m.save();} catch (Exception e) {}
 		}
 	}
@@ -203,8 +214,14 @@ public class AutoPurgeThread extends Thread {
 		for (OfflinePlayer pl : checkPlayers)
 		{
 			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+				if (config.lwcdelprotectedblocks) {
+				plugin.debug(pl.getName()+" is inactive Removing all LWC protections and deleting blocks");
+				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), true);
+				}
+				else {
 				plugin.debug(pl.getName()+" is inactive Removing all LWC protections");
-				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), false);
+				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), false);	
+				}
 		}
 		}
 
