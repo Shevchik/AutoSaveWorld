@@ -51,7 +51,6 @@ public class AutoBackupThread6 extends Thread {
     private boolean command = false;
     private List<String> backupfoldersdest = new ArrayList<String>();
     private FileConfiguration configbackup;
-
     
 	// Allows for the thread to naturally exit if value is false
 	public void setRun(boolean run) {
@@ -156,15 +155,17 @@ public class AutoBackupThread6 extends Thread {
 			int i = 0;
 			List<World> worlds = plugin.getServer().getWorlds();
 			for (World world : worlds) {
-			if (worldNames.contains(world.getName())||all) {
+			if (worldNames.contains(world.getWorldFolder().getName().toString())||all) {
+			String worldfoldername = world.getWorldFolder().getName().toString();
+			plugin.debug(worldfoldername);
 			plugin.debug(String.format("Backuping world: %s", world.getName()));
 			try {
 				String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
-				String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getName()+File.separator+datebackup;
+				String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+worldfoldername+File.separator+datebackup;
 				if (!zip) {
-				copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(pathtoworldsb));
+				copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb));
 				} else 
-				{ zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+world.getName()), new File(pathtoworldsb+".zip"));}
+				{ zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb+".zip"));}
 			
 			} catch (IOException e) {e.printStackTrace();} 
 			} 
@@ -232,6 +233,7 @@ public class AutoBackupThread6 extends Thread {
 			loadConfigBackupExt(extpath);
 			//start worlds backup
 			//check if the backups are still here - this doesn't work for now
+			
 			/*tempnames.clear();
 			for (long name : backupnamesext) {
 				if ((new File(extpath+File.separator+"backups"+File.separator+name).exists())) {tempnames.add(name);};}

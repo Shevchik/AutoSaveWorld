@@ -82,8 +82,14 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		// Player, lets check if player isOp()
 		player = (Player) sender;
 
-		if (commandName.equals("autosaveworld")){ if (args.length == 0) {perm="autosaveworld.autosaveworld";} else {perm="autosaveworld."+args[0];}}
-		
+		if (commandName.equals("autosaveworld")) { if (args.length == 0) {perm="autosaveworld.autosaveworld";} else {perm="autosaveworld."+args[0];}
+		} else 
+		if (commandName.equals("autosave"))
+		{perm = "autosaveworld.save";} else
+		if (commandName.equals("autobackup"))
+		{perm = "autosaveworld.backup";} else
+		if (commandName.equals("autopurge"))
+		{perm = "autosaveworld.purge";}
 		// Check Permissions
 		if (!player.isOp() && !hasRight(player, perm, world)) 
 		{
@@ -97,19 +103,24 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.sendMessage(sender, configmsg.messageInsufficientPermissions);
 		return true;
 		}
+		
 		if (commandName.equals("autosaveworld")) {
 		//help
 		if (args.length==1 && args[0].equalsIgnoreCase("help"))
 		{
 		plugin.sendMessage(sender,"&f/asw help&7 - &3Shows this help");
 		plugin.sendMessage(sender,"&f/asw save&7 - &3Saves all worlds");
+		plugin.sendMessage(sender,"&f/save&7 - &3Same as /asw save");
 		plugin.sendMessage(sender,"&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds)");
+		plugin.sendMessage(sender,"&f/backup&7 - &3Same as /asw backup");
 		plugin.sendMessage(sender,"&f/asw purge&7 - &3Purges plugins info from inactive players");
+		plugin.sendMessage(sender,"&f/purge&7 - &3Same as /asw purge");
 		plugin.sendMessage(sender,"&f/asw reload&7 - &3Reload all configs)");
 		plugin.sendMessage(sender,"&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
 		plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 		plugin.sendMessage(sender,"&f/asw version&7 - &3Shows plugin version");
 		plugin.sendMessage(sender,"&f/asw info&7 - &3Shows some info");
+		plugin.sendMessage(sender,"&f/asw selfrestart&7 - &3Restarts AutoSaveWorld");
 		return true;
 		} else
 		//command to save worlds
@@ -167,8 +178,30 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 				}
 			plugin.sendMessage(sender,"&9====================================");
 			return true;
-			}
+		} else
+		if ((args.length==1 && args[0].equalsIgnoreCase("selfrestart")))
+		{
+		plugin.sendMessage(sender, "&4Restarting AutoSaveWorld");
+		plugin.selfrestartThread.restart();
+		return true;
 		}
 		return false;
+		} else
+		if (commandName.equals("autosave"))
+		{
+		plugin.saveThread.startsave();
+		return true;
+		} else
+		if (commandName.equals("autobackup"))
+		{
+		plugin.backupThread6.startbackup();
+		return true;
+		} else
+		if (commandName.equals("autopurge"))
+		{
+		plugin.purgeThread.startpurge();
+		return true;
 		}
+		return false;
 	}
+}

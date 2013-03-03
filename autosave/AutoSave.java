@@ -19,6 +19,7 @@ package autosave;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,6 +30,7 @@ private static final Logger log = Logger.getLogger("Minecraft");
 public AutoSaveThread saveThread = null;
 public AutoBackupThread6 backupThread6 = null;
 public AutoPurgeThread purgeThread = null;
+public SelfRestartThread selfrestartThread = null;
 private AutoSaveConfigMSG configmsg;
 private AutoSaveConfig config;
 private ASWEventListener eh;
@@ -63,6 +65,9 @@ config.loadbackupextfolderconfig();
 eh = new ASWEventListener(this, config, configmsg);
 //register events and commands
 getCommand("autosaveworld").setExecutor(eh);
+getCommand("autosave").setExecutor(eh);
+getCommand("autobackup").setExecutor(eh);
+getCommand("autopurge").setExecutor(eh);
 getServer().getPluginManager().registerEvents(eh, this);
 // Start AutoSave Thread
 startThread(ThreadType.SAVE);
@@ -70,6 +75,8 @@ startThread(ThreadType.SAVE);
 startThread(ThreadType.BACKUP6);
 //Start AutoPurgeThread
 startThread(ThreadType.PURGE);
+//Start SelfRestarThread
+startThread(ThreadType.SELFRESTART);
 // Notify on logger load
 log.info(String.format("[%s] Version %s is enabled: %s", getDescription().getName(), getDescription().getVersion(), config.varUuid.toString()));
 }
@@ -94,6 +101,12 @@ case PURGE:
 if (purgeThread == null || !purgeThread.isAlive()) {
 purgeThread = new AutoPurgeThread(this, config, configmsg);
 purgeThread.start();
+}
+return true;
+case SELFRESTART:
+if (selfrestartThread == null || !selfrestartThread.isAlive()) {
+selfrestartThread = new SelfRestartThread(this);
+selfrestartThread.start();
 }
 return true;
 default:
