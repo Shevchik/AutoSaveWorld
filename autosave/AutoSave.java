@@ -50,8 +50,11 @@ debug("Stopping Threads");
 stopThread(ThreadType.SAVE);
 stopThread(ThreadType.BACKUP6);
 stopThread(ThreadType.PURGE);
+if (!selfrestartThread.restart)
+{stopThread(ThreadType.SELFRESTART);
+log.info("[AutoSaveWorld] Graceful quit of selfrestart thread");
+}
 log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),getDescription().getVersion()));
-
 }
 
 @Override
@@ -155,6 +158,20 @@ purgeThread = null;
 return true;
 } catch (InterruptedException e) {
 warn("Could not stop AutoPurgeThread", e);
+return false;
+}
+}
+case SELFRESTART:
+if (selfrestartThread == null) {
+return true;
+} else {
+selfrestartThread.stopthread();
+try {
+selfrestartThread.join(1000);
+selfrestartThread = null;
+return true;
+} catch (InterruptedException e) {
+warn("Could not stop SelfRestartThread", e);
 return false;
 }
 }

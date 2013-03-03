@@ -35,7 +35,7 @@ public class SelfRestartThread  extends Thread{
 	
 	private AutoSave plugin;
 	private boolean run = true;
-	private boolean restart = false;
+	public boolean restart = false;
 	
 	protected final Logger log = Logger.getLogger("Minecraft");
 	
@@ -43,7 +43,9 @@ public class SelfRestartThread  extends Thread{
 	{
 		this.plugin = plugin;
 	}
-	
+	public void stopthread() {
+	this.run = false;
+	}
 	public void restart()
 	{restart=true;}
 	@SuppressWarnings("unchecked")
@@ -75,7 +77,7 @@ public class SelfRestartThread  extends Thread{
 					Map<String, Command> knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
         
 					plugin.debug("Starting self restart and update");
-					System.out.println("[AutoSaveWorld] Disabling self");
+					log.info("[AutoSaveWorld] Disabling self");
 					//disable AutoSaveWorld
 					pluginmanager.disablePlugin(plugin);
 					//unload AutoSaveWorld
@@ -102,25 +104,29 @@ public class SelfRestartThread  extends Thread{
 							}
 						}
 					}
-					System.out.println("[AutoSaveWorld] Disabled self");
+					log.info("[AutoSaveWorld] Disabled self");
 					//unload finished
 					//enable AutoSaveWorld
-					System.out.println("[AutoSaveWorld] Starting self");
+					log.info("[AutoSaveWorld] Starting self");
 					//load plugin from folder
 					Plugin aswplugin = pluginmanager.loadPlugin(new File(new File(".").getCanonicalPath()+File.separator+"plugins"+File.separator+"AutoSaveWorld.jar"));
 					//load plugin
 					pluginmanager.enablePlugin(aswplugin);
 					log.info("[AutoSaveWorld] Started self");
-					restart=false;
 					run = false;
 					//we are done here
 				} catch (Exception e) {e.printStackTrace();
-				log.info("[AutoSaveWorld]&4AutoSaveWorld selfreload failed, plugin is probably not working.");
-				log.info("[AutoSaveWorld]&4Restart server to fix this and report this stacktrace to AutoSaveWorld author");
+				log.info("[AutoSaveWorld] &4AutoSaveWorld selfreload failed, plugin is probably not working.");
+				log.info("[AutoSaveWorld] &4Restart server to fix this and report this stacktrace to AutoSaveWorld author");
 				}
 			}
 		}
-		//if we reached this part, then the restart occured and we no longer need this Thread. 
-		try {this.join(5000);} catch (InterruptedException e) {e.printStackTrace();}
+		//if we reached this part and restart is true, then the restart occured and we no longer need this Thread. 
+		if (restart) {
+			try {
+				this.join(5000);
+				log.info("[AutoSaveWorld] Quit of old AutoSaveWorld selfrestart thread");
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
 	}
 }

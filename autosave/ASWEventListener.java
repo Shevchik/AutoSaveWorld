@@ -181,7 +181,7 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		} else
 		if ((args.length==1 && args[0].equalsIgnoreCase("selfrestart")))
 		{
-		plugin.sendMessage(sender, "&4Restarting AutoSaveWorld");
+		plugin.sendMessage(sender, "&9Restarting AutoSaveWorld");
 		plugin.selfrestartThread.restart();
 		return true;
 		}
