@@ -17,13 +17,10 @@
 
 package autosave;
 
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -61,7 +58,8 @@ if (!selfrestartThread.restart)
 {stopThread(ThreadType.SELFRESTART);
 log.info("[AutoSaveWorld] Graceful quit of selfrestart thread");}
 if (crashrestartThread.restart)
-{restart();}
+{JVMsh.setpath(config.crashrestartscriptpath);
+Runtime.getRuntime().addShutdownHook(JVMsh);}
 else
 {stopThread(ThreadType.CRASHRESTART);
 JVMsh = null;
@@ -73,22 +71,6 @@ log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),
 @Override
 public void onEnable() {
 // Load Configuration
-File crfile = new File("plugins/ASWrestartmarker");
-if (crfile.exists())
-{
-log.info("[AutoSaveWorld] Crash marker found, waiting for old server to finish");
-while (true)
-{
-FileConfiguration restartfile = YamlConfiguration.loadConfiguration(crfile);
-if (restartfile.getInt("restart",0)== 0) 
-	{
-	crfile.delete();
-	log.info("[AutoSaveWorld] Old server finished, continuing start");
-	break;
-	} else
-	{try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}}
-}
-}
 config = new AutoSaveConfig(getConfig());
 configmsg = new AutoSaveConfigMSG(config);
 config.load();
@@ -115,30 +97,6 @@ startThread(ThreadType.CRASHRESTART);
 JVMsh = new JVMshutdownhook();
 // Notify on logger load
 log.info(String.format("[%s] Version %s is enabled: %s", getDescription().getName(), getDescription().getVersion(), config.varUuid.toString()));
-}
-
-
-public void restart()
-{
-try {
-	File restartscript = new File(config.crashrestartscriptpath);
-	FileConfiguration restartfile = YamlConfiguration.loadConfiguration(new File("plugins/ASWrestartmarker"));
-	restartfile.set("restart", 1);
-	restartfile.save(new File("plugins/ASWrestartmarker"));
-	Runtime.getRuntime().addShutdownHook(JVMsh);
-	if (restartscript.exists()) {
-	String OS = System.getProperty("os.name").toLowerCase();
-	if (OS.contains("win")) {
-		Runtime.getRuntime().exec("cmd /c start " + restartscript.getPath());
-	} else {
-		Runtime.getRuntime().exec(restartscript.getPath());
-	}
-	} else {
-	System.out.println("[AutoSaveWorld] Startup script not found. CrashRestart failed");	
-	}
-} catch (Exception e)
-{System.out.println("[AutoSaveWorld] CrashRestart failed");
-e.printStackTrace();}
 }
 
 
