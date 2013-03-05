@@ -18,5 +18,5 @@
 package autosave;
 
 public enum ThreadType {
-	SAVE, BACKUP6, PURGE, SELFRESTART;
+	SAVE, BACKUP6, PURGE, SELFRESTART, CRASHRESTART;
 }

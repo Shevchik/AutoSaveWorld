@@ -40,7 +40,6 @@ public class AutoSaveConfig {
 	protected boolean varDebug = false;
 	protected List<String> varWorlds = null;
 	protected boolean savewarn = false;
-	
 	protected boolean backupEnabled = false;
 	protected int backupInterval =  60*60*6;
 	protected int MaxNumberOfWorldsBackups = 30;
@@ -64,6 +63,11 @@ public class AutoSaveConfig {
 	protected boolean dat = true;
 	protected boolean switchtolangfile = false;
 	protected String langfileposfix = "ru";
+	protected boolean crashrestartenabled = false;
+	protected String crashrestartscriptpath="start.sh";
+	protected long crtimeout = 30;
+	protected boolean crdebug = false;
+	
 	
 	protected List<String> extfolders;
 	protected boolean backuptoextfolders = false;
@@ -89,6 +93,7 @@ public class AutoSaveConfig {
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
 		varUuid = UUID.fromString(config.getString("var.uuid", UUID.randomUUID().toString()));
+		crdebug = config.getBoolean("var.crdebug", crdebug);
 		
 		
 		
@@ -137,6 +142,11 @@ public class AutoSaveConfig {
 		lwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",lwcdelprotectedblocks);
 		dat = config.getBoolean("purge.dat.enabled", dat);
 		
+		//crashrestart variables
+		crashrestartenabled = config.getBoolean("crashrestart.enabled",crashrestartenabled);
+		crashrestartscriptpath = config.getString("crashrestart.scriptpath",crashrestartscriptpath);
+		crtimeout = config.getLong("crashrestart.timeout",crtimeout);
+		
 		//locale variables
 		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
 		langfileposfix = config.getString("locale.langfilepostfix",langfileposfix);
@@ -149,6 +159,7 @@ public class AutoSaveConfig {
 				
 		// Variables
 		config.set("var.debug", varDebug);
+		config.set("var.crdebug", crdebug);
 		
 		//save variables
 		config.set("save.broadcast", varBroadcast);
@@ -184,9 +195,16 @@ public class AutoSaveConfig {
 		config.set("purge.lwc.deletepurgedblocks", lwcdelprotectedblocks);
 		config.set("purge.dat.enabled", dat);
 		
+		//crashrestart variables
+		config.set("crashrestart.enabled",crashrestartenabled);
+		config.set("crashrestart.scriptpath",crashrestartscriptpath);
+		config.set("crashrestart.timeout",crtimeout);
+		
 		//locale variables
 		config.set("locale.switchtolangfile",switchtolangfile);
 		config.set("locale.langfilepostfix",langfileposfix);
+		
+		
 		
 						try {
 					config.save(new File("plugins/AutoSaveWorld/config.yml"));

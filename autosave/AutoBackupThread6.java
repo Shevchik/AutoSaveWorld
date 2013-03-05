@@ -74,6 +74,7 @@ public class AutoBackupThread6 extends Thread {
 				.format("[%s] AutoBackupThread Started: Interval is %d seconds, Warn Times are %s",
 						plugin.getDescription().getName(), config.backupInterval,
 						Generic.join(",", config.backupWarnTimes)));
+		Thread.currentThread().setName("AutoSaveWorld_AutoBackupThread");
 		while (run) {
 			// Prevent AutoBackup from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving

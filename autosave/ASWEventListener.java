@@ -28,6 +28,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.RemoteServerCommandEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -55,6 +57,22 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		if (plugin.getServer().getOnlinePlayers().length == 1) {
 		plugin.debug("Last player has quit, autosaving");
 		plugin.saveThread.startsave();}
+		}
+		
+		@EventHandler
+		public void onConsoleStopCommand(ServerCommandEvent event)
+		{
+		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
+		if (!plugin.crashrestartThread.restart)
+			{plugin.crashrestartThread.serverstop();} }
+		}
+		
+		@EventHandler
+		public void onRemoteConsoleStopCommand(RemoteServerCommandEvent event)
+		{
+		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
+		if (!plugin.crashrestartThread.restart)
+			{plugin.crashrestartThread.serverstop();} }
 		}
 		
 		private String world;
@@ -183,6 +201,11 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		{
 		plugin.sendMessage(sender, "&9Restarting AutoSaveWorld");
 		plugin.selfrestartThread.restart();
+		return true;
+		} else
+		if ((args.length==1 && args[0].equalsIgnoreCase("test"))) 
+		{
+		plugin.crashrestartThread.test();
 		return true;
 		}
 		return false;

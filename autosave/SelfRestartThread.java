@@ -52,6 +52,7 @@ public class SelfRestartThread  extends Thread{
 	public void run()
 	{
 		log.info("[AutoSaveWorld] SelfRestartThread started");
+		Thread.currentThread().setName("AutoSaveWorld_SelfRestartThread");
 		while (run)
 		{
 		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}

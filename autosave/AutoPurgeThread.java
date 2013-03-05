@@ -74,6 +74,7 @@ public class AutoPurgeThread extends Thread {
 				.format("[%s] AutoPurgeThread Started: Interval is %d seconds, Warn Times are %s",
 						plugin.getDescription().getName(), config.purgeInterval,
 						Generic.join(",", config.varWarnTimes)));
+		Thread.currentThread().setName("AutoSaveWorld_AutoPurgeThread");
 		while (run) {
 			// Prevent AutoPurge from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving

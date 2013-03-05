@@ -2,6 +2,7 @@ name: AutoSaveWorld
 main: autosave.AutoSave
 version: 4.5
 author: Shevchik
+load: STARTUP 
 description: >
              Provides automatic world saves at defined intervals.  The focus
              of the plugin is to provide a method to flush changes to disk.
