@@ -63,16 +63,14 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		public void onConsoleStopCommand(ServerCommandEvent event)
 		{
 		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
-		if (!plugin.crashrestartThread.restart)
-			{plugin.crashrestartThread.serverstop();} }
+			{plugin.crashrestartThread.stopthread();} }
 		}
 		
 		@EventHandler
 		public void onRemoteConsoleStopCommand(RemoteServerCommandEvent event)
 		{
 		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
-		if (!plugin.crashrestartThread.restart)
-			{plugin.crashrestartThread.serverstop();} }
+			{plugin.crashrestartThread.stopthread();} }
 		}
 		
 		private String world;
@@ -203,7 +201,7 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.selfrestartThread.restart();
 		return true;
 		} else
-		if ((args.length==1 && args[0].equalsIgnoreCase("test"))) 
+		if ((args.length==1 && args[0].equalsIgnoreCase("testrestart"))) 
 		{
 		plugin.crashrestartThread.test();
 		return true;

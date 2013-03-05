@@ -44,8 +44,6 @@ protected String LastSave = "No save was since the server start";
 protected String LastBackup = "No backup was since the server start";
 @Override
 public void onDisable() {
-if (crashrestartThread.restart)
-{log.info("[AutoSaveWorld]Crash occured, restarting server.");}
 // Perform a Save NOW!
 saveThread.command=true;
 saveThread.performSave();
@@ -57,13 +55,7 @@ stopThread(ThreadType.PURGE);
 if (!selfrestartThread.restart)
 {stopThread(ThreadType.SELFRESTART);
 log.info("[AutoSaveWorld] Graceful quit of selfrestart thread");}
-if (crashrestartThread.restart)
-{JVMsh.setpath(config.crashrestartscriptpath);
-Runtime.getRuntime().addShutdownHook(JVMsh);}
-else
-{stopThread(ThreadType.CRASHRESTART);
-JVMsh = null;
-}
+stopThread(ThreadType.CRASHRESTART);
 
 log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),getDescription().getVersion()));
 }

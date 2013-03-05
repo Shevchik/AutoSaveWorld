@@ -65,7 +65,7 @@ public class AutoSaveConfig {
 	protected String langfileposfix = "ru";
 	protected boolean crashrestartenabled = false;
 	protected String crashrestartscriptpath="start.sh";
-	protected long crtimeout = 30;
+	protected long crtimeout = 13;
 	protected boolean crdebug = false;
 	
 	
