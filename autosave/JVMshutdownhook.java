@@ -1,6 +1,7 @@
 package autosave;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 
 import org.bukkit.Bukkit;
@@ -21,22 +22,33 @@ public class JVMshutdownhook extends Thread {
 		System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (OS.contains("win")) {
-			Runtime.getRuntime().exec("cmd /c start " + restartscript.getPath());
+			Runtime.getRuntime().exec("cmd /c start " + restartscript.getCanonicalPath());
 		} else {
-			Runtime.getRuntime().exec(restartscript.getPath());
+			Runtime.getRuntime().exec(restartscript.getCanonicalPath());
 		}
 		} else {
-		System.out.println("[AutoSaveWorld] Startup script not found. Trying to restart without it. This may work strange or not work at all");
+		System.out.println("[AutoSaveWorld] Startup script not found. Creating new one. This may work strange or not work at all");
 		String processname = new File(Bukkit.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getName();
 		String memory = Runtime.getRuntime().maxMemory()/1024/1024+"M";
 		String encoding = Charset.defaultCharset().toString();
 		String runcommand = "java -server -Xmx"+memory+" -XX:+UseBiasedLocking -XX:+AggressiveOpts -XX:+UseStringCache -XX:+UseFastAccessorMethods -Dfile.encoding="+encoding+" -jar "+processname;
-		System.out.println("Constructed startserver command: "+runcommand);
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (OS.contains("win")) {
-			Runtime.getRuntime().exec("cmd /c start "+runcommand);
+			File startupscript = new File("ASWstartupscript.bat");
+			PrintWriter out = new PrintWriter(startupscript.getAbsoluteFile());
+			out.print(runcommand);
+			out.close();
+			Runtime.getRuntime().exec("cmd /c start " + startupscript.getCanonicalPath());
 		} else {
-			Runtime.getRuntime().exec(runcommand);
+			File startupscript = new File("ASWstartupscript.sh");
+			PrintWriter out = new PrintWriter(startupscript.getAbsoluteFile());
+			out.println("#!/bin/sh");
+			out.println("BINDIR=$(dirname '$(readlink -fn '$0')')");
+			out.println("cd '$BINDIR'");
+			out.print(runcommand);
+			out.close();
+			startupscript.setExecutable(true);
+			Runtime.getRuntime().exec(startupscript.getCanonicalPath());
 		}
 		}
 	} catch (Exception e)

@@ -46,7 +46,6 @@ public class AutoBackupThread6 extends Thread {
 	private AutoSaveConfigMSG configmsg;
 	private Zip zipfld = null;
     public long datesec;
-    private List<Long> tempnames = new ArrayList<Long>();
     private int runnow;
     private boolean command = false;
     private List<String> backupfoldersdest = new ArrayList<String>();
@@ -156,8 +155,8 @@ public class AutoBackupThread6 extends Thread {
 			int i = 0;
 			List<World> worlds = plugin.getServer().getWorlds();
 			for (World world : worlds) {
-			if (worldNames.contains(world.getWorldFolder().getName().toString())||all) {
-			String worldfoldername = world.getWorldFolder().getName().toString();
+			if (worldNames.contains(world.getWorldFolder().getName())||all) {
+			String worldfoldername = world.getWorldFolder().getName();
 			plugin.debug(worldfoldername);
 			plugin.debug(String.format("Backuping world: %s", world.getName()));
 			try {
