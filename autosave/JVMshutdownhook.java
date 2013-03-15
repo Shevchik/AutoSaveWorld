@@ -1,7 +1,6 @@
 package autosave;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 
 import org.bukkit.Bukkit;
@@ -34,25 +33,13 @@ public class JVMshutdownhook extends Thread {
 		String runcommand = "java -server -Xmx"+memory+" -XX:+UseBiasedLocking -XX:+AggressiveOpts -XX:+UseStringCache -XX:+UseFastAccessorMethods -Dfile.encoding="+encoding+" -jar "+processname;
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (OS.contains("win")) {
-			File startupscript = new File("ASWstartupscript.bat");
-			PrintWriter out = new PrintWriter(startupscript.getAbsoluteFile());
-			out.print(runcommand);
-			out.close();
-			Runtime.getRuntime().exec("cmd /c start " + startupscript.getCanonicalPath());
+			Runtime.getRuntime().exec("cmd /c start " + runcommand);
 		} else {
-			File startupscript = new File("ASWstartupscript.sh");
-			PrintWriter out = new PrintWriter(startupscript.getAbsoluteFile());
-			out.println("#!/bin/sh");
-			out.println("BINDIR=$(dirname '$(readlink -fn '$0')')");
-			out.println("cd '$BINDIR'");
-			out.print(runcommand);
-			out.close();
-			startupscript.setExecutable(true);
-			Runtime.getRuntime().exec(startupscript.getCanonicalPath());
+			Runtime.getRuntime().exec(new String[]{"/bin/bash","-c","cd "+new File(".").getCanonicalPath()}+" & "+runcommand);
 		}
 		}
 	} catch (Exception e)
-	{System.out.println("[AutoSaveWorld] CrashRestart failed");
+	{System.out.println("[AutoSaveWorld] Restart failed");
 	e.printStackTrace();}
 	}
 	

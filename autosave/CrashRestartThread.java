@@ -47,9 +47,12 @@ public class CrashRestartThread extends Thread{
 			if (test) {diff = config.crtimeout*1000L + 1;}
 			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L)))
 			{if (config.crashrestartenabled) {
-				log.info("[AutoSaveWorld]Crash occured, restarting server.");
+				log.info("[AutoSaveWorld]Crash occured.");
 				plugin.JVMsh.setpath(config.crashrestartscriptpath);
-				Runtime.getRuntime().addShutdownHook(plugin.JVMsh);
+				if (!config.crstop) {
+				Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
+				log.info("[AutoSaveWorld]Restarting server.");} else
+				{log.info("[AutoSaveWorld]Just stopping server.");}
 				ConsoleCommandSender sender = Bukkit.getConsoleSender();
 				plugin.getServer().dispatchCommand(sender, "stop");
 				run = false;

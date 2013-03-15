@@ -137,6 +137,12 @@ public class AutoPurgeThread extends Thread {
 			LWCpurge(awaytime);} catch (Exception e) {
 				e.printStackTrace();
 			}}
+		if ((plugin.getServer().getPluginManager().getPlugin("Essentials") != null) && config.ess){
+		plugin.debug("Essentials found, purging");
+		try {
+			EssentialsPurge(awaytime);} catch (Exception e) {
+				e.printStackTrace();
+			}}
 		plugin.debug("Purging player dat files");
 		if (config.dat) {
 		try {
@@ -177,7 +183,7 @@ public class AutoPurgeThread extends Thread {
 				} else {pltodelete.add(checkPlayer);
 					plugin.debug(checkPlayer+" is inactive"); }
 			}
-			if (ddpl.size() <= pltodelete.size()) {
+			if (ddpl.size() <= pltodelete.size() && (rg.getOwners().getPlayers().size() !=0 )) {
 				rgtodel.add(rg.getId());
 				plugin.debug("No active owners for region " +rg.getId() + " Added to removal list");
 			} else {
@@ -197,12 +203,13 @@ public class AutoPurgeThread extends Thread {
 			for (String delrg : rgtodel)
 			{
 				plugin.debug("Removing region "+delrg);
-				m.removeRegion(delrg);
 				if (config.wgregenrg) {
 					plugin.debug("Regenerating region"+delrg);
 					LocalWorld lw = new BukkitWorld(w);
 					lw.regenerate(new CuboidRegion(lw, m.getRegion(delrg).getMinimumPoint(), m.getRegion(delrg).getMaximumPoint()), new EditSession(lw, Integer.MAX_VALUE));
 				}
+				m.removeRegion(delrg);
+
 			}
 			try {m.save();} catch (Exception e) {}
 		}
@@ -240,15 +247,34 @@ public class AutoPurgeThread extends Thread {
 					if (!banned) {
 					pl.setBanned(true);}
 					try {
-						File pldatFile= new File(new File(".").getCanonicalPath()+File.separator+Bukkit.getWorlds().get(0).getName()
+						File pldatFile= new File(new File(".").getCanonicalPath()+File.separator+Bukkit.getWorlds().get(0).getWorldFolder().getName()
 								+File.separator+"players"+File.separator+pl.getName()+".dat");
-						if (pldatFile.exists()) {pldatFile.delete(); plugin.debug(pl.getName()+" is inactive. Removing dat file");}
+						pldatFile.delete(); plugin.debug(pl.getName()+" is inactive. Removing dat file");
 					} catch (IOException e) {e.printStackTrace();}
 					//Unban after purge
 					if (!banned) {
 					pl.setBanned(false);}
 			}
 		}		
+	}
+	
+	public void EssentialsPurge(long awaytime)
+	{
+		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
+		for (OfflinePlayer pl : checkPlayers) {
+			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+				//thread safety again
+				boolean banned = pl.isBanned();
+				if (!banned) {
+				pl.setBanned(true);}
+				try {
+					File essFile = new File(new File(".").getCanonicalPath()+File.separator+"plugins"+File.separator+"Essentials"+File.separator+pl.getName()+".yml");
+					essFile.delete(); plugin.debug(pl.getName()+" is inactive. Removing essentials info on him");
+				} catch (IOException e) {e.printStackTrace();}
+				if (!banned) {
+				pl.setBanned(false);}
+			}
+		}
 	}
 	
 }
