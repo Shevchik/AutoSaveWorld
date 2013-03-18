@@ -26,7 +26,7 @@ public class JVMshutdownhook extends Thread {
 			Runtime.getRuntime().exec(restartscript.getCanonicalPath());
 		}
 		} else {
-		System.out.println("[AutoSaveWorld] Startup script not found. Creating new one. This may work strange or not work at all");
+		System.out.println("[AutoSaveWorld] Startup script not found. Trying to start without it. This may work strange or not work at all");
 		String processname = new File(Bukkit.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getName();
 		String memory = Runtime.getRuntime().maxMemory()/1024/1024+"M";
 		String encoding = Charset.defaultCharset().toString();

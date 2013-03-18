@@ -232,14 +232,7 @@ public class AutoBackupThread6 extends Thread {
 			//load info about backups stored in file backups.yml
 			loadConfigBackupExt(extpath);
 			//start worlds backup
-			//check if the backups are still here - this doesn't work for now
-			
-			/*tempnames.clear();
-			for (long name : backupnamesext) {
-				if ((new File(extpath+File.separator+"backups"+File.separator+name).exists())) {tempnames.add(name);};}
-			backupnamesext.clear();
-			backupnamesext.addAll(tempnames);
-			numberofbackupsext = backupnamesext.size();*/
+
 			//delete oldest backup if needed
 			if (!(config.MaxNumberOfWorldsBackups == 0) && (numberofbackupsext >= config.MaxNumberOfWorldsBackups)) {
 				plugin.debug("Deleting oldest backup");

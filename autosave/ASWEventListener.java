@@ -41,10 +41,12 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		private AutoSave plugin = null;
 		private AutoSaveConfig config;
 		private AutoSaveConfigMSG configmsg;
-		ASWEventListener(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg){
+		private LocaleContainer localeloader;
+		ASWEventListener(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, LocaleContainer localeloader){
 			this.plugin = plugin;
 			this.config = config;
 			this.configmsg  = configmsg;
+			this.localeloader = localeloader;
 		};
 		
 		
@@ -136,7 +138,10 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 		plugin.sendMessage(sender,"&f/asw version&7 - &3Shows plugin version");
 		plugin.sendMessage(sender,"&f/asw info&7 - &3Shows some info");
-		plugin.sendMessage(sender,"&f/asw selfrestart&7 - &3Restarts AutoSaveWorld");
+		plugin.sendMessage(sender,"&f/asw selfrestart&7 - &3Restart AutoSaveWorld");
+		plugin.sendMessage(sender,"&f/asw locale&7 - &3Show current messages locale");
+		plugin.sendMessage(sender,"&f/asw locale availible&7 - &3Show availible messages locale");
+		plugin.sendMessage(sender,"&f/asw locale load {locale}&7 - &3Set meesages locale to one of the availible locales");
 		return true;
 		} else
 		//command to save worlds
@@ -205,6 +210,33 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		{
 		plugin.crashrestartThread.test();
 		return true;
+		} else
+		if ((args.length>=1 && args[0].equalsIgnoreCase("locale"))) 
+		{
+			if (args.length==1)
+			{
+				plugin.sendMessage(sender, "Current locale is "+config.langfilesuffix);
+				return true;
+			}
+			else if (args.length == 2 && args[1].equalsIgnoreCase("availible"))
+			{
+				plugin.sendMessage(sender, "Availible locales: "+localeloader.getAvailibleLocales());
+				return true;
+			}
+			else if (args.length == 2 && args[1].equalsIgnoreCase("load"))
+			{
+				plugin.sendMessage(sender, "You should specify a locale to load (get availible locales using /asw locale availible command)");
+				return true;
+			} 
+			else if (args.length == 3 && args[1].equalsIgnoreCase("load"))
+			{
+				if (localeloader.getAvailibleLocales().contains(args[2]))
+				{plugin.sendMessage(sender, "Loading locale "+args[2]);
+				localeloader.loadLocale(args[2]);
+				return true;}
+				else 
+				{plugin.sendMessage(sender, "Locale "+args[2]+" is not availible"); return true;}
+			}
 		}
 		return false;
 		} else

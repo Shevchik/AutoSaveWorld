@@ -33,7 +33,7 @@ public class CrashRestartThread extends Thread{
 	public void run()
 	{	
 		log.info("[AutoSaveWorld] CrashRestartThread started");
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+		int tasknumber = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			public void run() {
 				syncticktime = System.currentTimeMillis();
 				if (config.crdebug) {
@@ -66,6 +66,10 @@ public class CrashRestartThread extends Thread{
 				plugin.debug("CrashRestartThread diff: "+diff);
 				}
 			try {Thread.sleep(999);} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		plugin.getServer().getScheduler().cancelTask(tasknumber);
+		if (config.varDebug) {
+			log.info(String.format("[%s] Graceful quit of CrashRestartThread", plugin.getDescription().getName()));
 		}
 		}
     }

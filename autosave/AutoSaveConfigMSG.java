@@ -70,7 +70,7 @@ public class AutoSaveConfigMSG {
 		}
 		} else
 		{
-			configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg_"+config.langfileposfix+".yml"));
+			configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg_"+config.langfilesuffix+".yml"));
 			messageBroadcastPre =configmsg.getString("broadcast.pre", messageBroadcastPre);
 			messageBroadcastPost =configmsg.getString("broadcast.post", messageBroadcastPost);
 			messageBroadcastBackupPre =configmsg.getString("broadcastbackup.pre", messageBroadcastBackupPre);

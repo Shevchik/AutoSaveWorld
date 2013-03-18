@@ -27,9 +27,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class AutoSaveConfig {
 		
 	private FileConfiguration config;
-	public AutoSaveConfig(FileConfiguration config) {
-		this.config = config;
-	}
+	public AutoSaveConfig() {}
 	
 	
 	// Variables
@@ -64,7 +62,7 @@ public class AutoSaveConfig {
 	protected boolean lwcdelprotectedblocks = false;
 	protected boolean dat = true;
 	protected boolean switchtolangfile = false;
-	protected String langfileposfix = "ru";
+	protected String langfilesuffix = "ru";
 	protected boolean crashrestartenabled = false;
 	protected String crashrestartscriptpath="start.sh";
 	protected boolean crstop = false;
@@ -155,7 +153,7 @@ public class AutoSaveConfig {
 		
 		//locale variables
 		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
-		langfileposfix = config.getString("locale.langfilepostfix",langfileposfix);
+		langfilesuffix = config.getString("locale.langfilesuffix",langfilesuffix);
 		save();
 	}
 
@@ -210,7 +208,7 @@ public class AutoSaveConfig {
 		
 		//locale variables
 		config.set("locale.switchtolangfile",switchtolangfile);
-		config.set("locale.langfilepostfix",langfileposfix);
+		config.set("locale.langfilesuffix",langfilesuffix);
 		
 		
 		

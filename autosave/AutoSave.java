@@ -35,6 +35,7 @@ public CrashRestartThread crashrestartThread = null;
 public JVMshutdownhook JVMsh = null;
 private AutoSaveConfigMSG configmsg;
 private AutoSaveConfig config;
+private LocaleContainer localeloader;
 private ASWEventListener eh;
 protected int numPlayers = 0;
 protected boolean saveInProgress = false;
@@ -63,12 +64,13 @@ log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),
 @Override
 public void onEnable() {
 // Load Configuration
-config = new AutoSaveConfig(getConfig());
+config = new AutoSaveConfig();
 configmsg = new AutoSaveConfigMSG(config);
+localeloader = new LocaleContainer(this,config, configmsg);
 config.load();
 configmsg.loadmsg();
 config.loadbackupextfolderconfig();
-eh = new ASWEventListener(this, config, configmsg);
+eh = new ASWEventListener(this, config, configmsg, localeloader);
 //register events and commands
 getCommand("autosaveworld").setExecutor(eh);
 getCommand("autosave").setExecutor(eh);

@@ -76,6 +76,11 @@ public class Generic {
 		message = message.replaceAll("(?i)&d", ChatColor.LIGHT_PURPLE + "");
 		message = message.replaceAll("(?i)&e", ChatColor.YELLOW + "");
 		message = message.replaceAll("(?i)&f", ChatColor.WHITE + "");
+		message = message.replaceAll("(?i)&l", ChatColor.BOLD+ "");
+		message = message.replaceAll("(?i)&o", ChatColor.ITALIC+ "");
+		message = message.replaceAll("(?i)&m", ChatColor.STRIKETHROUGH+ "");
+		message = message.replaceAll("(?i)&n", ChatColor.UNDERLINE+ "");
+		message = message.replaceAll("(?i)&k", ChatColor.MAGIC+ "");
 		return message;
 	}
 
@@ -97,6 +102,11 @@ public class Generic {
 		message = message.replaceAll("(?i)&d", "");
 		message = message.replaceAll("(?i)&e", "");
 		message = message.replaceAll("(?i)&f", "");
+		message = message.replaceAll("(?i)&l", "");
+		message = message.replaceAll("(?i)&o", "");
+		message = message.replaceAll("(?i)&m", "");
+		message = message.replaceAll("(?i)&n", "");
+		message = message.replaceAll("(?i)&k", "");
 		return message;
 	}
 }
