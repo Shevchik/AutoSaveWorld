@@ -24,11 +24,12 @@ package autosave;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 public class AutoSaveThread extends Thread {
 
-	protected final Logger log = Logger.getLogger("Minecraft");
+	protected final Logger log = Bukkit.getLogger();
 	private boolean run = true;
 	private AutoSave plugin = null;
 	private AutoSaveConfig config;

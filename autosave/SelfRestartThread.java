@@ -37,7 +37,7 @@ public class SelfRestartThread  extends Thread{
 	private boolean run = true;
 	public boolean restart = false;
 	
-	protected final Logger log = Logger.getLogger("Minecraft");
+	protected final Logger log = Bukkit.getLogger();
 	
 	SelfRestartThread(AutoSave plugin)
 	{

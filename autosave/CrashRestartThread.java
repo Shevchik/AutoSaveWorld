@@ -11,7 +11,7 @@ public class CrashRestartThread extends Thread{
 	private AutoSaveConfig config;
 	private boolean run = true;
 	private boolean test = false;
-	protected final Logger log = Logger.getLogger("Minecraft");
+	protected final Logger log = Bukkit.getLogger();
 	private long syncticktime = 0;
 	
 	CrashRestartThread(AutoSave plugin,AutoSaveConfig config)

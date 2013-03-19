@@ -40,7 +40,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class AutoPurgeThread extends Thread {
 	
-	protected final Logger log = Logger.getLogger("Minecraft");
+	protected final Logger log = Bukkit.getLogger();
 	private AutoSave plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,7 +40,7 @@ public class AutoBackupThread6 extends Thread {
 		this.configmsg = configmsg;
 	}
 	
-	protected final Logger log = Logger.getLogger("Minecraft");
+	protected final Logger log = Bukkit.getLogger();
 	private boolean run = true;
 	private AutoSave plugin = null;
 	private AutoSaveConfig config;
