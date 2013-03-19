@@ -67,6 +67,10 @@ public class AutoSaveConfig {
 	protected String crashrestartscriptpath="start.sh";
 	protected boolean crstop = false;
 	protected long crtimeout = 15;
+	protected boolean autorestart = false;
+	protected String autorestartscriptpath = "start.sh";
+	protected String autorestarttime = "00:00";
+	protected boolean astop = false;
 	protected boolean crdebug = false;
 	
 	
@@ -151,6 +155,12 @@ public class AutoSaveConfig {
 		crtimeout = config.getLong("crashrestart.timeout",crtimeout);
 		crstop = config.getBoolean("crashrestart.juststop", crstop);
 		
+		//autorestart variables
+		autorestart = config.getBoolean("autorestart.enabled", autorestart);
+		autorestarttime = config.getString("autorestart.time",autorestarttime);
+		autorestartscriptpath = config.getString("autorestart.scriptpath",autorestartscriptpath);
+		astop = config.getBoolean("autorestart.juststop", astop);
+		
 		//locale variables
 		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
 		langfilesuffix = config.getString("locale.langfilesuffix",langfilesuffix);
@@ -205,6 +215,12 @@ public class AutoSaveConfig {
 		config.set("crashrestart.scriptpath",crashrestartscriptpath);
 		config.set("crashrestart.timeout",crtimeout);
 		config.set("crashrestart.juststop", crstop);
+		
+		//autorestart variables
+		config.set("autorestart.enabled", autorestart);
+		config.set("autorestart.time",autorestarttime);
+		config.set("autorestart.scriptpath",autorestartscriptpath);
+		config.set("autorestart.juststop", astop);
 		
 		//locale variables
 		config.set("locale.switchtolangfile",switchtolangfile);

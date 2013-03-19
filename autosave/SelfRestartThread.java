@@ -123,11 +123,7 @@ public class SelfRestartThread  extends Thread{
 			}
 		}
 		//if we reached this part and restart is true, then the restart occured and we no longer need this Thread. 
-		if (restart) {
-			try {
-				this.join(5000);
-				log.info("[AutoSaveWorld] Quit of old AutoSaveWorld selfrestart thread");
-			} catch (InterruptedException e) {e.printStackTrace();}
+		if (restart) {log.info("[AutoSaveWorld] Quit of old AutoSaveWorld selfrestart thread");} 
 		}
 	}
-}
+

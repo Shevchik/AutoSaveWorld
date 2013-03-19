@@ -32,6 +32,7 @@ public AutoBackupThread6 backupThread6 = null;
 public AutoPurgeThread purgeThread = null;
 public SelfRestartThread selfrestartThread = null;
 public CrashRestartThread crashrestartThread = null;
+public AutoRestartThread autorestartThread = null;
 public JVMshutdownhook JVMsh = null;
 private AutoSaveConfigMSG configmsg;
 private AutoSaveConfig config;
@@ -57,6 +58,7 @@ if (!selfrestartThread.restart)
 {stopThread(ThreadType.SELFRESTART);
 log.info("[AutoSaveWorld] Graceful quit of selfrestart thread");}
 stopThread(ThreadType.CRASHRESTART);
+stopThread(ThreadType.AUTORESTART);
 
 log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),getDescription().getVersion()));
 }
@@ -87,6 +89,8 @@ startThread(ThreadType.PURGE);
 startThread(ThreadType.SELFRESTART);
 //Start CrashRestartThread
 startThread(ThreadType.CRASHRESTART);
+//Start AutoRestartThread
+startThread(ThreadType.AUTORESTART);
 //Create JVMsh
 JVMsh = new JVMshutdownhook();
 // Notify on logger load
@@ -124,6 +128,12 @@ case CRASHRESTART:
 if (crashrestartThread == null || !crashrestartThread.isAlive()) {
 crashrestartThread = new CrashRestartThread(this, config);
 crashrestartThread.start();
+}
+return true;
+case AUTORESTART:
+if (autorestartThread == null || !autorestartThread.isAlive()) {
+autorestartThread = new AutoRestartThread(this, config);
+autorestartThread.start();
 }
 return true;
 default:
@@ -197,6 +207,20 @@ crashrestartThread.stopthread();
 try {
 crashrestartThread.join(1000);
 crashrestartThread = null;
+return true;
+} catch (InterruptedException e) {
+warn("Could not stop SelfRestartThread", e);
+return false;
+}
+}
+case AUTORESTART:
+if (autorestartThread == null) {
+return true;
+} else {
+autorestartThread.stopthread();
+try {
+autorestartThread.join(1000);
+autorestartThread = null;
 return true;
 } catch (InterruptedException e) {
 warn("Could not stop SelfRestartThread", e);

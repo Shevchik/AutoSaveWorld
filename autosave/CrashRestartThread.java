@@ -33,6 +33,7 @@ public class CrashRestartThread extends Thread{
 	public void run()
 	{	
 		log.info("[AutoSaveWorld] CrashRestartThread started");
+		Thread.currentThread().setName("AutoSaveWorld_CrashRestartThread");
 		int tasknumber = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			public void run() {
 				syncticktime = System.currentTimeMillis();
@@ -48,8 +49,8 @@ public class CrashRestartThread extends Thread{
 			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L)))
 			{if (config.crashrestartenabled) {
 				log.info("[AutoSaveWorld]Crash occured.");
-				plugin.JVMsh.setpath(config.crashrestartscriptpath);
 				if (!config.crstop) {
+				plugin.JVMsh.setpath(config.crashrestartscriptpath);
 				Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				log.info("[AutoSaveWorld]Restarting server.");} else
 				{log.info("[AutoSaveWorld]Just stopping server.");}
