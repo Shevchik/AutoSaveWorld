@@ -82,12 +82,12 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		//bPermissions
 		if (plugin.getServer().getPluginManager().getPlugin("bPermissions") != null) {
 		if (ApiLayer.hasPermission(world, CalculableType.USER, player.toString(), perm)) {return true;};}
-		//bukkitPermissions
-		if (player.hasPermission(perm)) {return true;};
 		//PermissionsEx
 		if (plugin.getServer().getPluginManager().getPlugin("PermissionsEx") !=null) { 
 			PermissionUser user = PermissionsEx.getUser(player);
 			if (user.has(perm)) {return true;} ;}
+		//bukkitPermissions
+		if (player.hasPermission(perm)) {return true;};
 		return false;
 		}
 		

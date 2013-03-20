@@ -19,6 +19,7 @@ package autosave;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -27,8 +28,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.griefcraft.lwc.LWCPlugin;
+import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -46,6 +50,8 @@ public class AutoPurgeThread extends Thread {
 	private AutoSaveConfigMSG configmsg;
 	private boolean run = true;
 	private boolean command = false;
+	FileConfiguration plnopurgelistfile = null;
+	HashSet<String> plnopurgelist;
 	AutoPurgeThread(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
@@ -63,6 +69,11 @@ public class AutoPurgeThread extends Thread {
 	runnow = config.purgeInterval;
 	}
 	
+	private boolean PurgePlayer(OfflinePlayer player)
+	{
+	if (plnopurgelist.contains(player.getName())) {return false;}
+	return true;
+	}
 	
 	// The code to run...weee
 	public void run() {
@@ -75,6 +86,15 @@ public class AutoPurgeThread extends Thread {
 						plugin.getDescription().getName(), config.purgeInterval,
 						Generic.join(",", config.varWarnTimes)));
 		Thread.currentThread().setName("AutoSaveWorld_AutoPurgeThread");
+		
+		//load list of players which will not be affected by purge
+		plnopurgelistfile = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/nopurgeplayerlist.yml"));
+		plnopurgelist = new HashSet<String>(plnopurgelistfile.getStringList("players"));
+		plnopurgelistfile.set("players", new ArrayList<String>(plnopurgelist));
+		try {
+			plnopurgelistfile.save(new File("plugins/AutoSaveWorld/nopurgeplayerlist.yml"));
+		} catch (IOException e1) {e1.printStackTrace();}
+
 		while (run) {
 			// Prevent AutoPurge from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving
@@ -157,14 +177,18 @@ public class AutoPurgeThread extends Thread {
 			}
 	}
 	
+	
+	public Object minpoint;
+	public Object maxpoint;
 	public void WGpurge(long awaytime) {
-		//don't know if all of this is thread safe, so creating values for everyfing before iterating.
+		//don't know if all of this is thread safe.
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		List<World> worldlist = Bukkit.getWorlds();
-		for(World w : worldlist) {
+		for(final World w : worldlist) {
 		plugin.debug("Checking WG protections in world "+w.getName());
 		RegionManager m = wg.getRegionManager(w);
 		List<String> rgtodel = new ArrayList<String>();
+		//searching for inactive players in regions
 		for(ProtectedRegion rg
 				: m.getRegions().values()) {
 			plugin.debug("Checking region "+rg.getId());
@@ -172,21 +196,32 @@ public class AutoPurgeThread extends Thread {
 			ArrayList<String> pltodelete = new ArrayList<String>();
 			Set<String> ddpl = dd.getPlayers();
 			for (String checkPlayer : ddpl) {
-				plugin.debug("Checking player "+checkPlayer);
-				if (Bukkit.getOfflinePlayer(checkPlayer).hasPlayedBefore()) {
-				long timelp = Bukkit.getOfflinePlayer(checkPlayer).getLastPlayed();
-				if (System.currentTimeMillis() - timelp >= awaytime)
-				{
-					pltodelete.add(checkPlayer);
-					plugin.debug(checkPlayer+" is inactive");
+				if (PurgePlayer(Bukkit.getOfflinePlayer(checkPlayer))) { 
+						plugin.debug("Checking player "+checkPlayer);
+						if (Bukkit.getOfflinePlayer(checkPlayer).hasPlayedBefore()) {
+						long timelp = Bukkit.getOfflinePlayer(checkPlayer).getLastPlayed();
+							if (System.currentTimeMillis() - timelp >= awaytime)
+							{
+							pltodelete.add(checkPlayer);
+							plugin.debug(checkPlayer+" is inactive");
+							}
+						}
+						else {pltodelete.add(checkPlayer);
+						plugin.debug(checkPlayer+" is inactive"); 
+						} 
+					}
 				}
-				} else {pltodelete.add(checkPlayer);
-					plugin.debug(checkPlayer+" is inactive"); }
-			}
-			if (ddpl.size() <= pltodelete.size() && (rg.getOwners().getPlayers().size() !=0 )) {
+			
+			
+			
+			//check region for remove
+			if (!ddpl.isEmpty()) {
+			if (ddpl.size() <= pltodelete.size()) {
+				//adding region to removal list, we will work wih them later
 				rgtodel.add(rg.getId());
 				plugin.debug("No active owners for region " +rg.getId() + " Added to removal list");
 			} else {
+				//remove inactive owners from region
 				if (pltodelete.size() != 0) {
 					for (String plrem : pltodelete) {
 					dd.removePlayer(plrem);
@@ -196,17 +231,34 @@ public class AutoPurgeThread extends Thread {
 				}
 				
 			}
+			}
 				try {m.save();} catch (Exception e) {}	
 			
 			}
-			plugin.debug("Deleting region in removal list");
+		
+		
+		
+			//now deal with the regions that must be deleted
+			if (!rgtodel.isEmpty()) 
+			plugin.debug("Deleting regions in removal list");
 			for (String delrg : rgtodel)
 			{
 				plugin.debug("Removing region "+delrg);
 				if (config.wgregenrg) {
 					plugin.debug("Regenerating region"+delrg);
-					LocalWorld lw = new BukkitWorld(w);
-					lw.regenerate(new CuboidRegion(lw, m.getRegion(delrg).getMinimumPoint(), m.getRegion(delrg).getMaximumPoint()), new EditSession(lw, Integer.MAX_VALUE));
+					minpoint = m.getRegion(delrg).getMinimumPoint();
+					maxpoint = m.getRegion(delrg).getMaximumPoint();
+					//do this in sync task otherwise it may damage your server
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { 
+						public void run() {
+							LocalWorld lw = new BukkitWorld(w);
+							lw.regenerate(new CuboidRegion(lw, 
+									(BlockVector) plugin.purgeThread.minpoint, 
+									(BlockVector) plugin.purgeThread.maxpoint
+									), 
+									new EditSession(lw, Integer.MAX_VALUE));}
+						});
+					
 				}
 				m.removeRegion(delrg);
 
