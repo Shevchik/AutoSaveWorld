@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 
 
 public class AutoRestartThread  extends Thread{
@@ -50,12 +49,11 @@ public class AutoRestartThread  extends Thread{
 			 if (curhours == rhours && curminutes == rminutes )
 			 {
 				 log.info("[AutoSaveWorld] AutoRestarting server");
-				ConsoleCommandSender sender = Bukkit.getConsoleSender();
-				plugin.getServer().dispatchCommand(sender, "stop");
-				run = false;
+				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				if (!config.astop) {
 				plugin.JVMsh.setpath(config.autorestartscriptpath);
 				Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
+				run = false;
 				}
 			 }
 			}

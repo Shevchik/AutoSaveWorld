@@ -133,9 +133,6 @@ public class AutoPurgeThread extends Thread {
 		if (plugin.purgeInProgress) {
 			plugin.warn("Multiple concurrent purges attempted! Purge interval is likely too short!");
 			return;
-			} else if (plugin.saveInProgress) {
-			plugin.warn("AutoSave is in progress. Purge cancelled.");
-			return;
 			} else if (plugin.backupInProgress) {
 			plugin.warn("AutoBackup is in progress. Purge cancelled.");	
 			return;
@@ -273,6 +270,7 @@ public class AutoPurgeThread extends Thread {
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers)
 		{
+			if (PurgePlayer(pl)) {
 			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 				if (config.lwcdelprotectedblocks) {
 				plugin.debug(pl.getName()+" is inactive Removing all LWC protections and deleting blocks");
@@ -282,7 +280,8 @@ public class AutoPurgeThread extends Thread {
 				plugin.debug(pl.getName()+" is inactive Removing all LWC protections");
 				lwc.getLWC().fastRemoveProtectionsByPlayer(sender, pl.getName(), false);	
 				}
-		}
+				}
+			}
 		}
 
 	}
@@ -290,6 +289,7 @@ public class AutoPurgeThread extends Thread {
 	public void DelPlayerDatFile(long awaytime) {
 			OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 			for (OfflinePlayer pl : checkPlayers) {
+				if (PurgePlayer(pl)) {
 				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 					//For thread safety(i don't want to know what will happen if player will join the server while his dat file is deleting from another thread)
 					//The problem is how plugins will react to this, need someone to test this.
@@ -306,6 +306,7 @@ public class AutoPurgeThread extends Thread {
 					//Unban after purge
 					if (!banned) {
 					pl.setBanned(false);}
+					}
 			}
 		}		
 	}
@@ -314,6 +315,7 @@ public class AutoPurgeThread extends Thread {
 	{
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers) {
+			if (PurgePlayer(pl)) {
 			if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 				//thread safety again
 				boolean banned = pl.isBanned();
@@ -325,6 +327,7 @@ public class AutoPurgeThread extends Thread {
 				} catch (IOException e) {e.printStackTrace();}
 				if (!banned) {
 				pl.setBanned(false);}
+				}
 			}
 		}
 	}

@@ -3,14 +3,12 @@ package autosave;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 
 public class CrashRestartThread extends Thread{
 
 	private AutoSave plugin;
 	private AutoSaveConfig config;
 	private boolean run = true;
-	private boolean test = false;
 	protected final Logger log = Bukkit.getLogger();
 	private long syncticktime = 0;
 	
@@ -25,10 +23,6 @@ public class CrashRestartThread extends Thread{
 		this.run = false;
 	}
 	
-	public void test()
-	{
-		this.test = true;
-	}
 	
 	public void run()
 	{	
@@ -45,7 +39,6 @@ public class CrashRestartThread extends Thread{
 		while (run)
 		{
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (test) {diff = config.crtimeout*1000L + 1;}
 			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L)))
 			{if (config.crashrestartenabled) {
 				log.info("[AutoSaveWorld]Crash occured.");
@@ -54,8 +47,7 @@ public class CrashRestartThread extends Thread{
 				Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				log.info("[AutoSaveWorld]Restarting server.");} else
 				{log.info("[AutoSaveWorld]Just stopping server.");}
-				ConsoleCommandSender sender = Bukkit.getConsoleSender();
-				plugin.getServer().dispatchCommand(sender, "stop");
+				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				run = false;
 				} else {
 				plugin.debug("Crash detected by CrashRestartThread, but crashrestart is disabled");

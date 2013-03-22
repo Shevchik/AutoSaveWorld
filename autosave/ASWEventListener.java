@@ -17,8 +17,7 @@
 
 package autosave;
 
-
-
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -60,6 +59,7 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.debug("Last player has quit, autosaving");
 		plugin.saveThread.startsave();}
 		}
+		
 		
 		@EventHandler
 		public void onConsoleStopCommand(ServerCommandEvent event)
@@ -206,9 +206,12 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 		plugin.selfrestartThread.restart();
 		return true;
 		} else
-		if ((args.length==1 && args[0].equalsIgnoreCase("testrestart"))) 
+		if ((args.length==1 && args[0].equalsIgnoreCase("restart"))) 
 		{
-		plugin.crashrestartThread.test();
+		plugin.debug("Restarting");
+		plugin.JVMsh.setpath(config.autorestartscriptpath);
+		Runtime.getRuntime().addShutdownHook(plugin.JVMsh);
+		plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
 		return true;
 		} else
 		if ((args.length>=1 && args[0].equalsIgnoreCase("locale"))) 
