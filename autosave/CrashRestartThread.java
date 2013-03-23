@@ -64,6 +64,6 @@ public class CrashRestartThread extends Thread{
 		if (config.varDebug) {
 			log.info(String.format("[%s] Graceful quit of CrashRestartThread", plugin.getDescription().getName()));
 		}
-		}
-    }
+	}
+}
 

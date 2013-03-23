@@ -84,7 +84,7 @@ public class AutoPurgeThread extends Thread {
 		log.info(String
 				.format("[%s] AutoPurgeThread Started: Interval is %d seconds, Warn Times are %s",
 						plugin.getDescription().getName(), config.purgeInterval,
-						Generic.join(",", config.varWarnTimes)));
+						Generic.join(",", config.saveWarnTimes)));
 		Thread.currentThread().setName("AutoSaveWorld_AutoPurgeThread");
 		
 		//load list of players which will not be affected by purge
@@ -98,7 +98,7 @@ public class AutoPurgeThread extends Thread {
 		while (run) {
 			// Prevent AutoPurge from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving
-			if(config.varInterval == 0) {
+			if(config.purgeInterval == 0) {
 				try {
 					Thread.sleep(5000);
 				} catch(InterruptedException e) {
@@ -109,7 +109,7 @@ public class AutoPurgeThread extends Thread {
 			
 			
 			// Do our Sleep stuff!
-			for (runnow = 0; runnow < config.backupInterval; runnow++) {
+			for (runnow = 0; runnow < config.purgeInterval; runnow++) {
 				try {
 					if (!run) {
 						if (config.varDebug) {
@@ -139,7 +139,7 @@ public class AutoPurgeThread extends Thread {
 			}	else {
 		if (config.slowpurge) {setPriority(Thread.MIN_PRIORITY);}
 		plugin.purgeInProgress = true;
-		plugin.broadcastc(configmsg.messagePurgePre);
+		if (config.purgeBroadcast){plugin.broadcast(configmsg.messagePurgePre);}
 		long awaytime = config.purgeAwayTime*1000;
 		plugin.debug("Purge started");
 		if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) && config.wg){
@@ -168,7 +168,7 @@ public class AutoPurgeThread extends Thread {
 		} }
 		command = false;
 		plugin.debug("Purge finished");
-		plugin.broadcastc(configmsg.messagePurgePost);
+		if (config.purgeBroadcast){plugin.broadcast(configmsg.messagePurgePost);}
 		plugin.purgeInProgress = false;
 		if (config.slowpurge) {setPriority(Thread.NORM_PRIORITY);}
 			}

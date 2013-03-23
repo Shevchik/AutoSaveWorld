@@ -17,15 +17,15 @@
 
 package autosave;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class AutoSave extends JavaPlugin  {
-private static final Logger log = Logger.getLogger("Minecraft");
+private static final Logger log = Bukkit.getLogger();
 
 public AutoSaveThread saveThread = null;
 public AutoBackupThread6 backupThread6 = null;
@@ -153,7 +153,7 @@ saveThread.join(1000);
 saveThread = null;
 return true;
 } catch (InterruptedException e) {
-warn("Could not stop AutoSaveThread", e);
+warn("Could not stop AutoSaveThread");
 return false;
 }
 }
@@ -167,7 +167,7 @@ backupThread6.join(1000);
 backupThread6 = null;
 return true;
 } catch (InterruptedException e) {
-warn("Could not stop AutoBackupThread", e);
+warn("Could not stop AutoBackupThread");
 return false;
 }
 }
@@ -181,7 +181,7 @@ purgeThread.join(1000);
 purgeThread = null;
 return true;
 } catch (InterruptedException e) {
-warn("Could not stop AutoPurgeThread", e);
+warn("Could not stop AutoPurgeThread");
 return false;
 }
 }
@@ -195,7 +195,7 @@ selfrestartThread.join(1000);
 selfrestartThread = null;
 return true;
 } catch (InterruptedException e) {
-warn("Could not stop SelfRestartThread", e);
+warn("Could not stop SelfRestartThread");
 return false;
 }
 }
@@ -209,7 +209,7 @@ crashrestartThread.join(1000);
 crashrestartThread = null;
 return true;
 } catch (InterruptedException e) {
-warn("Could not stop SelfRestartThread", e);
+warn("Could not stop SelfRestartThread");
 return false;
 }
 }
@@ -223,7 +223,7 @@ autorestartThread.join(1000);
 autorestartThread = null;
 return true;
 } catch (InterruptedException e) {
-warn("Could not stop SelfRestartThread", e);
+warn("Could not stop SelfRestartThread");
 return false;
 }
 }
@@ -239,22 +239,8 @@ sender.sendMessage(Generic.parseColor(message));
 }
 }
 
-public void broadcasta(String message) {
-if (!message.equals("") && (config.varBroadcast)) {
-getServer().broadcastMessage(Generic.parseColor(message));
-log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
-}
-
-}
-public void broadcastb(String message) {
-if (!message.equals("") && (config.backupBroadcast)) {
-getServer().broadcastMessage(Generic.parseColor(message));
-log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
-}
-
-}
-public void broadcastc(String message) {
-if (!message.equals("") && (config.purgeBroadcast)) {
+public void broadcast(String message) {
+if (!message.equals("")) {
 getServer().broadcastMessage(Generic.parseColor(message));
 log.info(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
 }
@@ -271,8 +257,5 @@ public void warn(String message) {
 log.warning(String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)));
 }
 
-public void warn(String message, Exception e) {
-log.log(Level.WARNING, String.format("[%s] %s", getDescription().getName(), Generic.stripColor(message)), e);
-}
 
 }

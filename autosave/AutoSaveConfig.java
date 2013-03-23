@@ -32,11 +32,12 @@ public class AutoSaveConfig {
 	
 	// Variables
 	protected UUID varUuid;
-	protected int varInterval = 300;
-	protected List<Integer> varWarnTimes = null;
-	protected boolean varBroadcast = true;
+	protected int saveInterval = 300;
+	protected List<Integer> saveWarnTimes = null;
+	protected boolean saveBroadcast = true;
+	protected boolean saveEnabled = true;
 	protected boolean varDebug = false;
-	protected List<String> varWorlds = null;
+	protected List<String> backupWorlds = null;
 	protected boolean savewarn = false;
 	protected boolean backupEnabled = false;
 	protected int backupInterval =  60*60*6;
@@ -103,13 +104,14 @@ public class AutoSaveConfig {
 		
 		
 		//save variables
-		varBroadcast = config.getBoolean("save.broadcast", varBroadcast);
-		varInterval = config.getInt("save.interval", varInterval);
+		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
+		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
+		saveInterval = config.getInt("save.interval", saveInterval);
 		savewarn = config.getBoolean("save.warn", savewarn);
-		varWarnTimes = config.getIntegerList("save.warntime");
-		if (varWarnTimes.size() == 0) {
-			varWarnTimes.add(0);
-			config.set("var.warntime", varWarnTimes);
+		saveWarnTimes = config.getIntegerList("save.warntime");
+		if (saveWarnTimes.size() == 0) {
+			saveWarnTimes.add(0);
+			config.set("var.warntime", saveWarnTimes);
 		}
 
 		//backup variables
@@ -123,11 +125,11 @@ public class AutoSaveConfig {
 		donotbackuptointfld = config.getBoolean("backup.disableintfolder", donotbackuptointfld);
 		backuppluginsfolder = config.getBoolean("backup.pluginsfolder", backuppluginsfolder);
 		backupzip = config.getBoolean("backup.zip", backupzip);
-		varWorlds = config.getStringList("backup.worlds");
+		backupWorlds = config.getStringList("backup.worlds");
 		backupwarn = config.getBoolean("backup.warn", backupwarn);
-		if (varWorlds.size() == 0) {
-			varWorlds.add("*");
-			config.set("var.worlds", varWorlds);
+		if (backupWorlds.size() == 0) {
+			backupWorlds.add("*");
+			config.set("var.worlds", backupWorlds);
 		}
 		backupWarnTimes = config.getIntegerList("backup.warntime");
 		if (backupWarnTimes.size() == 0) {
@@ -176,10 +178,11 @@ public class AutoSaveConfig {
 		config.set("var.crdebug", crdebug);
 		
 		//save variables
-		config.set("save.broadcast", varBroadcast);
-		config.set("save.interval", varInterval);
+		config.set("save.enabled",saveEnabled);
+		config.set("save.interval", saveInterval);
+		config.set("save.broadcast", saveBroadcast);
 		config.set("save.warn", savewarn);
-		config.set("save.warntime", varWarnTimes);
+		config.set("save.warntime", saveWarnTimes);
 
 		
 		//backup variables
@@ -193,14 +196,14 @@ public class AutoSaveConfig {
 		config.set("backup.disableintfolder", donotbackuptointfld);
 		config.set("backup.zip",backupzip);
 		config.set("backup.slowbackup", slowbackup);
-		config.set("backup.worlds", varWorlds);
+		config.set("backup.worlds", backupWorlds);
 		config.set("backup.warn", backupwarn);
 		config.set("backup.warntime", backupWarnTimes);
 		
 		//purge variables
+		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.interval", purgeInterval);
 		config.set("purge.awaytime", purgeAwayTime);
-		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.broadcast",purgeBroadcast);
 		config.set("purge.slowpurge", slowpurge);
 		config.set("purge.wg.enabled", wg);

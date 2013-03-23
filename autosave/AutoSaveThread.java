@@ -50,7 +50,7 @@ public class AutoSaveThread extends Thread {
 	public void startsave()
 	{
 	command = true;
-	runnow = config.varInterval;
+	runnow = config.saveInterval;
 	}
 	// The code to run...weee
 	public void run() {
@@ -60,13 +60,13 @@ public class AutoSaveThread extends Thread {
 
 		log.info(String
 				.format("[%s] AutoSaveThread Started: Interval is %d seconds, Warn Times are %s",
-						plugin.getDescription().getName(), config.varInterval,
-						Generic.join(",", config.varWarnTimes)));
+						plugin.getDescription().getName(), config.saveInterval,
+						Generic.join(",", config.saveWarnTimes)));
 		Thread.currentThread().setName("AutoSaveWorld_AutoSaveThread");
 		while (run) {
 			// Prevent AutoSave from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving
-			if(config.varInterval == 0) {
+			if(config.saveInterval == 0) {
 				try {
 					Thread.sleep(5000);
 				} catch(InterruptedException e) {
@@ -77,7 +77,7 @@ public class AutoSaveThread extends Thread {
 			
 			
 			// Do our Sleep stuff!
-			for (runnow = 0; runnow < config.varInterval; runnow++) {
+			for (runnow = 0; runnow < config.saveInterval; runnow++) {
 				try {
 					if (!run) {
 						if (config.varDebug) {
@@ -86,15 +86,15 @@ public class AutoSaveThread extends Thread {
 						return;
 					}
 					boolean warn = config.savewarn;
-					for (int w : config.varWarnTimes) {
-						if (w != 0 && w + runnow == config.varInterval) {
+					for (int w : config.saveWarnTimes) {
+						if (w != 0 && w + runnow == config.saveInterval) {
 						} else {warn = false;}
 					}
 
 					if (warn) {
 						// Perform warning
 						if (config.varDebug) {
-							log.info(String.format("[%s] Warning Time Reached: %d seconds to go.", plugin.getDescription().getName(), config.varInterval - runnow));
+							log.info(String.format("[%s] Warning Time Reached: %d seconds to go.", plugin.getDescription().getName(), config.saveInterval - runnow));
 						}
 						plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageWarning));
 						log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageWarning));
@@ -105,10 +105,10 @@ public class AutoSaveThread extends Thread {
 				}
 			}
 
-
+			if (config.saveEnabled||command) {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { 
 					public void run() {performSave();}});
-				
+			}
 		}
 	}
 	private void savePlayers() {
@@ -147,7 +147,7 @@ public class AutoSaveThread extends Thread {
 		// Lock
 		plugin.saveInProgress = true;
 
-		plugin.broadcasta(configmsg.messageBroadcastPre);
+		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPre);}
 
 		// Save the players
 		savePlayers();
@@ -159,9 +159,10 @@ public class AutoSaveThread extends Thread {
 
 		plugin.debug(String.format("Saved %d Worlds", saved));
 
-		plugin.broadcasta(configmsg.messageBroadcastPost);
+		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPost);}
 		} catch (Exception e) 
-		{plugin.broadcasta("&4AutoSave Failed");
+		{
+		if (config.saveBroadcast){plugin.broadcast("&4AutoSave Failed");}
 		if (config.varDebug) {e.printStackTrace();}}
 		command = false;
 		plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());

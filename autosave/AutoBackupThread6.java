@@ -77,10 +77,10 @@ public class AutoBackupThread6 extends Thread {
 		Thread.currentThread().setName("AutoSaveWorld_AutoBackupThread");
 		while (run) {
 			// Prevent AutoBackup from never sleeping
-			// If interval is 0, sleep for 5 seconds and skip saving
+			// If interval is 0, sleep for 10 seconds and skip backup
 			if(config.backupInterval == 0) {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(10000);
 				} catch(InterruptedException e) {
 					// care
 				}
@@ -152,7 +152,7 @@ public class AutoBackupThread6 extends Thread {
 	private int backupWorlds(List<String> worldNames, boolean zip, String extpath) {
 		// Save our worlds...
 		boolean all= false;
-		if (config.varWorlds.contains("*")) {all = true;}
+		if (config.backupWorlds.contains("*")) {all = true;}
 			int i = 0;
 			List<World> worlds = plugin.getServer().getWorlds();
 			for (World world : worlds) {
@@ -210,7 +210,7 @@ public class AutoBackupThread6 extends Thread {
 		// Lock
 		plugin.saveInProgress = true;
 		plugin.backupInProgress = true;
-		plugin.broadcastb(configmsg.messageBroadcastBackupPre);
+		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
 		datesec = System.currentTimeMillis();
 		int saved = 0;
 		backupfoldersdest.clear();
@@ -254,7 +254,7 @@ public class AutoBackupThread6 extends Thread {
 				numberofbackupsext--;}
 			//do backup
 			saved = 0;
-			saved += backupWorlds(config.varWorlds, zip, extpath);
+			saved += backupWorlds(config.backupWorlds, zip, extpath);
 			plugin.debug(String.format("Backuped %d Worlds", saved));
 			backupnamesext.add(datesec);
 			numberofbackupsext++;
@@ -289,11 +289,9 @@ public class AutoBackupThread6 extends Thread {
 			
 		}
 		
-
-		
 		command = false;
-		if (config.varDebug) {plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");}
-		plugin.broadcastb(configmsg.messageBroadcastBackupPost);
+		plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");
+		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPost);}
 		plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
 		// Release
 		plugin.saveInProgress = false;
@@ -323,9 +321,9 @@ public class AutoBackupThread6 extends Thread {
 			        try {
 			    	InputStream in = new FileInputStream(sourceLocation);
 			        OutputStream out = new FileOutputStream(targetLocation);
-			        
+
 			        // Copy the bits from instream to outstream
-			        byte[] buf = new byte[5120];
+			        byte[] buf = new byte[4096];
 			        int len;
 			        while ((len = in.read(buf)) > 0) {
 			            out.write(buf, 0, len);
@@ -333,13 +331,14 @@ public class AutoBackupThread6 extends Thread {
 			        }
 			        in.close();
 			        out.close();
+
+			        } catch (IOException e) {plugin.debug("Failed to backup file "+sourceLocation);}
 				    if (config.slowbackup) {
 					    try {
 							sleep(0);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}}
-			        } catch (IOException e) {plugin.debug("Failed to backup file "+sourceLocation);}
 
 			    }
 			    }
@@ -362,6 +361,6 @@ public class AutoBackupThread6 extends Thread {
 	
 	
 	
-	}
+}
 
 
