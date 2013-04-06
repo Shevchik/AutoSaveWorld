@@ -59,7 +59,7 @@ if (!selfrestartThread.restart)
 log.info("[AutoSaveWorld] Graceful quit of selfrestart thread");}
 stopThread(ThreadType.CRASHRESTART);
 stopThread(ThreadType.AUTORESTART);
-
+JVMsh = null;
 log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),getDescription().getVersion()));
 }
 
@@ -67,10 +67,10 @@ log.info(String.format("[%s] Version %s is disabled",getDescription().getName(),
 public void onEnable() {
 // Load Configuration
 config = new AutoSaveConfig();
-configmsg = new AutoSaveConfigMSG(config);
-localeloader = new LocaleContainer(this,config, configmsg);
 config.load();
+configmsg = new AutoSaveConfigMSG(config);
 configmsg.loadmsg();
+localeloader = new LocaleContainer(this,config, configmsg);
 config.loadbackupextfolderconfig();
 eh = new ASWEventListener(this, config, configmsg, localeloader);
 //register events and commands

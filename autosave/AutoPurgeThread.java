@@ -95,6 +95,10 @@ public class AutoPurgeThread extends Thread {
 			plnopurgelistfile.save(new File("plugins/AutoSaveWorld/nopurgeplayerlist.yml"));
 		} catch (IOException e1) {e1.printStackTrace();}
 
+		
+		
+		
+		
 		while (run) {
 			// Prevent AutoPurge from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving
@@ -164,8 +168,8 @@ public class AutoPurgeThread extends Thread {
 		if (config.dat) {
 		try {
 		DelPlayerDatFile(awaytime);} catch (Exception e) {
-			e.printStackTrace();
-		} }
+				e.printStackTrace();
+			}}
 		command = false;
 		plugin.debug("Purge finished");
 		if (config.purgeBroadcast){plugin.broadcast(configmsg.messagePurgePost);}
@@ -322,7 +326,7 @@ public class AutoPurgeThread extends Thread {
 				if (!banned) {
 				pl.setBanned(true);}
 				try {
-					File essFile = new File(new File(".").getCanonicalPath()+File.separator+"plugins"+File.separator+"Essentials"+File.separator+pl.getName()+".yml");
+					File essFile = new File(new File(".").getCanonicalPath()+File.separator+"plugins"+File.separator+"Essentials"+File.separator+"userdata"+File.separator+pl.getName()+".yml");
 					essFile.delete(); plugin.debug(pl.getName()+" is inactive. Removing essentials info on him");
 				} catch (IOException e) {e.printStackTrace();}
 				if (!banned) {
