@@ -25,7 +25,7 @@ public class CrashRestartThread extends Thread{
 	
 	
 	public void run()
-	{	
+	{
 		log.info("[AutoSaveWorld] CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld_CrashRestartThread");
 		int tasknumber = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
