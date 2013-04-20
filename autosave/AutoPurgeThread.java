@@ -25,17 +25,18 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.griefcraft.lwc.LWCPlugin;
+import com.griefcraft.model.Protection;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -208,16 +209,12 @@ public class AutoPurgeThread extends Thread {
 		}
 	}
 
-	public Object minpoint;
-	public Object maxpoint;
-
 	public void WGpurge(long awaytime) {
 		// don't know if all of this is thread safe.
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");
 		//get all active players 
 		HashSet<String> onlineplncs = new HashSet<String>();
-		onlineplncs.clear();
 		for (Player plname : Bukkit.getOnlinePlayers()) {
 			onlineplncs.add(plname.getName().toLowerCase());
 		}
@@ -229,7 +226,7 @@ public class AutoPurgeThread extends Thread {
 		List<World> worldlist = Bukkit.getWorlds();
 		for (final World w : worldlist) {
 			plugin.debug("Checking WG protections in world " + w.getName());
-			RegionManager m = wg.getRegionManager(w);
+			final RegionManager m = wg.getRegionManager(w);
 			List<String> rgtodel = new ArrayList<String>();
 			// searching for inactive players in regions
 			for (ProtectedRegion rg : m.getRegions().values()) {
@@ -279,26 +276,29 @@ public class AutoPurgeThread extends Thread {
 			// now deal with the regions that must be deleted
 			if (!rgtodel.isEmpty())
 				plugin.debug("Deleting regions in removal list");
-			for (String delrg : rgtodel) {
+			for (final String delrg : rgtodel) {
 				plugin.debug("Removing region " + delrg);
 				if (config.wgregenrg) {
 					plugin.debug("Regenerating region" + delrg);
-					minpoint = m.getRegion(delrg).getMinimumPoint();
-					maxpoint = m.getRegion(delrg).getMaximumPoint();
-					// do this in sync task otherwise it may damage your server
-					plugin.getServer().getScheduler()
-							.scheduleSyncDelayedTask(plugin, new Runnable() {
-								public void run() {
-									LocalWorld lw = new BukkitWorld(w);
-									lw.regenerate(
-											new CuboidRegion(
-													lw,
-													(BlockVector) plugin.purgeThread.minpoint,
-													(BlockVector) plugin.purgeThread.maxpoint),
-											new EditSession(lw,
-													Integer.MAX_VALUE));
-								}
-							});
+					//regen should be done in main thread
+					Runnable rgregen =  new Runnable()
+					{
+						BlockVector minpoint = m.getRegion(delrg).getMinimumPoint();
+						BlockVector maxpoint = m.getRegion(delrg).getMaximumPoint();
+						BukkitWorld lw = new BukkitWorld(w);
+						public void run()
+						{
+							new BukkitWorld(w).regenerate(
+									new CuboidRegion(
+											lw,
+											minpoint,
+											maxpoint
+											),
+									new EditSession(lw,
+											Integer.MAX_VALUE));
+						}
+					};
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
 
 				}
 				m.removeRegion(delrg);
@@ -313,26 +313,31 @@ public class AutoPurgeThread extends Thread {
 
 	public void LWCpurge(long awaytime) {
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
-		ConsoleCommandSender sender = Bukkit.getConsoleSender();
-		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
-		for (OfflinePlayer pl : checkPlayers) {
-			if (PurgePlayer(pl)) {
-				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
-					if (config.lwcdelprotectedblocks) {
-						plugin.debug(pl.getName()
-								+ " is inactive Removing all LWC protections and deleting blocks");
-						lwc.getLWC().fastRemoveProtectionsByPlayer(sender,
-								pl.getName(), true);
-					} else {
-						plugin.debug(pl.getName()
-								+ " is inactive Removing all LWC protections");
-						lwc.getLWC().fastRemoveProtectionsByPlayer(sender,
-								pl.getName(), false);
+		//we will check LWC database and remove protections that belongs to away player
+		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
+		{
+			Player pl = pr.getBukkitOwner();
+			if (PurgePlayer(pl))
+				{ 
+					if (!pr.getBukkitOwner().hasPlayedBefore() || System.currentTimeMillis() - pl.getLastPlayed() >= awaytime)
+					{
+						if (config.lwcdelprotectedblocks)
+						{
+
+							Runnable remchest = new Runnable()
+							{
+								Block chest = pr.getBlock();
+								public void run() {
+									chest.setType(Material.AIR);
+								}
+								
+							};
+							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
+						}
+						lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
 					}
 				}
-			}
 		}
-
 	}
 
 	public void DelPlayerDatFile(long awaytime) {
