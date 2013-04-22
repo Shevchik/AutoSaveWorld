@@ -334,52 +334,14 @@ public class AutoPurgeThread extends Thread {
 							};
 							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
 						}
+						plugin.debug("Removing protection for inactive player "+pr.getBukkitOwner().getName());
 						lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
 					}
 				}
 		}
 	}
 
-	public void DelPlayerDatFile(long awaytime) {
-		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
-		for (OfflinePlayer pl : checkPlayers) {
-			if (PurgePlayer(pl)) {
-				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
-					// For thread safety(i don't want to know what will happen
-					// if player will join the server while his dat file is
-					// deleting from another thread)
-					// The problem is how plugins will react to this, need
-					// someone to test this.
 
-					// Check if the player was already banned
-					boolean banned = pl.isBanned();
-					if (!banned) {
-						pl.setBanned(true);
-					}
-					try {
-						for (World w : Bukkit.getWorlds()) {
-							File pldatFile = new File(
-									new File(".").getCanonicalPath()
-											+ File.separator
-											+ w.getWorldFolder().getName()
-											+ File.separator + "players"
-											+ File.separator + pl.getName()
-											+ ".dat");
-							pldatFile.delete();
-							plugin.debug(pl.getName()
-									+ " is inactive. Removing dat file");
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					// Unban after purge
-					if (!banned) {
-						pl.setBanned(false);
-					}
-				}
-			}
-		}
-	}
 
 	public void EssentialsPurge(long awaytime) {
 		// first remove away players
@@ -414,6 +376,47 @@ public class AutoPurgeThread extends Thread {
 		}
 		// now lets check Essentials files for no longer existant players
 
+	}
+	
+	public void DelPlayerDatFile(long awaytime) {
+		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
+		for (OfflinePlayer pl : checkPlayers) {
+			if (PurgePlayer(pl)) {
+				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+					// For thread safety(i don't want to know what will happen
+					// if player will join the server while his dat file is
+					// deleting from another thread)
+					// The problem is how plugins will react to this, need
+					// someone to test this.
+
+					// Check if the player was already banned
+					boolean banned = pl.isBanned();
+					if (!banned) {
+						pl.setBanned(true);
+					}
+					String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getName();
+					plugin.debug("Removing player .dat files from folder "+worldfoldername);
+					try {
+							File pldatFile = new File(
+									new File(".").getCanonicalPath()
+											+ File.separator
+											+ worldfoldername
+											+ File.separator + "players"
+											+ File.separator + pl.getName()
+											+ ".dat");
+							pldatFile.delete();
+							plugin.debug(pl.getName()
+									+ " is inactive. Removing dat file");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					// Unban after purge
+					if (!banned) {
+						pl.setBanned(false);
+					}
+				}
+			}
+		}
 	}
 
 }

@@ -161,13 +161,14 @@ public class AutoBackupThread6 extends Thread {
 			plugin.debug(worldfoldername);
 			plugin.debug(String.format("Backuping world: %s", world.getName()));
 			try {
+				world.setAutoSave(false);
 				String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
 				String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+worldfoldername+File.separator+datebackup;
 				if (!zip) {
 				copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb));
 				} else 
 				{ zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb+".zip"));}
-			
+				world.setAutoSave(true);
 			} catch (IOException e) {e.printStackTrace();} 
 			} 
 			i++;

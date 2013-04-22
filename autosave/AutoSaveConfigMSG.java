@@ -39,6 +39,7 @@ public class AutoSaveConfigMSG {
 	protected String messageBackupWarning = "&9Warning, AutoBackup will commence soon";
 	protected String messagePurgePre = "&9AutoPurging";
 	protected String messagePurgePost = "&9AutoPurge Complete";
+	protected String messageAutoRestart = "&9Server is restarting";
 	
 	public void loadmsg() {
 		if (!config.switchtolangfile) {
@@ -52,6 +53,7 @@ public class AutoSaveConfigMSG {
 		messageWarning =configmsg.getString("warning.save", messageWarning);
 		messageBackupWarning =configmsg.getString("warning.backup", messageBackupWarning);
 		messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
+		messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
 		configmsg = new YamlConfiguration();
 		configmsg.set("broadcast.pre", messageBroadcastPre);
 		configmsg.set("broadcast.post", messageBroadcastPost);
@@ -62,6 +64,7 @@ public class AutoSaveConfigMSG {
 		configmsg.set("warning.save", messageWarning);
 		configmsg.set("warning.backup", messageBackupWarning);
 		configmsg.set("insufficentpermissions", messageInsufficientPermissions);
+		configmsg.set("autorestart.restarting",messageAutoRestart);
 		try {
 			configmsg.save(new File("plugins/AutoSaveWorld/configmsg.yml"));
 		} catch (IOException e) {

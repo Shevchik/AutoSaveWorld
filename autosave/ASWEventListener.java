@@ -30,11 +30,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
-import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-import de.bananaco.bpermissions.api.ApiLayer;
-import de.bananaco.bpermissions.api.util.CalculableType;
-	
 	public class ASWEventListener implements Listener, CommandExecutor {
 
 		private AutoSave plugin = null;
@@ -75,41 +70,26 @@ import de.bananaco.bpermissions.api.util.CalculableType;
 			{plugin.crashrestartThread.stopthread();} }
 		}
 		
-		private String world;
-		private String perm;
-		private boolean hasRight(Player player, String perm, String world) {
-		world = player.getWorld().toString();
-		//bPermissions
-		if (plugin.getServer().getPluginManager().getPlugin("bPermissions") != null) {
-		if (ApiLayer.hasPermission(world, CalculableType.USER, player.toString(), perm)) {return true;};}
-		//PermissionsEx
-		if (plugin.getServer().getPluginManager().getPlugin("PermissionsEx") !=null) { 
-			PermissionUser user = PermissionsEx.getUser(player);
-			if (user.has(perm)) {return true;} ;}
-		//bukkitPermissions
-		if (player.hasPermission(perm)) {return true;};
-		return false;
-		}
-		
 		@Override
 		public boolean onCommand(CommandSender sender, Command command,
 		String commandLabel, String[] args) {
 		String commandName = command.getName().toLowerCase();
 		Player player = null;
 		if ((sender instanceof Player)) {
-		// Player, lets check if player isOp()
+		// Player, lets check if player isOp
 		player = (Player) sender;
 
-		if (commandName.equals("autosaveworld")) { if (args.length == 0) {perm="autosaveworld.autosaveworld";} else {perm="autosaveworld."+args[0];}
+		String perm = null;
+		if (commandName.equalsIgnoreCase("autosaveworld")) { if (args.length == 0) {perm="autosaveworld.autosaveworld";} else {perm="autosaveworld."+args[0];}
 		} else 
-		if (commandName.equals("autosave"))
+		if (commandName.equalsIgnoreCase("autosave"))
 		{perm = "autosaveworld.save";} else
-		if (commandName.equals("autobackup"))
+		if (commandName.equalsIgnoreCase("autobackup"))
 		{perm = "autosaveworld.backup";} else
-		if (commandName.equals("autopurge"))
+		if (commandName.equalsIgnoreCase("autopurge"))
 		{perm = "autosaveworld.purge";}
 		// Check Permissions
-		if (!player.isOp() && !hasRight(player, perm, world)) 
+		if (!player.isOp() && !player.hasPermission(perm)) 
 		{
 		plugin.sendMessage(sender, configmsg.messageInsufficientPermissions);
 		return true;

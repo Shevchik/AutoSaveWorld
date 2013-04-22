@@ -32,7 +32,7 @@ public class AutoSaveConfig {
 	
 	// Variables
 	protected UUID varUuid;
-	protected int saveInterval = 300;
+	protected int saveInterval = 900;
 	protected List<Integer> saveWarnTimes = null;
 	protected boolean saveBroadcast = true;
 	protected boolean saveEnabled = true;
@@ -70,7 +70,8 @@ public class AutoSaveConfig {
 	protected long crtimeout = 15;
 	protected boolean autorestart = false;
 	protected String autorestartscriptpath = "start.sh";
-	protected String autorestarttime = "00:00";
+	protected int autorestarttimeH = 0;
+	protected int autorestarttimeM = 0;
 	protected boolean astop = false;
 	protected boolean crdebug = false;
 	
@@ -159,7 +160,8 @@ public class AutoSaveConfig {
 		
 		//autorestart variables
 		autorestart = config.getBoolean("autorestart.enabled", autorestart);
-		autorestarttime = config.getString("autorestart.time",autorestarttime);
+		autorestarttimeH = config.getInt("autorestart.time.hour",autorestarttimeH);
+		autorestarttimeM = config.getInt("autorestart.time.minute", autorestarttimeM);
 		autorestartscriptpath = config.getString("autorestart.scriptpath",autorestartscriptpath);
 		astop = config.getBoolean("autorestart.juststop", astop);
 		
@@ -221,7 +223,8 @@ public class AutoSaveConfig {
 		
 		//autorestart variables
 		config.set("autorestart.enabled", autorestart);
-		config.set("autorestart.time",autorestarttime);
+		config.set("autorestart.time.hour",autorestarttimeH);
+		config.set("autorestart.time.minute", autorestarttimeM);
 		config.set("autorestart.scriptpath",autorestartscriptpath);
 		config.set("autorestart.juststop", astop);
 		
