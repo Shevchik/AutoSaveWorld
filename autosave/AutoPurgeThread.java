@@ -209,6 +209,7 @@ public class AutoPurgeThread extends Thread {
 		}
 	}
 
+	public boolean regionregenerated = false;
 	public void WGpurge(long awaytime) {
 		// don't know if all of this is thread safe.
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
@@ -281,6 +282,7 @@ public class AutoPurgeThread extends Thread {
 				if (config.wgregenrg) {
 					plugin.debug("Regenerating region" + delrg);
 					//regen should be done in main thread
+					regionregenerated = false;
 					Runnable rgregen =  new Runnable()
 					{
 						BlockVector minpoint = m.getRegion(delrg).getMinimumPoint();
@@ -296,10 +298,19 @@ public class AutoPurgeThread extends Thread {
 											),
 									new EditSession(lw,
 											Integer.MAX_VALUE));
+							plugin.purgeThread.regionregenerated = true;
 						}
 					};
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
-
+					//sleep until region is regenerated
+					while (!regionregenerated)
+					{
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 				}
 				m.removeRegion(delrg);
 
@@ -374,8 +385,13 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 		}
-		// now lets check Essentials files for no longer existant players
+		// now lets check Essentials files for no longer existant players, maybe i will add this later.
 
+	}
+	
+	public void MVInvPurge(long awaytime)
+	{
+		
 	}
 	
 	public void DelPlayerDatFile(long awaytime) {

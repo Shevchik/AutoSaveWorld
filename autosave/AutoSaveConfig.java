@@ -44,6 +44,8 @@ public class AutoSaveConfig {
 	protected int MaxNumberOfWorldsBackups = 30;
 	protected int MaxNumberOfPluginsBackups = 30;
 	protected boolean backupBroadcast = true;
+	protected List<String> extfolders;
+	protected boolean backuptoextfolders = false;
 	protected boolean donotbackuptointfld = true;
 	protected boolean backuppluginsfolder = false;
 	protected boolean slowbackup = true;
@@ -69,27 +71,16 @@ public class AutoSaveConfig {
 	protected boolean crstop = false;
 	protected long crtimeout = 15;
 	protected boolean autorestart = false;
+	protected boolean autorestartBroadcast = true;
 	protected String autorestartscriptpath = "start.sh";
 	protected int autorestarttimeH = 0;
 	protected int autorestarttimeM = 0;
+	protected boolean autorestartcountdown = true;
+	protected int autorestartseconds = 20;
 	protected boolean astop = false;
 	protected boolean crdebug = false;
 	
-	
-	protected List<String> extfolders;
-	protected boolean backuptoextfolders = false;
-	public void loadbackupextfolderconfig(){
-		config = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/backupextfoldersconfig.yml"));
-		extfolders = config.getStringList("extfolders");
-		config = new YamlConfiguration();
-		config.set("extfolders", extfolders);
-		try {
-			config.save(new File("plugins/AutoSaveWorld/backupextfoldersconfig.yml"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 
 	
 	//config load/save functions
@@ -123,6 +114,7 @@ public class AutoSaveConfig {
 		MaxNumberOfPluginsBackups = config.getInt("backup.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
 		backuptoextfolders = config.getBoolean("backup.toextfolders", backuptoextfolders);
+		extfolders = config.getStringList("backup.extfolders");
 		donotbackuptointfld = config.getBoolean("backup.disableintfolder", donotbackuptointfld);
 		backuppluginsfolder = config.getBoolean("backup.pluginsfolder", backuppluginsfolder);
 		backupzip = config.getBoolean("backup.zip", backupzip);
@@ -160,8 +152,11 @@ public class AutoSaveConfig {
 		
 		//autorestart variables
 		autorestart = config.getBoolean("autorestart.enabled", autorestart);
+		autorestartBroadcast = config.getBoolean("autorestart.broadcast", autorestartBroadcast);
 		autorestarttimeH = config.getInt("autorestart.time.hour",autorestarttimeH);
 		autorestarttimeM = config.getInt("autorestart.time.minute", autorestarttimeM);
+		autorestartcountdown = config.getBoolean("autorestart.countdown.enabled", autorestartcountdown);
+		autorestartseconds = config.getInt("autorestart.countdown.seconds",autorestartseconds);
 		autorestartscriptpath = config.getString("autorestart.scriptpath",autorestartscriptpath);
 		astop = config.getBoolean("autorestart.juststop", astop);
 		
@@ -196,6 +191,7 @@ public class AutoSaveConfig {
 		config.set("backup.broadcast", backupBroadcast);
 		config.set("backup.toextfolders", backuptoextfolders);
 		config.set("backup.disableintfolder", donotbackuptointfld);
+		config.set("backup.extfolders",extfolders);
 		config.set("backup.zip",backupzip);
 		config.set("backup.slowbackup", slowbackup);
 		config.set("backup.worlds", backupWorlds);
@@ -223,8 +219,11 @@ public class AutoSaveConfig {
 		
 		//autorestart variables
 		config.set("autorestart.enabled", autorestart);
+		config.set("autorestart.broadcast", autorestartBroadcast);
 		config.set("autorestart.time.hour",autorestarttimeH);
 		config.set("autorestart.time.minute", autorestarttimeM);
+		config.set("autorestart.countdown.enabled", autorestartcountdown);
+		config.set("autorestart.countdown.seconds",autorestartseconds);
 		config.set("autorestart.scriptpath",autorestartscriptpath);
 		config.set("autorestart.juststop", astop);
 		

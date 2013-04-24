@@ -102,7 +102,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 		return true;
 		}
 		
-		if (commandName.equals("autosaveworld")) {
+		if (commandName.equalsIgnoreCase("autosaveworld")) {
 		//help
 		if (args.length==1 && args[0].equalsIgnoreCase("help"))
 		{
@@ -188,6 +188,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 		} else
 		if ((args.length==1 && args[0].equalsIgnoreCase("restart"))) 
 		{
+		if (config.autorestartBroadcast) {plugin.broadcast(configmsg.messageAutoRestart);}
 		plugin.debug("Restarting");
 		plugin.JVMsh.setpath(config.autorestartscriptpath);
 		Runtime.getRuntime().addShutdownHook(plugin.JVMsh);
@@ -223,17 +224,17 @@ import org.bukkit.event.server.ServerCommandEvent;
 		}
 		return false;
 		} else
-		if (commandName.equals("autosave"))
+		if (commandName.equalsIgnoreCase("autosave"))
 		{
 		plugin.saveThread.startsave();
 		return true;
 		} else
-		if (commandName.equals("autobackup"))
+		if (commandName.equalsIgnoreCase("autobackup"))
 		{
 		plugin.backupThread6.startbackup();
 		return true;
 		} else
-		if (commandName.equals("autopurge"))
+		if (commandName.equalsIgnoreCase("autopurge"))
 		{
 		plugin.purgeThread.startpurge();
 		return true;

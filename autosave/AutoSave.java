@@ -71,7 +71,6 @@ config.load();
 configmsg = new AutoSaveConfigMSG(config);
 configmsg.loadmsg();
 localeloader = new LocaleContainer(this,config, configmsg);
-config.loadbackupextfolderconfig();
 eh = new ASWEventListener(this, config, configmsg, localeloader);
 //register events and commands
 getCommand("autosaveworld").setExecutor(eh);
@@ -132,7 +131,7 @@ crashrestartThread.start();
 return true;
 case AUTORESTART:
 if (autorestartThread == null || !autorestartThread.isAlive()) {
-autorestartThread = new AutoRestartThread(this, config);
+autorestartThread = new AutoRestartThread(this, config, configmsg);
 autorestartThread.start();
 }
 return true;

@@ -223,10 +223,7 @@ public class AutoBackupThread6 extends Thread {
 		}
 		//adding external folders to list of folders to which we should backup everything 
 		if (config.backuptoextfolders) {
-			config.loadbackupextfolderconfig();
-			for (String extpath : config.extfolders) {
-				backupfoldersdest.add(extpath);
-			}	
+				backupfoldersdest.addAll(config.extfolders);	
 		}
 		
 		//backup time	

@@ -40,6 +40,7 @@ public class AutoSaveConfigMSG {
 	protected String messagePurgePre = "&9AutoPurging";
 	protected String messagePurgePost = "&9AutoPurge Complete";
 	protected String messageAutoRestart = "&9Server is restarting";
+	protected String messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
 	
 	public void loadmsg() {
 		if (!config.switchtolangfile) {
@@ -54,6 +55,7 @@ public class AutoSaveConfigMSG {
 		messageBackupWarning =configmsg.getString("warning.backup", messageBackupWarning);
 		messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
 		messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
+		messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
 		configmsg = new YamlConfiguration();
 		configmsg.set("broadcast.pre", messageBroadcastPre);
 		configmsg.set("broadcast.post", messageBroadcastPost);
@@ -65,6 +67,7 @@ public class AutoSaveConfigMSG {
 		configmsg.set("warning.backup", messageBackupWarning);
 		configmsg.set("insufficentpermissions", messageInsufficientPermissions);
 		configmsg.set("autorestart.restarting",messageAutoRestart);
+		configmsg.set("autorestart.countdown",messageAutoRestartCountdown);
 		try {
 			configmsg.save(new File("plugins/AutoSaveWorld/configmsg.yml"));
 		} catch (IOException e) {
@@ -83,6 +86,8 @@ public class AutoSaveConfigMSG {
 			messageWarning =configmsg.getString("warning.save", messageWarning); 
 			messageBackupWarning =configmsg.getString("warning.backup", messageBackupWarning);
 			messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
+			messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
+			messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
 
 		}
 		

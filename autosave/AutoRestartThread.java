@@ -9,13 +9,15 @@ import org.bukkit.Bukkit;
 public class AutoRestartThread  extends Thread{
 	private AutoSave plugin;
 	private AutoSaveConfig config;
+	AutoSaveConfigMSG configmsg;
 	private boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 
-	AutoRestartThread(AutoSave plugin,AutoSaveConfig config)
+	AutoRestartThread(AutoSave plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
 	{
 		this.plugin = plugin;
 		this.config = config;
+		this.configmsg = configmsg;
 	}
 	
 	public void stopthread()
@@ -48,12 +50,24 @@ public class AutoRestartThread  extends Thread{
 			int curminutes = cal.get(Calendar.MINUTE);
 			 if (curhours == rhours && curminutes == rminutes )
 			 {
-				 log.info("[AutoSaveWorld] AutoRestarting server");
+				if (config.autorestartcountdown) {
+					for (int i = config.autorestartseconds; i>0; i--)
+					{
+						plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)));
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					} 
+				}
+				if (config.autorestartBroadcast) {plugin.broadcast(configmsg.messageAutoRestart);}
+				log.info("[AutoSaveWorld] AutoRestarting server");
 				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
-				if (!config.astop) {
-				plugin.JVMsh.setpath(config.autorestartscriptpath);
-				Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				run = false;
+				if (!config.astop) {
+					plugin.JVMsh.setpath(config.autorestartscriptpath);
+					Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				}
 			 }
 			}
