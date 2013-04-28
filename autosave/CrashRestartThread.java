@@ -57,10 +57,10 @@ public class CrashRestartThread extends Thread{
 		while (run)
 		{
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L)))
-			log.info("[AutoSaveWorld]"+Color.RED+"Server has stopped responding. Probably this is a crash.");
+			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) 
+			{log.info("[AutoSaveWorld]"+Color.RED+"Server has stopped responding. Probably this is a crash.");
 			run = false;
-			{if (config.crashrestartenabled) {
+				if (config.crashrestartenabled) {
 				log.info("[AutoSaveWorld] CrashRestart is enabled, AutoSaveWorld will try to restart server");
 				if (!config.crstop) {
 				plugin.JVMsh.setpath(config.crashrestartscriptpath);

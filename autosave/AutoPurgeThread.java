@@ -298,6 +298,7 @@ public class AutoPurgeThread extends Thread {
 											),
 									new EditSession(lw,
 											Integer.MAX_VALUE));
+							m.removeRegion(delrg);
 							plugin.purgeThread.regionregenerated = true;
 						}
 					};
@@ -312,7 +313,7 @@ public class AutoPurgeThread extends Thread {
 						}
 					}
 				}
-				m.removeRegion(delrg);
+
 
 			}
 			try {
@@ -355,7 +356,7 @@ public class AutoPurgeThread extends Thread {
 
 
 	public void EssentialsPurge(long awaytime) {
-		// first remove away players
+		// this should be rewrited because it won't check player file if player .dat file doesn't exist
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers) {
 			if (PurgePlayer(pl)) {
@@ -385,8 +386,6 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 		}
-		// now lets check Essentials files for no longer existant players, maybe i will add this later.
-
 	}
 	
 	public void MVInvPurge(long awaytime)
