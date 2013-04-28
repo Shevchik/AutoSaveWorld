@@ -45,6 +45,7 @@ public class AutoSaveConfig {
 	protected int MaxNumberOfPluginsBackups = 30;
 	protected boolean backupBroadcast = true;
 	protected List<String> extfolders;
+	protected List<String> excludefolders;
 	protected boolean backuptoextfolders = false;
 	protected boolean donotbackuptointfld = true;
 	protected boolean backuppluginsfolder = false;
@@ -59,7 +60,6 @@ public class AutoSaveConfig {
 	protected boolean slowpurge = true;
 	protected boolean wg = true;
 	protected boolean wgregenrg = false;
-	protected boolean wgsaveschematics = false;
 	protected boolean lwc = true;
 	protected boolean ess = true;
 	protected boolean lwcdelprotectedblocks = false;
@@ -117,6 +117,7 @@ public class AutoSaveConfig {
 		extfolders = config.getStringList("backup.extfolders");
 		donotbackuptointfld = config.getBoolean("backup.disableintfolder", donotbackuptointfld);
 		backuppluginsfolder = config.getBoolean("backup.pluginsfolder", backuppluginsfolder);
+		excludefolders = config.getStringList("backup.excludefolders");
 		backupzip = config.getBoolean("backup.zip", backupzip);
 		backupWorlds = config.getStringList("backup.worlds");
 		backupwarn = config.getBoolean("backup.warn", backupwarn);
@@ -138,7 +139,6 @@ public class AutoSaveConfig {
 		slowpurge = config.getBoolean("purge.slowpurge", slowpurge);
 		wg = config.getBoolean("purge.wg.enabled", wg);
 		wgregenrg = config.getBoolean("purge.wg.regenpurgedregion", wgregenrg);
-		wgsaveschematics = config.getBoolean("purge.wg.savepurgedschematic", wgsaveschematics);
 		lwc = config.getBoolean("purge.lwc.enabled", lwc);
 		lwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",lwcdelprotectedblocks);
 		ess = config.getBoolean("purge.essentials.enabled",ess);
@@ -185,16 +185,17 @@ public class AutoSaveConfig {
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
+		config.set("backup.worlds", backupWorlds);
 		config.set("backup.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
 		config.set("backup.pluginsfolder", backuppluginsfolder);
 		config.set("backup.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
+		config.set("backup.excludefolders",excludefolders);
 		config.set("backup.broadcast", backupBroadcast);
 		config.set("backup.toextfolders", backuptoextfolders);
 		config.set("backup.disableintfolder", donotbackuptointfld);
 		config.set("backup.extfolders",extfolders);
 		config.set("backup.zip",backupzip);
 		config.set("backup.slowbackup", slowbackup);
-		config.set("backup.worlds", backupWorlds);
 		config.set("backup.warn", backupwarn);
 		config.set("backup.warntime", backupWarnTimes);
 		

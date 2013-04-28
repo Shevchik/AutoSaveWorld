@@ -30,13 +30,15 @@ import java.util.zip.ZipOutputStream;
 
 public class Zip {
     List<String> fileList;
+    
+    AutoSaveConfig config;
 
-    Zip(){}
-private String prepend;
+    Zip(AutoSaveConfig config){
+    	this.config = config;
+    }
 private ZipOutputStream zipOutStream;
-//well, now i'm using another one copied function, but added some code to follow WEsnapshot zip file structure
+//frealking hell, don't ask how this works, i can't understand what i wrote here.
 public void ZipFolder(final File srcDir, final File destFile) throws FileNotFoundException, IOException {
-prepend = null;
 destFile.getParentFile().mkdirs();
 final FileOutputStream outStream = new FileOutputStream(destFile);
 
@@ -45,16 +47,6 @@ final BufferedOutputStream bufOutStream = new BufferedOutputStream(outStream, 21
 try {
 zipOutStream = new ZipOutputStream(bufOutStream);
 try {
-
-if (prepend != null) {
-prepend += File.separator;
-zipOutStream.putNextEntry(new ZipEntry(prepend));
-zipOutStream.closeEntry();
-}
-else prepend = "";
-zipOutStream.putNextEntry(new ZipEntry(srcDir.getName()+File.separator));
-zipOutStream.closeEntry();
-
 zipDir(srcDir, "");
 }
 finally {
@@ -71,10 +63,9 @@ outStream.close();
 }
 
 private void zipDir(final File srcDir, String currentDir) throws IOException {
+
 if (!"".equals(currentDir)) {
 currentDir += File.separator;
-zipOutStream.putNextEntry(new ZipEntry(srcDir.getName()+File.separator+prepend + currentDir));
-zipOutStream.closeEntry();
 }
 
 final File zipDir = new File(srcDir, currentDir);
@@ -82,8 +73,15 @@ final File zipDir = new File(srcDir, currentDir);
 for (final String child : zipDir.list()) {
 final File srcFile = new File(zipDir, child);
 
-if (srcFile.isDirectory()) zipDir(srcDir, currentDir + child);
-else zipFile(srcFile,srcDir.getName()+File.separator + prepend + currentDir + child);
+if (srcFile.isDirectory()) {
+	boolean copy = true;
+	for (String efname : config.excludefolders)
+	{
+		if ((new File(srcDir.getName() + File.separator + currentDir + child).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {copy = false; break;}
+	}
+	if (copy) {zipDir(srcDir, currentDir + child);}
+}
+else zipFile(srcFile,srcDir.getName()+File.separator + currentDir + child);
 }
 }
 
@@ -94,7 +92,7 @@ final ZipEntry zipEntry = new ZipEntry(entry);
 zipEntry.setTime(srcFile.lastModified());
 zipOutStream.putNextEntry(zipEntry);
 
-final byte[] buf = new byte[2156];
+final byte[] buf = new byte[4096];
 int len;
 
 try {

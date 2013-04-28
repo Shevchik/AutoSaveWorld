@@ -205,7 +205,7 @@ public class AutoBackupThread6 extends Thread {
 		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
 		boolean zip = config.backupzip;
 		if (zip) {
-		if (zipfld == null) {zipfld = new Zip();}	
+		if (zipfld == null) {zipfld = new Zip(config);}	
 		}
 		
 		// Lock
@@ -311,8 +311,15 @@ public class AutoBackupThread6 extends Thread {
 			        
 			        String[] children = sourceLocation.list();
 			        for (int i=0; i<children.length; i++) {
+			        	boolean copy = true;
+			        	for (String efname : config.excludefolders)
+			        	{
+			        	if ((new File(sourceLocation, children[i]).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {copy = false; break;}
+			        	}
+			        	if (copy) {
 			            copyDirectory(new File(sourceLocation, children[i]),
 			                    new File(targetLocation, children[i])); 
+			        	}
 			        }
 			    } else {
 			        
