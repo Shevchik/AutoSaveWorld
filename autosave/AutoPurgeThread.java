@@ -282,7 +282,6 @@ public class AutoPurgeThread extends Thread {
 				if (config.wgregenrg) {
 					plugin.debug("Regenerating region" + delrg);
 					//regen should be done in main thread
-					regionregenerated = false;
 					Runnable rgregen =  new Runnable()
 					{
 						BlockVector minpoint = m.getRegion(delrg).getMinimumPoint();
@@ -299,19 +298,9 @@ public class AutoPurgeThread extends Thread {
 									new EditSession(lw,
 											Integer.MAX_VALUE));
 							m.removeRegion(delrg);
-							plugin.purgeThread.regionregenerated = true;
 						}
 					};
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
-					//sleep until region is regenerated
-					while (!regionregenerated)
-					{
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
 				}
 
 
@@ -388,6 +377,7 @@ public class AutoPurgeThread extends Thread {
 		}
 	}
 	
+	//not implemented yet
 	public void MVInvPurge(long awaytime)
 	{
 		
