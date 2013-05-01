@@ -39,9 +39,9 @@ private AutoSaveConfig config;
 private LocaleContainer localeloader;
 private ASWEventListener eh;
 protected int numPlayers = 0;
-protected boolean saveInProgress = false;
-protected boolean backupInProgress = false;
-protected boolean purgeInProgress = false;
+protected volatile boolean saveInProgress = false;
+protected volatile boolean backupInProgress = false;
+protected volatile boolean purgeInProgress = false;
 protected String LastSave = "No save was since the server start";
 protected String LastBackup = "No backup was since the server start";
 @Override
