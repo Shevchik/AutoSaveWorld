@@ -69,6 +69,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
 			{plugin.crashrestartThread.stopthread();} }
 		}
+
 		
 		@Override
 		public boolean onCommand(CommandSender sender, Command command,

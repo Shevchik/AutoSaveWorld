@@ -242,10 +242,8 @@ public class AutoBackupThread6 extends Thread {
 				{
 					File dirtodelete = new File(pathtoworldsfld+File.separator+deldir+File.separator+datebackup);
 					if (dirtodelete.exists())  {//exists if zip is false 
-						plugin.debug(dirtodelete.toString());
 						deleteDirectory(dirtodelete); }
 					else {//not exists if zip is true
-						plugin.debug(new File(dirtodelete+".zip").toString());
 						deleteDirectory(new File(dirtodelete+".zip"));}
 				}
 				backupnamesext.remove(0);
@@ -266,10 +264,8 @@ public class AutoBackupThread6 extends Thread {
 					String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+datebackup;
 					//delete worlds oldest backup
 						if (new File(fldtodel).exists())  {//exists if zip is false 
-							plugin.debug(fldtodel.toString());
 							deleteDirectory(new File(fldtodel)); }
 						else {//not exists if zip is true
-							plugin.debug(new File(fldtodel+".zip").toString());
 							deleteDirectory(new File(fldtodel+".zip"));}
 					backupnamespl.remove(0);
 					numberofbackupspl--;}	
