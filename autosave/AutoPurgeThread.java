@@ -209,7 +209,6 @@ public class AutoPurgeThread extends Thread {
 		}
 	}
 
-	public boolean regionregenerated = false;
 	public void WGpurge(long awaytime) {
 		// don't know if all of this is thread safe.
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
