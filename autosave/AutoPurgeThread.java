@@ -296,11 +296,11 @@ public class AutoPurgeThread extends Thread {
 											),
 									new EditSession(lw,
 											Integer.MAX_VALUE));
-							m.removeRegion(delrg);
 						}
 					};
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
 				}
+				m.removeRegion(delrg);
 
 
 			}
