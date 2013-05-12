@@ -33,13 +33,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class AutoBackupThread6 extends Thread {
 
-	// Constructor to define number of seconds to sleep
-	AutoBackupThread6(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
-		this.plugin = plugin;
-		this.config = config;
-		this.configmsg = configmsg;
-	}
-	
 	protected final Logger log = Bukkit.getLogger();
 	private boolean run = true;
 	private AutoSave plugin = null;
@@ -47,20 +40,29 @@ public class AutoBackupThread6 extends Thread {
 	private AutoSaveConfigMSG configmsg;
 	private Zip zipfld = null;
     public long datesec;
-    private int runnow;
+    private int i;
     private boolean command = false;
-    private List<String> backupfoldersdest = new ArrayList<String>();
     private FileConfiguration configbackup;
+	
+	// Constructor to define number of seconds to sleep
+	AutoBackupThread6(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+		this.plugin = plugin;
+		this.config = config;
+		this.configmsg = configmsg;
+		this.zipfld = new Zip(config);
+	}
+	
+
     
 	// Allows for the thread to naturally exit if value is false
 	public void setRun(boolean run) {
 		this.run = run;
-	}
+ 	}
 	
 	public void startbackup()
 	{
 	command = true;
-	runnow = config.backupInterval;
+	i = config.backupInterval;
 	}
     
 	
@@ -88,7 +90,7 @@ public class AutoBackupThread6 extends Thread {
 			}
 			
 			// Do our Sleep stuff!
-			for (runnow = 0; runnow < config.backupInterval; runnow++) {
+			for (i = 0; i < config.backupInterval; i++) {
 				try {
 					if (!run) {
 						if (config.varDebug) {
@@ -98,7 +100,7 @@ public class AutoBackupThread6 extends Thread {
 					}
 					boolean warn = config.backupwarn;
 					for (int w : config.backupWarnTimes) {
-						if (w != 0 && w + runnow == config.backupInterval) {
+						if (w != 0 && w + i == config.backupInterval) {
 							
 						} else {warn = false;}
 					}
@@ -106,10 +108,12 @@ public class AutoBackupThread6 extends Thread {
 					if (warn) {
 						// Perform warning
 						if (config.varDebug) {
-							log.info(String.format("[%s] Warning Time Reached: %d seconds to go.", plugin.getDescription().getName(), config.backupInterval - runnow));
+							log.info(String.format("[%s] Warning Time Reached: %d seconds to go.", plugin.getDescription().getName(), config.backupInterval - i));
 						}
-						if (config.backupEnabled) {plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageBackupWarning));}
-						log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageBackupWarning));
+						if (config.backupEnabled) {
+							plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageBackupWarning));
+							log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageBackupWarning));
+						}
 					}
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -153,40 +157,42 @@ public class AutoBackupThread6 extends Thread {
 		// Save our worlds...
 		boolean all= false;
 		if (config.backupWorlds.contains("*")) {all = true;}
-			int i = 0;
-			List<World> worlds = plugin.getServer().getWorlds();
-			for (World world : worlds) {
-			if (worldNames.contains(world.getWorldFolder().getName())||all) {
-			String worldfoldername = world.getWorldFolder().getName();
-			plugin.debug(worldfoldername);
-			plugin.debug(String.format("Backuping world: %s", world.getName()));
-			try {
+		int i = 0;
+		List<World> worlds = plugin.getServer().getWorlds();
+		for (World world : worlds) {
+		if (worldNames.contains(world.getWorldFolder().getName())||all) {
+				String worldfoldername = world.getWorldFolder().getName();
+				plugin.debug(String.format("Backuping world: %s", world.getName()));
 				world.setAutoSave(false);
-				String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
-				String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+worldfoldername+File.separator+datebackup;
-				if (!zip) {
-				copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb));
-				} else 
-				{ zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb+".zip"));}
-				world.setAutoSave(true);
-			} catch (IOException e) {e.printStackTrace();} 
+				try {
+					String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
+					String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+worldfoldername+File.separator+datebackup;
+					if (!zip) {
+						copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb));
+					} else 
+					{ 
+					zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb+".zip"));
+					}
+				} catch (IOException e) {e.printStackTrace();} 
 			} 
 			i++;
-			}
-			return i;	
+			world.setAutoSave(true);
 		}
+		return i;	
+	}
+	
+	
 	public void backupPlugins(boolean zip, String extpath) {
 		try {
-			plugin.debug("Backuping plugins");
 			String datestring = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
 			String foldercopyto = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+datestring;
 			if (!zip) {
-			copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto));
+				copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto));
 			} else 
-			{zipfld.ZipFolder(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto+".zip"));}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			{
+				zipfld.ZipFolder(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto+".zip"));
+			}
+		} catch (IOException e) {e.printStackTrace();}
 	}
 
 
@@ -204,21 +210,19 @@ public class AutoBackupThread6 extends Thread {
 		}	else {
 		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
 		boolean zip = config.backupzip;
-		if (zip) {
-		if (zipfld == null) {zipfld = new Zip(config);}	
-		}
 		
 		// Lock
 		plugin.saveInProgress = true;
 		plugin.backupInProgress = true;
 		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
+	    List<String> backupfoldersdest = new ArrayList<String>();
 		datesec = System.currentTimeMillis();
 		int saved = 0;
-		backupfoldersdest.clear();
+
 		//adding internal folder to list of folders to which we should backup everything 
-		if (config.donotbackuptointfld && config.backuptoextfolders) {} 
-		else {
-			try {backupfoldersdest.add(new File(".").getCanonicalPath());
+		if (!(config.donotbackuptointfld && config.backuptoextfolders))  {
+			try {
+				backupfoldersdest.add(new File(".").getCanonicalPath());
 			} catch (IOException e) {e.printStackTrace();}
 		}
 		//adding external folders to list of folders to which we should backup everything 
@@ -234,7 +238,7 @@ public class AutoBackupThread6 extends Thread {
 
 			//delete oldest backup if needed
 			if (!(config.MaxNumberOfWorldsBackups == 0) && (numberofbackupsext >= config.MaxNumberOfWorldsBackups)) {
-				plugin.debug("Deleting oldest backup");
+				plugin.debug("Deleting oldest worlds backup");
 				String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(backupnamesext.get(0));
 				String pathtoworldsfld = extpath+File.separator+"backups"+File.separator+"worlds";
 				//delete worlds oldest backup
@@ -259,10 +263,10 @@ public class AutoBackupThread6 extends Thread {
 			if (config.backuppluginsfolder) {
 				//remove oldest backups
 				if (!(config.MaxNumberOfPluginsBackups == 0) && (numberofbackupspl >= config.MaxNumberOfPluginsBackups)) {
-					plugin.debug("Deleting oldest backup");
+					plugin.debug("Deleting oldest plugins backup");
 					String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(backupnamespl.get(0));
 					String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+datebackup;
-					//delete worlds oldest backup
+					//delete plugins oldest backup
 						if (new File(fldtodel).exists())  {//exists if zip is false 
 							deleteDirectory(new File(fldtodel)); }
 						else {//not exists if zip is true
@@ -270,12 +274,12 @@ public class AutoBackupThread6 extends Thread {
 					backupnamespl.remove(0);
 					numberofbackupspl--;}	
 				
-				//do backups
+				//do backup
+				plugin.debug("Backuping plugins");
 				backupPlugins(zip,extpath);
 				plugin.debug("Backuped plugins");
 				backupnamespl.add(datesec);
 				numberofbackupspl++;
-				
 			}
 			
 			//save info about backups

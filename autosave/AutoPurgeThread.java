@@ -277,9 +277,8 @@ public class AutoPurgeThread extends Thread {
 			if (!rgtodel.isEmpty())
 				plugin.debug("Deleting regions in removal list");
 			for (final String delrg : rgtodel) {
-				plugin.debug("Removing region " + delrg);
-				if (config.wgregenrg) {
-					plugin.debug("Regenerating region" + delrg);
+				plugin.debug("Purging region " + delrg);
+
 					//regen should be done in main thread
 					Runnable rgregen =  new Runnable()
 					{
@@ -288,6 +287,8 @@ public class AutoPurgeThread extends Thread {
 						BukkitWorld lw = new BukkitWorld(w);
 						public void run()
 						{
+							if (config.wgregenrg) {
+								plugin.debug("Regenerating region" + delrg);
 							new BukkitWorld(w).regenerate(
 									new CuboidRegion(
 											lw,
@@ -296,12 +297,12 @@ public class AutoPurgeThread extends Thread {
 											),
 									new EditSession(lw,
 											Integer.MAX_VALUE));
+							}
+							plugin.debug("Deleting region " + delrg);
 							m.removeRegion(delrg);
 						}
 					};
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
-				}
-
 
 			}
 			try {

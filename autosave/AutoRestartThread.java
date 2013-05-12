@@ -31,8 +31,8 @@ public class AutoRestartThread  extends Thread{
 		Thread.currentThread().setName("AutoSaveWorld_AutoRestartThread");
 		
 		//check if we just restarted (server can restart faster than 1 minute, without this check, AutoRestartThread will stop working after restart)
-		if ((Integer.valueOf(config.autorestarttimeH) == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) &&
-				(Integer.valueOf(config.autorestarttimeM) == Calendar.getInstance().get(Calendar.MINUTE)))
+		if ((config.autorestarttimeH == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) &&
+				(config.autorestarttimeM == Calendar.getInstance().get(Calendar.MINUTE)))
 			{
 			//sleep for 1 minute
 			try {Thread.sleep(61000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -43,8 +43,8 @@ public class AutoRestartThread  extends Thread{
 		//i know that this can be done using a java.util.timer, but i need a way to reload timer time
 			if (config.autorestart)
 			{
-			int rhours = Integer.valueOf(config.autorestarttimeH);
-			int rminutes = Integer.valueOf(config.autorestarttimeM);
+			int rhours = config.autorestarttimeH;
+			int rminutes = config.autorestarttimeM;
 			Calendar cal = Calendar.getInstance();
 			int curhours = cal.get(Calendar.HOUR_OF_DAY);
 			int curminutes = cal.get(Calendar.MINUTE);
