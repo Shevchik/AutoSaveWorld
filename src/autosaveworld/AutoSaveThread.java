@@ -15,7 +15,7 @@
  * 
  */
 
-package autosave;
+package autosaveworld;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,12 +27,12 @@ public class AutoSaveThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
 	private boolean run = true;
-	private AutoSave plugin = null;
+	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	public boolean command = false;
 	// Constructor to define number of seconds to sleep
-	AutoSaveThread(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+	AutoSaveThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

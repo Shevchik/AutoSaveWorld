@@ -15,7 +15,7 @@
  * 
  */
 
-package autosave;
+package autosaveworld;
 
 public enum ThreadType {
 	SAVE, BACKUP6, PURGE, SELFRESTART, CRASHRESTART, AUTORESTART;

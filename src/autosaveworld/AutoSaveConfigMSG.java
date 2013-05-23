@@ -17,7 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * 
  */
-package autosave;
+
+package autosaveworld;
 
 import java.io.*;
 import org.bukkit.configuration.file.FileConfiguration;

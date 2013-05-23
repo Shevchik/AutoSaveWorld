@@ -15,7 +15,7 @@
 *
 */
 
-package autosave;
+package autosaveworld;
 
 import java.util.logging.Logger;
 
@@ -24,7 +24,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class AutoSave extends JavaPlugin  {
+public class AutoSaveWorld extends JavaPlugin  {
 private static final Logger log = Bukkit.getLogger();
 
 public AutoSaveThread saveThread = null;

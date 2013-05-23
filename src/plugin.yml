@@ -1,5 +1,5 @@
 name: AutoSaveWorld
-main: autosave.AutoSave
+main: autosaveworld.AutoSaveWorld
 version: 4.6
 author: Shevchik
 load: STARTUP 

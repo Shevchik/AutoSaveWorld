@@ -1,8 +1,5 @@
-*.class
+bin/
 
-# Package Files #
-*.war
-*.ear
 # Eclipse Files #
 *.project
 *.classpath

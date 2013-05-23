@@ -14,7 +14,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 *
 */
-package autosave;
+package autosaveworld;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -34,13 +34,13 @@ import org.fusesource.jansi.Ansi.Color;
 
 public class SelfRestartThread  extends Thread{
 	
-	private AutoSave plugin;
+	private AutoSaveWorld plugin;
 	private boolean run = true;
 	public boolean restart = false;
 	
 	protected final Logger log = Bukkit.getLogger();
 	
-	SelfRestartThread(AutoSave plugin)
+	SelfRestartThread(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}

@@ -15,7 +15,7 @@
 *
 */
 
-package autosave;
+package autosaveworld;
 
 import java.util.logging.Logger;
 
@@ -24,13 +24,13 @@ import org.fusesource.jansi.Ansi.Color;
 
 public class CrashRestartThread extends Thread{
 
-	private AutoSave plugin;
+	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
 	private boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 	private long syncticktime = 0;
 	
-	CrashRestartThread(AutoSave plugin,AutoSaveConfig config)
+	CrashRestartThread(AutoSaveWorld plugin,AutoSaveConfig config)
 	{
 		this.plugin = plugin;
 		this.config = config;

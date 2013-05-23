@@ -15,7 +15,8 @@
  * 
  */
 
-package autosave;
+package autosaveworld;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,7 +36,7 @@ public class AutoBackupThread6 extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
 	private boolean run = true;
-	private AutoSave plugin = null;
+	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	private Zip zipfld = null;
@@ -45,7 +46,7 @@ public class AutoBackupThread6 extends Thread {
     private FileConfiguration configbackup;
 	
 	// Constructor to define number of seconds to sleep
-	AutoBackupThread6(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+	AutoBackupThread6(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

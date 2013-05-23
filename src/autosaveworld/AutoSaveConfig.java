@@ -15,7 +15,7 @@
  * 
  */
 
-package autosave;
+package autosaveworld;
 
 import java.io.*;
 import java.util.*;
@@ -73,8 +73,7 @@ public class AutoSaveConfig {
 	protected boolean autorestart = false;
 	protected boolean autorestartBroadcast = true;
 	protected String autorestartscriptpath = "start.sh";
-	protected int autorestarttimeH = 0;
-	protected int autorestarttimeM = 0;
+	protected List<String> autorestarttime = new ArrayList<String>();
 	protected boolean autorestartcountdown = true;
 	protected int autorestartseconds = 20;
 	protected boolean astop = false;
@@ -153,8 +152,7 @@ public class AutoSaveConfig {
 		//autorestart variables
 		autorestart = config.getBoolean("autorestart.enabled", autorestart);
 		autorestartBroadcast = config.getBoolean("autorestart.broadcast", autorestartBroadcast);
-		autorestarttimeH = config.getInt("autorestart.time.hour",autorestarttimeH);
-		autorestarttimeM = config.getInt("autorestart.time.minute", autorestarttimeM);
+		autorestarttime = config.getStringList("autorestart.time");
 		autorestartcountdown = config.getBoolean("autorestart.countdown.enabled", autorestartcountdown);
 		autorestartseconds = config.getInt("autorestart.countdown.seconds",autorestartseconds);
 		autorestartscriptpath = config.getString("autorestart.scriptpath",autorestartscriptpath);
@@ -221,8 +219,7 @@ public class AutoSaveConfig {
 		//autorestart variables
 		config.set("autorestart.enabled", autorestart);
 		config.set("autorestart.broadcast", autorestartBroadcast);
-		config.set("autorestart.time.hour",autorestarttimeH);
-		config.set("autorestart.time.minute", autorestarttimeM);
+		config.set("autorestart.time",autorestarttime);
 		config.set("autorestart.countdown.enabled", autorestartcountdown);
 		config.set("autorestart.countdown.seconds",autorestartseconds);
 		config.set("autorestart.scriptpath",autorestartscriptpath);

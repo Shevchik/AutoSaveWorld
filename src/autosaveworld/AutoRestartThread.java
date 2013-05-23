@@ -1,4 +1,21 @@
-package autosave;
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
+
+package autosaveworld;
 
 import java.util.Calendar;
 import java.util.logging.Logger;
@@ -7,13 +24,13 @@ import org.bukkit.Bukkit;
 
 
 public class AutoRestartThread  extends Thread{
-	private AutoSave plugin;
+	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
 	AutoSaveConfigMSG configmsg;
 	private boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 
-	AutoRestartThread(AutoSave plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
+	AutoRestartThread(AutoSaveWorld plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
 	{
 		this.plugin = plugin;
 		this.config = config;
@@ -25,14 +42,20 @@ public class AutoRestartThread  extends Thread{
 		this.run = false;
 	}
 	
+	private String getCurTime()
+	{
+		Calendar cal = Calendar.getInstance();
+		String curtime = 	cal.get(Calendar.HOUR_OF_DAY)+ ":"+  cal.get(Calendar.MINUTE);
+		return curtime;
+	}
+	
 	public void run()
 	{	
 		log.info("[AutoSaveWorld] AutoRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld_AutoRestartThread");
 		
 		//check if we just restarted (server can restart faster than 1 minute, without this check, AutoRestartThread will stop working after restart)
-		if ((config.autorestarttimeH == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) &&
-				(config.autorestarttimeM == Calendar.getInstance().get(Calendar.MINUTE)))
+		if  (config.autorestarttime.contains(getCurTime()))
 			{
 			//sleep for 1 minute
 			try {Thread.sleep(61000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -43,12 +66,7 @@ public class AutoRestartThread  extends Thread{
 		//i know that this can be done using a java.util.timer, but i need a way to reload timer time
 			if (config.autorestart)
 			{
-			int rhours = config.autorestarttimeH;
-			int rminutes = config.autorestarttimeM;
-			Calendar cal = Calendar.getInstance();
-			int curhours = cal.get(Calendar.HOUR_OF_DAY);
-			int curminutes = cal.get(Calendar.MINUTE);
-			 if (curhours == rhours && curminutes == rminutes )
+			 if (config.autorestarttime.contains(getCurTime()))
 			 {
 				if (config.autorestartcountdown) {
 					for (int i = config.autorestartseconds; i>0; i--)

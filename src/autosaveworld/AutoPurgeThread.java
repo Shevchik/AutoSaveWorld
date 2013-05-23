@@ -14,7 +14,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-package autosave;
+
+package autosaveworld;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +48,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 public class AutoPurgeThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
-	private AutoSave plugin = null;
+	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	private boolean run = true;
@@ -55,7 +56,7 @@ public class AutoPurgeThread extends Thread {
 	FileConfiguration plnopurgelistfile = null;
 	HashSet<String> plnopurgelist;
 
-	AutoPurgeThread(AutoSave plugin, AutoSaveConfig config,
+	AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,
 			AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;

@@ -15,7 +15,7 @@
 *
 */
 
-package autosave;
+package autosaveworld;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,12 +26,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LocaleContainer {
-	LocaleContainer(AutoSave plugin,AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+	LocaleContainer(AutoSaveWorld plugin,AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
 	}
-	private AutoSave plugin;
+	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	

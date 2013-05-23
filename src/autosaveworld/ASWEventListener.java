@@ -15,7 +15,7 @@
 *
 */
 
-package autosave;
+package autosaveworld;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -32,11 +32,11 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 	public class ASWEventListener implements Listener, CommandExecutor {
 
-		private AutoSave plugin = null;
+		private AutoSaveWorld plugin = null;
 		private AutoSaveConfig config;
 		private AutoSaveConfigMSG configmsg;
 		private LocaleContainer localeloader;
-		ASWEventListener(AutoSave plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, LocaleContainer localeloader){
+		ASWEventListener(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, LocaleContainer localeloader){
 			this.plugin = plugin;
 			this.config = config;
 			this.configmsg  = configmsg;

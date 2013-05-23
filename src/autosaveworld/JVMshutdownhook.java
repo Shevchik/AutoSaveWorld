@@ -15,7 +15,7 @@
 *
 */
 
-package autosave;
+package autosaveworld;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;

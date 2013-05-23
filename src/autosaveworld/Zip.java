@@ -15,7 +15,7 @@
  *
  */
 
-package autosave;
+package autosaveworld;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
