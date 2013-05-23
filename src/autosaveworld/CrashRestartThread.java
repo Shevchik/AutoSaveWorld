@@ -76,7 +76,7 @@ public class CrashRestartThread extends Thread{
 				plugin.debug("CrashRestartThread ASyncTicktime: "+System.currentTimeMillis());
 				plugin.debug("CrashRestartThread diff: "+diff);
 				}
-			try {Thread.sleep(999);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		plugin.getServer().getScheduler().cancelTask(tasknumber);
 		if (config.varDebug) {

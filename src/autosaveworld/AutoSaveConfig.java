@@ -69,7 +69,7 @@ public class AutoSaveConfig {
 	protected boolean crashrestartenabled = false;
 	protected String crashrestartscriptpath="start.sh";
 	protected boolean crstop = false;
-	protected long crtimeout = 15;
+	protected long crtimeout = 60;
 	protected boolean autorestart = false;
 	protected boolean autorestartBroadcast = true;
 	protected String autorestartscriptpath = "start.sh";
