@@ -30,6 +30,7 @@ public class AutoRestartThread  extends Thread{
 	private boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 
+	
 	AutoRestartThread(AutoSaveWorld plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
 	{
 		this.plugin = plugin;
@@ -41,6 +42,13 @@ public class AutoRestartThread  extends Thread{
 	{
 		this.run = false;
 	}
+	
+	private boolean command = false;
+	public void startrestart()
+	{
+		this.command = true;
+	}
+	
 	
 	private String getCurTime()
 	{
@@ -54,45 +62,37 @@ public class AutoRestartThread  extends Thread{
 		log.info("[AutoSaveWorld] AutoRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld_AutoRestartThread");
 		
-		//check if we just restarted (server can restart faster than 1 minute, without this check, AutoRestartThread will stop working after restart)
-		if  (config.autorestarttime.contains(getCurTime()))
-			{
-			//sleep for 1 minute
-			try {Thread.sleep(61000);} catch (InterruptedException e) {e.printStackTrace();}
-			}
+		//check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
+		if  (config.autorestarttime.contains(getCurTime()))	{try {Thread.sleep(61000);} catch (InterruptedException e) {}}
 		
 		while (run)
 		{
 		//i know that this can be done using a java.util.timer, but i need a way to reload timer time
-			if (config.autorestart)
-			{
-			 if (config.autorestarttime.contains(getCurTime()))
+			 if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command)
 			 {
+				run = false;
 				if (config.autorestartcountdown) {
 					for (int i = config.autorestartseconds; i>0; i--)
 					{
 						plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)));
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+						try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					} 
 				}
-				if (config.autorestartBroadcast) {plugin.broadcast(configmsg.messageAutoRestart);}
-				log.info("[AutoSaveWorld] AutoRestarting server");
+				if (config.autorestartBroadcast) {
+					plugin.broadcast(configmsg.messageAutoRestart);
+				}
+				plugin.debug("[AutoSaveWorld] AutoRestarting server");
 				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
-				run = false;
 				if (!config.astop) {
 					plugin.JVMsh.setpath(config.autorestartscriptpath);
 					Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				}
-			 }
 			}
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		
 		if (config.varDebug) {
 			log.info(String.format("[%s] Graceful quit of AutoRestartThread", plugin.getDescription().getName()));
 		}
-		}
+	}
 }

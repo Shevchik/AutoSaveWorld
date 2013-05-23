@@ -20,7 +20,7 @@ package autosaveworld;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.fusesource.jansi.Ansi.Color;
+import org.bukkit.ChatColor;
 
 public class CrashRestartThread extends Thread{
 
@@ -46,42 +46,39 @@ public class CrashRestartThread extends Thread{
 	{
 		log.info("[AutoSaveWorld] CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld_CrashRestartThread");
+		
+		//schedule sync task in, this will provide us info about when the last server tick occured
 		int tasknumber = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			public void run() {
 				syncticktime = System.currentTimeMillis();
-				if (config.crdebug) {
-				plugin.debug("CrashRestartThread SyncTicktime: "+syncticktime);
-				}
 			}	
 		}, 0, 20);
+		
 		while (run)
 		{
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) 
-			{log.info("[AutoSaveWorld]"+Color.RED+"Server has stopped responding. Probably this is a crash.");
-			run = false;
+			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) {
+				run = false;
+				log.info("[AutoSaveWorld] "+ChatColor.RED+"Server has stopped responding. Probably this is a crash.");
 				if (config.crashrestartenabled) {
-				log.info("[AutoSaveWorld] CrashRestart is enabled, AutoSaveWorld will try to restart server");
-				if (!config.crstop) {
-				plugin.JVMsh.setpath(config.crashrestartscriptpath);
-				Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
-				log.info("[AutoSaveWorld]Restarting server.");} else
-				{log.info("[AutoSaveWorld]Just stopping server.");}
-				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
+					log.info("[AutoSaveWorld] CrashRestart is enabled, AutoSaveWorld will try to restart server");
+					if (!config.crstop) {
+						plugin.JVMsh.setpath(config.crashrestartscriptpath);
+						Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
+					}
+					plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
 				} else {
-				log.info("[AutoSaveWorld] CrashRestart is disabled, AutoSaveWorld won't try to restart server");
+					log.info("[AutoSaveWorld] CrashRestart is disabled, AutoSaveWorld won't try to restart server");
 				}
 			}
-			if (config.crdebug) {
-				plugin.debug("CrashRestartThread ASyncTicktime: "+System.currentTimeMillis());
-				plugin.debug("CrashRestartThread diff: "+diff);
-				}
 			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		
 		plugin.getServer().getScheduler().cancelTask(tasknumber);
 		if (config.varDebug) {
 			log.info(String.format("[%s] Graceful quit of CrashRestartThread", plugin.getDescription().getName()));
 		}
+		
 	}
 }
 

@@ -17,7 +17,6 @@
 
 package autosaveworld;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -103,98 +102,120 @@ import org.bukkit.event.server.ServerCommandEvent;
 		return true;
 		}
 		
+		//now handle commands
+		if (commandName.equalsIgnoreCase("autosave"))
+		{
+			plugin.saveThread.startsave();
+			return true;
+		} else
+		if (commandName.equalsIgnoreCase("autobackup"))
+		{
+			plugin.backupThread6.startbackup();
+			return true;
+		} else
+		if (commandName.equalsIgnoreCase("autopurge"))
+		{
+			plugin.purgeThread.startpurge();
+			return true;
+		} else
 		if (commandName.equalsIgnoreCase("autosaveworld")) {
 		//help
 		if (args.length==1 && args[0].equalsIgnoreCase("help"))
 		{
-		plugin.sendMessage(sender,"&f/asw help&7 - &3Shows this help");
-		plugin.sendMessage(sender,"&f/asw save&7 - &3Saves all worlds");
-		plugin.sendMessage(sender,"&f/save&7 - &3Same as /asw save");
-		plugin.sendMessage(sender,"&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds)");
-		plugin.sendMessage(sender,"&f/backup&7 - &3Same as /asw backup");
-		plugin.sendMessage(sender,"&f/asw purge&7 - &3Purges plugins info from inactive players");
-		plugin.sendMessage(sender,"&f/purge&7 - &3Same as /asw purge");
-		plugin.sendMessage(sender,"&f/asw reload&7 - &3Reload all configs)");
-		plugin.sendMessage(sender,"&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
-		plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
-		plugin.sendMessage(sender,"&f/asw version&7 - &3Shows plugin version");
-		plugin.sendMessage(sender,"&f/asw info&7 - &3Shows some info");
-		plugin.sendMessage(sender,"&f/asw selfrestart&7 - &3Restart AutoSaveWorld");
-		plugin.sendMessage(sender,"&f/asw locale&7 - &3Show current messages locale");
-		plugin.sendMessage(sender,"&f/asw locale availible&7 - &3Show availible messages locale");
-		plugin.sendMessage(sender,"&f/asw locale load {locale}&7 - &3Set meesages locale to one of the availible locales");
-		return true;
+			plugin.sendMessage(sender,"&f/asw help&7 - &3Shows this help");
+			plugin.sendMessage(sender,"&f/asw save&7 - &3Saves all worlds");
+			plugin.sendMessage(sender,"&f/save&7 - &3Same as /asw save");
+			plugin.sendMessage(sender,"&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds)");
+			plugin.sendMessage(sender,"&f/backup&7 - &3Same as /asw backup");
+			plugin.sendMessage(sender,"&f/asw purge&7 - &3Purges plugins info from inactive players");
+			plugin.sendMessage(sender,"&f/purge&7 - &3Same as /asw purge");
+			plugin.sendMessage(sender,"&f/asw restart&7 - &3Restarts server");
+			plugin.sendMessage(sender,"&f/asw reload&7 - &3Reload all configs)");
+			plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
+			plugin.sendMessage(sender,"&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
+			plugin.sendMessage(sender,"&f/asw selfrestart&7 - &3Restart AutoSaveWorld");
+			plugin.sendMessage(sender,"&f/asw version&7 - &3Shows plugin version");
+			plugin.sendMessage(sender,"&f/asw info&7 - &3Shows some info");
+			plugin.sendMessage(sender,"&f/asw locale&7 - &3Show current messages locale");
+			plugin.sendMessage(sender,"&f/asw locale availible&7 - &3Show availible messages locale");
+			plugin.sendMessage(sender,"&f/asw locale load {locale}&7 - &3Set meesages locale to one of the availible locales");
+			return true;
 		} else
 		//command to save worlds
 		if (args.length==1 && args[0].equalsIgnoreCase("save")) {
-		plugin.saveThread.startsave();
-		return true;
+			plugin.saveThread.startsave();
+			return true;
 		} else
 		//command to backup worlds
 		if (args.length==1 && args[0].equalsIgnoreCase("backup")) {
 			plugin.backupThread6.startbackup();
-		return true;
+			return true;
 		} else
 		//purge command
 		if (args.length==1 && args[0].equalsIgnoreCase("purge")) {
-		plugin.purgeThread.startpurge();
-		return true;
+			plugin.purgeThread.startpurge();
+			return true;
 		} else
 		//reload command
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {
-		config.load();
-		configmsg.loadmsg();
-		plugin.sendMessage(sender,"[AutoSaveWorld] all configurations reloaded");
-		return true;
+			config.load();
+			configmsg.loadmsg();
+			plugin.sendMessage(sender,"[AutoSaveWorld] all configurations reloaded");
+			return true;
 		} else
 		if (args.length==1 && args[0].equalsIgnoreCase("reloadconfig")) {
-		config.load();
-		plugin.sendMessage(sender,"[AutoSaveWorld] main configuration reloaded");
-		return true;
+			config.load();
+			plugin.sendMessage(sender,"[AutoSaveWorld] main configuration reloaded");
+			return true;
 		} else
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {
-		configmsg.loadmsg();
-		plugin.sendMessage(sender,"[AutoSaveWorld] messages reloaded");
-		return true;
+			configmsg.loadmsg();
+			plugin.sendMessage(sender,"[AutoSaveWorld] messages reloaded");
+			return true;
 		} else
 		if (args.length==1 && args[0].equalsIgnoreCase("version")) {
-		plugin.sendMessage(sender,plugin.getDescription().getName()+" "+plugin.getDescription().getVersion());
-		return true;
+			plugin.sendMessage(sender,plugin.getDescription().getName()+" "+plugin.getDescription().getVersion());
+			return true;
 		} else
 		if (args.length==1 && args[0].equalsIgnoreCase("info")) {
 			plugin.sendMessage(sender,"&9======AutoSaveWorld Info & Status======");
+			
 			if (plugin.saveThread!=null && plugin.saveThread.isAlive()) {
-			plugin.sendMessage(sender,"&2AutoSave is active");
-			plugin.sendMessage(sender,"&2Last save time: "+plugin.LastSave);}
-			else {plugin.sendMessage(sender,"&4AutoSave is dead, i don't know how it happened, but it's dead, jim");}
-			if (config.backupEnabled) {
-				if (plugin.backupThread6!=null && plugin.backupThread6.isAlive()) {
-				plugin.sendMessage(sender,"&2AutoBackup is active");
-				plugin.sendMessage(sender,"&2Last backup time: "+plugin.LastSave);}
-				else {plugin.sendMessage(sender,"&4AutoBackup is dead, i don't know how it happened, but it's dead, jim"); }
+				if (config.saveEnabled) {
+					plugin.sendMessage(sender,"&2AutoSave is active");
+					plugin.sendMessage(sender,"&2Last save time: "+plugin.LastSave);
+				} else {
+					plugin.sendMessage(sender, "&2AutoSave is inactive");
 				}
-			else {
-				if (plugin.backupThread6!=null && plugin.backupThread6.isAlive()) {
-				plugin.sendMessage(sender,"&2AutoBackup is inactive"); }
-				else {plugin.sendMessage(sender,"&4AutoBackup is dead, i don't know how it happened, but it's dead, jim");}
-				}
+			} else {
+				plugin.sendMessage(sender,"&4AutoSave is dead");
+			}
+			
+
+			if (plugin.backupThread6!=null && plugin.backupThread6.isAlive()) {
+				if (config.backupEnabled) {
+					plugin.sendMessage(sender,"&2AutoBackup is active");
+					plugin.sendMessage(sender,"&2Last backup time: "+plugin.LastBackup);
+					} else {
+						plugin.sendMessage(sender,"&2AutoBackup is inactive");  
+					}
+			} else {
+				plugin.sendMessage(sender,"&4AutoBackup is dead");
+			}
+			
 			plugin.sendMessage(sender,"&9====================================");
 			return true;
 		} else
 		if ((args.length==1 && args[0].equalsIgnoreCase("selfrestart")))
 		{
-		plugin.sendMessage(sender, "&9Restarting AutoSaveWorld");
-		plugin.selfrestartThread.restart();
-		return true;
+			plugin.sendMessage(sender, "&9Restarting AutoSaveWorld");
+			plugin.selfrestartThread.restart();
+			return true;
 		} else
 		if ((args.length==1 && args[0].equalsIgnoreCase("restart"))) 
 		{
-		if (config.autorestartBroadcast) {plugin.broadcast(configmsg.messageAutoRestart);}
-		plugin.debug("Restarting");
-		plugin.JVMsh.setpath(config.autorestartscriptpath);
-		Runtime.getRuntime().addShutdownHook(plugin.JVMsh);
-		plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
-		return true;
+			plugin.autorestartThread.startrestart();
+			return true;
 		} else
 		if ((args.length>=1 && args[0].equalsIgnoreCase("locale"))) 
 		{
@@ -224,21 +245,6 @@ import org.bukkit.event.server.ServerCommandEvent;
 			}
 		}
 		return false;
-		} else
-		if (commandName.equalsIgnoreCase("autosave"))
-		{
-		plugin.saveThread.startsave();
-		return true;
-		} else
-		if (commandName.equalsIgnoreCase("autobackup"))
-		{
-		plugin.backupThread6.startbackup();
-		return true;
-		} else
-		if (commandName.equalsIgnoreCase("autopurge"))
-		{
-		plugin.purgeThread.startpurge();
-		return true;
 		}
 		return false;
 	}

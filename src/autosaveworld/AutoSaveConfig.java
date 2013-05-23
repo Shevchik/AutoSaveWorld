@@ -77,7 +77,6 @@ public class AutoSaveConfig {
 	protected boolean autorestartcountdown = true;
 	protected int autorestartseconds = 20;
 	protected boolean astop = false;
-	protected boolean crdebug = false;
 	
 
 
@@ -90,7 +89,6 @@ public class AutoSaveConfig {
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
 		varUuid = UUID.fromString(config.getString("var.uuid", UUID.randomUUID().toString()));
-		crdebug = config.getBoolean("var.crdebug", crdebug);
 		
 		
 		
@@ -170,7 +168,6 @@ public class AutoSaveConfig {
 				
 		// Variables
 		config.set("var.debug", varDebug);
-		config.set("var.crdebug", crdebug);
 		
 		//save variables
 		config.set("save.enabled",saveEnabled);
