@@ -61,7 +61,6 @@ public class AutoSaveConfig {
 	protected boolean wg = true;
 	protected boolean wgregenrg = false;
 	protected boolean lwc = true;
-	protected boolean ess = true;
 	protected boolean lwcdelprotectedblocks = false;
 	protected boolean dat = true;
 	protected boolean switchtolangfile = false;
@@ -138,7 +137,6 @@ public class AutoSaveConfig {
 		wgregenrg = config.getBoolean("purge.wg.regenpurgedregion", wgregenrg);
 		lwc = config.getBoolean("purge.lwc.enabled", lwc);
 		lwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",lwcdelprotectedblocks);
-		ess = config.getBoolean("purge.essentials.enabled",ess);
 		dat = config.getBoolean("purge.dat.enabled", dat);
 		
 		//crashrestart variables
@@ -204,7 +202,6 @@ public class AutoSaveConfig {
 		config.set("purge.wg.regenpurgedregion", wgregenrg);
 		config.set("purge.lwc.enabled", lwc);
 		config.set("purge.lwc.deletepurgedblocks", lwcdelprotectedblocks);
-		config.set("purge.essentials.enabled",ess);
 		config.set("purge.dat.enabled", dat);
 		
 		//crashrestart variables

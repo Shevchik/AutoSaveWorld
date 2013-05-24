@@ -181,15 +181,6 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-			if ((plugin.getServer().getPluginManager().getPlugin("Essentials") != null)
-					&& config.ess) {
-				plugin.debug("Essentials found, purging");
-				try {
-					EssentialsPurge(awaytime);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 			plugin.debug("Purging player dat files");
 			if (config.dat) {
 				try {
@@ -358,39 +349,6 @@ public class AutoPurgeThread extends Thread {
 
 
 
-	public void EssentialsPurge(long awaytime) {
-		// this should be rewrited because it won't check player file if player .dat file doesn't exist
-		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
-		for (OfflinePlayer pl : checkPlayers) {
-			if (PurgePlayer(pl)) {
-				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
-					// thread safety again
-					boolean banned = pl.isBanned();
-					if (!banned) {
-						pl.setBanned(true);
-					}
-					try {
-						File essFile = new File(
-								new File(".").getCanonicalPath()
-										+ File.separator + "plugins"
-										+ File.separator + "Essentials"
-										+ File.separator + "userdata"
-										+ File.separator + pl.getName().toLowerCase()
-										+ ".yml");
-						essFile.delete();
-						plugin.debug(pl.getName()
-								+ " is inactive. Removing essentials info on him");
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					if (!banned) {
-						pl.setBanned(false);
-					}
-				}
-			}
-		}
-	}
-	
 	//not implemented yet
 	public void MVInvPurge(long awaytime)
 	{
