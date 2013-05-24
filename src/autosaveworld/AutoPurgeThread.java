@@ -210,6 +210,7 @@ public class AutoPurgeThread extends Thread {
 		}
 	}
 
+	public boolean rgdelfinished = false;
 	public void WGpurge(long awaytime) {
 		// don't know if all of this is thread safe.
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
@@ -281,6 +282,7 @@ public class AutoPurgeThread extends Thread {
 				plugin.debug("Purging region " + delrg);
 
 					//regen should be done in main thread
+				    rgdelfinished = false;
 					Runnable rgregen =  new Runnable()
 					{
 						BlockVector minpoint = m.getRegion(delrg).getMinimumPoint();
@@ -301,15 +303,26 @@ public class AutoPurgeThread extends Thread {
 							}
 							plugin.debug("Deleting region " + delrg);
 							m.removeRegion(delrg);
+							plugin.purgeThread.rgdelfinished = true;
 						}
 					};
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
 
 			}
-			try {
-				m.save();
-			} catch (Exception e) {
+			
+			//Wait until previous region regeneration is finished to avoid full main thread freezing
+			while (!rgdelfinished)
+			{
+				try {Thread.sleep(300);} catch (InterruptedException e) {}
 			}
+			
+			//sleep to allow server to tick
+			try {Thread.sleep(60);} catch (InterruptedException e1) {e1.printStackTrace();}
+			
+			
+			//save database
+			try {m.save();} catch (Exception e) {}
+			
 		}
 	}
 
