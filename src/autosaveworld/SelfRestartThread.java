@@ -30,7 +30,6 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.SimplePluginManager;
-import org.fusesource.jansi.Ansi.Color;
 
 public class SelfRestartThread  extends Thread{
 	
@@ -118,8 +117,8 @@ public class SelfRestartThread  extends Thread{
 					run = false;
 					//we are done here
 				} catch (Exception e) {e.printStackTrace();
-				log.info("[AutoSaveWorld] "+Color.RED+"AutoSaveWorld selfrestart failed, plugin is probably not working.");
-				log.info("[AutoSaveWorld] "+Color.RED+"Restart server to fix this and report this stacktrace to AutoSaveWorld author");
+				log.info("[AutoSaveWorld] AutoSaveWorld selfrestart failed, plugin is probably not working.");
+				log.info("[AutoSaveWorld] Restart server to fix this and report this stacktrace to AutoSaveWorld author");
 				}
 			}
 		}

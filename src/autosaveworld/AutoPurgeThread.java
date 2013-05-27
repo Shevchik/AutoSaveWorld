@@ -54,7 +54,7 @@ public class AutoPurgeThread extends Thread {
 	private boolean run = true;
 	private boolean command = false;
 	FileConfiguration plnopurgelistfile = null;
-	HashSet<String> plnopurgelist;
+	HashSet<String> plnopurgelist = new HashSet<String>();
 
 	AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,
 			AutoSaveConfigMSG configmsg) {
@@ -96,17 +96,17 @@ public class AutoPurgeThread extends Thread {
 		Thread.currentThread().setName("AutoSaveWorld_AutoPurgeThread");
 
 		// load list of players which will not be affected by purge
-		plnopurgelistfile = YamlConfiguration.loadConfiguration(new File(
-				"plugins/AutoSaveWorld/nopurgeplayerlist.yml"));
-		plnopurgelist = new HashSet<String>(
-				plnopurgelistfile.getStringList("players"));
+		plnopurgelistfile = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/nopurgeplayerlist.yml"));
+		HashSet<String> tplnopurgelist = new HashSet<String>(plnopurgelistfile.getStringList("players"));
+		for (String name : tplnopurgelist)
+		{
+			plnopurgelist.add(name.toLowerCase());
+		}
 		plnopurgelistfile.set("players", new ArrayList<String>(plnopurgelist));
 		try {
-			plnopurgelistfile.save(new File(
-					"plugins/AutoSaveWorld/nopurgeplayerlist.yml"));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+			plnopurgelistfile.save(new File("plugins/AutoSaveWorld/nopurgeplayerlist.yml"));
+		} catch (IOException e1) {}
+		
 
 		while (run) {
 			// Prevent AutoPurge from never sleeping

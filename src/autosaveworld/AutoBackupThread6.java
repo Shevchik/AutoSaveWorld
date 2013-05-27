@@ -25,6 +25,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -39,7 +43,6 @@ public class AutoBackupThread6 extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private Zip zipfld = null;
     public long datesec;
     private int i;
     private boolean command = false;
@@ -50,7 +53,6 @@ public class AutoBackupThread6 extends Thread {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
-		this.zipfld = new Zip(config);
 	}
 	
 
@@ -153,34 +155,60 @@ public class AutoBackupThread6 extends Thread {
 	}
 	
     
-	//all==true- * in worlds list; ext==true - copy external folders
-	private int backupWorlds(List<String> worldNames, boolean zip, String extpath) {
-		// Save our worlds...
+	
+	//all==true- * in worlds list;
+	public void backupWorlds(List<String> worldNames, final boolean zip, final String extpath)
+	{
+		//create executor
+		int maxthreads = Runtime.getRuntime().availableProcessors() - 1;
+		if (maxthreads == 0) {maxthreads = 1;}
+		ExecutorService worldsbackupService = new ThreadPoolExecutor(maxthreads, maxthreads, 1, TimeUnit.MILLISECONDS,
+		    new ArrayBlockingQueue<Runnable>(maxthreads, true),
+		    new ThreadPoolExecutor.CallerRunsPolicy()
+		);
+		
+		//now get list of worlds
 		boolean all= false;
 		if (config.backupWorlds.contains("*")) {all = true;}
-		int i = 0;
 		List<World> worlds = plugin.getServer().getWorlds();
-		for (World world : worlds) {
+		for (final World world : worlds) {
 		if (worldNames.contains(world.getWorldFolder().getName())||all) {
-				String worldfoldername = world.getWorldFolder().getName();
-				plugin.debug(String.format("Backuping world: %s", world.getName()));
-				world.setAutoSave(false);
-				try {
+				//create runnable for ThreadPoolExecutor
+				Runnable worldb = new Runnable()
+				{
+					World worldt = world;
+					String worldfoldername = world.getWorldFolder().getName();
 					String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
 					String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+worldfoldername+File.separator+datebackup;
-					if (!zip) {
-						copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb));
-					} else 
-					{ 
-					zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb+".zip"));
+					boolean zipf = zip;
+					public void run()
+					{
+						plugin.debug("Backuping world "+worldfoldername);
+						worldt.setAutoSave(false);
+						try {
+						if (!zipf) {
+							copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb));
+						} else 
+						{ 
+						Zip zipfld = new Zip(config);
+						zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb+".zip"));
+						}
+						} catch(Exception e) {worldt.setAutoSave(true); plugin.debug("Failed to backup world "+worldfoldername);}
+						worldt.setAutoSave(true);
+						plugin.debug("Backuped world "+worldfoldername);
 					}
-				} catch (IOException e) {e.printStackTrace();} 
-			} 
-			i++;
-			world.setAutoSave(true);
+				};
+				//Add task to executor
+				worldsbackupService.submit(worldb);
+			}
 		}
-		return i;	
+		//wait for executor to finish (let's hope that the backup will finish in max 2 days)
+		worldsbackupService.shutdown();
+		try {
+			worldsbackupService.awaitTermination(48, TimeUnit.HOURS);
+		} catch (InterruptedException e) {e.printStackTrace();}
 	}
+
 	
 	
 	public void backupPlugins(boolean zip, String extpath) {
@@ -191,6 +219,7 @@ public class AutoBackupThread6 extends Thread {
 				copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto));
 			} else 
 			{
+				Zip zipfld = new Zip(config);
 				zipfld.ZipFolder(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto+".zip"));
 			}
 		} catch (IOException e) {e.printStackTrace();}
@@ -218,7 +247,6 @@ public class AutoBackupThread6 extends Thread {
 		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
 	    List<String> backupfoldersdest = new ArrayList<String>();
 		datesec = System.currentTimeMillis();
-		int saved = 0;
 
 		//adding internal folder to list of folders to which we should backup everything 
 		if (!(config.donotbackuptointfld && config.backuptoextfolders))  {
@@ -245,18 +273,16 @@ public class AutoBackupThread6 extends Thread {
 				//delete worlds oldest backup
 				for (String deldir : new File(pathtoworldsfld).list())
 				{
-					File dirtodelete = new File(pathtoworldsfld+File.separator+deldir+File.separator+datebackup);
-					if (dirtodelete.exists())  {//exists if zip is false 
-						deleteDirectory(dirtodelete); }
-					else {//not exists if zip is true
-						deleteDirectory(new File(dirtodelete+".zip"));}
+					String dirtodelete = pathtoworldsfld+File.separator+deldir+File.separator+datebackup;
+					deleteDirectory(new File(dirtodelete)); 
+					deleteDirectory(new File(dirtodelete+".zip"));
 				}
 				backupnamesext.remove(0);
 				numberofbackupsext--;}
 			//do backup
-			saved = 0;
-			saved += backupWorlds(config.backupWorlds, zip, extpath);
-			plugin.debug(String.format("Backuped %d Worlds", saved));
+			plugin.debug("Backuping Worlds");
+			backupWorlds(config.backupWorlds, zip, extpath);
+			plugin.debug("Backuped Worlds");
 			backupnamesext.add(datesec);
 			numberofbackupsext++;
 
