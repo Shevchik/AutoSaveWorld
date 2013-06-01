@@ -27,9 +27,18 @@ import org.bukkit.Bukkit;
 public class JVMshutdownhook extends Thread {
 
 	private String crashrestartscriptpath = "start.sh"; 
-	public void setpath(String path)
+	private boolean chwdir = false;
+	private String wdir = "";
+	
+	public void setPath(String path)
 	{
 		this.crashrestartscriptpath = path;
+	}
+	
+	public void setWDir(boolean chwdir, String wdir)
+	{
+		this.chwdir = chwdir;
+		this.wdir = wdir;
 	}
 	
 	public void restart()
@@ -47,19 +56,27 @@ public class JVMshutdownhook extends Thread {
 		} else {
 			System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
 			//requred info for start script
-			File workdir = new File(".").getCanonicalFile();
-			String jarfilename = new File(Bukkit.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getName();
+			String jarfilename = Bukkit.class.getResource("").getFile();
+			jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
+			jarfilename = new File(jarfilename).getName()+".jar";
 			List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();			
-
 			//start script building
 			List<String> execsequence = new ArrayList<String>();
 			execsequence.add("java");
 			execsequence.addAll(arguments);
 			execsequence.add("-jar");
 			execsequence.add(jarfilename);
-			ProcessBuilder pb = new ProcessBuilder(execsequence);
-			pb.directory(workdir);
+			
+			//build additional bukkit parameters
+			if (chwdir) {
+				execsequence.add("-W");
+				execsequence.add(wdir);
+			}
+			
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command(execsequence);
 			pb.start();
+
 			}
 	} catch (Exception e)
 	{System.out.println("[AutoSaveWorld] Restart failed");

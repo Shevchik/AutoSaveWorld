@@ -41,7 +41,6 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -68,11 +67,11 @@ public class AutoPurgeThread extends Thread {
 		this.run = run;
 	}
 
-	private int runnow;
+	private int i;
 
 	public void startpurge() {
 		command = true;
-		runnow = config.purgeInterval;
+		i = config.purgeInterval;
 	}
 
 	private boolean PurgePlayer(OfflinePlayer player) {
@@ -88,11 +87,10 @@ public class AutoPurgeThread extends Thread {
 			return;
 		}
 
-		log.info(String
-				.format("[%s] AutoPurgeThread Started: Interval is %d seconds, Warn Times are %s",
-						plugin.getDescription().getName(),
-						config.purgeInterval,
-						Generic.join(",", config.saveWarnTimes)));
+		log.info(String.format("[%s] AutoPurgeThread Started: Interval is %d seconds",
+						plugin.getDescription().getName(), config.purgeInterval
+					)
+				);
 		Thread.currentThread().setName("AutoSaveWorld_AutoPurgeThread");
 
 		// load list of players which will not be affected by purge
@@ -110,37 +108,26 @@ public class AutoPurgeThread extends Thread {
 
 		while (run) {
 			// Prevent AutoPurge from never sleeping
-			// If interval is 0, sleep for 5 seconds and skip saving
+			// If interval is 0, sleep for 10 seconds and skip saving
 			if (config.purgeInterval == 0) {
 				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// care
-				}
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {}
 				continue;
 			}
 
 			// Do our Sleep stuff!
-			for (runnow = 0; runnow < config.purgeInterval; runnow++) {
-				try {
-					if (!run) {
-						if (config.varDebug) {
-							log.info(String.format(
-									"[%s] Graceful quit of AutoPurgeThread",
-									plugin.getDescription().getName()));
-						}
-						return;
-					}
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					log.info("Could not sleep!");
-				}
+			for (i = 0; i < config.purgeInterval; i++) {
+				try {Thread.sleep(1000);} catch (InterruptedException e) {log.info("Could not sleep!");}
 			}
 
-			if (config.purgeEnabled || command)
-				performPurge();
+			if (config.purgeEnabled || command) {performPurge();}
 
 		}
+		
+		//message before disabling thread
+		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoPurgeThread");}
+		
 	}
 
 
@@ -203,9 +190,10 @@ public class AutoPurgeThread extends Thread {
 
 	public boolean rgdelfinished = false;
 	public void WGpurge(long awaytime) {
-		// don't know if all of this is thread safe.
+
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");
+		
 		//get all active players 
 		HashSet<String> onlineplncs = new HashSet<String>();
 		for (Player plname : Bukkit.getOnlinePlayers()) {
@@ -216,17 +204,20 @@ public class AutoPurgeThread extends Thread {
 				onlineplncs.add(plname.getName().toLowerCase());
 			}
 		}
+		
+		
 		List<World> worldlist = Bukkit.getWorlds();
 		for (final World w : worldlist) {
 			plugin.debug("Checking WG protections in world " + w.getName());
 			final RegionManager m = wg.getRegionManager(w);
-			List<String> rgtodel = new ArrayList<String>();
+			
 			// searching for inactive players in regions
+			List<String> rgtodel = new ArrayList<String>();
 			for (ProtectedRegion rg : m.getRegions().values()) {
+				
 				plugin.debug("Checking region " + rg.getId());
-				DefaultDomain dd = rg.getOwners();
 				ArrayList<String> pltodelete = new ArrayList<String>();
-				Set<String> ddpl = dd.getPlayers();
+				Set<String> ddpl = rg.getOwners().getPlayers();
 				for (String checkPlayer : ddpl) {
 					if (PurgePlayer(Bukkit.getOfflinePlayer(checkPlayer))) {
 						plugin.debug("Checking player " + checkPlayer);
@@ -239,29 +230,11 @@ public class AutoPurgeThread extends Thread {
 
 				// check region for remove
 				if (!ddpl.isEmpty()) {
-					if (ddpl.size() <= pltodelete.size()) {
-						// adding region to removal list, we will work wih them
-						// later
+					if (pltodelete.size()  == ddpl.size()) {
+						// adding region to removal list, we will work with them later
 						rgtodel.add(rg.getId());
-						plugin.debug("No active owners for region "
-								+ rg.getId() + " Added to removal list");
-					} else {
-						// remove inactive owners from region
-						if (pltodelete.size() != 0) {
-							for (String plrem : pltodelete) {
-								dd.removePlayer(plrem);
-								plugin.debug("There is still some active owners in region "
-										+ rg.getId()
-										+ " Removing inactive owners");
-							}
-							rg.setOwners(dd);
-						}
-
+						plugin.debug("No active owners for region "+rg.getId()+" Added to removal list");
 					}
-				}
-				try {
-					m.save();
-				} catch (Exception e) {
 				}
 
 			}
@@ -281,39 +254,38 @@ public class AutoPurgeThread extends Thread {
 						BukkitWorld lw = new BukkitWorld(w);
 						public void run()
 						{
-							if (config.wgregenrg) {
-								plugin.debug("Regenerating region" + delrg);
-							new BukkitWorld(w).regenerate(
-									new CuboidRegion(
-											lw,
-											minpoint,
-											maxpoint
-											),
-									new EditSession(lw,
-											Integer.MAX_VALUE));
-							}
-							plugin.debug("Deleting region " + delrg);
-							m.removeRegion(delrg);
+							try {
+								if (config.wgregenrg) {
+									plugin.debug("Regenerating region" + delrg);
+									new BukkitWorld(w).regenerate(
+											new CuboidRegion(lw,minpoint,maxpoint),
+											new EditSession(lw,Integer.MAX_VALUE)
+											);
+								}
+								plugin.debug("Deleting region " + delrg);
+								m.removeRegion(delrg);
+								m.save();
+							} catch (Exception e) {}
 							plugin.purgeThread.rgdelfinished = true;
 						}
 					};
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
 
-			}
 			
-			//Wait until previous region regeneration is finished to avoid full main thread freezing
-			while (!rgdelfinished)
-			{
-				try {Thread.sleep(300);} catch (InterruptedException e) {}
-			}
+					//Wait until previous region regeneration is finished to avoid full main thread freezing
+					while (!rgdelfinished)
+					{
+						try {Thread.sleep(300);} catch (InterruptedException e) {}
+					}
 			
-			//sleep to allow server to tick
-			try {Thread.sleep(60);} catch (InterruptedException e1) {e1.printStackTrace();}
+					//sleep to allow server to tick
+					try {Thread.sleep(60);} catch (InterruptedException e1) {e1.printStackTrace();}
 			
 			
-			//save database
-			try {m.save();} catch (Exception e) {}
+					//save database
+
 			
+			}		
 		}
 	}
 

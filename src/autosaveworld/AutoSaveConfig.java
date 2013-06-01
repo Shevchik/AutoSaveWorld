@@ -49,7 +49,6 @@ public class AutoSaveConfig {
 	protected boolean backuptoextfolders = false;
 	protected boolean donotbackuptointfld = true;
 	protected boolean backuppluginsfolder = false;
-	protected boolean slowbackup = true;
 	protected boolean backupwarn = false;
 	protected List<Integer> backupWarnTimes = null;
 	protected boolean backupzip = false;
@@ -105,7 +104,6 @@ public class AutoSaveConfig {
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
 		backupInterval = config.getInt("backup.interval", backupInterval);
-		slowbackup = config.getBoolean("backup.slowbackup", slowbackup);
 		MaxNumberOfWorldsBackups = config.getInt("backup.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
 		MaxNumberOfPluginsBackups = config.getInt("backup.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
@@ -188,7 +186,6 @@ public class AutoSaveConfig {
 		config.set("backup.disableintfolder", donotbackuptointfld);
 		config.set("backup.extfolders",extfolders);
 		config.set("backup.zip",backupzip);
-		config.set("backup.slowbackup", slowbackup);
 		config.set("backup.warn", backupwarn);
 		config.set("backup.warntime", backupWarnTimes);
 		

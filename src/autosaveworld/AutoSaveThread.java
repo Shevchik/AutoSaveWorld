@@ -42,11 +42,11 @@ public class AutoSaveThread extends Thread {
 	public void setRun(boolean run) {
 		this.run = run;
 	}
-	private int runnow;
+	private int i;
 	public void startsave()
 	{
 	command = true;
-	runnow = config.saveInterval;
+	i = config.saveInterval;
 	}
 	// The code to run...weee
 	public void run() {
@@ -54,10 +54,10 @@ public class AutoSaveThread extends Thread {
 			return;
 		}
 
-		log.info(String
-				.format("[%s] AutoSaveThread Started: Interval is %d seconds, Warn Times are %s",
-						plugin.getDescription().getName(), config.saveInterval,
-						Generic.join(",", config.saveWarnTimes)));
+		log.info(String.format("[%s] AutoSaveThread Started: Interval is %d seconds",
+						plugin.getDescription().getName(), config.saveInterval
+					)
+				);
 		Thread.currentThread().setName("AutoSaveWorld_AutoSaveThread");
 		while (run) {
 			// Prevent AutoSave from never sleeping
@@ -73,27 +73,26 @@ public class AutoSaveThread extends Thread {
 			
 			
 			// Do our Sleep stuff!
-			for (runnow = 0; runnow < config.saveInterval; runnow++) {
+			for (i = 0; i < config.saveInterval; i++) {
 				try {
 					if (!run) {
 						if (config.varDebug) {
-							log.info(String.format("[%s] Graceful quit of AutoSaveThread", plugin.getDescription().getName()));
+
 						}
 						return;
 					}
 					boolean warn = config.savewarn;
 					for (int w : config.saveWarnTimes) {
-						if (w != 0 && w + runnow == config.saveInterval) {
+						if (w != 0 && w + i == config.saveInterval) {
 						} else {warn = false;}
 					}
 
 					if (warn) {
 						// Perform warning
-						if (config.varDebug) {
-							log.info(String.format("[%s] Warning Time Reached: %d seconds to go.", plugin.getDescription().getName(), config.saveInterval - runnow));
+						if (config.saveEnabled) {
+							plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageWarning));
+							log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageWarning));
 						}
-						plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageWarning));
-						log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageWarning));
 					}
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -106,6 +105,9 @@ public class AutoSaveThread extends Thread {
 					public void run() {performSave();}});
 			}
 		}
+		
+		//finished
+		log.info("[AutoSaveWorld] Graceful quit of AutoSaveThread");
 	}
 	private void savePlayers() {
 		// Save the players

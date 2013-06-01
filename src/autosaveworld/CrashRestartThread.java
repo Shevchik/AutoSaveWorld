@@ -17,6 +17,8 @@
 
 package autosaveworld;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -59,18 +61,29 @@ public class CrashRestartThread extends Thread{
 			long diff = System.currentTimeMillis() - syncticktime;
 			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) {
 				run = false;
-				log.info("[AutoSaveWorld] "+ChatColor.RED+"Server has stopped responding. Probably this is a crash.");
+
+				
 				if (config.crashrestartenabled) {
-					log.info("[AutoSaveWorld] CrashRestart is enabled, AutoSaveWorld will try to restart server");
+					log.info("[AutoSaveWorld] "+ChatColor.RED+"Server has stopped responding. Probably this is a crash.");
+					log.info("[AutoSaveWorld] Restarting Server");
+					
 					if (!config.crstop) {
-						plugin.JVMsh.setpath(config.crashrestartscriptpath);
+						plugin.JVMsh.setPath(config.crashrestartscriptpath);
+						try {
+							if (!new File(".").getCanonicalPath().equals(Bukkit.getWorldContainer().getCanonicalPath()))
+							{
+								plugin.JVMsh.setWDir(true, Bukkit.getWorldContainer().getCanonicalPath());
+							}
+						} catch (IOException e) {}
 						Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 					}
+					
 					plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
-				} else {
-					log.info("[AutoSaveWorld] CrashRestart is disabled, AutoSaveWorld won't try to restart server");
+					
 				}
+				
 			}
+			
 			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		

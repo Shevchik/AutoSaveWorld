@@ -17,6 +17,8 @@
 
 package autosaveworld;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
@@ -71,6 +73,7 @@ public class AutoRestartThread  extends Thread{
 			 if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command)
 			 {
 				run = false;
+				
 				if (config.autorestartcountdown) {
 					for (int i = config.autorestartseconds; i>0; i--)
 					{
@@ -78,21 +81,29 @@ public class AutoRestartThread  extends Thread{
 						try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					} 
 				}
+				
 				if (config.autorestartBroadcast) {
 					plugin.broadcast(configmsg.messageAutoRestart);
 				}
+				
 				plugin.debug("[AutoSaveWorld] AutoRestarting server");
-				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
+				
 				if (!config.astop) {
-					plugin.JVMsh.setpath(config.autorestartscriptpath);
+					plugin.JVMsh.setPath(config.autorestartscriptpath);
+					try {
+						if (!new File(".").getCanonicalPath().equals(Bukkit.getWorldContainer().getCanonicalPath()))
+						{
+							plugin.JVMsh.setWDir(true, Bukkit.getWorldContainer().getCanonicalPath());
+						}
+					} catch (IOException e) {}
 					Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				}
+				
+				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
 			}
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		
-		if (config.varDebug) {
-			log.info(String.format("[%s] Graceful quit of AutoRestartThread", plugin.getDescription().getName()));
-		}
+		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoRestartThread");}
 	}
 }

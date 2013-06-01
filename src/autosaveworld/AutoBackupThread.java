@@ -36,7 +36,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class AutoBackupThread6 extends Thread {
+public class AutoBackupThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
 	private boolean run = true;
@@ -49,7 +49,7 @@ public class AutoBackupThread6 extends Thread {
     private FileConfiguration configbackup;
 	
 	// Constructor to define number of seconds to sleep
-	AutoBackupThread6(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+	AutoBackupThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
@@ -71,36 +71,27 @@ public class AutoBackupThread6 extends Thread {
 	
 	// The code to run...weee
 	public void run() {
-		if (config == null) {
-			return;
-		}
 
-		log.info(String
-				.format("[%s] AutoBackupThread Started: Interval is %d seconds, Warn Times are %s",
-						plugin.getDescription().getName(), config.backupInterval,
-						Generic.join(",", config.backupWarnTimes)));
+		log.info(String.format("[%s] AutoBackupThread Started: Interval is %d seconds",
+						plugin.getDescription().getName(), config.backupInterval
+					)
+				);
 		Thread.currentThread().setName("AutoSaveWorld_AutoBackupThread");
+		
 		while (run) {
 			// Prevent AutoBackup from never sleeping
 			// If interval is 0, sleep for 10 seconds and skip backup
 			if(config.backupInterval == 0) {
 				try {
 					Thread.sleep(10000);
-				} catch(InterruptedException e) {
-					// care
-				}
+				} catch(InterruptedException e) {}
 				continue;
 			}
 			
 			// Do our Sleep stuff!
 			for (i = 0; i < config.backupInterval; i++) {
 				try {
-					if (!run) {
-						if (config.varDebug) {
-							log.info(String.format("[%s] Graceful quit of AutoBackupThread", plugin.getDescription().getName()));
-						}
-						return;
-					}
+										
 					boolean warn = config.backupwarn;
 					for (int w : config.backupWarnTimes) {
 						if (w != 0 && w + i == config.backupInterval) {
@@ -110,9 +101,6 @@ public class AutoBackupThread6 extends Thread {
 
 					if (warn) {
 						// Perform warning
-						if (config.varDebug) {
-							log.info(String.format("[%s] Warning Time Reached: %d seconds to go.", plugin.getDescription().getName(), config.backupInterval - i));
-						}
 						if (config.backupEnabled) {
 							plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageBackupWarning));
 							log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageBackupWarning));
@@ -124,8 +112,10 @@ public class AutoBackupThread6 extends Thread {
 				}
 			}
 				if (config.backupEnabled||command) {performBackup();}
-			}
 		}
+		
+		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoBackupThread");}
+	}
 	
 	
 	private int numberofbackupsext = 0;
@@ -174,30 +164,33 @@ public class AutoBackupThread6 extends Thread {
 		for (final World world : worlds) {
 		if (worldNames.contains(world.getWorldFolder().getName())||all) {
 				//create runnable for ThreadPoolExecutor
-				Runnable worldb = new Runnable()
-				{
-					World worldt = world;
-					String worldfoldername = world.getWorldFolder().getName();
-					String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
-					String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+worldfoldername+File.separator+datebackup;
-					boolean zipf = zip;
-					public void run()
+				Runnable worldb;
+
+					worldb = new Runnable()
 					{
-						plugin.debug("Backuping world "+worldfoldername);
-						worldt.setAutoSave(false);
-						try {
-						if (!zipf) {
-							copyDirectory(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb));
-						} else 
-						{ 
-						Zip zipfld = new Zip(config);
-						zipfld.ZipFolder(new File(new File(".").getCanonicalPath()+File.separator+worldfoldername), new File(pathtoworldsb+".zip"));
+						World worldt = world;
+						String datebackup = new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(datesec);
+
+						boolean zipf = zip;
+						public void run()
+						{
+							plugin.debug("Backuping world "+worldt.getWorldFolder().getName());
+
+							worldt.setAutoSave(false);
+							try {
+								File worldfolder = worldt.getWorldFolder().getCanonicalFile();
+								String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+worldt.getWorldFolder().getName()+File.separator+datebackup;
+								if (!zipf) {
+									copyDirectory((worldfolder), new File(pathtoworldsb));
+								} else { 
+									Zip zipfld = new Zip(config);
+									zipfld.ZipFolder((worldfolder), new File(pathtoworldsb+".zip"));
+								}
+							} catch(Exception e) {worldt.setAutoSave(true); plugin.debug("Failed to backup world "+worldt.getWorldFolder().getName()); e.printStackTrace();}
+							worldt.setAutoSave(true);
+							plugin.debug("Backuped world "+worldt.getWorldFolder().getName());
 						}
-						} catch(Exception e) {worldt.setAutoSave(true); plugin.debug("Failed to backup world "+worldfoldername);}
-						worldt.setAutoSave(true);
-						plugin.debug("Backuped world "+worldfoldername);
-					}
-				};
+					};
 				//Add task to executor
 				worldsbackupService.submit(worldb);
 			}
@@ -229,22 +222,22 @@ public class AutoBackupThread6 extends Thread {
 	
 	public void performBackup() {
 		if (plugin.backupInProgress) {
-		plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
-		return;
+			plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
+			return;
 		} else if (plugin.purgeInProgress) {
-		plugin.warn("AutoPurge is in progress. Backup cancelled.");
-		return;
+			plugin.warn("AutoPurge is in progress. Backup cancelled.");
+			return;
 		} else if (plugin.saveInProgress) {
-		plugin.warn("AutoSave is in progress. Backup cancelled.");	
-		return;
-		}	else {
-		if (config.slowbackup) {setPriority(Thread.MIN_PRIORITY);}
-		boolean zip = config.backupzip;
-		
+			plugin.warn("AutoSave is in progress. Backup cancelled.");	
+			return;
+		} else {
+			
 		// Lock
 		plugin.saveInProgress = true;
 		plugin.backupInProgress = true;
 		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
+		
+		boolean zip = config.backupzip;
 	    List<String> backupfoldersdest = new ArrayList<String>();
 		datesec = System.currentTimeMillis();
 
@@ -255,9 +248,7 @@ public class AutoBackupThread6 extends Thread {
 			} catch (IOException e) {e.printStackTrace();}
 		}
 		//adding external folders to list of folders to which we should backup everything 
-		if (config.backuptoextfolders) {
-				backupfoldersdest.addAll(config.extfolders);	
-		}
+		if (config.backuptoextfolders) {backupfoldersdest.addAll(config.extfolders);}
 		
 		//backup time	
 		for (String extpath : backupfoldersdest) {
@@ -321,9 +312,8 @@ public class AutoBackupThread6 extends Thread {
 		// Release
 		plugin.saveInProgress = false;
 		plugin.backupInProgress = false;
-		if (config.slowbackup) {setPriority(Thread.NORM_PRIORITY);}
 		}
-		}
+	}
 
 
 	
@@ -364,14 +354,7 @@ public class AutoBackupThread6 extends Thread {
 			        in.close();
 			        out.close();
 
-			        } catch (IOException e) {plugin.debug("Failed to backup file "+sourceLocation);}
-				    if (config.slowbackup) {
-					    try {
-							sleep(0);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}}
-
+			        } catch (IOException e) {plugin.debug("Failed to backup file "+sourceLocation); e.printStackTrace();}
 			    }
 			    }
 			
