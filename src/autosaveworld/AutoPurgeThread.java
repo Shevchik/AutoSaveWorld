@@ -329,13 +329,12 @@ public class AutoPurgeThread extends Thread {
 	}
 
 
-
-	//not implemented yet
 	public void MVInvPurge(long awaytime)
 	{
 		try {
 		MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
 		File mcinvpfld = new File("plugins/Multiverse-Inventories/players/");
+		//We will get all files from MVInv player directory, and get player names from there
 		for (String plfile : mcinvpfld.list())
 		{
 			String plname = plfile.substring(0, plfile.indexOf("."));
@@ -369,17 +368,7 @@ public class AutoPurgeThread extends Thread {
 		for (OfflinePlayer pl : checkPlayers) {
 			if (PurgePlayer(pl.getName())) {
 				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
-					// For thread safety(i don't want to know what will happen
-					// if player will join the server while his dat file is
-					// deleting from another thread)
-					// The problem is how plugins will react to this, need
-					// someone to test this.
 
-					// Check if the player was already banned
-					boolean banned = pl.isBanned();
-					if (!banned) {
-						pl.setBanned(true);
-					}
 					try {
 					String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
 							File pldatFile = new File(
@@ -392,10 +381,6 @@ public class AutoPurgeThread extends Thread {
 									+ " is inactive. Removing dat file");
 					} catch (IOException e) {
 						e.printStackTrace();
-					}
-					// Unban after purge
-					if (!banned) {
-						pl.setBanned(false);
 					}
 				}
 			}

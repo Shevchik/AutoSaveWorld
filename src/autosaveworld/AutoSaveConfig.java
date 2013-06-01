@@ -31,7 +31,6 @@ public class AutoSaveConfig {
 	
 	
 	// Variables
-	protected UUID varUuid;
 	protected int saveInterval = 900;
 	protected List<Integer> saveWarnTimes = null;
 	protected boolean saveBroadcast = true;
@@ -87,7 +86,6 @@ public class AutoSaveConfig {
 		
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
-		varUuid = UUID.fromString(config.getString("var.uuid", UUID.randomUUID().toString()));
 		
 		
 		

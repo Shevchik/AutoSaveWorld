@@ -96,9 +96,10 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Create JVMsh
 		JVMsh = new JVMshutdownhook();
 		// Notify on logger load
-		log.info(String.format("[%s] Version %s is enabled: %s",
-				getDescription().getName(), getDescription().getVersion(),
-				config.varUuid.toString()));
+		log.info(String.format("[%s] Version %s is enabled",
+					getDescription().getName(), getDescription().getVersion()
+					)
+				);
 	}
 
 	
