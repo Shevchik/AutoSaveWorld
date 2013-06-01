@@ -36,6 +36,8 @@ import org.bukkit.entity.Player;
 
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;
+import com.onarandombox.multiverseinventories.MultiverseInventories;
+import com.onarandombox.multiverseinventories.api.profile.WorldGroupProfile;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -74,8 +76,8 @@ public class AutoPurgeThread extends Thread {
 		i = config.purgeInterval;
 	}
 
-	private boolean PurgePlayer(OfflinePlayer player) {
-		if (plnopurgelist.contains(player.getName().toLowerCase())) {
+	private boolean PurgePlayer(String player) {
+		if (plnopurgelist.contains(player.toLowerCase())) {
 			return false;
 		}
 		return true;
@@ -148,8 +150,11 @@ public class AutoPurgeThread extends Thread {
 			if (config.purgeBroadcast) {
 				plugin.broadcast(configmsg.messagePurgePre);
 			}
+			
 			long awaytime = config.purgeAwayTime * 1000;
+			
 			plugin.debug("Purge started");
+			
 			if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)
 					&& config.wg) {
 				plugin.debug("WE found, purging");
@@ -159,6 +164,7 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
+			
 			if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null)
 					&& config.lwc) {
 				plugin.debug("LWC found, purging");
@@ -168,6 +174,17 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
+			
+			if ((Bukkit.getPluginManager().getPlugin("Multiverse-Inventories") !=null) 
+					&& config.mvinv ) {
+				plugin.debug("Multiverse-Inventories found, purging");
+				try {
+					MVInvPurge(awaytime);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
 			plugin.debug("Purging player dat files");
 			if (config.dat) {
 				try {
@@ -176,8 +193,11 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
+			
 			command = false;
+			
 			plugin.debug("Purge finished");
+			
 			if (config.purgeBroadcast) {
 				plugin.broadcast(configmsg.messagePurgePost);
 			}
@@ -219,16 +239,14 @@ public class AutoPurgeThread extends Thread {
 				ArrayList<String> pltodelete = new ArrayList<String>();
 				Set<String> ddpl = rg.getOwners().getPlayers();
 				for (String checkPlayer : ddpl) {
-					if (PurgePlayer(Bukkit.getOfflinePlayer(checkPlayer))) {
-						plugin.debug("Checking player " + checkPlayer);
+					if (PurgePlayer(checkPlayer)) {
 						if (!onlineplncs.contains(checkPlayer)) {
 							pltodelete.add(checkPlayer);
-							plugin.debug(checkPlayer + " is inactive");
 						}
 					}
 				}
 
-				// check region for remove
+				// check region for remove (ignore regions without owners)
 				if (!ddpl.isEmpty()) {
 					if (pltodelete.size()  == ddpl.size()) {
 						// adding region to removal list, we will work with them later
@@ -240,8 +258,6 @@ public class AutoPurgeThread extends Thread {
 			}
 
 			// now deal with the regions that must be deleted
-			if (!rgtodel.isEmpty())
-				plugin.debug("Deleting regions in removal list");
 			for (final String delrg : rgtodel) {
 				plugin.debug("Purging region " + delrg);
 
@@ -275,16 +291,9 @@ public class AutoPurgeThread extends Thread {
 					//Wait until previous region regeneration is finished to avoid full main thread freezing
 					while (!rgdelfinished)
 					{
-						try {Thread.sleep(300);} catch (InterruptedException e) {}
+						try {Thread.sleep(100);} catch (InterruptedException e) {}
 					}
-			
-					//sleep to allow server to tick
-					try {Thread.sleep(60);} catch (InterruptedException e1) {e1.printStackTrace();}
-			
-			
-					//save database
-
-			
+									
 			}		
 		}
 	}
@@ -295,7 +304,7 @@ public class AutoPurgeThread extends Thread {
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
 		{
 			Player pl = pr.getBukkitOwner();
-			if (PurgePlayer(pl))
+			if (PurgePlayer(pl.getName()))
 				{ 
 					if (!pr.getBukkitOwner().hasPlayedBefore() || System.currentTimeMillis() - pl.getLastPlayed() >= awaytime)
 					{
@@ -324,13 +333,41 @@ public class AutoPurgeThread extends Thread {
 	//not implemented yet
 	public void MVInvPurge(long awaytime)
 	{
-		
+		try {
+		MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
+		File mcinvpfld = new File("plugins/Multiverse-Inventories/players/");
+		for (String plfile : mcinvpfld.list())
+		{
+			String plname = plfile.substring(0, plfile.indexOf("."));
+			if (PurgePlayer(plname)) {
+				boolean remove = false;
+				OfflinePlayer offpl = (Bukkit.getOfflinePlayer(plname));
+				if (!offpl.hasPlayedBefore()) {remove = true;}
+				else if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime) {remove = true;}
+				if (remove) {
+					plugin.debug("Removing "+plname+" MVInv files");
+					//remove files from MVInv world folders
+					for (World wname : Bukkit.getWorlds()) {
+						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData(offpl);
+					}
+					//remove files from MVInv player folder
+					new File(mcinvpfld,plfile).delete();
+					//remove files from MVInv groups folder
+					for (WorldGroupProfile gname: mvpl.getGroupManager().getGroups())
+					{
+						File mcinvgfld = new File("plugins/Multiverse-Inventories/groups/");
+						new File(mcinvgfld,gname.getName()+File.separator+plfile).delete();
+					}
+				}
+			}
+		}
+		} catch (Exception e) {e.printStackTrace();}
 	}
 	
 	public void DelPlayerDatFile(long awaytime) {
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers) {
-			if (PurgePlayer(pl)) {
+			if (PurgePlayer(pl.getName())) {
 				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
 					// For thread safety(i don't want to know what will happen
 					// if player will join the server while his dat file is
@@ -343,13 +380,10 @@ public class AutoPurgeThread extends Thread {
 					if (!banned) {
 						pl.setBanned(true);
 					}
-					String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getName();
-					plugin.debug("Removing player .dat files from folder "+worldfoldername);
 					try {
+					String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
 							File pldatFile = new File(
-									new File(".").getCanonicalPath()
-											+ File.separator
-											+ worldfoldername
+											worldfoldername
 											+ File.separator + "players"
 											+ File.separator + pl.getName()
 											+ ".dat");
