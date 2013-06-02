@@ -194,10 +194,11 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 			
-			command = false;
+
 			
 			plugin.debug("Purge finished");
 			
+			command = false;
 			if (config.purgeBroadcast) {
 				plugin.broadcast(configmsg.messagePurgePost);
 			}
@@ -294,12 +295,16 @@ public class AutoPurgeThread extends Thread {
 						try {Thread.sleep(100);} catch (InterruptedException e) {}
 					}
 									
-			}		
+			}	
+			
+			plugin.debug("WG purge finished, deleted "+ rgtodel.size()+" inactive regions");
+			
 		}
 	}
 
 	public void LWCpurge(long awaytime) {
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
+		int deleted = 0;
 		//we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
 		{
@@ -308,6 +313,7 @@ public class AutoPurgeThread extends Thread {
 				{ 
 					if (!pr.getBukkitOwner().hasPlayedBefore() || System.currentTimeMillis() - pl.getLastPlayed() >= awaytime)
 					{
+						//delete block
 						if (config.lwcdelprotectedblocks)
 						{
 
@@ -322,10 +328,16 @@ public class AutoPurgeThread extends Thread {
 							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
 						}
 						plugin.debug("Removing protection for inactive player "+pr.getBukkitOwner().getName());
+						//delete protections
 						lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
+						//count deleted protections
+						deleted += 1;
 					}
 				}
 		}
+		
+		plugin.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
+		
 	}
 
 
@@ -334,6 +346,7 @@ public class AutoPurgeThread extends Thread {
 		try {
 		MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
 		File mcinvpfld = new File("plugins/Multiverse-Inventories/players/");
+		int deleted = 0;
 		//We will get all files from MVInv player directory, and get player names from there
 		for (String plfile : mcinvpfld.list())
 		{
@@ -357,13 +370,19 @@ public class AutoPurgeThread extends Thread {
 						File mcinvgfld = new File("plugins/Multiverse-Inventories/groups/");
 						new File(mcinvgfld,gname.getName()+File.separator+plfile).delete();
 					}
+					//count deleted player file
+					deleted += 1;
 				}
 			}
 		}
+		
+		plugin.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
+		
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	
 	public void DelPlayerDatFile(long awaytime) {
+		int deleted = 0;
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers) {
 			if (PurgePlayer(pl.getName())) {
@@ -379,12 +398,16 @@ public class AutoPurgeThread extends Thread {
 							pldatFile.delete();
 							plugin.debug(pl.getName()
 									+ " is inactive. Removing dat file");
+							deleted += 1;
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		}
+		
+		plugin.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
+		
 	}
 
 }
