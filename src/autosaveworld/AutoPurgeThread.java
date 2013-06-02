@@ -194,13 +194,14 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 			
-			command = false;
+
 			
 			plugin.debug("Purge finished");
 			
 			if (config.purgeBroadcast) {
 				plugin.broadcast(configmsg.messagePurgePost);
 			}
+			command = false;
 			plugin.purgeInProgress = false;
 			if (config.slowpurge) {
 				setPriority(Thread.NORM_PRIORITY);
