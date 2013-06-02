@@ -1,6 +1,6 @@
 name: AutoSaveWorld
 main: autosaveworld.AutoSaveWorld
-version: 4.7.dev-02_06_2013
+version: 4.6
 author: Shevchik
 load: STARTUP 
 description: >
