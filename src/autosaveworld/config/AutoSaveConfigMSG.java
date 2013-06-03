@@ -18,7 +18,7 @@
  * 
  */
 
-package autosaveworld;
+package autosaveworld.config;
 
 import java.io.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,17 +31,17 @@ public class AutoSaveConfigMSG {
 		this.config = config;
 	}
 	// Messages
-	protected String messageBroadcastPre = "&9AutoSaving";
-	protected String messageBroadcastPost = "&9AutoSave Complete";
-	protected String messageInsufficientPermissions = "&cYou do not have access to that command.";
-	protected String messageWarning = "&9Warning, AutoSave will commence soon.";
-	protected String messageBroadcastBackupPre = "&9AutoBackuping";
-	protected String messageBroadcastBackupPost = "&9AutoBackup Complete";
-	protected String messageBackupWarning = "&9Warning, AutoBackup will commence soon";
-	protected String messagePurgePre = "&9AutoPurging";
-	protected String messagePurgePost = "&9AutoPurge Complete";
-	protected String messageAutoRestart = "&9Server is restarting";
-	protected String messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
+	public String messageBroadcastPre = "&9AutoSaving";
+	public String messageBroadcastPost = "&9AutoSave Complete";
+	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
+	public String messageWarning = "&9Warning, AutoSave will commence soon.";
+	public String messageBroadcastBackupPre = "&9AutoBackuping";
+	public String messageBroadcastBackupPost = "&9AutoBackup Complete";
+	public String messageBackupWarning = "&9Warning, AutoBackup will commence soon";
+	public String messagePurgePre = "&9AutoPurging";
+	public String messagePurgePost = "&9AutoPurge Complete";
+	public String messageAutoRestart = "&9Server is restarting";
+	public String messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
 	
 	public void loadmsg() {
 		if (!config.switchtolangfile) {

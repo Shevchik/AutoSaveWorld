@@ -15,7 +15,7 @@
  * 
  */
 
-package autosaveworld;
+package autosaveworld.config;
 
 import java.io.*;
 import java.util.*;
@@ -31,50 +31,49 @@ public class AutoSaveConfig {
 	
 	
 	// Variables
-	protected int saveInterval = 900;
-	protected List<Integer> saveWarnTimes = null;
-	protected boolean saveBroadcast = true;
-	protected boolean saveEnabled = true;
-	protected boolean varDebug = false;
-	protected List<String> backupWorlds = null;
-	protected boolean savewarn = false;
-	protected boolean backupEnabled = false;
-	protected int backupInterval =  60*60*6;
-	protected int MaxNumberOfWorldsBackups = 30;
-	protected int MaxNumberOfPluginsBackups = 30;
-	protected boolean backupBroadcast = true;
-	protected List<String> extfolders;
-	protected List<String> excludefolders;
-	protected boolean backuptoextfolders = false;
-	protected boolean donotbackuptointfld = true;
-	protected boolean backuppluginsfolder = false;
-	protected boolean backupwarn = false;
-	protected List<Integer> backupWarnTimes = null;
-	protected boolean backupzip = false;
-	protected int purgeInterval = 60*60*24;
-	protected long purgeAwayTime = 60*60*24*30;
-	protected boolean purgeEnabled = false;
-	protected boolean purgeBroadcast = true;
-	protected boolean slowpurge = true;
-	protected boolean wg = true;
-	protected boolean wgregenrg = false;
-	protected boolean lwc = true;
-	protected boolean lwcdelprotectedblocks = false;
-	protected boolean mvinv = true;
-	protected boolean dat = true;
-	protected boolean switchtolangfile = false;
-	protected String langfilesuffix = "ru";
-	protected boolean crashrestartenabled = false;
-	protected String crashrestartscriptpath="start.sh";
-	protected boolean crstop = false;
-	protected long crtimeout = 60;
-	protected boolean autorestart = false;
-	protected boolean autorestartBroadcast = true;
-	protected String autorestartscriptpath = "start.sh";
-	protected List<String> autorestarttime = new ArrayList<String>();
-	protected boolean autorestartcountdown = true;
-	protected int autorestartseconds = 20;
-	protected boolean astop = false;
+	public int saveInterval = 900;
+	public List<Integer> saveWarnTimes = null;
+	public boolean saveBroadcast = true;
+	public boolean saveEnabled = true;
+	public boolean varDebug = false;
+	public List<String> backupWorlds = null;
+	public boolean savewarn = false;
+	public boolean backupEnabled = false;
+	public int backupInterval =  60*60*6;
+	public int MaxNumberOfWorldsBackups = 30;
+	public int MaxNumberOfPluginsBackups = 30;
+	public boolean backupBroadcast = true;
+	public List<String> extfolders;
+	public List<String> excludefolders;
+	public boolean backuptoextfolders = false;
+	public boolean donotbackuptointfld = true;
+	public boolean backuppluginsfolder = false;
+	public boolean backupwarn = false;
+	public List<Integer> backupWarnTimes = null;
+	public boolean backupzip = false;
+	public int purgeInterval = 60*60*24;
+	public long purgeAwayTime = 60*60*24*30;
+	public boolean purgeEnabled = false;
+	public boolean purgeBroadcast = true;
+	public boolean wg = true;
+	public boolean wgregenrg = false;
+	public boolean lwc = true;
+	public boolean lwcdelprotectedblocks = false;
+	public boolean mvinv = true;
+	public boolean dat = true;
+	public boolean switchtolangfile = false;
+	public String langfilesuffix = "ru";
+	public boolean crashrestartenabled = false;
+	public String crashrestartscriptpath="start.sh";
+	public boolean crstop = false;
+	public long crtimeout = 60;
+	public boolean autorestart = false;
+	public boolean autorestartBroadcast = true;
+	public String autorestartscriptpath = "start.sh";
+	public List<String> autorestarttime = new ArrayList<String>();
+	public boolean autorestartcountdown = true;
+	public int autorestartseconds = 20;
+	public boolean astop = false;
 	
 
 
@@ -129,7 +128,6 @@ public class AutoSaveConfig {
 		purgeAwayTime = config.getLong("purge.awaytime", purgeAwayTime);
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
-		slowpurge = config.getBoolean("purge.slowpurge", slowpurge);
 		wg = config.getBoolean("purge.wg.enabled", wg);
 		wgregenrg = config.getBoolean("purge.wg.regenpurgedregion", wgregenrg);
 		lwc = config.getBoolean("purge.lwc.enabled", lwc);
@@ -194,7 +192,6 @@ public class AutoSaveConfig {
 		config.set("purge.interval", purgeInterval);
 		config.set("purge.awaytime", purgeAwayTime);
 		config.set("purge.broadcast",purgeBroadcast);
-		config.set("purge.slowpurge", slowpurge);
 		config.set("purge.wg.enabled", wg);
 		config.set("purge.wg.regenpurgedregion", wgregenrg);
 		config.set("purge.lwc.enabled", lwc);

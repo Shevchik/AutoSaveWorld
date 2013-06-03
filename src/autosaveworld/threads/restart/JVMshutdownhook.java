@@ -15,7 +15,7 @@
 *
 */
 
-package autosaveworld;
+package autosaveworld.threads.restart;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -27,19 +27,12 @@ import org.bukkit.Bukkit;
 public class JVMshutdownhook extends Thread {
 
 	private String crashrestartscriptpath = "start.sh"; 
-	private boolean chwdir = false;
-	private String wdir = "";
 	
 	public void setPath(String path)
 	{
 		this.crashrestartscriptpath = path;
 	}
 	
-	public void setWDir(boolean chwdir, String wdir)
-	{
-		this.chwdir = chwdir;
-		this.wdir = wdir;
-	}
 	
 	public void restart()
 	{
@@ -66,12 +59,6 @@ public class JVMshutdownhook extends Thread {
 			execsequence.addAll(arguments);
 			execsequence.add("-jar");
 			execsequence.add(jarfilename);
-			
-			//build additional bukkit parameters
-			if (chwdir) {
-				execsequence.add("-W");
-				execsequence.add(wdir);
-			}
 			
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.command(execsequence);

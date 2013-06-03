@@ -15,7 +15,7 @@
  * 
  */
 
-package autosaveworld;
+package autosaveworld.threads.backup;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +36,11 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.Generic;
+
 public class AutoBackupThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
@@ -49,7 +54,7 @@ public class AutoBackupThread extends Thread {
     private FileConfiguration configbackup;
 	
 	// Constructor to define number of seconds to sleep
-	AutoBackupThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+	public AutoBackupThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

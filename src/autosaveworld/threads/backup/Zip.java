@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld;
+package autosaveworld.threads.backup;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import autosaveworld.config.AutoSaveConfig;
 
 public class Zip {
 	AutoSaveConfig config;

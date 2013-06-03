@@ -1,5 +1,5 @@
 name: AutoSaveWorld
-main: autosaveworld.AutoSaveWorld
+main: autosaveworld.core.AutoSaveWorld
 version: 4.7.dev
 author: Shevchik
 load: STARTUP 

@@ -15,14 +15,15 @@
 *
 */
 
-package autosaveworld;
+package autosaveworld.threads.restart;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+
+import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.core.AutoSaveWorld;
 
 public class CrashRestartThread extends Thread{
 
@@ -32,7 +33,7 @@ public class CrashRestartThread extends Thread{
 	protected final Logger log = Bukkit.getLogger();
 	private long syncticktime = 0;
 	
-	CrashRestartThread(AutoSaveWorld plugin,AutoSaveConfig config)
+	public CrashRestartThread(AutoSaveWorld plugin,AutoSaveConfig config)
 	{
 		this.plugin = plugin;
 		this.config = config;
@@ -69,12 +70,6 @@ public class CrashRestartThread extends Thread{
 					
 					if (!config.crstop) {
 						plugin.JVMsh.setPath(config.crashrestartscriptpath);
-						try {
-							if (!new File(".").getCanonicalPath().equals(Bukkit.getWorldContainer().getCanonicalPath()))
-							{
-								plugin.JVMsh.setWDir(true, Bukkit.getWorldContainer().getCanonicalPath());
-							}
-						} catch (IOException e) {}
 						Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 					}
 					

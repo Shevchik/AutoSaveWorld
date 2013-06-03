@@ -15,13 +15,25 @@
  *
  */
 
-package autosaveworld;
+package autosaveworld.core;
 
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.LocaleContainer;
+import autosaveworld.listener.ASWEventListener;
+import autosaveworld.threads.backup.AutoBackupThread;
+import autosaveworld.threads.purge.AutoPurgeThread;
+import autosaveworld.threads.restart.AutoRestartThread;
+import autosaveworld.threads.restart.CrashRestartThread;
+import autosaveworld.threads.restart.JVMshutdownhook;
+import autosaveworld.threads.restart.SelfRestartThread;
+import autosaveworld.threads.save.AutoSaveThread;
 
 public class AutoSaveWorld extends JavaPlugin {
 	private static final Logger log = Bukkit.getLogger();
@@ -39,11 +51,11 @@ public class AutoSaveWorld extends JavaPlugin {
 	private LocaleContainer localeloader;
 	private ASWEventListener eh;
 	protected int numPlayers = 0;
-	protected volatile boolean saveInProgress = false;
-	protected volatile boolean backupInProgress = false;
-	protected volatile boolean purgeInProgress = false;
-	protected String LastSave = "No save was since the server start";
-	protected String LastBackup = "No backup was since the server start";
+	public volatile boolean saveInProgress = false;
+	public volatile boolean backupInProgress = false;
+	public volatile boolean purgeInProgress = false;
+	public String LastSave = "No save was since the server start";
+	public String LastBackup = "No backup was since the server start";
 
 	@Override
 	public void onDisable() {

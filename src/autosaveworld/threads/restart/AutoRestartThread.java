@@ -15,14 +15,16 @@
  *
  */
 
-package autosaveworld;
+package autosaveworld.threads.restart;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+
+import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.core.AutoSaveWorld;
 
 
 public class AutoRestartThread  extends Thread{
@@ -33,7 +35,7 @@ public class AutoRestartThread  extends Thread{
 	protected final Logger log = Bukkit.getLogger();
 
 	
-	AutoRestartThread(AutoSaveWorld plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
+	public AutoRestartThread(AutoSaveWorld plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
 	{
 		this.plugin = plugin;
 		this.config = config;
@@ -90,12 +92,6 @@ public class AutoRestartThread  extends Thread{
 				
 				if (!config.astop) {
 					plugin.JVMsh.setPath(config.autorestartscriptpath);
-					try {
-						if (!new File(".").getCanonicalPath().equals(Bukkit.getWorldContainer().getCanonicalPath()))
-						{
-							plugin.JVMsh.setWDir(true, Bukkit.getWorldContainer().getCanonicalPath());
-						}
-					} catch (IOException e) {}
 					Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				}
 				

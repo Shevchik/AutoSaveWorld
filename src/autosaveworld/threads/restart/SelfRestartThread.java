@@ -14,7 +14,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 *
 */
-package autosaveworld;
+package autosaveworld.threads.restart;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -31,6 +31,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.SimplePluginManager;
 
+import autosaveworld.core.AutoSaveWorld;
+
 public class SelfRestartThread  extends Thread{
 	
 	private AutoSaveWorld plugin;
@@ -39,7 +41,7 @@ public class SelfRestartThread  extends Thread{
 	
 	protected final Logger log = Bukkit.getLogger();
 	
-	SelfRestartThread(AutoSaveWorld plugin)
+	public SelfRestartThread(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
