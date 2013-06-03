@@ -65,14 +65,14 @@ import autosaveworld.core.AutoSaveWorld;
 		public void onConsoleStopCommand(ServerCommandEvent event)
 		{
 		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
-			{plugin.crashrestartThread.stopthread();} }
+			{plugin.crashrestartThread.stopThread();} }
 		}
 		
 		@EventHandler
 		public void onRemoteConsoleStopCommand(RemoteServerCommandEvent event)
 		{
 		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
-			{plugin.crashrestartThread.stopthread();} }
+			{plugin.crashrestartThread.stopThread();} }
 		}
 
 		

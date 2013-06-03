@@ -39,7 +39,7 @@ public class CrashRestartThread extends Thread{
 		this.config = config;
 	}
 	
-	public void stopthread()
+	public void stopThread()
 	{
 		this.run = false;
 	}
@@ -48,7 +48,7 @@ public class CrashRestartThread extends Thread{
 	public void run()
 	{
 		log.info("[AutoSaveWorld] CrashRestartThread started");
-		Thread.currentThread().setName("AutoSaveWorld_CrashRestartThread");
+		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 		
 		//schedule sync task in, this will provide us info about when the last server tick occured
 		int tasknumber = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {

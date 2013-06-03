@@ -45,9 +45,11 @@ public class AutoSaveThread extends Thread {
 	}
 
 	// Allows for the thread to naturally exit if value is false
-	public void setRun(boolean run) {
-		this.run = run;
+	public void stopThread() {
+		this.run = false;
 	}
+	
+	
 	private int i;
 	public void startsave()
 	{
@@ -64,7 +66,7 @@ public class AutoSaveThread extends Thread {
 						plugin.getDescription().getName(), config.saveInterval
 					)
 				);
-		Thread.currentThread().setName("AutoSaveWorld_AutoSaveThread");
+		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
 		while (run) {
 			// Prevent AutoSave from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving

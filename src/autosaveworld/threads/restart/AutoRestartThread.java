@@ -42,7 +42,7 @@ public class AutoRestartThread  extends Thread{
 		this.configmsg = configmsg;
 	}
 	
-	public void stopthread()
+	public void stopThread()
 	{
 		this.run = false;
 	}
@@ -53,18 +53,12 @@ public class AutoRestartThread  extends Thread{
 		this.command = true;
 	}
 	
-	
-	private String getCurTime()
-	{
-		Calendar cal = Calendar.getInstance();
-		String curtime = 	cal.get(Calendar.HOUR_OF_DAY)+ ":"+  cal.get(Calendar.MINUTE);
-		return curtime;
-	}
+
 	
 	public void run()
 	{	
 		log.info("[AutoSaveWorld] AutoRestartThread started");
-		Thread.currentThread().setName("AutoSaveWorld_AutoRestartThread");
+		Thread.currentThread().setName("AutoSaveWorld AutoRestartThread");
 		
 		//check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
 		if  (config.autorestarttime.contains(getCurTime()))	{try {Thread.sleep(61000);} catch (InterruptedException e) {}}
@@ -101,5 +95,14 @@ public class AutoRestartThread  extends Thread{
 		}
 		
 		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoRestartThread");}
+	}
+	
+	
+	
+	private String getCurTime()
+	{
+		Calendar cal = Calendar.getInstance();
+		String curtime = 	cal.get(Calendar.HOUR_OF_DAY)+ ":"+  cal.get(Calendar.MINUTE);
+		return curtime;
 	}
 }

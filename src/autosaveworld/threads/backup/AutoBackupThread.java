@@ -63,9 +63,9 @@ public class AutoBackupThread extends Thread {
 
     
 	// Allows for the thread to naturally exit if value is false
-	public void setRun(boolean run) {
-		this.run = run;
- 	}
+	public void stopThread() {
+		this.run = false;
+	}
 	
 	public void startbackup()
 	{
@@ -81,7 +81,7 @@ public class AutoBackupThread extends Thread {
 						plugin.getDescription().getName(), config.backupInterval
 					)
 				);
-		Thread.currentThread().setName("AutoSaveWorld_AutoBackupThread");
+		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
 		
 		while (run) {
 			// Prevent AutoBackup from never sleeping

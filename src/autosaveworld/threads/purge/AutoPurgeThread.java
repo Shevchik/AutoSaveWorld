@@ -42,8 +42,8 @@ public class AutoPurgeThread extends Thread {
 	}
 
 	// Allows for the thread to naturally exit if value is false
-	public void setRun(boolean run) {
-		this.run = run;
+	public void stopThread() {
+		this.run = false;
 	}
 
 	private int i;
@@ -61,7 +61,7 @@ public class AutoPurgeThread extends Thread {
 						plugin.getDescription().getName(), config.purgeInterval
 					)
 				);
-		Thread.currentThread().setName("AutoSaveWorld_AutoPurgeThread");
+		Thread.currentThread().setName("AutoSaveWorld AutoPurgeThread");
 
 		
 		while (run) {

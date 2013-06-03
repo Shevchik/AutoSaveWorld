@@ -35,26 +35,28 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class SelfRestartThread  extends Thread{
 	
+	protected final Logger log = Bukkit.getLogger();
 	private AutoSaveWorld plugin;
 	private boolean run = true;
 	public boolean restart = false;
 	
-	protected final Logger log = Bukkit.getLogger();
 	
 	public SelfRestartThread(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
-	public void stopthread() {
+	
+	public void stopThread() {
 	this.run = false;
 	}
+	
 	public void restart()
 	{restart=true;}
 	@SuppressWarnings("unchecked")
 	public void run()
 	{
 		log.info("[AutoSaveWorld] SelfRestartThread started");
-		Thread.currentThread().setName("AutoSaveWorld_SelfRestartThread");
+		Thread.currentThread().setName("AutoSaveWorld SelfRestartThread");
 		while (run)
 		{
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}

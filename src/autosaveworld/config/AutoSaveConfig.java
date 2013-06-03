@@ -74,6 +74,12 @@ public class AutoSaveConfig {
 	public boolean autorestartcountdown = true;
 	public int autorestartseconds = 20;
 	public boolean astop = false;
+	public boolean cctimeenabled = true;
+	public List<String> cctimetimes = new ArrayList<String>();
+	public HashMap<String, ArrayList<String>> cctimescommands = new HashMap<String, ArrayList<String>>();
+	public boolean ccintervalenabled = false;
+	public int ccintervalinterval = 600;
+	public List<String> ccintervalcommands = new ArrayList<String>();
 	
 
 
@@ -150,9 +156,24 @@ public class AutoSaveConfig {
 		autorestartscriptpath = config.getString("autorestart.scriptpath",autorestartscriptpath);
 		astop = config.getBoolean("autorestart.juststop", astop);
 		
+		//autoconsolecommand variables
+		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
+		cctimetimes = config.getStringList("consolecommand.timemode.timeslist");
+		cctimescommands.clear();
+		for (String cctime : cctimetimes)
+		{
+			cctimescommands.put(cctime, (ArrayList<String>) config.getStringList("consolecommand.timemode."+cctime));
+		}
+		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
+		ccintervalinterval = config.getInt("consolecommand.intervalmode.interval", ccintervalinterval);
+		ccintervalcommands = config.getStringList("consolecommand.intervalmode.commands");
+		
+		
 		//locale variables
 		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
 		langfilesuffix = config.getString("locale.langfilesuffix",langfilesuffix);
+		
+		
 		save();
 	}
 
@@ -213,6 +234,18 @@ public class AutoSaveConfig {
 		config.set("autorestart.countdown.seconds",autorestartseconds);
 		config.set("autorestart.scriptpath",autorestartscriptpath);
 		config.set("autorestart.juststop", astop);
+		
+		
+		//autoconsolecommand variables
+		config.set("consolecommand.timemode.enabled", cctimeenabled);
+		config.set("consolecommand.timemode.timeslist", cctimetimes);
+		for (String cctime : cctimescommands.keySet())
+		{
+			config.set("consolecommand.timemode."+cctime, cctimescommands.get(cctime));
+		}
+		config.set("consolecommand.intervalmode.enabled", ccintervalenabled);
+		config.set("consolecommand.intervalmode.interval", ccintervalinterval);
+		config.set("consolecommand.intervalmode.commands", ccintervalcommands);
 		
 		//locale variables
 		config.set("locale.switchtolangfile",switchtolangfile);

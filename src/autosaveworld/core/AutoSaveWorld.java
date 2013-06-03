@@ -28,6 +28,7 @@ import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.config.LocaleContainer;
 import autosaveworld.listener.ASWEventListener;
 import autosaveworld.threads.backup.AutoBackupThread;
+import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.threads.purge.AutoPurgeThread;
 import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
@@ -46,6 +47,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public CrashRestartThread crashrestartThread = null;
 	public AutoRestartThread autorestartThread = null;
 	public JVMshutdownhook JVMsh = null;
+	public AutoConsoleCommandThread consolecommandThread = null;
 	private AutoSaveConfigMSG configmsg;
 	private AutoSaveConfig config;
 	private LocaleContainer localeloader;
@@ -65,7 +67,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Stop threads
 		debug("Stopping Threads");
 		stopThread(ThreadType.SAVE);
-		stopThread(ThreadType.BACKUP6);
+		stopThread(ThreadType.BACKUP);
 		stopThread(ThreadType.PURGE);
 		if (!selfrestartThread.restart) {
 			stopThread(ThreadType.SELFRESTART);
@@ -74,6 +76,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.CRASHRESTART);
 		stopThread(ThreadType.AUTORESTART);
 		JVMsh = null;
+		stopThread(ThreadType.CONSOLECOMMAND);
 		log.info(String.format("[%s] Version %s is disabled", getDescription()
 				.getName(), getDescription().getVersion()));
 	}
@@ -96,7 +99,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start AutoSave Thread
 		startThread(ThreadType.SAVE);
 		// Start AutoBackupThread
-		startThread(ThreadType.BACKUP6);
+		startThread(ThreadType.BACKUP);
 		// Start AutoPurgeThread
 		startThread(ThreadType.PURGE);
 		// Start SelfRestarThread
@@ -107,6 +110,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.AUTORESTART);
 		// Create JVMsh
 		JVMsh = new JVMshutdownhook();
+		// Start ConsoleCommandThread
+		startThread(ThreadType.CONSOLECOMMAND);
 		// Notify on logger load
 		log.info(String.format("[%s] Version %s is enabled",
 					getDescription().getName(), getDescription().getVersion()
@@ -125,7 +130,7 @@ public class AutoSaveWorld extends JavaPlugin {
 				saveThread.start();
 			}
 			return true;
-		case BACKUP6:
+		case BACKUP:
 			if (backupThread6 == null || !backupThread6.isAlive()) {
 				backupThread6 = new AutoBackupThread(this, config, configmsg);
 				backupThread6.start();
@@ -156,6 +161,12 @@ public class AutoSaveWorld extends JavaPlugin {
 				autorestartThread.start();
 			}
 			return true;
+		case CONSOLECOMMAND:
+			if (consolecommandThread == null || !consolecommandThread.isAlive()) {
+				consolecommandThread = new AutoConsoleCommandThread(this, config);
+				consolecommandThread.start();
+			}
+			return true;
 		default:
 			return false;
 		}
@@ -169,9 +180,9 @@ public class AutoSaveWorld extends JavaPlugin {
 			if (saveThread == null) {
 				return true;
 			} else {
-				saveThread.setRun(false);
+				saveThread.stopThread();
 				try {
-					saveThread.join(1000);
+					saveThread.join(5000);
 					saveThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -179,13 +190,13 @@ public class AutoSaveWorld extends JavaPlugin {
 					return false;
 				}
 			}
-		case BACKUP6:
+		case BACKUP:
 			if (backupThread6 == null) {
 				return true;
 			} else {
-				backupThread6.setRun(false);
+				backupThread6.stopThread();
 				try {
-					backupThread6.join(1000);
+					backupThread6.join(5000);
 					backupThread6 = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -197,9 +208,9 @@ public class AutoSaveWorld extends JavaPlugin {
 			if (purgeThread == null) {
 				return true;
 			} else {
-				purgeThread.setRun(false);
+				purgeThread.stopThread();
 				try {
-					purgeThread.join(1000);
+					purgeThread.join(5000);
 					purgeThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -211,9 +222,9 @@ public class AutoSaveWorld extends JavaPlugin {
 			if (selfrestartThread == null) {
 				return true;
 			} else {
-				selfrestartThread.stopthread();
+				selfrestartThread.stopThread();
 				try {
-					selfrestartThread.join(1000);
+					selfrestartThread.join(5000);
 					selfrestartThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -225,13 +236,13 @@ public class AutoSaveWorld extends JavaPlugin {
 			if (crashrestartThread == null) {
 				return true;
 			} else {
-				crashrestartThread.stopthread();
+				crashrestartThread.stopThread();
 				try {
-					crashrestartThread.join(1000);
+					crashrestartThread.join(5000);
 					crashrestartThread = null;
 					return true;
 				} catch (InterruptedException e) {
-					warn("Could not stop SelfRestartThread");
+					warn("Could not stop CrashRestartThread");
 					return false;
 				}
 			}
@@ -239,13 +250,27 @@ public class AutoSaveWorld extends JavaPlugin {
 			if (autorestartThread == null) {
 				return true;
 			} else {
-				autorestartThread.stopthread();
+				autorestartThread.stopThread();
 				try {
-					autorestartThread.join(1000);
+					autorestartThread.join(5000);
 					autorestartThread = null;
 					return true;
 				} catch (InterruptedException e) {
-					warn("Could not stop SelfRestartThread");
+					warn("Could not stop AutoRestartThread");
+					return false;
+				}
+			}
+		case CONSOLECOMMAND:
+			if (consolecommandThread == null) {
+				return true;
+			} else {
+				consolecommandThread.stopThread();
+				try {
+					consolecommandThread.join(5000);
+					consolecommandThread = null;
+					return true;
+				} catch (InterruptedException e) {
+					warn("Could not stop ConsoleCommandThread");
 					return false;
 				}
 			}
