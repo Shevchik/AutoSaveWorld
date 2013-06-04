@@ -82,7 +82,7 @@ public class WGpurge {
 			// now deal with the regions that must be deleted
 			for (final String delrg : rgtodel) {
 				plugin.debug("Purging region " + delrg);
-
+					plugin.purgeThread.wgrgregenrunning = true;
 					//regen should be done in main thread
 					Runnable rgregen =  new Runnable()
 					{
@@ -102,16 +102,16 @@ public class WGpurge {
 								plugin.debug("Deleting region " + delrg);
 								m.removeRegion(delrg);
 								m.save();
+								plugin.purgeThread.wgrgregenrunning = true;
 							} catch (Exception e) {}
 						}
 					};
-					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
 
 			
 					//Wait until previous region regeneration is finished to avoid full main thread freezing
-					while (Bukkit.getScheduler().isCurrentlyRunning(taskid))
+					while (plugin.purgeThread.wgrgregenrunning)
 					{
-						System.out.println(Bukkit.getScheduler().isCurrentlyRunning(taskid));
 						try {Thread.sleep(100);} catch (InterruptedException e) {}
 					}
 									

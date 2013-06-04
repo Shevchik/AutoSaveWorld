@@ -34,8 +34,11 @@ public class MVInvpurge {
 			String plname = plfile.substring(0, plfile.indexOf("."));
 				boolean remove = false;
 				OfflinePlayer offpl = (Bukkit.getOfflinePlayer(plname));
+				//check is the player is inactive
 				if (!offpl.hasPlayedBefore()) {remove = true;}
 				else if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime) {remove = true;}
+				//rare occasion when player just joined server, then hasPlayedBefore will return false for this player
+				if (offpl.isOnline()) {remove = false;}
 				if (remove) {
 					plugin.debug("Removing "+plname+" MVInv files");
 					//remove files from MVInv world folders

@@ -29,7 +29,7 @@ public class CrashRestartThread extends Thread{
 
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
-	private boolean run = true;
+	private volatile boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 	private long syncticktime = 0;
 	

@@ -37,7 +37,7 @@ public class SelfRestartThread  extends Thread{
 	
 	protected final Logger log = Bukkit.getLogger();
 	private AutoSaveWorld plugin;
-	private boolean run = true;
+	private volatile boolean run = true;
 	public boolean restart = false;
 	
 	

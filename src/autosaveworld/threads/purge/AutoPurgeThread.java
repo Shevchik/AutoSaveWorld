@@ -31,8 +31,12 @@ public class AutoPurgeThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private boolean run = true;
+	private volatile boolean run = true;
 	private boolean command = false;
+	
+	//public variables for purge status
+	public volatile boolean wgrgregenrunning = false;
+	public volatile boolean pmplotregenrunning = false;
 
 	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,
 			AutoSaveConfigMSG configmsg) {
@@ -138,6 +142,16 @@ public class AutoPurgeThread extends Thread {
 				plugin.debug("Multiverse-Inventories found, purging");
 				try {
 					new MVInvpurge(plugin, awaytime);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if ((Bukkit.getPluginManager().getPlugin("PlotMe") !=null) 
+					&& config.pm) {
+				plugin.debug("PlotMe found, purging");
+				try {
+					new PlotMepurge(plugin, awaytime, config.pmregen);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}

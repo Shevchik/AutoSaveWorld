@@ -15,7 +15,7 @@ public class AutoConsoleCommandThread extends Thread {
 	protected final Logger log = Bukkit.getLogger();
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
-	private boolean run = true;
+	private volatile boolean run = true;
 
 	public AutoConsoleCommandThread(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;

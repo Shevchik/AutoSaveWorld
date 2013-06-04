@@ -31,8 +31,14 @@ public class LWCpurge {
 		//we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
 		{
+			boolean remove = false;
 			Player pl = pr.getBukkitOwner();
-					if (!pr.getBukkitOwner().hasPlayedBefore() || System.currentTimeMillis() - pl.getLastPlayed() >= awaytime)
+			//check is the player is inactive
+			if (!pl.hasPlayedBefore()) {remove = true;}
+			else if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {remove = true;}
+			//rare occasion when player just joined server, then hasPlayedBefore will return false for this player
+			if (pl.isOnline()) {remove = false;}
+					if (remove)
 					{
 						//delete block
 						if (delblocks)

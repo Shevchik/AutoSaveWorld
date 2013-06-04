@@ -44,7 +44,7 @@ import autosaveworld.core.Generic;
 public class AutoBackupThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
-	private boolean run = true;
+	private volatile boolean run = true;
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;

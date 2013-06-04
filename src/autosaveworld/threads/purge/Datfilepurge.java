@@ -22,7 +22,15 @@ public class Datfilepurge {
 		int deleted = 0;
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers) {
-				if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {
+			
+			boolean remove = false;
+			//check is the player is inactive
+			if (!pl.hasPlayedBefore()) {remove = true;}
+			else if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {remove = true;}
+			//rare occasion when player just joined server, then hasPlayedBefore will return false for this player
+			if (pl.isOnline()) {remove = false;}
+			
+				if (remove) {
 
 					try {
 					String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
