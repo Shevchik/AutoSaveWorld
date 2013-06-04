@@ -119,7 +119,7 @@ public class AutoPurgeThread extends Thread {
 			
 			if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)
 					&& config.wg) {
-				plugin.debug("WE found, purging");
+				plugin.debug("WG found, purging");
 				try {
 					new WGpurge(plugin, awaytime, config.wgregenrg);
 				} catch (Exception e) {

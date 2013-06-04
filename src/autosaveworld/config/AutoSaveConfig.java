@@ -76,7 +76,7 @@ public class AutoSaveConfig {
 	public boolean autorestartcountdown = true;
 	public int autorestartseconds = 20;
 	public boolean astop = false;
-	public boolean cctimeenabled = true;
+	public boolean cctimeenabled = false;
 	public List<String> cctimetimes = new ArrayList<String>();
 	public HashMap<String, ArrayList<String>> cctimescommands = new HashMap<String, ArrayList<String>>();
 	public boolean ccintervalenabled = false;
