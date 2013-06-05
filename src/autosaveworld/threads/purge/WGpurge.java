@@ -102,7 +102,7 @@ public class WGpurge {
 								plugin.debug("Deleting region " + delrg);
 								m.removeRegion(delrg);
 								m.save();
-								plugin.purgeThread.wgrgregenrunning = true;
+								plugin.purgeThread.wgrgregenrunning = false;
 							} catch (Exception e) {}
 						}
 					};
