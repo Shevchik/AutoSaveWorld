@@ -89,7 +89,7 @@ public class AutoRestartThread  extends Thread{
 					Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				}
 				
-				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
+				plugin.getServer().shutdown();
 			}
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}

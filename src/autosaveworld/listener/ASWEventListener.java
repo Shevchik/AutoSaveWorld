@@ -212,12 +212,6 @@ import autosaveworld.core.AutoSaveWorld;
 			plugin.sendMessage(sender,"&9====================================");
 			return true;
 		} else
-		if ((args.length==1 && args[0].equalsIgnoreCase("selfrestart")))
-		{
-			plugin.sendMessage(sender, "&9Restarting AutoSaveWorld");
-			plugin.selfrestartThread.restart();
-			return true;
-		} else
 		if ((args.length==1 && args[0].equalsIgnoreCase("restart"))) 
 		{
 			plugin.autorestartThread.startrestart();
@@ -254,4 +248,5 @@ import autosaveworld.core.AutoSaveWorld;
 		}
 		return false;
 	}
+		
 }

@@ -60,7 +60,7 @@ public class AutoConsoleCommandThread extends Thread {
 				String ctime = getCurTime();
 				if (!timesexecuted && config.cctimetimes.contains(ctime))
 				{
-					plugin.debug("sent commands to console to execute (timesmode)");
+					plugin.debug("Executing console commands (timesmode)");
 					enabletimeslock();
 					executeCommands(config.cctimescommands.get(ctime));
 				}
@@ -72,7 +72,7 @@ public class AutoConsoleCommandThread extends Thread {
 				long cseconds = System.currentTimeMillis()/1000;
 				if (cseconds - lastintervalexecute >= config.ccintervalinterval)
 				{
-					plugin.debug("sent commands to console to execute (intervalmode)");
+					plugin.debug("Executing console commands (intervalmode)");
 					lastintervalexecute = cseconds;
 					executeCommands(config.ccintervalcommands);
 				}

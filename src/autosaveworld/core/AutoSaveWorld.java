@@ -33,7 +33,6 @@ import autosaveworld.threads.purge.AutoPurgeThread;
 import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
 import autosaveworld.threads.restart.JVMshutdownhook;
-import autosaveworld.threads.restart.SelfRestartThread;
 import autosaveworld.threads.save.AutoSaveThread;
 
 public class AutoSaveWorld extends JavaPlugin {
@@ -43,7 +42,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	public AutoSaveThread saveThread = null;
 	public AutoBackupThread backupThread6 = null;
 	public AutoPurgeThread purgeThread = null;
-	public SelfRestartThread selfrestartThread = null;
 	public CrashRestartThread crashrestartThread = null;
 	public AutoRestartThread autorestartThread = null;
 	public JVMshutdownhook JVMsh = null;
@@ -69,10 +67,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.SAVE);
 		stopThread(ThreadType.BACKUP);
 		stopThread(ThreadType.PURGE);
-		if (!selfrestartThread.restart) {
-			stopThread(ThreadType.SELFRESTART);
-			log.info("[AutoSaveWorld] Graceful quit of selfrestart thread");
-		}
 		stopThread(ThreadType.CRASHRESTART);
 		stopThread(ThreadType.AUTORESTART);
 		JVMsh = null;
@@ -142,12 +136,6 @@ public class AutoSaveWorld extends JavaPlugin {
 				purgeThread.start();
 			}
 			return true;
-		case SELFRESTART:
-			if (selfrestartThread == null || !selfrestartThread.isAlive()) {
-				selfrestartThread = new SelfRestartThread(this);
-				selfrestartThread.start();
-			}
-			return true;
 		case CRASHRESTART:
 			if (crashrestartThread == null || !crashrestartThread.isAlive()) {
 				crashrestartThread = new CrashRestartThread(this, config);
@@ -215,20 +203,6 @@ public class AutoSaveWorld extends JavaPlugin {
 					return true;
 				} catch (InterruptedException e) {
 					warn("Could not stop AutoPurgeThread");
-					return false;
-				}
-			}
-		case SELFRESTART:
-			if (selfrestartThread == null) {
-				return true;
-			} else {
-				selfrestartThread.stopThread();
-				try {
-					selfrestartThread.join(5000);
-					selfrestartThread = null;
-					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop SelfRestartThread");
 					return false;
 				}
 			}

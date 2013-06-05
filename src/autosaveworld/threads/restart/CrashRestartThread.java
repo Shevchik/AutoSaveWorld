@@ -73,7 +73,7 @@ public class CrashRestartThread extends Thread{
 						Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 					}
 					
-					plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "stop");
+					plugin.getServer().shutdown();
 					
 				}
 				
