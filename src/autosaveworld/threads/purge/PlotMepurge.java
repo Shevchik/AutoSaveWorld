@@ -40,14 +40,9 @@ public class PlotMepurge {
 				for (final Plot p : plotsinfo.values())
 				{
 					plugin.debug("Checking plot " + p.id);
-					boolean remove = false;
-					OfflinePlayer offpl = Bukkit.getOfflinePlayer(p.getOwner());
-					//check is the player is inactive
-					if (!offpl.hasPlayedBefore()) {remove = true;}
-					else if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime) {remove = true;}
-					//rare occasion when player just joined server, then hasPlayedBefore will return false for this player
-					if (offpl.isOnline()) {remove = false;}
-					if (remove)
+					
+					
+					if (!isActive(p.getOwner(),awaytime))
 					{
 						plugin.debug("Plot owner is inactive. Adding plot to removal list");
 						plotstodel.add(p);
@@ -96,6 +91,21 @@ public class PlotMepurge {
 		
 		plugin.debug("PlotMe purge finished, deleted "+ delplots +" inactive plots");
 		
+	}
+	
+	private boolean isActive(String player, long awaytime)
+	{
+		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
+		boolean active = true;
+		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
+		{
+			active = false;
+		}
+		if (offpl.isOnline())
+		{
+			active = true;
+		}
+		return active;
 	}
 	
 	

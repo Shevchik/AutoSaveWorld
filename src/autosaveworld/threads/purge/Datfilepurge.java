@@ -23,14 +23,7 @@ public class Datfilepurge {
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers) {
 			
-			boolean remove = false;
-			//check is the player is inactive
-			if (!pl.hasPlayedBefore()) {remove = true;}
-			else if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {remove = true;}
-			//rare occasion when player just joined server, then hasPlayedBefore will return false for this player
-			if (pl.isOnline()) {remove = false;}
-			
-				if (remove) {
+				if (!isActive(pl.getName(),awaytime)) {
 
 					try {
 					String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
@@ -51,6 +44,23 @@ public class Datfilepurge {
 		
 		plugin.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
 		
+	}
+	
+	
+	
+	private boolean isActive(String player, long awaytime)
+	{
+		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
+		boolean active = true;
+		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
+		{
+			active = false;
+		}
+		if (offpl.isOnline())
+		{
+			active = true;
+		}
+		return active;
 	}
 	
 }

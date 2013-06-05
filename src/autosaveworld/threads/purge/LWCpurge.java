@@ -2,8 +2,8 @@ package autosaveworld.threads.purge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 import autosaveworld.core.AutoSaveWorld;
 
@@ -31,14 +31,7 @@ public class LWCpurge {
 		//we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
 		{
-			boolean remove = false;
-			Player pl = pr.getBukkitOwner();
-			//check is the player is inactive
-			if (!pl.hasPlayedBefore()) {remove = true;}
-			else if (System.currentTimeMillis() - pl.getLastPlayed() >= awaytime) {remove = true;}
-			//rare occasion when player just joined server, then hasPlayedBefore will return false for this player
-			if (pl.isOnline()) {remove = false;}
-					if (remove)
+					if (!isActive(pr.getOwner(),awaytime))
 					{
 						//delete block
 						if (delblocks)
@@ -64,6 +57,22 @@ public class LWCpurge {
 		
 		plugin.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
 		
+	}
+	
+	
+	private boolean isActive(String player, long awaytime)
+	{
+		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
+		boolean active = true;
+		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
+		{
+			active = false;
+		}
+		if (offpl.isOnline())
+		{
+			active = true;
+		}
+		return active;
 	}
 	
 }

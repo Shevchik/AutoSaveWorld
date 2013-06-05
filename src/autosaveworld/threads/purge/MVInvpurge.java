@@ -32,18 +32,12 @@ public class MVInvpurge {
 		for (String plfile : mcinvpfld.list())
 		{
 			String plname = plfile.substring(0, plfile.indexOf("."));
-				boolean remove = false;
-				OfflinePlayer offpl = (Bukkit.getOfflinePlayer(plname));
-				//check is the player is inactive
-				if (!offpl.hasPlayedBefore()) {remove = true;}
-				else if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime) {remove = true;}
-				//rare occasion when player just joined server, then hasPlayedBefore will return false for this player
-				if (offpl.isOnline()) {remove = false;}
-				if (remove) {
+				
+				if (!isActive(plname,awaytime)) {
 					plugin.debug("Removing "+plname+" MVInv files");
 					//remove files from MVInv world folders
 					for (World wname : Bukkit.getWorlds()) {
-						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData(offpl);
+						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData(Bukkit.getOfflinePlayer(plname));
 					}
 					//remove files from MVInv player folder
 					new File(mcinvpfld,plfile).delete();
@@ -63,5 +57,20 @@ public class MVInvpurge {
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	
+	
+	private boolean isActive(String player, long awaytime)
+	{
+		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
+		boolean active = true;
+		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
+		{
+			active = false;
+		}
+		if (offpl.isOnline())
+		{
+			active = true;
+		}
+		return active;
+	}
 	
 }
