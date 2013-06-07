@@ -139,7 +139,6 @@ import autosaveworld.core.AutoSaveWorld;
 			plugin.sendMessage(sender,"&f/asw reload&7 - &3Reload all configs)");
 			plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 			plugin.sendMessage(sender,"&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
-			plugin.sendMessage(sender,"&f/asw selfrestart&7 - &3Restart AutoSaveWorld");
 			plugin.sendMessage(sender,"&f/asw version&7 - &3Shows plugin version");
 			plugin.sendMessage(sender,"&f/asw info&7 - &3Shows some info");
 			plugin.sendMessage(sender,"&f/asw locale&7 - &3Show current messages locale");
