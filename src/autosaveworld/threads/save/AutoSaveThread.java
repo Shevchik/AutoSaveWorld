@@ -137,13 +137,13 @@ public class AutoSaveThread extends Thread {
 
 
 	public void performSave() {
-		if (plugin.saveInProgress) {
+		if (plugin.saveInProgress && !command) {
 		plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
 		return;
 		}
 		
 		try {
-			if (plugin.getServer().getOnlinePlayers().length == 0&&(!command)) {
+			if (plugin.getServer().getOnlinePlayers().length == 0 && !command) {
 					// No players online, don't bother saving.
 					plugin.debug("Skipping save, no players online.");
 						return;

@@ -349,25 +349,24 @@ public class AutoBackupThread extends Thread {
 			        }
 			    } else {
 			        
-			        try {
-			    	InputStream in = new FileInputStream(sourceLocation);
-			        OutputStream out = new FileOutputStream(targetLocation);
+		        	if (sourceLocation.canRead()) {
+		        		try {
+		        			InputStream in = new FileInputStream(sourceLocation);
+		        			OutputStream out = new FileOutputStream(targetLocation);
 
-			        // Copy the bits from instream to outstream
-			        byte[] buf = new byte[4096];
-			        int len;
-			        while ((len = in.read(buf)) > 0) {
-			            out.write(buf, 0, len);
-			           
-			        }
-			        in.close();
-			        out.close();
-
-			        } catch (IOException e) {
-			        	plugin.debug("Failed to backup file "+sourceLocation);
-			        }
+		        			byte[] buf = new byte[4096];
+		        			int len;
+		        			while ((len = in.read(buf)) > 0) {
+		        				out.write(buf, 0, len);
+		        			}
+		        			in.close();
+		        			out.close();
+		        		} catch (IOException e) {
+			        			plugin.debug("Failed to backup file "+sourceLocation);
+			        	}
+		        	}
 			    }
-			    }
+			}
 			
 	public void deleteDirectory(File file)
 	  {
