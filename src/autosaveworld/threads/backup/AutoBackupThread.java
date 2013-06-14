@@ -236,7 +236,8 @@ public class AutoBackupThread extends Thread {
 			plugin.warn("AutoSave is in progress. Backup cancelled.");	
 			return;
 		} else {
-			
+		
+		try {
 		// Lock
 		plugin.saveInProgress = true;
 		plugin.backupInProgress = true;
@@ -310,13 +311,16 @@ public class AutoBackupThread extends Thread {
 			
 		}
 		
-		command = false;
+
 		plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");
 		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPost);}
 		plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
 		// Release
+		} finally {
+		command = false;
 		plugin.saveInProgress = false;
 		plugin.backupInProgress = false;
+		}
 		}
 	}
 
@@ -359,7 +363,9 @@ public class AutoBackupThread extends Thread {
 			        in.close();
 			        out.close();
 
-			        } catch (IOException e) {plugin.debug("Failed to backup file "+sourceLocation); e.printStackTrace();}
+			        } catch (IOException e) {
+			        	plugin.debug("Failed to backup file "+sourceLocation);
+			        }
 			    }
 			    }
 			

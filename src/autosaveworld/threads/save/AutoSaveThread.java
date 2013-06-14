@@ -143,38 +143,44 @@ public class AutoSaveThread extends Thread {
 		}
 		
 		try {
-		if (plugin.getServer().getOnlinePlayers().length == 0&&(!command)) {
-		// No players online, don't bother saving.
-		plugin.debug("Skipping save, no players online.");
-		return;
+			if (plugin.getServer().getOnlinePlayers().length == 0&&(!command)) {
+					// No players online, don't bother saving.
+					plugin.debug("Skipping save, no players online.");
+						return;
+			}
 
+			// Lock
+			plugin.saveInProgress = true;
+
+			try {
+				
+				
+			if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPre);}
+
+			// Save the players
+			savePlayers();
+			plugin.debug("Saved Players");
+
+			// Save the worlds
+			int saved = 0;
+			saved += saveWorlds();
+
+			plugin.debug(String.format("Saved %d Worlds", saved));
+
+			if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPost);}
+			} catch (Exception e) 
+			{
+				if (config.saveBroadcast){plugin.broadcast("&4AutoSave Failed");}
+				if (config.varDebug) {e.printStackTrace();}
+			}
+
+			plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
+			// Release
+		} finally {
+			command = false;
+			plugin.saveInProgress = false;
 		}
-
-		// Lock
-		plugin.saveInProgress = true;
-
-		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPre);}
-
-		// Save the players
-		savePlayers();
-		plugin.debug("Saved Players");
-
-		// Save the worlds
-		int saved = 0;
-		saved += saveWorlds();
-
-		plugin.debug(String.format("Saved %d Worlds", saved));
-
-		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPost);}
-		} catch (Exception e) 
-		{
-		if (config.saveBroadcast){plugin.broadcast("&4AutoSave Failed");}
-		if (config.varDebug) {e.printStackTrace();}}
-		command = false;
-		plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
-		// Release
-		plugin.saveInProgress = false;
-		}
+	}
 
 
 }
