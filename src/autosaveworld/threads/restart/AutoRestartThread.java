@@ -17,7 +17,7 @@
 
 package autosaveworld.threads.restart;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -101,8 +101,9 @@ public class AutoRestartThread  extends Thread{
 	
 	private String getCurTime()
 	{
-		Calendar cal = Calendar.getInstance();
-		String curtime = 	cal.get(Calendar.HOUR_OF_DAY)+ ":"+  cal.get(Calendar.MINUTE);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;
+		
 	}
 }
