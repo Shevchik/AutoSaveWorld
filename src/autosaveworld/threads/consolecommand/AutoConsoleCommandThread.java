@@ -1,5 +1,6 @@
 package autosaveworld.threads.consolecommand;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
@@ -105,8 +106,8 @@ public class AutoConsoleCommandThread extends Thread {
 	
 	private String getCurTime()
 	{
-		Calendar cal = Calendar.getInstance();
-		String curtime = 	cal.get(Calendar.HOUR_OF_DAY)+ ":"+  cal.get(Calendar.MINUTE);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;
 	}
 	

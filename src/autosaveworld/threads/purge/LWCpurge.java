@@ -47,7 +47,7 @@ public class LWCpurge {
 							};
 							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
 						}
-						plugin.debug("Removing protection for inactive player "+pr.getBukkitOwner().getName());
+						plugin.debug("Removing protection for inactive player "+pr.getOwner());
 						//delete protections
 						lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
 						//count deleted protections
