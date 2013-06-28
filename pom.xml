@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>AutoSaveWorld</groupId>
   <artifactId>AutoSaveWorld</artifactId>
-  <version>4.8</version>
+  <version>4.8-dev</version>
   <name>AutoSaveWorld</name>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -25,4 +25,36 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.bukkit</groupId>
+  		<artifactId>craftbukkit</artifactId>
+  		<version>1.2.5</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.sk89q</groupId>
+  		<artifactId>WorldGuard</artifactId>
+  		<version>5.7.5</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.sk89q</groupId>
+  		<artifactId>WorldEdit</artifactId>
+  		<version>5.7.5</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.griefcraft</groupId>
+  		<artifactId>LWC</artifactId>
+  		<version>4.3.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.onarandombox</groupId>
+  		<artifactId>Multiverse-Inventories</artifactId>
+  		<version>2.5</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.worldcretornica</groupId>
+  		<artifactId>PlotMe</artifactId>
+  		<version>0.13</version>
+  	</dependency>
+  </dependencies>
 </project>
