@@ -12,7 +12,7 @@ commands:
   autosaveworld:
     description: All AutoSaveWorld commands
     aliases: asw
-    usage: Use /asw help  to show all commands availible in plugin.
+    usage: Use /asw help  to show all commands available in plugin.
   autosave:
     description: AutoSaveWorld /asw save command
     aliases: save

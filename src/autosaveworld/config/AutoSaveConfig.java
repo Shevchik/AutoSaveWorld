@@ -162,11 +162,15 @@ public class AutoSaveConfig {
 		
 		//autoconsolecommand variables
 		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
-		cctimetimes = config.getStringList("consolecommand.timemode.timeslist");
+		cctimetimes = new ArrayList<String>();
+		if (config.getConfigurationSection("consolecommand.timemode.times") != null)
+		{
+			cctimetimes = new ArrayList<String>(config.getConfigurationSection("consolecommand.timemode.times").getKeys(false));
+		}
 		cctimescommands.clear();
 		for (String cctime : cctimetimes)
 		{
-			cctimescommands.put(cctime, (ArrayList<String>) config.getStringList("consolecommand.timemode."+cctime));
+			cctimescommands.put(cctime, (ArrayList<String>) config.getStringList("consolecommand.timemode.times."+cctime));
 		}
 		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
 		ccintervalinterval = config.getInt("consolecommand.intervalmode.interval", ccintervalinterval);
@@ -244,10 +248,13 @@ public class AutoSaveConfig {
 		
 		//autoconsolecommand variables
 		config.set("consolecommand.timemode.enabled", cctimeenabled);
-		config.set("consolecommand.timemode.timeslist", cctimetimes);
+		if (cctimescommands.isEmpty())
+		{
+			config.createSection("consolecommand.timemode.times");
+		}
 		for (String cctime : cctimescommands.keySet())
 		{
-			config.set("consolecommand.timemode."+cctime, cctimescommands.get(cctime));
+			config.set("consolecommand.timemode.times."+cctime, cctimescommands.get(cctime));
 		}
 		config.set("consolecommand.intervalmode.enabled", ccintervalenabled);
 		config.set("consolecommand.intervalmode.interval", ccintervalinterval);

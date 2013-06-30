@@ -53,8 +53,8 @@ public class AutoSaveThread extends Thread {
 	private int i;
 	public void startsave()
 	{
-	command = true;
-	i = config.saveInterval;
+		command = true;
+		i = config.saveInterval;
 	}
 	// The code to run...weee
 	public void run() {
@@ -121,19 +121,19 @@ public class AutoSaveThread extends Thread {
 		// Save the players
 		plugin.debug("Saving players");
 		plugin.getServer().savePlayers();
-		}
+	}
 
 	private int saveWorlds() {
 		// Save our worlds
 		int i = 0;
 		List<World> worlds = plugin.getServer().getWorlds();
 		for (World world : worlds) {
-		plugin.debug(String.format("Saving world: %s", world.getName()));
-		world.save();
-		i++;
+			plugin.debug(String.format("Saving world: %s", world.getName()));
+			world.save();
+			i++;
 		}
 		return i;
-		}
+	}
 
 
 	public void performSave() {
@@ -155,26 +155,26 @@ public class AutoSaveThread extends Thread {
 			try {
 				
 				
-			if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPre);}
+				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPre);}
 
-			// Save the players
-			savePlayers();
-			plugin.debug("Saved Players");
+				// Save the players
+				savePlayers();
+				plugin.debug("Saved Players");
 
-			// Save the worlds
-			int saved = 0;
-			saved += saveWorlds();
+				// Save the worlds
+				int saved = 0;
+				saved += saveWorlds();
 
-			plugin.debug(String.format("Saved %d Worlds", saved));
+				plugin.debug(String.format("Saved %d Worlds", saved));
 
-			if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPost);}
+				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPost);}
 			} catch (Exception e) 
 			{
 				if (config.saveBroadcast){plugin.broadcast("&4AutoSave Failed");}
 				if (config.varDebug) {e.printStackTrace();}
 			}
 
-			plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance ().getTime());
+			plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 			// Release
 		} finally {
 			command = false;

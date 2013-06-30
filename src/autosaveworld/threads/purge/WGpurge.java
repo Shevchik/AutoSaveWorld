@@ -94,7 +94,7 @@ public class WGpurge {
 							try {
 								if (regenrg) {
 									plugin.debug("Regenerating region " + delrg);
-									new BukkitWorld(w).regenerate(
+									lw.regenerate(
 											new CuboidRegion(lw,minpoint,maxpoint),
 											new EditSession(lw,Integer.MAX_VALUE)
 											);
