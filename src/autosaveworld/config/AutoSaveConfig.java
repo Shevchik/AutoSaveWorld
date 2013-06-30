@@ -57,6 +57,7 @@ public class AutoSaveConfig {
 	public boolean purgeBroadcast = true;
 	public boolean wg = true;
 	public boolean wgregenrg = true;
+	public boolean wgnoregenoverlap = false;
 	public boolean lwc = true;
 	public boolean lwcdelprotectedblocks = false;
 	public boolean mvinv = true;
@@ -138,6 +139,7 @@ public class AutoSaveConfig {
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
 		wg = config.getBoolean("purge.wg.enabled", wg);
 		wgregenrg = config.getBoolean("purge.wg.regenpurgedregion", wgregenrg);
+		wgnoregenoverlap = config.getBoolean("purge.wg.noregenoverlapregion",wgnoregenoverlap);
 		lwc = config.getBoolean("purge.lwc.enabled", lwc);
 		lwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",lwcdelprotectedblocks);
 		mvinv = config.getBoolean("purge.mvinv.enabled",mvinv);
@@ -223,6 +225,7 @@ public class AutoSaveConfig {
 		config.set("purge.broadcast",purgeBroadcast);
 		config.set("purge.wg.enabled", wg);
 		config.set("purge.wg.regenpurgedregion", wgregenrg);
+		config.set("purge.wg.noregenoverlapregion",wgnoregenoverlap);
 		config.set("purge.lwc.enabled", lwc);
 		config.set("purge.mvinv.enabled",mvinv);
 		config.set("purge.pm.enabled", pm);

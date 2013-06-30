@@ -121,7 +121,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.wg) {
 				plugin.debug("WG found, purging");
 				try {
-					new WGpurge(plugin, awaytime, config.wgregenrg);
+					new WGpurge(plugin, awaytime, config.wgregenrg, config.wgnoregenoverlap);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

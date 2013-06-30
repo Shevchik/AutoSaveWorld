@@ -24,13 +24,13 @@ public class WGpurge {
 	
 	private AutoSaveWorld plugin;
 	
-	public WGpurge(AutoSaveWorld plugin, long awaytime, boolean regenrg)
+	public WGpurge(AutoSaveWorld plugin, long awaytime, boolean regenrg, boolean noregenoverlap)
 	{
 		this.plugin = plugin;
-		WGPurgeTask(awaytime, regenrg);
+		WGPurgeTask(awaytime, regenrg, noregenoverlap);
 	}
 	
-	private void WGPurgeTask(long awaytime, final boolean regenrg) {
+	private void WGPurgeTask(long awaytime, final boolean regenrg, boolean noregenoverlap) {
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");
@@ -81,7 +81,14 @@ public class WGpurge {
 
 			// now deal with the regions that must be deleted
 			for (final String delrg : rgtodel) {
-				plugin.debug("Purging region " + delrg);
+					plugin.debug("Purging region " + delrg);
+					boolean overlap = false;
+					if (noregenoverlap)	{
+						if (m.getApplicableRegions(m.getRegion(delrg)).size() >0){
+							overlap = true;
+						};
+					}
+					final boolean rgoverlap = overlap;
 					plugin.purgeThread.wgrgregenrunning = true;
 					//regen should be done in main thread
 					Runnable rgregen =  new Runnable()
@@ -92,7 +99,7 @@ public class WGpurge {
 						public void run()
 						{
 							try {
-								if (regenrg) {
+								if (regenrg && !rgoverlap) {
 									plugin.debug("Regenerating region " + delrg);
 									lw.regenerate(
 											new CuboidRegion(lw,minpoint,maxpoint),
