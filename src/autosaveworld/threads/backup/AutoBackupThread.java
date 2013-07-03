@@ -331,6 +331,7 @@ public class AutoBackupThread extends Thread {
 	public void copyDirectory(File sourceLocation , File targetLocation)
 			throws IOException {
 			    if (sourceLocation.isDirectory()) {
+			    	
 			        if (!targetLocation.exists()) {
 			            targetLocation.mkdirs();
 			        }
@@ -347,6 +348,7 @@ public class AutoBackupThread extends Thread {
 			                    new File(targetLocation, children[i])); 
 			        	}
 			        }
+			        
 			    } else {
 			        
 		        	if (sourceLocation.canRead()) {
@@ -365,6 +367,11 @@ public class AutoBackupThread extends Thread {
 			        			plugin.debug("Failed to backup file "+sourceLocation);
 			        	}
 		        	}
+		        	
+		        	try {
+		        		Thread.sleep(0);
+		        	} catch (Exception e) {};
+		        	
 			    }
 			}
 			
