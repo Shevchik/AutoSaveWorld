@@ -13,10 +13,11 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class AutoConsoleCommandThread extends Thread {
 
-	protected final Logger log = Bukkit.getLogger();
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private volatile boolean run = true;
+	protected final Logger log = Bukkit.getLogger();
+	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
 	public AutoConsoleCommandThread(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
@@ -106,7 +107,6 @@ public class AutoConsoleCommandThread extends Thread {
 	
 	private String getCurTime()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;
 	}

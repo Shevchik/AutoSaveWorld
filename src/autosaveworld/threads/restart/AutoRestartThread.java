@@ -33,6 +33,7 @@ public class AutoRestartThread  extends Thread{
 	AutoSaveConfigMSG configmsg;
 	private volatile boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
+	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
 	
 	public AutoRestartThread(AutoSaveWorld plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
@@ -101,9 +102,8 @@ public class AutoRestartThread  extends Thread{
 	
 	private String getCurTime()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;
-		
 	}
+	
 }
