@@ -34,6 +34,7 @@ import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
 import autosaveworld.threads.restart.JVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
+import autosaveworld.threads.worldregen.WorldRegenThread;
 
 public class AutoSaveWorld extends JavaPlugin {
 	private static final Logger log = Bukkit.getLogger();
@@ -46,6 +47,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public AutoRestartThread autorestartThread = null;
 	public JVMshutdownhook JVMsh = null;
 	public AutoConsoleCommandThread consolecommandThread = null;
+	public WorldRegenThread worldregenThread = null;
 	private AutoSaveConfigMSG configmsg;
 	private AutoSaveConfig config;
 	private LocaleContainer localeloader;
@@ -155,6 +157,12 @@ public class AutoSaveWorld extends JavaPlugin {
 				consolecommandThread.start();
 			}
 			return true;
+		case WORLDREGEN:
+			if (worldregenThread == null || !worldregenThread.isAlive()) {
+				worldregenThread = new WorldRegenThread(this, config ,configmsg);
+				worldregenThread.start();
+			}
+			return true;
 		default:
 			return false;
 		}
@@ -245,6 +253,20 @@ public class AutoSaveWorld extends JavaPlugin {
 					return true;
 				} catch (InterruptedException e) {
 					warn("Could not stop ConsoleCommandThread");
+					return false;
+				}
+			}
+		case WORLDREGEN:
+			if (worldregenThread == null) {
+				return true;
+			} else {
+				worldregenThread.stopThread();
+				try {
+					worldregenThread.join(5000);
+					worldregenThread = null;
+					return true;
+				} catch (InterruptedException e) {
+					warn("Could not stop WorldRegenThread");
 					return false;
 				}
 			}

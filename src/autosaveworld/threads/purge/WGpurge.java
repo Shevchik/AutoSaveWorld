@@ -89,7 +89,6 @@ public class WGpurge {
 						};
 					}
 					final boolean rgoverlap = overlap;
-					plugin.purgeThread.wgrgregenrunning = true;
 					//regen should be done in main thread
 					Runnable rgregen =  new Runnable()
 					{
@@ -109,15 +108,14 @@ public class WGpurge {
 								plugin.debug("Deleting region " + delrg);
 								m.removeRegion(delrg);
 								m.save();
-								plugin.purgeThread.wgrgregenrunning = false;
 							} catch (Exception e) {}
 						}
 					};
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
+					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
 
 			
 					//Wait until previous region regeneration is finished to avoid full main thread freezing
-					while (plugin.purgeThread.wgrgregenrunning)
+					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 					{
 						try {Thread.sleep(100);} catch (InterruptedException e) {}
 					}

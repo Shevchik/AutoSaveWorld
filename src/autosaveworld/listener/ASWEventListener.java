@@ -18,6 +18,7 @@
 package autosaveworld.listener;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -161,6 +162,31 @@ import autosaveworld.core.AutoSaveWorld;
 			plugin.purgeThread.startpurge();
 			return true;
 		} else
+		if ((args.length==1 && args[0].equalsIgnoreCase("restart"))) 
+		{
+			plugin.autorestartThread.startrestart();
+			return true;
+		} else
+		if ((args.length==2 && args[0].equalsIgnoreCase("regenworld")))
+		{
+			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null)
+			{
+				plugin.sendMessage(sender, "You need WorldGuard installed to do that");
+				return true;
+			}
+			if (Bukkit.getWorld(args[1]) == null)
+			{
+				plugin.sendMessage(sender, "This world doesn't exist");
+				return true;
+			}
+			if (plugin.worldregenThread.isRegenerationInProcess())
+			{
+				plugin.sendMessage(sender, "Please wait before previous world regeneration is finished");
+				return true;
+			}
+			plugin.worldregenThread.startworldregen(args[1]);
+			return true;
+		} else
 		//reload command
 		if (args.length==1 && args[0].equalsIgnoreCase("reload")) {
 			config.load();
@@ -209,11 +235,6 @@ import autosaveworld.core.AutoSaveWorld;
 			}
 			
 			plugin.sendMessage(sender,"&9====================================");
-			return true;
-		} else
-		if ((args.length==1 && args[0].equalsIgnoreCase("restart"))) 
-		{
-			plugin.autorestartThread.startrestart();
 			return true;
 		} else
 		if ((args.length>=1 && args[0].equalsIgnoreCase("locale"))) 

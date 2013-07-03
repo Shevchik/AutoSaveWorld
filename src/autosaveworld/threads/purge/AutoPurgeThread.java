@@ -34,10 +34,6 @@ public class AutoPurgeThread extends Thread {
 	private volatile boolean run = true;
 	private boolean command = false;
 	
-	//public variables for purge status
-	public volatile boolean wgrgregenrunning = false;
-	public volatile boolean pmplotregenrunning = false;
-
 	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,
 			AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
