@@ -165,6 +165,12 @@ public class WorldRegenThread extends Thread {
 				}
 		}
 		
+		//save Factions homes
+		if (Bukkit.getPluginManager().getPlugin("Factions") != null)
+		{
+			
+		}
+		
 	}
 	
 }

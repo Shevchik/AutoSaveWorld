@@ -7,9 +7,10 @@
 	<target name="build">
         <mkdir dir="build/classes"/>
         <javac source="1.6" target="1.6" srcdir="src" destdir="build/classes" classpathref="libs"/>
-        <jar destfile="AutoSaveWorld.jar" basedir="build/classes">
+        <jar destfile="target/AutoSaveWorld.jar" basedir="build/classes">
             <fileset file="src/plugin.yml" />
         </jar>
+		<delete dir="build"/>
     </target>
 	
 </project>
