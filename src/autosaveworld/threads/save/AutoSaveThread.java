@@ -32,7 +32,7 @@ import autosaveworld.config.AutoSaveConfigMSG;
 public class AutoSaveThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
-	private volatile boolean run = true;
+	private boolean run = true;
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;

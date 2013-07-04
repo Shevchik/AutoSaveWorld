@@ -31,7 +31,7 @@ public class AutoRestartThread  extends Thread{
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
 	AutoSaveConfigMSG configmsg;
-	private volatile boolean run = true;
+	private boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 

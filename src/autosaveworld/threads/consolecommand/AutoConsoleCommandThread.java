@@ -1,7 +1,6 @@
 package autosaveworld.threads.consolecommand;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,9 +14,10 @@ public class AutoConsoleCommandThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
-	private volatile boolean run = true;
+	private boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	SimpleDateFormat msdf = new SimpleDateFormat("mm");
 
 	public AutoConsoleCommandThread(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
@@ -94,14 +94,14 @@ public class AutoConsoleCommandThread extends Thread {
 	private boolean timesexecuted = false;
 	private void checktimeslock()
 	{
-		if (Calendar.getInstance().get(Calendar.MINUTE) != minute)
+		if (Integer.valueOf(msdf.format(System.currentTimeMillis())) != minute)
 		{
 			timesexecuted = false;
 		}
 	}
 	private void enabletimeslock()
 	{
-		minute = Calendar.getInstance().get(Calendar.MINUTE);
+		minute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 		timesexecuted = true;
 	}
 	

@@ -31,7 +31,7 @@ public class AutoPurgeThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private volatile boolean run = true;
+	private boolean run = true;
 	private boolean command = false;
 	
 	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,

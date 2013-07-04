@@ -33,9 +33,9 @@ public class WorldRegenThread extends Thread {
 	private AutoSaveConfig config;
 	@SuppressWarnings("unused")
 	private AutoSaveConfigMSG configmsg;
-	private volatile boolean run = true;
+	private boolean run = true;
 	
-	private volatile boolean doregen = false;
+	private boolean doregen = false;
 	
 	private String worldtoregen = "";
 	

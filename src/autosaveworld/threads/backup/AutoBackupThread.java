@@ -44,7 +44,7 @@ import autosaveworld.core.Generic;
 public class AutoBackupThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
-	private volatile boolean run = true;
+	private boolean run = true;
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
@@ -275,7 +275,8 @@ public class AutoBackupThread extends Thread {
 					deleteDirectory(new File(dirtodelete+".zip"));
 				}
 				backupnamesext.remove(0);
-				numberofbackupsext--;}
+				numberofbackupsext--;
+			}
 			//do backup
 			plugin.debug("Backuping Worlds");
 			backupWorlds(config.backupWorlds, zip, extpath);
@@ -296,7 +297,8 @@ public class AutoBackupThread extends Thread {
 						else {//not exists if zip is true
 							deleteDirectory(new File(fldtodel+".zip"));}
 					backupnamespl.remove(0);
-					numberofbackupspl--;}	
+					numberofbackupspl--;
+				}	
 				
 				//do backup
 				plugin.debug("Backuping plugins");
