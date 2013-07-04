@@ -73,6 +73,10 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.AUTORESTART);
 		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
+		configmsg = null;
+		config = null; 
+		localeloader = null;
+		eh = null;
 		log.info(String.format("[%s] Version %s is disabled", getDescription()
 				.getName(), getDescription().getVersion()));
 	}
