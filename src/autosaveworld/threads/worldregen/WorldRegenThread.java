@@ -120,7 +120,7 @@ public class WorldRegenThread extends Thread {
 			WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 			final RegionManager m = wg.getRegionManager(wtoregen);
 		    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-			final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/";
+			final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/WG/";
 			new File(schemfolder).mkdirs();
 				//save region to schematic
 				for (final ProtectedRegion rg : m.getRegions().values()) {
@@ -139,7 +139,7 @@ public class WorldRegenThread extends Thread {
 							);
 							clipboard.copy(es);
 							//save to schematic
-					        File schematic = new File(schemfolder + "ASW_schematic_WG_"+rg.getId());
+					        File schematic = new File(schemfolder + rg.getId());
 					        format.save(clipboard, schematic);
 					        plugin.debug("WG Region "+rg.getId()+" saved");
 							} catch (Exception e)
