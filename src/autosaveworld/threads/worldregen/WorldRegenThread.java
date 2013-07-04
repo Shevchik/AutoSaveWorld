@@ -6,9 +6,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
@@ -30,7 +27,6 @@ public class WorldRegenThread extends Thread {
 	
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
-	@SuppressWarnings("unused")
 	private AutoSaveConfigMSG configmsg;
 	private boolean run = true;
 	
@@ -95,7 +91,7 @@ public class WorldRegenThread extends Thread {
 		int taskid;
 		
 		//kick all player and deny them from join
-		JListener jl = new JListener();
+		AntiJoinListener jl = new AntiJoinListener(configmsg);
 		Bukkit.getPluginManager().registerEvents(jl, plugin);
 		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
@@ -168,35 +164,10 @@ public class WorldRegenThread extends Thread {
 		}
 		
 		//Shutdown server and delegate world removal to JVMShutdownHook
-		
+		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath());
+		Runtime.getRuntime().addShutdownHook(wrsh);
+		plugin.autorestartThread.startrestart();
 	}
 	
-	//antijoin listener
-	class JListener implements Listener
-	{
-		@EventHandler
-		public void onPlayerJoin(PlayerJoinEvent e)
-		{
-			e.getPlayer().kickPlayer("[AutoSaveWorld] server is regenerating map, please come back later");
-		}
-		
-	}
-	
-	
-	public void deleteDirectory(File file)
-	{
-	    if(!file.exists())
-	      return;
-	    if(file.isDirectory())
-	    {
-	      for(File f : file.listFiles())
-	        deleteDirectory(f);
-	      file.delete();
-	    }
-	    else
-	    {
-	      file.delete();
-	    }
-	}
 	
 }

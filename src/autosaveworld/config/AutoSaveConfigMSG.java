@@ -42,6 +42,7 @@ public class AutoSaveConfigMSG {
 	public String messagePurgePost = "&9AutoPurge Complete";
 	public String messageAutoRestart = "&9Server is restarting";
 	public String messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
+	public String messageWorldRegenKick = "&9Server is regenerating map, please come back later";
 	
 	public void loadmsg() {
 		if (!config.switchtolangfile) {
