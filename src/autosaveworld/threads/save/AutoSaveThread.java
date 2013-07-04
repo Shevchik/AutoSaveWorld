@@ -115,7 +115,9 @@ public class AutoSaveThread extends Thread {
 		}
 		
 		//finished
-		log.info("[AutoSaveWorld] Graceful quit of AutoSaveThread");
+		if (config.varDebug) {
+			log.info("[AutoSaveWorld] Graceful quit of AutoSaveThread");
+		}
 	}
 	private void savePlayers() {
 		// Save the players

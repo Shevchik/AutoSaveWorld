@@ -20,7 +20,6 @@ package autosaveworld.threads.restart;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
@@ -51,7 +50,7 @@ public class CrashRestartThread extends Thread{
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 		
 		//schedule sync task in, this will provide us info about when the last server tick occured
-		int tasknumber = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			public void run() {
 				syncticktime = System.currentTimeMillis();
 			}	
@@ -65,7 +64,7 @@ public class CrashRestartThread extends Thread{
 
 				
 				if (config.crashrestartenabled) {
-					log.info("[AutoSaveWorld] "+ChatColor.RED+"Server has stopped responding. Probably this is a crash.");
+					log.info("[AutoSaveWorld] Server has stopped responding. Probably this is a crash.");
 					log.info("[AutoSaveWorld] Restarting Server");
 					
 					if (!config.crstop) {
@@ -82,7 +81,6 @@ public class CrashRestartThread extends Thread{
 			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		
-		plugin.getServer().getScheduler().cancelTask(tasknumber);
 		if (config.varDebug) {
 			log.info(String.format("[%s] Graceful quit of CrashRestartThread", plugin.getDescription().getName()));
 		}

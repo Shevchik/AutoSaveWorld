@@ -85,7 +85,9 @@ public class AutoConsoleCommandThread extends Thread {
 		}
 		
 		//message before disabling thread
-		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoConsoleCommandThread");}
+		if (config.varDebug) {
+			log.info("[AutoSaveWorld] Graceful quit of AutoConsoleCommandThread");
+		}
 	}
 	
 	

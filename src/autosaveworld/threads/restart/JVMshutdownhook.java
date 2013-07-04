@@ -19,8 +19,10 @@ package autosaveworld.threads.restart;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 
@@ -67,14 +69,44 @@ public class JVMshutdownhook extends Thread {
 
 			}
 	} catch (Exception e)
-	{System.out.println("[AutoSaveWorld] Restart failed");
-	e.printStackTrace();}
+	{
+		System.out.println("[AutoSaveWorld] Restart failed");
+		e.printStackTrace();
+	}
+	
 	}
 	
 	
 	public void run()
 	{
+		if (!isLastShutdownHook()) {System.out.println("[AutoSaveWorld] Waiting for other shutdownhooks to finish");}
+		while (!isLastShutdownHook())
+		{
+			try {
+			Thread.sleep(1000);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
+			
+		}
 		restart();
+	}
+	
+	@SuppressWarnings("unchecked")
+	boolean isLastShutdownHook()
+	{
+		boolean b = true;
+		try {
+		    Class<?> hookclass = Class.forName("java.lang.ApplicationShutdownHooks");
+		    Field field = hookclass.getDeclaredField("hooks");
+		    field.setAccessible(true);
+		    Map<Thread, Thread> hooks = (Map<Thread, Thread>) field.get(null);
+		    if (hooks.keySet().size() > 1) {b = false;}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		return b;
 	}
 	
 }

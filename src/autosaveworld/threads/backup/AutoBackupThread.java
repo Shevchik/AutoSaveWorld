@@ -119,7 +119,9 @@ public class AutoBackupThread extends Thread {
 				if (config.backupEnabled||command) {performBackup();}
 		}
 		
-		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoBackupThread");}
+		if (config.varDebug) {
+			log.info("[AutoSaveWorld] Graceful quit of AutoBackupThread");
+		}
 	}
 	
 	

@@ -1,32 +1,20 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.generator.ChunkGenerator;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.EmptyClipboardException;
-import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -128,19 +116,39 @@ public class WorldRegenThread extends Thread {
 		plugin.debug("Saving buildings");
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
 		{
-			plugin.debug("Copy-pasting wg regions to clipboard world");
+			plugin.debug("Saving wg regions to schematics");
 			WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
-				final RegionManager m = wg.getRegionManager(wtoregen);
-				final LocalSession ls = new LocalSession(WorldEdit.getInstance().getConfiguration());
-				//get region
+			final RegionManager m = wg.getRegionManager(wtoregen);
+		    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
+			final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/";
+			new File(schemfolder).mkdirs();
+				//save region to schematic
 				for (final ProtectedRegion rg : m.getRegions().values()) {
 					Runnable copypaste = new Runnable() {
 						public void run(){
-							//save to schematic here
+							try {
+							plugin.debug("Saving WG Regions "+rg.getId()+" to schematic");
+							//copy to clipboard
+							EditSession es = new EditSession(new BukkitWorld(wtoregen),Integer.MAX_VALUE);
+							Vector bvmin = rg.getMinimumPoint().toBlockPoint();
+							Vector bvmax = rg.getMaximumPoint().toBlockPoint();
+							Vector pos = bvmax;
+							CuboidClipboard clipboard = new CuboidClipboard(
+									bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
+									bvmin, bvmin.subtract(pos)
+							);
+							clipboard.copy(es);
+							//save to schematic
+					        File schematic = new File(schemfolder + "ASW_schematic_WG_"+rg.getId());
+					        format.save(clipboard, schematic);
+					        plugin.debug("WG Region "+rg.getId()+" saved");
+							} catch (Exception e)
+							{
+								e.printStackTrace();
+							}
 						}
 					};
 					taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-					//wait for copy&paste finished
 					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 					{
 						try {
@@ -159,25 +167,8 @@ public class WorldRegenThread extends Thread {
 				//will do this later.
 		}
 		
-		//wipe previous map
-		//Unload all chunks
-		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-		{
-			public void run()
-			{
-				for (Chunk c : wtoregen.getLoadedChunks())
-				{
-					c.unload();
-				}
-			}
-		});
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-		{
-				Thread.sleep(1000);	
-		}
-		//remove old region files
-		String oldwregionspath = wtoregen.getWorldFolder().getCanonicalPath()+File.separator+"region";
-		deleteDirectory(new File(oldwregionspath));
+		//Shutdown server and delegate world removal to JVMShutdownHook
+		
 	}
 	
 	//antijoin listener
