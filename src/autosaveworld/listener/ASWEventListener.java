@@ -53,27 +53,31 @@ import autosaveworld.core.AutoSaveWorld;
 		
 		@EventHandler
 		public void onPlayerQuit(PlayerQuitEvent event) {
-		if (config.varDebug) {
-		plugin.debug("Check for last leave");
-		plugin.debug("Players online = "+(plugin.getServer().getOnlinePlayers().length-1));}
-		if (plugin.getServer().getOnlinePlayers().length == 1) {
-		plugin.debug("Last player has quit, autosaving");
-		plugin.saveThread.startsave();}
+			if (config.varDebug) {
+				plugin.debug("Check for last leave");
+				plugin.debug("Players online = "+(plugin.getServer().getOnlinePlayers().length-1));
+			}
+			if (plugin.getServer().getOnlinePlayers().length == 1) {
+				plugin.debug("Last player has quit, autosaving");
+				plugin.saveThread.startsave();
+			}
 		}
 		
 		
 		@EventHandler
 		public void onConsoleStopCommand(ServerCommandEvent event)
 		{
-		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
-			{plugin.crashrestartThread.stopThread();} }
+			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
+				plugin.crashrestartThread.stopThread();
+			}
 		}
 		
 		@EventHandler
 		public void onRemoteConsoleStopCommand(RemoteServerCommandEvent event)
 		{
-		if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
-			{plugin.crashrestartThread.stopThread();} }
+			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
+				plugin.crashrestartThread.stopThread(); 
+			}
 		}
 
 		
