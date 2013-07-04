@@ -1,11 +1,22 @@
 package autosaveworld.threads.worldregen;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.generator.ChunkGenerator;
 
 import com.sk89q.worldedit.CuboidClipboard;
@@ -72,7 +83,11 @@ public class WorldRegenThread extends Thread {
 		{
 			if (doregen)
 			{
+				try {
 				doWorldRegen();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				doregen = false;
 			}
 			try {
@@ -86,69 +101,42 @@ public class WorldRegenThread extends Thread {
 	}
 	
 	
-	private void doWorldRegen()
+	private void doWorldRegen() throws Exception
 	{
-		//create world
-		plugin.debug("Creating clipboard world");
-		final Long wseed = Bukkit.getWorld(worldtoregen).getSeed();
-		final ChunkGenerator wgen = Bukkit.getWorld(worldtoregen).getGenerator();
-		final Environment wenv = Bukkit.getWorld(worldtoregen).getEnvironment();
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		final World wtoregen = Bukkit.getWorld(worldtoregen);
+		int taskid;
+		
+		//kick all player and deny them from join
+		JListener jl = new JListener();
+		Bukkit.getPluginManager().registerEvents(jl, plugin);
+		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
 			public void run()
 			{
-				WorldCreator wc = new WorldCreator("AutoSaveWorld_world_regen_"+worldtoregen);
-				wc.seed(wseed);
-				wc.generator(wgen);
-				wc.environment(wenv);
-				Bukkit.getServer().createWorld(wc);
+				for (Player p : Bukkit.getOnlinePlayers())
+				{
+					p.kickPlayer("[AutoSaveWorld] server is regenerating map, please come back later");
+				}
 			}
-			
 		});
-		//wait for world creation done
 		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 		{
-			try {
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
-		plugin.debug("Saving buildings");
+		
 		//save WorldGuard buildings
+		plugin.debug("Saving buildings");
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
 		{
 			plugin.debug("Copy-pasting wg regions to clipboard world");
 			WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
-				final World wtoregen = Bukkit.getWorld(worldtoregen);
-				final World wclipboard = Bukkit.getWorld("AutoSaveWorld_world_regen_"+worldtoregen);
 				final RegionManager m = wg.getRegionManager(wtoregen);
 				final LocalSession ls = new LocalSession(WorldEdit.getInstance().getConfiguration());
 				//get region
 				for (final ProtectedRegion rg : m.getRegions().values()) {
 					Runnable copypaste = new Runnable() {
 						public void run(){
-							//copy&paste everything to the new world
-							Vector bvmin = rg.getMinimumPoint().toBlockPoint();
-							Vector bvmax = rg.getMinimumPoint().toBlockPoint();
-							Vector pos = bvmax;
-							CuboidClipboard clipboard = new CuboidClipboard(
-									bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-									bvmin, bvmin.subtract(pos)
-			        		);
-							EditSession es = new EditSession(new BukkitWorld(wtoregen), Integer.MAX_VALUE);
-							clipboard.copy(es);
-							ls.setClipboard(clipboard);
-							EditSession esn = new EditSession(new BukkitWorld(wclipboard),Integer.MAX_VALUE);
-							try {
-								ls.getClipboard().paste(esn, pos, false, false);
-							} catch (MaxChangedBlocksException e) {
-								e.printStackTrace();
-							} catch (EmptyClipboardException e) {
-								e.printStackTrace();
-							}	
-							plugin.debug("Region "+rg.getId()+" saved to clipboard map");
+							//save to schematic here
 						}
 					};
 					taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
@@ -168,9 +156,56 @@ public class WorldRegenThread extends Thread {
 		//save Factions homes
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null)
 		{
-
+				//will do this later.
 		}
 		
+		//wipe previous map
+		//Unload all chunks
+		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		{
+			public void run()
+			{
+				for (Chunk c : wtoregen.getLoadedChunks())
+				{
+					c.unload();
+				}
+			}
+		});
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+		{
+				Thread.sleep(1000);	
+		}
+		//remove old region files
+		String oldwregionspath = wtoregen.getWorldFolder().getCanonicalPath()+File.separator+"region";
+		deleteDirectory(new File(oldwregionspath));
+	}
+	
+	//antijoin listener
+	class JListener implements Listener
+	{
+		@EventHandler
+		public void onPlayerJoin(PlayerJoinEvent e)
+		{
+			e.getPlayer().kickPlayer("[AutoSaveWorld] server is regenerating map, please come back later");
+		}
+		
+	}
+	
+	
+	public void deleteDirectory(File file)
+	{
+	    if(!file.exists())
+	      return;
+	    if(file.isDirectory())
+	    {
+	      for(File f : file.listFiles())
+	        deleteDirectory(f);
+	      file.delete();
+	    }
+	    else
+	    {
+	      file.delete();
+	    }
 	}
 	
 }

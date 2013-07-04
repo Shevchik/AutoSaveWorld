@@ -171,7 +171,7 @@ import autosaveworld.core.AutoSaveWorld;
 		{
 			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null)
 			{
-				plugin.sendMessage(sender, "You need WorldGuard installed to do that");
+				plugin.sendMessage(sender, "You need WorldEdit installed to do that");
 				return true;
 			}
 			if (Bukkit.getWorld(args[1]) == null)

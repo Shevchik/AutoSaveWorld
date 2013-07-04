@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.config.AutoSaveConfig;
@@ -73,10 +74,12 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.AUTORESTART);
 		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
+		stopThread(ThreadType.WORLDREGEN);
 		configmsg = null;
 		config = null; 
 		localeloader = null;
 		eh = null;
+		HandlerList.unregisterAll(this);
 		log.info(String.format("[%s] Version %s is disabled", getDescription()
 				.getName(), getDescription().getVersion()));
 	}
@@ -112,6 +115,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		JVMsh = new JVMshutdownhook();
 		// Start ConsoleCommandThread
 		startThread(ThreadType.CONSOLECOMMAND);
+		// Start WorldRegenThread
+		startThread(ThreadType.WORLDREGEN);
 		// Notify on logger load
 		log.info(String.format("[%s] Version %s is enabled",
 					getDescription().getName(), getDescription().getVersion()
