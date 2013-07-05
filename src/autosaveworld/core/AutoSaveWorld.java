@@ -17,11 +17,13 @@
 
 package autosaveworld.core;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.config.AutoSaveConfig;
@@ -35,6 +37,8 @@ import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
 import autosaveworld.threads.restart.JVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
+import autosaveworld.threads.worldregen.AntiJoinListener;
+import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.worldregen.WorldRegenThread;
 
 public class AutoSaveWorld extends JavaPlugin {
@@ -49,10 +53,13 @@ public class AutoSaveWorld extends JavaPlugin {
 	public JVMshutdownhook JVMsh = null;
 	public AutoConsoleCommandThread consolecommandThread = null;
 	public WorldRegenThread worldregenThread = null;
+	private WorldRegenPasteThread wrp = null;
+	public boolean worldregenfinished = false;
 	private AutoSaveConfigMSG configmsg;
 	private AutoSaveConfig config;
 	private LocaleContainer localeloader;
 	private ASWEventListener eh;
+	private AntiJoinListener ajl;
 	protected int numPlayers = 0;
 	public volatile boolean saveInProgress = false;
 	public volatile boolean backupInProgress = false;
@@ -80,6 +87,13 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeloader = null;
 		eh = null;
 		HandlerList.unregisterAll(this);
+		//Check if we are in WorldRegen stage 3 end, if so - remove file and unregister listeners
+		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
+		if (check.exists() && worldregenfinished) {
+			PlayerJoinEvent.getHandlerList().unregister(ajl);
+			wrp = null;
+			check.delete();
+		}
 		log.info(String.format("[%s] Version %s is disabled", getDescription()
 				.getName(), getDescription().getVersion()));
 	}
@@ -117,6 +131,14 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.CONSOLECOMMAND);
 		// Start WorldRegenThread
 		startThread(ThreadType.WORLDREGEN);
+		//Check if we are in WOrldRegen stage 3, if so - do our job
+		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
+		if (check.exists()) {
+			ajl = new AntiJoinListener(configmsg);
+			getServer().getPluginManager().registerEvents(ajl, this);
+			wrp = new WorldRegenPasteThread(this,config,configmsg);
+			wrp.start();
+		}
 		// Notify on logger load
 		log.info(String.format("[%s] Version %s is enabled",
 					getDescription().getName(), getDescription().getVersion()

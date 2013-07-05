@@ -34,8 +34,8 @@ public class WorldRegenThread extends Thread {
 	
 	private String worldtoregen = "";
 	
-	public WorldRegenThread(AutoSaveWorld plugin, AutoSaveConfig config,
-			AutoSaveConfigMSG configmsg) {
+	public WorldRegenThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg)
+	{
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
