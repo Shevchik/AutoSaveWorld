@@ -1,12 +1,18 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.FactionColl;
+import com.massivecraft.factions.entity.FactionColls;
+import com.massivecraft.mcore.ps.PS;
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
@@ -160,7 +166,15 @@ public class WorldRegenThread extends Thread {
 		//save Factions homes
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null)
 		{
-				//will do this later.
+			//get faction
+			for (FactionColl fc : FactionColls.get().getColls())
+			{
+			    for (Faction f : fc.getAll())
+			    {
+			    	Set<PS> ps = BoardColls.get().getChunks(f);
+			    	//and what to do next? Faction API sucks :(
+			    }
+			}
 		}
 		
 		//Shutdown server and delegate world removal to JVMShutdownHook
