@@ -132,6 +132,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start WorldRegenThread
 		startThread(ThreadType.WORLDREGEN);
 		//Check if we are in WOrldRegen stage 3, if so - do our job
+		/*
 		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
 		if (check.exists()) {
 			ajl = new AntiJoinListener(configmsg);
@@ -139,6 +140,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			wrp = new WorldRegenPasteThread(this,config,configmsg);
 			wrp.start();
 		}
+		*/
 		// Notify on logger load
 		log.info(String.format("[%s] Version %s is enabled",
 					getDescription().getName(), getDescription().getVersion()
