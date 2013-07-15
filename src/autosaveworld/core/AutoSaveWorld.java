@@ -39,7 +39,7 @@ import autosaveworld.threads.restart.JVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
 import autosaveworld.threads.worldregen.AntiJoinListener;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
-import autosaveworld.threads.worldregen.WorldRegenThread;
+import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 public class AutoSaveWorld extends JavaPlugin {
 	private static final Logger log = Bukkit.getLogger();
@@ -52,7 +52,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public AutoRestartThread autorestartThread = null;
 	public JVMshutdownhook JVMsh = null;
 	public AutoConsoleCommandThread consolecommandThread = null;
-	public WorldRegenThread worldregenThread = null;
+	public WorldRegenCopyThread worldregenThread = null;
 	private WorldRegenPasteThread wrp = null;
 	public boolean worldregenfinished = false;
 	private AutoSaveConfigMSG configmsg;
@@ -132,7 +132,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start WorldRegenThread
 		startThread(ThreadType.WORLDREGEN);
 		//Check if we are in WOrldRegen stage 3, if so - do our job
-		/*
 		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
 		if (check.exists()) {
 			ajl = new AntiJoinListener(configmsg);
@@ -140,7 +139,6 @@ public class AutoSaveWorld extends JavaPlugin {
 			wrp = new WorldRegenPasteThread(this,config,configmsg);
 			wrp.start();
 		}
-		*/
 		// Notify on logger load
 		log.info(String.format("[%s] Version %s is enabled",
 					getDescription().getName(), getDescription().getVersion()
@@ -192,7 +190,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			return true;
 		case WORLDREGEN:
 			if (worldregenThread == null || !worldregenThread.isAlive()) {
-				worldregenThread = new WorldRegenThread(this, config ,configmsg);
+				worldregenThread = new WorldRegenCopyThread(this, config ,configmsg);
 				worldregenThread.start();
 			}
 			return true;

@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.massivecraft.factions.entity.BoardColls;
@@ -26,7 +28,7 @@ import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 
-public class WorldRegenThread extends Thread {
+public class WorldRegenCopyThread extends Thread {
 
 	protected final Logger log = Bukkit.getLogger();
 	
@@ -39,8 +41,9 @@ public class WorldRegenThread extends Thread {
 	private boolean doregen = false;
 	
 	private String worldtoregen = "";
+	private int taskid;
 	
-	public WorldRegenThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg)
+	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg)
 	{
 		this.plugin = plugin;
 		this.config = config;
@@ -94,7 +97,10 @@ public class WorldRegenThread extends Thread {
 	private void doWorldRegen() throws Exception
 	{
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
-		int taskid;
+		
+		FileConfiguration cfg = new YamlConfiguration();
+		cfg.set("wname", worldtoregen);
+		cfg.save(new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml"));
 		
 		//kick all player and deny them from join
 		AntiJoinListener jl = new AntiJoinListener(configmsg);
@@ -171,7 +177,8 @@ public class WorldRegenThread extends Thread {
 			{
 			    for (Faction f : fc.getAll())
 			    {
-			    	Set<PS> ps = BoardColls.get().getChunks(f);
+			    	@SuppressWarnings("unused")
+					Set<PS> ps = BoardColls.get().getChunks(f);
 			    	//and what to do next? Faction API sucks :(
 			    }
 			}
