@@ -122,7 +122,7 @@ public class WorldRegenCopyThread extends Thread {
 		
 		//save WorldGuard buildings
 		plugin.debug("Saving buildings");
-		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null)
+		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg)
 		{
 			plugin.debug("Saving wg regions to schematics");
 			WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
@@ -170,7 +170,7 @@ public class WorldRegenCopyThread extends Thread {
 		}
 		
 		//save Factions homes
-		if (Bukkit.getPluginManager().getPlugin("Factions") != null)
+		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions)
 		{
 			//get faction
 			for (FactionColl fc : FactionColls.get().getColls())

@@ -83,6 +83,8 @@ public class AutoSaveConfig {
 	public boolean ccintervalenabled = false;
 	public int ccintervalinterval = 600;
 	public List<String> ccintervalcommands = new ArrayList<String>();
+	public boolean worldregensavewg = true;
+	public boolean worldregensavefactions = true;
 	
 
 
@@ -178,6 +180,9 @@ public class AutoSaveConfig {
 		ccintervalinterval = config.getInt("consolecommand.intervalmode.interval", ccintervalinterval);
 		ccintervalcommands = config.getStringList("consolecommand.intervalmode.commands");
 		
+		//worldregen variables
+		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
+		worldregensavefactions = config.getBoolean("worldregen.savefactions",worldregensavefactions);
 		
 		//locale variables
 		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
@@ -263,16 +268,19 @@ public class AutoSaveConfig {
 		config.set("consolecommand.intervalmode.interval", ccintervalinterval);
 		config.set("consolecommand.intervalmode.commands", ccintervalcommands);
 		
+		//worldregen variables
+		config.set("worldregen.savewg",worldregensavewg);
+		config.set("worldregen.savefactions",worldregensavefactions);
+		
 		//locale variables
 		config.set("locale.switchtolangfile",switchtolangfile);
 		config.set("locale.langfilesuffix",langfilesuffix);
 		
 		
+		try {
+			config.save(new File("plugins/AutoSaveWorld/config.yml"));
+		} catch (IOException ex) {}
 		
-						try {
-					config.save(new File("plugins/AutoSaveWorld/config.yml"));
-				} catch (IOException ex) {;
-				}
 	}
 	
 }
