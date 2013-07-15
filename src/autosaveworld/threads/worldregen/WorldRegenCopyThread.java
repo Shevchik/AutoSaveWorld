@@ -120,8 +120,9 @@ public class WorldRegenCopyThread extends Thread {
 				Thread.sleep(1000);
 		}
 		
-		//save WorldGuard buildings
 		plugin.debug("Saving buildings");
+		
+		//save WorldGuard buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg)
 		{
 			plugin.debug("Saving wg regions to schematics");
@@ -172,19 +173,30 @@ public class WorldRegenCopyThread extends Thread {
 		//save Factions homes
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions)
 		{
+			plugin.debug("Saving factions homes to schematics");
 			//get faction
 			for (FactionColl fc : FactionColls.get().getColls())
 			{
 			    for (Faction f : fc.getAll())
 			    {
-			    	@SuppressWarnings("unused")
-					Set<PS> ps = BoardColls.get().getChunks(f);
-			    	//and what to do next? Faction API sucks :(
+			    	//check if faction has claimed land
+			    	if (BoardColls.get().getChunks(f).size() != 0)
+			    	{
+			    		//now we will have to iterate over all chunks and find put the bounds
+			    		int xmin = 0;int zmin=0;int xmax=0; int zmax = 0;
+			    		for (PS ps :BoardColls.get().getChunks(f))
+			    		{
+			    			ps.asBukkitChunk();
+			    		}
+			    	}
 			    }
 			}
 		}
 		
+		plugin.debug("Saving finished");
+		
 		//Shutdown server and delegate world removal to JVMShutdownHook
+		plugin.debug("Deleting map and restarting server");
 		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath());
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		plugin.autorestartThread.startrestart();
