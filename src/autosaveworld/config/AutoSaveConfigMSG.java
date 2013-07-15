@@ -58,6 +58,7 @@ public class AutoSaveConfigMSG {
 		messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
 		messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
 		messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
+		messageWorldRegenKick = configmsg.getString("worldregen.kickmessage", messageWorldRegenKick);
 		configmsg = new YamlConfiguration();
 		configmsg.set("broadcast.pre", messageBroadcastPre);
 		configmsg.set("broadcast.post", messageBroadcastPost);
@@ -70,6 +71,7 @@ public class AutoSaveConfigMSG {
 		configmsg.set("insufficentpermissions", messageInsufficientPermissions);
 		configmsg.set("autorestart.restarting",messageAutoRestart);
 		configmsg.set("autorestart.countdown",messageAutoRestartCountdown);
+		configmsg.set("worldregen.kickmessage", messageWorldRegenKick);
 		try {
 			configmsg.save(new File("plugins/AutoSaveWorld/configmsg.yml"));
 		} catch (IOException e) {
@@ -90,6 +92,7 @@ public class AutoSaveConfigMSG {
 			messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
 			messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
 			messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
+			messageAutoRestartCountdown = configmsg.getString("worldregen.kickmessage", messageWorldRegenKick);
 
 		}
 		

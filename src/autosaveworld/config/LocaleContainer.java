@@ -86,6 +86,7 @@ public class LocaleContainer {
 			localefile.set("insufficentpermissions", "&9У вас нет доступа к этой команде");
 			localefile.set("autorestart.restarting","&9Сервер перезагружается");
 			localefile.set("autorestart.countdown","&9Сервер перезагрузится через {SECONDS} секунд");
+			localefile.set("worldregen.kickmessage", "&9Сервер регенерирует карту, вернитесь позже");
 			}
 		try {localefile.save(new File("plugins/AutoSaveWorld/configmsg_"+locale+".yml"));} catch (IOException e) {e.printStackTrace();}
 	}

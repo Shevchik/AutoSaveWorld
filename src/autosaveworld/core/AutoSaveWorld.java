@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -134,7 +135,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		//Check if we are in WOrldRegen stage 3, if so - do our job
 		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
 		if (check.exists()) {
-			ajl = new AntiJoinListener(configmsg);
+			ajl = new AntiJoinListener(this,configmsg);
 			getServer().getPluginManager().registerEvents(ajl, this);
 			wrp = new WorldRegenPasteThread(this,config,configmsg);
 			wrp.start();
@@ -323,6 +324,11 @@ public class AutoSaveWorld extends JavaPlugin {
 					Generic.stripColor(message)));
 		}
 
+	}
+	
+	public void kickPlayer(Player player, String message)
+	{
+		player.kickPlayer(Generic.parseColor(message));
 	}
 
 	public void debug(String message) {

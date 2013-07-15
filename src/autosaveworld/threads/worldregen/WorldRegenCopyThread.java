@@ -103,7 +103,7 @@ public class WorldRegenCopyThread extends Thread {
 		cfg.save(new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml"));
 		
 		//kick all player and deny them from join
-		AntiJoinListener jl = new AntiJoinListener(configmsg);
+		AntiJoinListener jl = new AntiJoinListener(plugin,configmsg);
 		Bukkit.getPluginManager().registerEvents(jl, plugin);
 		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
