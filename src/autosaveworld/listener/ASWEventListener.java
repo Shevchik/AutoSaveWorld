@@ -173,9 +173,6 @@ import autosaveworld.core.AutoSaveWorld;
 		} else
 		if ((args.length==2 && args[0].equalsIgnoreCase("regenworld")))
 		{
-			plugin.sendMessage(sender, "This command is not available yet,because this feature is still not finished");
-			
-			
 			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null)
 			{
 				plugin.sendMessage(sender, "You need WorldEdit installed to do that");
@@ -191,7 +188,7 @@ import autosaveworld.core.AutoSaveWorld;
 				plugin.sendMessage(sender, "Please wait before previous world regeneration is finished");
 				return true;
 			}
-			//plugin.worldregenThread.startworldregen(args[1]);
+			plugin.worldregenThread.startworldregen(args[1]);
 			return true;
 		} else
 		//reload command
