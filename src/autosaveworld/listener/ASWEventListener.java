@@ -147,8 +147,8 @@ import autosaveworld.core.AutoSaveWorld;
 			plugin.sendMessage(sender,"&f/asw version&7 - &3Shows plugin version");
 			plugin.sendMessage(sender,"&f/asw info&7 - &3Shows some info");
 			plugin.sendMessage(sender,"&f/asw locale&7 - &3Show current messages locale");
-			plugin.sendMessage(sender,"&f/asw locale availible&7 - &3Show availible messages locale");
-			plugin.sendMessage(sender,"&f/asw locale load {locale}&7 - &3Set meesages locale to one of the availible locales");
+			plugin.sendMessage(sender,"&f/asw locale available&7 - &3Show available messages locales");
+			plugin.sendMessage(sender,"&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 			return true;
 		} else
 		//command to save worlds
@@ -248,19 +248,19 @@ import autosaveworld.core.AutoSaveWorld;
 				plugin.sendMessage(sender, "Current locale is "+config.langfilesuffix);
 				return true;
 			}
-			else if (args.length == 2 && args[1].equalsIgnoreCase("availible"))
+			else if (args.length == 2 && args[1].equalsIgnoreCase("available"))
 			{
-				plugin.sendMessage(sender, "Availible locales: "+localeloader.getAvailibleLocales());
+				plugin.sendMessage(sender, "Available locales: "+localeloader.getAvailableLocales());
 				return true;
 			}
 			else if (args.length == 2 && args[1].equalsIgnoreCase("load"))
 			{
-				plugin.sendMessage(sender, "You should specify a locale to load (get availible locales using /asw locale availible command)");
+				plugin.sendMessage(sender, "You should specify a locale to load (get available locales using /asw locale available command)");
 				return true;
 			} 
 			else if (args.length == 3 && args[1].equalsIgnoreCase("load"))
 			{
-				if (localeloader.getAvailibleLocales().contains(args[2]))
+				if (localeloader.getAvailableLocales().contains(args[2]))
 				{
 					plugin.sendMessage(sender, "Loading locale "+args[2]);
 					localeloader.loadLocale(args[2]);

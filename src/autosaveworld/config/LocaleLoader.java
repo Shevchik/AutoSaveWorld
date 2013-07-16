@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,9 +39,11 @@ public class LocaleLoader {
 	
 	
 	//availible locales
-	public List<String> getAvailibleLocales()
+	public List<String> getAvailableLocales()
 	{
-				return Arrays.asList("en","ru");
+		List<String> locales = new ArrayList<String>(Arrays.asList("en"));
+		locales.add("ru");
+		return locales;
 	}
 	
 	public void loadLocale(String locale)
