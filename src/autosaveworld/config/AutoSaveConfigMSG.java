@@ -92,7 +92,7 @@ public class AutoSaveConfigMSG {
 			messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
 			messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
 			messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
-			messageAutoRestartCountdown = configmsg.getString("worldregen.kickmessage", messageWorldRegenKick);
+			messageWorldRegenKick = configmsg.getString("worldregen.kickmessage", messageWorldRegenKick);
 
 		}
 		
