@@ -21,9 +21,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.bukkit.Bukkit;
 
 import autosaveworld.core.AutoSaveWorld;
 
@@ -42,8 +48,31 @@ public class LocaleLoader {
 	public List<String> getAvailableLocales()
 	{
 		List<String> locales = new ArrayList<String>(Arrays.asList("en"));
-		locales.add("ru");
-		return locales;
+		
+		try {
+		//add additional locales based on files in the jar.
+    	final ZipFile zipFile = new ZipFile(AutoSaveWorld.class.getProtectionDomain().getCodeSource().getLocation().getFile());
+    	Enumeration<? extends ZipEntry> entries = zipFile.entries();
+    	while (entries.hasMoreElements())
+    	{
+    		ZipEntry ze = entries.nextElement();
+    		if (!ze.isDirectory())
+    		{
+    			if (ze.getName().contains("localefiles"))
+    			{
+    				String lname = new File(ze.getName()).getName();
+    				lname = lname.split("[_]")[1];
+    				lname = lname.split("[.]")[0];
+    				locales.add(lname);
+    			}
+    		}
+    	}
+    	zipFile.close();
+		} catch (Exception e)
+		{
+		}
+		
+   		return locales;
 	}
 	
 	public void loadLocale(String locale)

@@ -269,7 +269,7 @@ import autosaveworld.core.AutoSaveWorld;
 				}
 				else 
 				{
-					plugin.sendMessage(sender, "Locale "+args[2]+" is not availible"); return true;
+					plugin.sendMessage(sender, "Locale "+args[2]+" is not available"); return true;
 				}
 			}
 		}
