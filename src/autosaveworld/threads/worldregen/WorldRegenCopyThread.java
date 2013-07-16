@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -179,13 +180,17 @@ public class WorldRegenCopyThread extends Thread {
 			{
 			    for (Faction f : fc.getAll())
 			    {
+			    	Set<PS> chunks = BoardColls.get().getChunks(f);
 			    	//check if faction has claimed land
-			    	if (BoardColls.get().getChunks(f).size() != 0)
+			    	if (chunks.size() != 0)
 			    	{
 			    		//now we will have to iterate over all chunks and find put the bounds
-			    		int xmin = 0;int zmin=0;int xmax=0; int zmax = 0;
-			    		for (PS ps :BoardColls.get().getChunks(f))
+			    		Chunk cfirst = chunks.iterator().next().asBukkitChunk();
+			    		int xmin = cfirst.getX();int zmin = cfirst.getZ();int xmax=cfirst.getX()+15; int zmax = cfirst.getZ()+15;
+			    		for (PS ps : chunks)
 			    		{
+			    			System.out.println(ps.asBukkitChunk().getX());
+			    			System.out.println(ps.asBukkitChunk().getZ());
 			    			ps.asBukkitChunk();
 			    		}
 			    	}

@@ -10,6 +10,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 	public WorldRegenJVMshutdownhook(String fldtodelete)
 	{
 		this.fldtodelete = fldtodelete;
+		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
 	}
 	
 	public void run()

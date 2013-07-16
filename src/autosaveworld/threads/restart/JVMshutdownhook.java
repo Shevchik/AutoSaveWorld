@@ -79,8 +79,8 @@ public class JVMshutdownhook extends Thread {
 	
 	public void run()
 	{
-		if (!isLastShutdownHook()) {System.out.println("[AutoSaveWorld] Waiting for other shutdownhooks to finish");}
-		while (!isLastShutdownHook())
+		if (!canRestart()) {System.out.println("[AutoSaveWorld] Waiting for WorldRegen shutdownhook to finish");}
+		while (!canRestart())
 		{
 			try {
 			Thread.sleep(1000);
@@ -93,7 +93,7 @@ public class JVMshutdownhook extends Thread {
 	}
 	
 	@SuppressWarnings("unchecked")
-	boolean isLastShutdownHook()
+	boolean canRestart()
 	{
 		boolean b = true;
 		try {
@@ -101,11 +101,15 @@ public class JVMshutdownhook extends Thread {
 		    Field field = hookclass.getDeclaredField("hooks");
 		    field.setAccessible(true);
 		    Map<Thread, Thread> hooks = (Map<Thread, Thread>) field.get(null);
-		    if (hooks.keySet().size() > 1) {b = false;}
-			} catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+		    for (Thread hook : hooks.keySet())
+		    {
+		    	if (hook.getName().equals("AutoSaveWorld WorldRegenShutdownHook"))
+		    	{b=false;}
+		    }
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		return b;
 	}
 	
