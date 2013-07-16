@@ -84,7 +84,18 @@ public class LocaleLoader {
 			new File("plugins/AutoSaveWorld/configmsg.yml").delete();
 			plugin.debug("switching to en");
 			config.switchtolangfile = false;
-
+			configmsg.messageBroadcastPre = "&9AutoSaving";
+			configmsg.messageBroadcastPost = "&9AutoSave Complete";
+			configmsg.messageInsufficientPermissions = "&cYou do not have access to that command.";
+			configmsg.messageWarning = "&9Warning, AutoSave will commence soon.";
+			configmsg.messageBroadcastBackupPre = "&9AutoBackuping";
+			configmsg.messageBroadcastBackupPost = "&9AutoBackup Complete";
+			configmsg.messageBackupWarning = "&9Warning, AutoBackup will commence soon";
+			configmsg.messagePurgePre = "&9AutoPurging";
+			configmsg.messagePurgePost = "&9AutoPurge Complete";
+			configmsg.messageAutoRestart = "&9Server is restarting";
+			configmsg.messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
+			configmsg.messageWorldRegenKick = "&9Server is regenerating map, please come back later";
 		} else 
 		{
 			//if it is other locale we will load messages file from package
