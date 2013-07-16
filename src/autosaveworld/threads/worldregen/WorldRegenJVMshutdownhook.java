@@ -28,7 +28,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 	
 	
 	
-	public void deleteDirectory(File file)
+	private void deleteDirectory(File file)
 	{
 	    if(!file.exists())
 	      return;

@@ -88,12 +88,14 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeloader = null;
 		eh = null;
 		HandlerList.unregisterAll(this);
-		//Check if we are in WorldRegen stage 3 end, if so - remove file and unregister listeners
+		//Check if we just finished WorldRegen, if so - clean garbage
 		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
 		if (check.exists() && worldregenfinished) {
 			PlayerJoinEvent.getHandlerList().unregister(ajl);
 			wrp = null;
 			check.delete();
+			new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml").delete();
+			new File("plugins/AutoSaveWorld/WorldRegenTemp/").delete();
 		}
 		log.info(String.format("[%s] Version %s is disabled", getDescription()
 				.getName(), getDescription().getVersion()));

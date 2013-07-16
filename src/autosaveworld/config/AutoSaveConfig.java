@@ -57,7 +57,7 @@ public class AutoSaveConfig {
 	public boolean purgeBroadcast = true;
 	public boolean wg = true;
 	public boolean wgregenrg = true;
-	public boolean wgnoregenoverlap = false;
+	public boolean wgnoregenoverlap = true;
 	public boolean lwc = true;
 	public boolean lwcdelprotectedblocks = false;
 	public boolean mvinv = true;
