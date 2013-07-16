@@ -46,19 +46,38 @@ public class AutoSaveConfigMSG {
 	
 	public void loadmsg() {
 		if (!config.switchtolangfile) {
-		configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg.yml"));
+			configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg.yml"));
+			loadMessages();
+			saveMessages();
+		} else
+		{
+			configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg_"+config.langfilesuffix+".yml"));
+			loadMessages();
+		}
+		
+
+		
+	}
+	
+	
+	private void loadMessages()
+	{
 		messageBroadcastPre =configmsg.getString("broadcast.pre", messageBroadcastPre);
 		messageBroadcastPost =configmsg.getString("broadcast.post", messageBroadcastPost);
 		messageBroadcastBackupPre =configmsg.getString("broadcastbackup.pre", messageBroadcastBackupPre);
 		messageBroadcastBackupPost =configmsg.getString("broadcastbackup.post", messageBroadcastBackupPost);
 		messagePurgePre =configmsg.getString("broadcastpurge.pre", messagePurgePre);
 		messagePurgePost =configmsg.getString("broadcastpurge.post", messagePurgePost);
-		messageWarning =configmsg.getString("warning.save", messageWarning);
+		messageWarning =configmsg.getString("warning.save", messageWarning); 
 		messageBackupWarning =configmsg.getString("warning.backup", messageBackupWarning);
 		messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
 		messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
 		messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
 		messageWorldRegenKick = configmsg.getString("worldregen.kickmessage", messageWorldRegenKick);
+	}
+	
+	private void saveMessages()
+	{
 		configmsg = new YamlConfiguration();
 		configmsg.set("broadcast.pre", messageBroadcastPre);
 		configmsg.set("broadcast.post", messageBroadcastPost);
@@ -78,26 +97,6 @@ public class AutoSaveConfigMSG {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		} else
-		{
-			configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg_"+config.langfilesuffix+".yml"));
-			messageBroadcastPre =configmsg.getString("broadcast.pre", messageBroadcastPre);
-			messageBroadcastPost =configmsg.getString("broadcast.post", messageBroadcastPost);
-			messageBroadcastBackupPre =configmsg.getString("broadcastbackup.pre", messageBroadcastBackupPre);
-			messageBroadcastBackupPost =configmsg.getString("broadcastbackup.post", messageBroadcastBackupPost);
-			messagePurgePre =configmsg.getString("broadcastpurge.pre", messagePurgePre);
-			messagePurgePost =configmsg.getString("broadcastpurge.post", messagePurgePost);
-			messageWarning =configmsg.getString("warning.save", messageWarning); 
-			messageBackupWarning =configmsg.getString("warning.backup", messageBackupWarning);
-			messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
-			messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
-			messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
-			messageWorldRegenKick = configmsg.getString("worldregen.kickmessage", messageWorldRegenKick);
-
-		}
-		
-
-		
 	}
 	
 	

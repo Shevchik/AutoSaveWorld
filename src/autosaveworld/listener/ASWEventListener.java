@@ -33,7 +33,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
-import autosaveworld.config.LocaleContainer;
+import autosaveworld.config.LocaleLoader;
 import autosaveworld.core.AutoSaveWorld;
 
 	public class ASWEventListener implements Listener, CommandExecutor {
@@ -41,8 +41,8 @@ import autosaveworld.core.AutoSaveWorld;
 		private AutoSaveWorld plugin = null;
 		private AutoSaveConfig config;
 		private AutoSaveConfigMSG configmsg;
-		private LocaleContainer localeloader;
-		public ASWEventListener(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, LocaleContainer localeloader){
+		private LocaleLoader localeloader;
+		public ASWEventListener(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, LocaleLoader localeloader){
 			this.plugin = plugin;
 			this.config = config;
 			this.configmsg  = configmsg;
@@ -261,11 +261,16 @@ import autosaveworld.core.AutoSaveWorld;
 			else if (args.length == 3 && args[1].equalsIgnoreCase("load"))
 			{
 				if (localeloader.getAvailibleLocales().contains(args[2]))
-				{plugin.sendMessage(sender, "Loading locale "+args[2]);
-				localeloader.loadLocale(args[2]);
-				return true;}
+				{
+					plugin.sendMessage(sender, "Loading locale "+args[2]);
+					localeloader.loadLocale(args[2]);
+					plugin.sendMessage(sender, "Loaded locale "+args[2]);
+					return true;
+				}
 				else 
-				{plugin.sendMessage(sender, "Locale "+args[2]+" is not availible"); return true;}
+				{
+					plugin.sendMessage(sender, "Locale "+args[2]+" is not availible"); return true;
+				}
 			}
 		}
 		return false;

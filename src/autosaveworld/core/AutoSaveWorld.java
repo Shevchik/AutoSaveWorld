@@ -29,7 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
-import autosaveworld.config.LocaleContainer;
+import autosaveworld.config.LocaleLoader;
 import autosaveworld.listener.ASWEventListener;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
@@ -58,7 +58,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public boolean worldregenfinished = false;
 	private AutoSaveConfigMSG configmsg;
 	private AutoSaveConfig config;
-	private LocaleContainer localeloader;
+	private LocaleLoader localeloader;
 	private ASWEventListener eh;
 	private AntiJoinListener ajl;
 	protected int numPlayers = 0;
@@ -108,7 +108,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		config.load();
 		configmsg = new AutoSaveConfigMSG(config);
 		configmsg.loadmsg();
-		localeloader = new LocaleContainer(this, config, configmsg);
+		localeloader = new LocaleLoader(this, config, configmsg);
 		eh = new ASWEventListener(this, config, configmsg, localeloader);
 		// register events and commands
 		getCommand("autosaveworld").setExecutor(eh);
