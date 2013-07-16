@@ -76,7 +76,7 @@ public class WorldGuardPaste {
 				try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
 			}
 		}
-		//delete Wg folder firectory
+		//delete WG folder firectory
 		deleteDirectory(new File(schemfolder));
 	}
 	
