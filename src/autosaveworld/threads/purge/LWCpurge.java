@@ -62,7 +62,15 @@ public class LWCpurge {
 								}
 								
 							};
-							Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
+							int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
+							while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+							{
+								try {
+									Thread.sleep(10);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
 						}
 						plugin.debug("Removing protection for inactive player "+pr.getOwner());
 						//delete protections
