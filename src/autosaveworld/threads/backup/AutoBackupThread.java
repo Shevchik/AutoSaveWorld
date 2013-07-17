@@ -343,9 +343,15 @@ public class AutoBackupThread extends Thread {
 			        String[] children = sourceLocation.list();
 			        for (int i=0; i<children.length; i++) {
 			        	boolean copy = true;
+		        		//ignore configured folders
 			        	for (String efname : config.excludefolders)
 			        	{
-			        	if ((new File(sourceLocation, children[i]).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {copy = false; break;}
+			        		if ((new File(sourceLocation, children[i]).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {copy = false; break;}
+			        	}
+		        		//ignore others worlds folders (mcpc+ only)
+			        	for (World w : Bukkit.getWorlds())
+			        	{
+			        		if (new File(sourceLocation, children[i]).isDirectory() && new File(sourceLocation, children[i]).getName().equals(w.getWorldFolder().getName())) {copy = false; break;}
 			        	}
 			        	if (copy) {
 			            copyDirectory(new File(sourceLocation, children[i]),
