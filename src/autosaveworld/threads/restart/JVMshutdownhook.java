@@ -44,9 +44,9 @@ public class JVMshutdownhook extends Thread {
 		if (restartscript.exists()) {
 			System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
 			if (OS.contains("win")) {
-				Runtime.getRuntime().exec("cmd /c start " + restartscript.getCanonicalPath());
+				Runtime.getRuntime().exec("cmd /c start " + restartscript.getPath());
 			} else {
-				Runtime.getRuntime().exec(restartscript.getCanonicalPath());
+				Runtime.getRuntime().exec(restartscript.getPath());
 			}
 		} else {
 			System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
