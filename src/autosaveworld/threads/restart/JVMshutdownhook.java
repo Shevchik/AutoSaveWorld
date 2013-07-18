@@ -46,7 +46,6 @@ public class JVMshutdownhook extends Thread {
 			if (OS.contains("win")) {
 				Runtime.getRuntime().exec("cmd /c start " + restartscript.getCanonicalPath());
 			} else {
-				restartscript.setExecutable(true);
 				Runtime.getRuntime().exec(restartscript.getCanonicalPath());
 			}
 		} else {
