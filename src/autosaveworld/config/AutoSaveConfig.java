@@ -166,7 +166,6 @@ public class AutoSaveConfig {
 		
 		//autoconsolecommand variables
 		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
-		cctimetimes = new ArrayList<String>();
 		if (config.getConfigurationSection("consolecommand.timemode.times") != null)
 		{
 			cctimetimes = new ArrayList<String>(config.getConfigurationSection("consolecommand.timemode.times").getKeys(false));
