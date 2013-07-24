@@ -26,6 +26,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.RemoteServerCommandEvent;
@@ -64,7 +65,7 @@ import autosaveworld.core.AutoSaveWorld;
 		}
 		
 		
-		@EventHandler
+		@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 		public void onConsoleStopCommand(ServerCommandEvent event)
 		{
 			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
@@ -72,7 +73,7 @@ import autosaveworld.core.AutoSaveWorld;
 			}
 		}
 		
-		@EventHandler
+		@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 		public void onRemoteConsoleStopCommand(RemoteServerCommandEvent event)
 		{
 			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
