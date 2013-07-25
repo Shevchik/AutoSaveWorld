@@ -31,13 +31,12 @@ public class LWCpurge {
 
 	private AutoSaveWorld plugin;
 
-	public LWCpurge(AutoSaveWorld plugin, long awaytime, boolean delblocks)
+	public LWCpurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
-		LWCPurgeTask(awaytime, delblocks);
 	}
 	
-	public void LWCPurgeTask(long awaytime, boolean delblocks) {
+	public void doLWCPurgeTask(long awaytime, boolean delblocks) {
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 		
 		plugin.debug("LWC purge started");

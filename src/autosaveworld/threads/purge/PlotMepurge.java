@@ -34,14 +34,13 @@ public class PlotMepurge {
 
 	private AutoSaveWorld plugin;
 
-	public PlotMepurge(AutoSaveWorld plugin, long awaytime, boolean regenplot)
+	public PlotMepurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
-		PlotMePurgeTask(awaytime, regenplot);
 	}
 	
 	
-	private void PlotMePurgeTask(long awaytime, final boolean regenplot)
+	public void doPlotMePurgeTask(long awaytime, final boolean regenplot)
 	{
 		int delplots = 0;
 		

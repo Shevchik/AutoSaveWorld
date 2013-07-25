@@ -117,7 +117,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.wg) {
 				plugin.debug("WG found, purging");
 				try {
-					new WGpurge(plugin, awaytime, config.wgregenrg, config.wgnoregenoverlap);
+					new WGpurge(plugin).doWGPurgeTask(awaytime, config.wgregenrg, config.wgnoregenoverlap);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -127,7 +127,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.lwc) {
 				plugin.debug("LWC found, purging");
 				try {
-					new LWCpurge(plugin, awaytime, config.lwcdelprotectedblocks);
+					new LWCpurge(plugin).doLWCPurgeTask(awaytime, config.lwcdelprotectedblocks);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -137,7 +137,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.mvinv ) {
 				plugin.debug("Multiverse-Inventories found, purging");
 				try {
-					new MVInvpurge(plugin, awaytime);
+					new MVInvpurge(plugin).doMVInvPurgeTask(awaytime);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -147,7 +147,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.pm) {
 				plugin.debug("PlotMe found, purging");
 				try {
-					new PlotMepurge(plugin, awaytime, config.pmregen);
+					new PlotMepurge(plugin).doPlotMePurgeTask(awaytime, config.pmregen);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -156,7 +156,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Purging player .dat files");
 			if (config.dat) {
 				try {
-					new Datfilepurge(plugin, awaytime);
+					new Datfilepurge(plugin).doDelPlayerDatFileTask(awaytime);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

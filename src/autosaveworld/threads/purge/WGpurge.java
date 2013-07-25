@@ -41,13 +41,12 @@ public class WGpurge {
 	
 	private AutoSaveWorld plugin;
 	
-	public WGpurge(AutoSaveWorld plugin, long awaytime, boolean regenrg, boolean noregenoverlap)
+	public WGpurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
-		WGPurgeTask(awaytime, regenrg, noregenoverlap);
 	}
 	
-	private void WGPurgeTask(long awaytime, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(long awaytime, final boolean regenrg, boolean noregenoverlap) {
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");

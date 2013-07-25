@@ -32,14 +32,13 @@ public class MVInvpurge {
 
 	private AutoSaveWorld plugin;
 
-	public MVInvpurge(AutoSaveWorld plugin, long awaytime)
+	public MVInvpurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
-		MVInvPurgeTask(awaytime);
 	}
 	
 	
-	private void MVInvPurgeTask(long awaytime)
+	public void doMVInvPurgeTask(long awaytime)
 	{
 		try {
 		MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");

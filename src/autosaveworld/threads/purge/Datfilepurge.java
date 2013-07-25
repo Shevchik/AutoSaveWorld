@@ -29,13 +29,12 @@ public class Datfilepurge {
 
 	private AutoSaveWorld plugin;
 
-	public Datfilepurge(AutoSaveWorld plugin, long awaytime)
+	public Datfilepurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
-		DelPlayerDatFileTask(awaytime);
 	}
 	
-	private void DelPlayerDatFileTask(long awaytime) {
+	public void doDelPlayerDatFileTask(long awaytime) {
 		int deleted = 0;
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer pl : checkPlayers) {
