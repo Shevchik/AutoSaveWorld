@@ -31,7 +31,7 @@ public class AutoConsoleCommandThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
-	private boolean run = true;
+	private volatile boolean run = true;
 	protected final Logger log = Bukkit.getLogger();
 	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 	SimpleDateFormat msdf = new SimpleDateFormat("mm");
