@@ -31,13 +31,16 @@ public class AutoSaveConfig {
 	
 	
 	// Variables
+	//debug
+	public boolean varDebug = false;
+	//save
 	public int saveInterval = 900;
 	public List<Integer> saveWarnTimes = null;
 	public boolean saveBroadcast = true;
 	public boolean saveEnabled = true;
-	public boolean varDebug = false;
-	public List<String> backupWorlds = null;
 	public boolean savewarn = false;
+	//backup
+	public List<String> backupWorlds = null;
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
 	public int MaxNumberOfWorldsBackups = 30;
@@ -51,6 +54,7 @@ public class AutoSaveConfig {
 	public boolean backupwarn = false;
 	public List<Integer> backupWarnTimes = null;
 	public boolean backupzip = false;
+	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
 	public boolean purgeEnabled = false;
@@ -64,12 +68,15 @@ public class AutoSaveConfig {
 	public boolean pm = true;
 	public boolean pmregen = true;
 	public boolean dat = true;
+	//lang
 	public boolean switchtolangfile = false;
 	public String langfilesuffix = "ru";
+	//crashrestart
 	public boolean crashrestartenabled = false;
 	public String crashrestartscriptpath="start.sh";
 	public boolean crstop = false;
 	public long crtimeout = 60;
+	//autorestart
 	public boolean autorestart = false;
 	public boolean autorestartBroadcast = true;
 	public String autorestartscriptpath = "start.sh";
@@ -77,12 +84,14 @@ public class AutoSaveConfig {
 	public boolean autorestartcountdown = true;
 	public int autorestartseconds = 20;
 	public boolean astop = false;
+	//consolecmmand
 	public boolean cctimeenabled = false;
 	public List<String> cctimetimes = new ArrayList<String>();
 	public HashMap<String, ArrayList<String>> cctimescommands = new HashMap<String, ArrayList<String>>();
 	public boolean ccintervalenabled = false;
 	public int ccintervalinterval = 600;
 	public List<String> ccintervalcommands = new ArrayList<String>();
+	//worldregen
 	public boolean worldregensavewg = true;
 	public boolean worldregensavefactions = true;
 	
