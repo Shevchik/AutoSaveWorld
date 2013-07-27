@@ -17,11 +17,7 @@
 
 package autosaveworld.core;
 
-import java.awt.Image;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -120,6 +116,7 @@ public class AutoSaveWorld extends JavaPlugin {
 				);
 	}
 	
+	
 	@Override
 	public void onDisable() {
 		// Perform a Save NOW!
@@ -152,6 +149,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		log.info(String.format("[%s] Version %s is disabled", getDescription()
 				.getName(), getDescription().getVersion()));
 	}	
+	
 	
 
 	protected boolean startThread(ThreadType type) {
