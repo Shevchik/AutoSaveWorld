@@ -17,8 +17,6 @@
 
 package autosaveworld.threads.purge;
 
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 
 import autosaveworld.config.AutoSaveConfig;
@@ -27,12 +25,10 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class AutoPurgeThread extends Thread {
 
-	protected final Logger log = Bukkit.getLogger();
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private volatile boolean run = true;
-	private boolean command = false;
+
 	
 	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,
 			AutoSaveConfigMSG configmsg) {
@@ -46,21 +42,18 @@ public class AutoPurgeThread extends Thread {
 		this.run = false;
 	}
 
-	private int i;
-
 	public void startpurge() {
 		command = true;
 		i = config.purgeInterval;
 	}
 
-	
-	// The code to run...weee
+		// The code to run...weee
+	private int i;
+	private volatile boolean run = true;
+	private boolean command = false;
 	public void run() {
 
-		log.info(String.format("[%s] AutoPurgeThread Started: Interval is %d seconds",
-						plugin.getDescription().getName(), config.purgeInterval
-					)
-				);
+		plugin.debug("[AutoSaveWorld] AutoPurgeThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoPurgeThread");
 
 		
@@ -76,7 +69,8 @@ public class AutoPurgeThread extends Thread {
 
 			// Do our Sleep stuff!
 			for (i = 0; i < config.purgeInterval; i++) {
-				try {Thread.sleep(1000);} catch (InterruptedException e) {log.info("Could not sleep!");}
+				if (!run) {return;}
+				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
 			if (config.purgeEnabled || command) {performPurge();}
@@ -84,7 +78,7 @@ public class AutoPurgeThread extends Thread {
 		}
 		
 		//message before disabling thread
-		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoPurgeThread");}
+		plugin.debug("[AutoSaveWorld] Graceful quit of AutoPurgeThread");
 		
 	}
 
