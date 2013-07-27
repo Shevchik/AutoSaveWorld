@@ -41,22 +41,6 @@ public class AutoConsoleCommandThread extends Thread {
 		this.config = config;
 	}
 	
-
-	private void executeCommands(final List<String> commands)
-	{
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-		{
-			public void run()
-			{
-				ConsoleCommandSender csender = Bukkit.getConsoleSender();
-				for (String command : commands)
-				{
-					Bukkit.dispatchCommand(csender, command);
-				}
-			}
-		});
-	}
-	
 	public void stopThread()
 	{
 		this.run = false;
@@ -64,23 +48,19 @@ public class AutoConsoleCommandThread extends Thread {
 	
 	public void run() {
 
-		log.info(String.format("[%s] AutoConsoleCommandThread Started",
-						plugin.getDescription().getName()
-					)
-				);
+		plugin.debug("[AutoSaveWorld] AutoConsoleCommandThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
-
 		
 		while (run) {
 			
 			//handle times mode
 			if (config.cctimeenabled) {
-				checktimeslock();
+				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 				String ctime = getCurTime();
-				if (!timesexecuted && config.cctimetimes.contains(ctime))
+				if (cminute != minute && config.cctimetimes.contains(ctime))
 				{
 					plugin.debug("Executing console commands (timesmode)");
-					enabletimeslock();
+					minute = cminute;
 					executeCommands(config.cctimescommands.get(ctime));
 				}
 			}
@@ -101,36 +81,36 @@ public class AutoConsoleCommandThread extends Thread {
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 		
-		//message before disabling thread
-		if (config.varDebug) {
-			log.info("[AutoSaveWorld] Graceful quit of AutoConsoleCommandThread");
-		}
+		plugin.debug("[AutoSaveWorld] Graceful quit of AutoConsoleCommandThread");
+
 	}
 	
-	
-	//timesmode checks
-	private int minute = 0;
-	private boolean timesexecuted = false;
-	private void checktimeslock()
+
+	private void executeCommands(final List<String> commands)
 	{
-		if (Integer.valueOf(msdf.format(System.currentTimeMillis())) != minute)
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
-			timesexecuted = false;
-		}
-	}
-	private void enabletimeslock()
-	{
-		minute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
-		timesexecuted = true;
+			public void run()
+			{
+				ConsoleCommandSender csender = Bukkit.getConsoleSender();
+				for (String command : commands)
+				{
+					Bukkit.dispatchCommand(csender, command);
+				}
+			}
+		});
 	}
 	
+	
+	//timesmode checks (to executed command only once per minute)
+	private int minute = -1;
 	private String getCurTime()
 	{
 		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;
 	}
 	
-	//intervalmode checks
+	//intervalmode checks (to know when we last executed interval command)
 	private long lastintervalexecute = System.currentTimeMillis()/1000;
 	
 	
