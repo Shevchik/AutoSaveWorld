@@ -76,7 +76,6 @@ public class AutoSaveThread extends Thread {
 			}
 		}
 		
-		//finished
 		plugin.debug("[AutoSaveWorld] Graceful quit of AutoSaveThread");
 
 	}
