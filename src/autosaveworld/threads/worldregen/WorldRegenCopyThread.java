@@ -40,13 +40,6 @@ public class WorldRegenCopyThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private boolean run = true;
-	
-	private boolean doregen = false;
-	
-	private String worldtoregen = "";
-	private int taskid;
-	
 	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg)
 	{
 		this.plugin = plugin;
@@ -65,11 +58,15 @@ public class WorldRegenCopyThread extends Thread {
 		this.worldtoregen = worldname;
 	}
 		
+	
+	private String worldtoregen = "";
+	private int taskid;
+	private boolean run = true;
+	private boolean doregen = false;
 	public void run()
 	{
-		log.info("[AutoSaveWorld] WorldRegenThread Started");
-		
-		Thread.currentThread().setName("AutoSaveWorld WorldRegenThread");
+		plugin.debug("WorldRegenThread Started");
+		Thread.currentThread().setName("AutoSaveWorld WorldRegenCopyThread");
 		
 		while (run)
 		{
@@ -89,12 +86,21 @@ public class WorldRegenCopyThread extends Thread {
 			}
 		}
 		
-		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of WorldRegenThread");}
+		plugin.debug("Graceful quit of WorldRegenThread");
 	}
 	
 	
 	private void doWorldRegen() throws Exception
 	{
+		if (plugin.backupInProgress) {
+			plugin.warn("AutoBackup is in process. WorldRegen cancelled.");
+			return;
+		}
+		if (plugin.purgeInProgress) {
+			plugin.warn("AutoPurge is in process. WorldRegen cancelled.");
+			return;
+		}
+		
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
 		
 		FileConfiguration cfg = new YamlConfiguration();
@@ -110,7 +116,7 @@ public class WorldRegenCopyThread extends Thread {
 			{
 				for (Player p : Bukkit.getOnlinePlayers())
 				{
-					p.kickPlayer("[AutoSaveWorld] server is regenerating map, please come back later");
+					p.kickPlayer(configmsg.messageWorldRegenKick);
 				}
 			}
 		});
@@ -140,6 +146,7 @@ public class WorldRegenCopyThread extends Thread {
 		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath());
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		plugin.autorestartThread.startrestart();
+		
 	}
 	
 	

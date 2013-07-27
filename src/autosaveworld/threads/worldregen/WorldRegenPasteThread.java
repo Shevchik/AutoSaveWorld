@@ -24,7 +24,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import autosaveworld.config.AutoSaveConfig;
-import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
@@ -33,21 +32,17 @@ public class WorldRegenPasteThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
-	@SuppressWarnings("unused")
-	private AutoSaveConfigMSG configmsg;
-
-	private String worldtopasteto;
-
-	public long loaded = 0;
-	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveConfig config,
-			AutoSaveConfigMSG configmsg) {
+	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
 		this.config = config;
-		this.configmsg = configmsg;
 	};
 
+	public long loaded = 0;
+	private String worldtopasteto;
 	public void run() {
 		try {
+			
+			Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");	
 			
 			//create task that will tell us that server is loaded
 			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
@@ -68,6 +63,7 @@ public class WorldRegenPasteThread extends Thread {
 			//cancel no longer needed task
 			Bukkit.getScheduler().cancelTask(ltask);
 			
+			plugin.debug("restoring buildings");
 			
 			// paste WG buildings
 			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
@@ -77,6 +73,8 @@ public class WorldRegenPasteThread extends Thread {
 			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
 				new FactionsPaste(plugin, worldtopasteto).pasteAllFromSchematics();
 			}
+			
+			plugin.debug("restore finished");
 
 			// restart
 			plugin.worldregenfinished = true;

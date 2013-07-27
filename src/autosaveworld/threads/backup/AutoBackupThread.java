@@ -26,11 +26,6 @@ public class AutoBackupThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-
-
-
-	
-	// Constructor to define number of seconds to sleep
 	public AutoBackupThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
@@ -38,8 +33,6 @@ public class AutoBackupThread extends Thread {
 	}
 	
 
-    
-	// Allows for the thread to naturally exit if value is false
 	public void stopThread() {
 		this.run = false;
 	}
@@ -57,7 +50,7 @@ public class AutoBackupThread extends Thread {
     private boolean command = false;
 	public void run() {
 
-		plugin.debug("[AutoSaveWorld] AutoBackupThread Started");
+		plugin.debug("AutoBackupThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
 		
 		while (run) {
@@ -78,75 +71,60 @@ public class AutoBackupThread extends Thread {
 			
 		}
 		
-		plugin.debug("[AutoSaveWorld] Graceful quit of AutoBackupThread");
+		plugin.debug("Graceful quit of AutoBackupThread");
 
 	}
-	
 
-    public long datesec;
+	public long datesec;
 	private void performBackup()
 	{
 		if (plugin.backupInProgress) {
 			plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
 			return;
-		} else if (plugin.purgeInProgress) {
+		}
+		if (plugin.purgeInProgress) {
 			plugin.warn("AutoPurge is in progress. Backup cancelled.");
 			return;
-		} else if (plugin.saveInProgress) {
+		}
+		if (plugin.saveInProgress) {
 			plugin.warn("AutoSave is in progress. Backup cancelled.");	
 			return;
-		} else if (plugin.worldregenInProcess)
-		{
+		}
+		if (plugin.worldregenInProcess) {
 			plugin.warn("WorldRegen is in progress. Backup cancelled.");
 			return;
-		} else {
+		}
 		
-		try {
-		// Lock
-		plugin.saveInProgress = true;
-		plugin.backupInProgress = true;
-		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
-		
-		datesec = System.currentTimeMillis();
-		
-		if (config.flatbackupenabled)
+		try 
 		{
-			new FlatBackup(plugin, config).performBackup();
-		}
+			// Lock
+			plugin.saveInProgress = true;
+			plugin.backupInProgress = true;
+			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
 		
+			datesec = System.currentTimeMillis();
 		
-		plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");
-		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPost);}
-		plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance().getTime());
-		// Release
-		} finally {
-		command = false;
-		plugin.saveInProgress = false;
-		plugin.backupInProgress = false;
-		}
+			if (config.flatbackupenabled)
+			{
+				new FlatBackup(plugin, config).performBackup();
+			}
+		
+			plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");
+			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPost);}
+			plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance().getTime());
+
+		} 
+		finally 
+		{
+			// Release
+			command = false;
+			plugin.saveInProgress = false;
+			plugin.backupInProgress = false;
 		}
 	}
 	
-	
-
-	
-    
-	
-
-
-	
-	
-
-
-	
-
-
-
-	
-
-
-	
-	
 }
+	
+
 
 

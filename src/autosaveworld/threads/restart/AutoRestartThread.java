@@ -18,24 +18,16 @@
 package autosaveworld.threads.restart;
 
 import java.text.SimpleDateFormat;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 
 
 public class AutoRestartThread  extends Thread{
+	
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
 	AutoSaveConfigMSG configmsg;
-	private volatile boolean run = true;
-	protected final Logger log = Bukkit.getLogger();
-	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
-	
 	public AutoRestartThread(AutoSaveWorld plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
 	{
 		this.plugin = plugin;
@@ -48,17 +40,17 @@ public class AutoRestartThread  extends Thread{
 		this.run = false;
 	}
 	
-	private boolean command = false;
 	public void startrestart()
 	{
 		this.command = true;
 	}
 	
 
-	
+	private volatile boolean run = true;
+	private boolean command = false;
 	public void run()
 	{	
-		log.info("[AutoSaveWorld] AutoRestartThread started");
+		plugin.debug("AutoRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld AutoRestartThread");
 		
 		//check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
@@ -66,12 +58,12 @@ public class AutoRestartThread  extends Thread{
 		
 		while (run)
 		{
-		//i know that this can be done using a java.util.timer, but i need a way to reload timer time
 			 if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command)
 			 {
 				run = false;
 				
-				if (config.autorestartcountdown) {
+				if (config.autorestartcountdown)
+				{
 					for (int i = config.autorestartseconds; i>0; i--)
 					{
 						plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)));
@@ -79,27 +71,30 @@ public class AutoRestartThread  extends Thread{
 					} 
 				}
 				
-				if (config.autorestartBroadcast) {
+				if (config.autorestartBroadcast) 
+				{
 					plugin.broadcast(configmsg.messageAutoRestart);
 				}
 				
 				plugin.debug("[AutoSaveWorld] AutoRestarting server");
 				
-				if (!config.astop) {
+				if (!config.astop) 
+				{
 					plugin.JVMsh.setPath(config.autorestartscriptpath);
 					Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 				}
 				
 				plugin.getServer().shutdown();
-			}
-		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+				
+			 }
+			 try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 		
-		if (config.varDebug) {log.info("[AutoSaveWorld] Graceful quit of AutoRestartThread");}
+		plugin.debug("Graceful quit of AutoRestartThread");
+		
 	}
 	
-	
-	
+	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 	private String getCurTime()
 	{
 		String curtime = sdf.format(System.currentTimeMillis());

@@ -109,7 +109,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			worldregenInProcess = true;
 			ajl = new AntiJoinListener(this,configmsg);
 			getServer().getPluginManager().registerEvents(ajl, this);
-			wrp = new WorldRegenPasteThread(this,config,configmsg);
+			wrp = new WorldRegenPasteThread(this,config);
 			wrp.start();
 		}
 		// Notify on logger load

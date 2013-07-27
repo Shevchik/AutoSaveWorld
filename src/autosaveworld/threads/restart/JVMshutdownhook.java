@@ -41,14 +41,17 @@ public class JVMshutdownhook extends Thread {
 	try {
 		File restartscript = new File(crashrestartscriptpath);
 		String OS = System.getProperty("os.name").toLowerCase();
-		if (restartscript.exists()) {
+		if (restartscript.exists()) 
+		{
 			System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
 			if (OS.contains("win")) {
 				Runtime.getRuntime().exec("cmd /c start " + restartscript.getPath());
 			} else {
 				Runtime.getRuntime().exec(restartscript.getPath());
 			}
-		} else {
+		} 
+		else 
+		{
 			System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
 			//requred info for start script
 			String jarfilename = Bukkit.class.getResource("").getFile();
@@ -66,7 +69,7 @@ public class JVMshutdownhook extends Thread {
 			pb.command(execsequence);
 			pb.start();
 
-			}
+		}
 	} catch (Exception e)
 	{
 		System.out.println("[AutoSaveWorld] Restart failed");
@@ -86,7 +89,6 @@ public class JVMshutdownhook extends Thread {
 			} catch (Exception e){
 				e.printStackTrace();
 			}
-			
 		}
 		restart();
 	}

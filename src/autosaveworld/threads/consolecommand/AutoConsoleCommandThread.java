@@ -19,8 +19,6 @@ package autosaveworld.threads.consolecommand;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
@@ -31,11 +29,6 @@ public class AutoConsoleCommandThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
-	private volatile boolean run = true;
-	protected final Logger log = Bukkit.getLogger();
-	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-	SimpleDateFormat msdf = new SimpleDateFormat("mm");
-
 	public AutoConsoleCommandThread(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
 		this.config = config;
@@ -46,9 +39,13 @@ public class AutoConsoleCommandThread extends Thread {
 		this.run = false;
 	}
 	
+	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	SimpleDateFormat msdf = new SimpleDateFormat("mm");
+	
+	private volatile boolean run = true;
 	public void run() {
 
-		plugin.debug("[AutoSaveWorld] AutoConsoleCommandThread Started");
+		plugin.debug("AutoConsoleCommandThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 		
 		while (run) {
@@ -81,7 +78,7 @@ public class AutoConsoleCommandThread extends Thread {
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 		
-		plugin.debug("[AutoSaveWorld] Graceful quit of AutoConsoleCommandThread");
+		plugin.debug("Graceful quit of AutoConsoleCommandThread");
 
 	}
 	

@@ -17,10 +17,6 @@
 
 package autosaveworld.threads.restart;
 
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
 
@@ -28,10 +24,6 @@ public class CrashRestartThread extends Thread{
 
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
-	private boolean run = true;
-	protected final Logger log = Bukkit.getLogger();
-	private long syncticktime = 0;
-	
 	public CrashRestartThread(AutoSaveWorld plugin,AutoSaveConfig config)
 	{
 		this.plugin = plugin;
@@ -43,10 +35,11 @@ public class CrashRestartThread extends Thread{
 		this.run = false;
 	}
 	
-	
+	private long syncticktime = 0;
+	private boolean run = true;
 	public void run()
 	{
-		log.info("[AutoSaveWorld] CrashRestartThread started");
+		plugin.debug("CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 		
 		//schedule sync task in, this will provide us info about when the last server tick occured
@@ -59,15 +52,17 @@ public class CrashRestartThread extends Thread{
 		while (run)
 		{
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) {
+			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) 
+			{
 				run = false;
 
-				
-				if (config.crashrestartenabled) {
-					log.info("[AutoSaveWorld] Server has stopped responding. Probably this is a crash.");
-					log.info("[AutoSaveWorld] Restarting Server");
+				if (config.crashrestartenabled) 
+				{
+					plugin.debug("[AutoSaveWorld] Server has stopped responding. Probably this is a crash.");
+					plugin.debug("[AutoSaveWorld] Restarting Server");
 					
-					if (!config.crstop) {
+					if (!config.crstop) 
+					{
 						plugin.JVMsh.setPath(config.crashrestartscriptpath);
 						Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 					}
@@ -81,10 +76,9 @@ public class CrashRestartThread extends Thread{
 			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		
-		if (config.varDebug) {
-			log.info(String.format("[%s] Graceful quit of CrashRestartThread", plugin.getDescription().getName()));
-		}
+		plugin.debug("Graceful quit of CrashRestartThread");
 		
 	}
+	
 }
 

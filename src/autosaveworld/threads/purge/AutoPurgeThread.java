@@ -28,8 +28,6 @@ public class AutoPurgeThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-
-	
 	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,
 			AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
@@ -37,7 +35,7 @@ public class AutoPurgeThread extends Thread {
 		this.configmsg = configmsg;
 	}
 
-	// Allows for the thread to naturally exit if value is false
+
 	public void stopThread() {
 		this.run = false;
 	}
@@ -47,13 +45,13 @@ public class AutoPurgeThread extends Thread {
 		i = config.purgeInterval;
 	}
 
-		// The code to run...weee
+	// The code to run...weee
 	private int i;
 	private volatile boolean run = true;
 	private boolean command = false;
 	public void run() {
 
-		plugin.debug("[AutoSaveWorld] AutoPurgeThread Started");
+		plugin.debug("AutoPurgeThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoPurgeThread");
 
 		
@@ -78,7 +76,7 @@ public class AutoPurgeThread extends Thread {
 		}
 		
 		//message before disabling thread
-		plugin.debug("[AutoSaveWorld] Graceful quit of AutoPurgeThread");
+		plugin.debug("Graceful quit of AutoPurgeThread");
 		
 	}
 
@@ -94,6 +92,9 @@ public class AutoPurgeThread extends Thread {
 		if (plugin.backupInProgress) {
 			plugin.warn("AutoBackup is in progress. Purge cancelled.");
 			return;
+		}
+		if (plugin.worldregenInProcess) {
+			plugin.warn("WorldRegen is in progress. Purge cancelled.");
 		}
 			
 			command = false;

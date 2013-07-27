@@ -35,7 +35,7 @@ public class AutoSaveThread extends Thread {
 		this.configmsg = configmsg;
 	}
 
-	// Allows for the thread to naturally exit if value is false
+
 	public void stopThread() {
 		this.run = false;
 	}
@@ -52,7 +52,7 @@ public class AutoSaveThread extends Thread {
 	public boolean command = false;
 	public void run() {
 
-		plugin.debug("[AutoSaveWorld] AutoSaveThread Started");
+		plugin.debug("AutoSaveThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
 		
 		while (run) {
@@ -76,7 +76,7 @@ public class AutoSaveThread extends Thread {
 			}
 		}
 		
-		plugin.debug("[AutoSaveWorld] Graceful quit of AutoSaveThread");
+		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
 	
