@@ -17,7 +17,11 @@
 
 package autosaveworld.core;
 
+import java.awt.Image;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -67,39 +71,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public String LastSave = "No save was since the server start";
 	public String LastBackup = "No backup was since the server start";
 
-	@Override
-	public void onDisable() {
-		// Perform a Save NOW!
-		saveThread.command = true;
-		saveThread.performSave();
-		// Stop threads
-		debug("Stopping Threads");
-		stopThread(ThreadType.SAVE);
-		stopThread(ThreadType.BACKUP);
-		stopThread(ThreadType.PURGE);
-		stopThread(ThreadType.CRASHRESTART);
-		stopThread(ThreadType.AUTORESTART);
-		JVMsh = null;
-		stopThread(ThreadType.CONSOLECOMMAND);
-		stopThread(ThreadType.WORLDREGEN);
-		configmsg = null;
-		config = null; 
-		localeloader = null;
-		eh = null;
-		HandlerList.unregisterAll(this);
-		//Check if we just finished WorldRegen, if so - clean garbage
-		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
-		if (check.exists() && worldregenfinished) {
-			PlayerJoinEvent.getHandlerList().unregister(ajl);
-			wrp = null;
-			check.delete();
-			new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml").delete();
-			new File("plugins/AutoSaveWorld/WorldRegenTemp/").delete();
-		}
-		log.info(String.format("[%s] Version %s is disabled", getDescription()
-				.getName(), getDescription().getVersion()));
-	}
-
+	
 	@Override
 	public void onEnable() {
 		// Load Configuration
@@ -147,10 +119,41 @@ public class AutoSaveWorld extends JavaPlugin {
 					)
 				);
 	}
+	
+	@Override
+	public void onDisable() {
+		// Perform a Save NOW!
+		saveThread.command = true;
+		saveThread.performSave();
+		// Stop threads
+		debug("Stopping Threads");
+		stopThread(ThreadType.SAVE);
+		stopThread(ThreadType.BACKUP);
+		stopThread(ThreadType.PURGE);
+		stopThread(ThreadType.CRASHRESTART);
+		stopThread(ThreadType.AUTORESTART);
+		JVMsh = null;
+		stopThread(ThreadType.CONSOLECOMMAND);
+		stopThread(ThreadType.WORLDREGEN);
+		configmsg = null;
+		config = null; 
+		localeloader = null;
+		eh = null;
+		HandlerList.unregisterAll(this);
+		//Check if we just finished WorldRegen, if so - clean garbage
+		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
+		if (check.exists() && worldregenfinished) {
+			PlayerJoinEvent.getHandlerList().unregister(ajl);
+			wrp = null;
+			check.delete();
+			new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml").delete();
+			new File("plugins/AutoSaveWorld/WorldRegenTemp/").delete();
+		}
+		log.info(String.format("[%s] Version %s is disabled", getDescription()
+				.getName(), getDescription().getVersion()));
+	}	
+	
 
-	
-	
-	
 	protected boolean startThread(ThreadType type) {
 		switch (type) {
 		case SAVE:
