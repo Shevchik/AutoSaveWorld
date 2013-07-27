@@ -40,20 +40,22 @@ public class AutoSaveConfig {
 	public boolean saveEnabled = true;
 	public boolean savewarn = false;
 	//backup
-	public List<String> backupWorlds = null;
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
-	public int MaxNumberOfWorldsBackups = 30;
-	public int MaxNumberOfPluginsBackups = 30;
-	public boolean backupBroadcast = true;
-	public List<String> extfolders;
-	public List<String> excludefolders;
-	public boolean backuptoextfolders = false;
-	public boolean donotbackuptointfld = true;
-	public boolean backuppluginsfolder = false;
-	public boolean backupwarn = false;
 	public List<Integer> backupWarnTimes = null;
-	public boolean backupzip = false;
+	public boolean backupwarn = false;
+		//flat backup
+		public boolean flatbackupenabled = true;
+		public List<String> backupWorlds = null;
+		public int MaxNumberOfWorldsBackups = 30;
+		public int MaxNumberOfPluginsBackups = 30;
+		public boolean backupBroadcast = true;
+		public List<String> extfolders;
+		public List<String> excludefolders;
+		public boolean backuptoextfolders = false;
+		public boolean donotbackuptointfld = true;
+		public boolean backuppluginsfolder = false;
+		public boolean backupzip = false;
 	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
@@ -106,8 +108,6 @@ public class AutoSaveConfig {
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
 		
-		
-		
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
 		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
@@ -116,32 +116,32 @@ public class AutoSaveConfig {
 		saveWarnTimes = config.getIntegerList("save.warntime");
 		if (saveWarnTimes.size() == 0) {
 			saveWarnTimes.add(0);
-			config.set("var.warntime", saveWarnTimes);
 		}
 
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
 		backupInterval = config.getInt("backup.interval", backupInterval);
-		MaxNumberOfWorldsBackups = config.getInt("backup.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
-		MaxNumberOfPluginsBackups = config.getInt("backup.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
-		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
-		backuptoextfolders = config.getBoolean("backup.toextfolders", backuptoextfolders);
-		extfolders = config.getStringList("backup.extfolders");
-		donotbackuptointfld = config.getBoolean("backup.disableintfolder", donotbackuptointfld);
-		backuppluginsfolder = config.getBoolean("backup.pluginsfolder", backuppluginsfolder);
-		excludefolders = config.getStringList("backup.excludefolders");
-		backupzip = config.getBoolean("backup.zip", backupzip);
-		backupWorlds = config.getStringList("backup.worlds");
 		backupwarn = config.getBoolean("backup.warn", backupwarn);
-		if (backupWorlds.size() == 0) {
-			backupWorlds.add("*");
-			config.set("var.worlds", backupWorlds);
-		}
 		backupWarnTimes = config.getIntegerList("backup.warntime");
 		if (backupWarnTimes.size() == 0) {
 			backupWarnTimes.add(0);
-			config.set("backup.warntime", backupWarnTimes);
 		}
+			//flat
+			flatbackupenabled = config.getBoolean("backup.flat.enabled",flatbackupenabled);	
+			MaxNumberOfWorldsBackups = config.getInt("backup.flat.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
+			MaxNumberOfPluginsBackups = config.getInt("backup.flat.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
+			backupBroadcast = config.getBoolean("backup.flat.broadcast", backupBroadcast);
+			backuptoextfolders = config.getBoolean("backup.flat.toextfolders", backuptoextfolders);
+			extfolders = config.getStringList("backup.flat.extfolders");
+			donotbackuptointfld = config.getBoolean("backup.flat.disableintfolder", donotbackuptointfld);
+			backuppluginsfolder = config.getBoolean("backup.flat.pluginsfolder", backuppluginsfolder);
+			excludefolders = config.getStringList("backup.flat.excludefolders");
+			backupzip = config.getBoolean("backup.flat.zip", backupzip);
+			backupWorlds = config.getStringList("backup.flat.worlds");
+			if (backupWorlds.size() == 0) {
+				backupWorlds.add("*");
+			}
+
 		
 		//purge variables
 		purgeInterval = config.getInt("purge.interval", purgeInterval);
@@ -218,18 +218,21 @@ public class AutoSaveConfig {
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
-		config.set("backup.worlds", backupWorlds);
-		config.set("backup.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
-		config.set("backup.pluginsfolder", backuppluginsfolder);
-		config.set("backup.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
-		config.set("backup.excludefolders",excludefolders);
-		config.set("backup.broadcast", backupBroadcast);
-		config.set("backup.toextfolders", backuptoextfolders);
-		config.set("backup.disableintfolder", donotbackuptointfld);
-		config.set("backup.extfolders",extfolders);
-		config.set("backup.zip",backupzip);
 		config.set("backup.warn", backupwarn);
 		config.set("backup.warntime", backupWarnTimes);
+			//flat
+			config.set("backup.flat.enabled",flatbackupenabled);	
+			config.set("backup.flat.worlds", backupWorlds);
+			config.set("backup.flat.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
+			config.set("backup.flat.pluginsfolder", backuppluginsfolder);
+			config.set("backup.flat.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
+			config.set("backup.flat.excludefolders",excludefolders);
+			config.set("backup.flat.broadcast", backupBroadcast);
+			config.set("backup.flat.toextfolders", backuptoextfolders);
+			config.set("backup.flat.disableintfolder", donotbackuptointfld);
+			config.set("backup.flat.extfolders",extfolders);
+			config.set("backup.flat.zip",backupzip);
+
 		
 		//purge variables
 		config.set("purge.enabled", purgeEnabled);
