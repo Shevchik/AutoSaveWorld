@@ -84,10 +84,8 @@ public class LocaleLoader {
 			configmsg.messageBroadcastPre = "&9AutoSaving";
 			configmsg.messageBroadcastPost = "&9AutoSave Complete";
 			configmsg.messageInsufficientPermissions = "&cYou do not have access to that command.";
-			configmsg.messageWarning = "&9Warning, AutoSave will commence soon.";
 			configmsg.messageBroadcastBackupPre = "&9AutoBackuping";
 			configmsg.messageBroadcastBackupPost = "&9AutoBackup Complete";
-			configmsg.messageBackupWarning = "&9Warning, AutoBackup will commence soon";
 			configmsg.messagePurgePre = "&9AutoPurging";
 			configmsg.messagePurgePost = "&9AutoPurge Complete";
 			configmsg.messageAutoRestart = "&9Server is restarting";

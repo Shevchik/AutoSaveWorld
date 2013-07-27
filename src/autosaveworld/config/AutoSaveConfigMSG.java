@@ -31,10 +31,8 @@ public class AutoSaveConfigMSG {
 	public String messageBroadcastPre = "&9AutoSaving";
 	public String messageBroadcastPost = "&9AutoSave Complete";
 	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
-	public String messageWarning = "&9Warning, AutoSave will commence soon.";
 	public String messageBroadcastBackupPre = "&9AutoBackuping";
 	public String messageBroadcastBackupPost = "&9AutoBackup Complete";
-	public String messageBackupWarning = "&9Warning, AutoBackup will commence soon";
 	public String messagePurgePre = "&9AutoPurging";
 	public String messagePurgePost = "&9AutoPurge Complete";
 	public String messageAutoRestart = "&9Server is restarting";
@@ -65,8 +63,6 @@ public class AutoSaveConfigMSG {
 		messageBroadcastBackupPost =configmsg.getString("broadcastbackup.post", messageBroadcastBackupPost);
 		messagePurgePre =configmsg.getString("broadcastpurge.pre", messagePurgePre);
 		messagePurgePost =configmsg.getString("broadcastpurge.post", messagePurgePost);
-		messageWarning =configmsg.getString("warning.save", messageWarning); 
-		messageBackupWarning =configmsg.getString("warning.backup", messageBackupWarning);
 		messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
 		messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
 		messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
@@ -82,12 +78,10 @@ public class AutoSaveConfigMSG {
 		configmsg.set("broadcastbackup.post", messageBroadcastBackupPost);
 		configmsg.set("broadcastpurge.pre", messagePurgePre);
 		configmsg.set("broadcastpurge.post", messagePurgePost);
-		configmsg.set("warning.save", messageWarning);
-		configmsg.set("warning.backup", messageBackupWarning);
-		configmsg.set("insufficentpermissions", messageInsufficientPermissions);
 		configmsg.set("autorestart.restarting",messageAutoRestart);
 		configmsg.set("autorestart.countdown",messageAutoRestartCountdown);
 		configmsg.set("worldregen.kickmessage", messageWorldRegenKick);
+		configmsg.set("insufficentpermissions", messageInsufficientPermissions);
 		try {
 			configmsg.save(new File("plugins/AutoSaveWorld/configmsg.yml"));
 		} catch (IOException e) {

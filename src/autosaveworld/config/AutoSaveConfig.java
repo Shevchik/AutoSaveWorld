@@ -40,8 +40,6 @@ public class AutoSaveConfig {
 	//backup
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
-	public List<Integer> backupWarnTimes = null;
-	public boolean backupwarn = false;
 		//flat backup
 		public boolean flatbackupenabled = true;
 		public List<String> backupWorlds = null;
@@ -114,11 +112,6 @@ public class AutoSaveConfig {
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
 		backupInterval = config.getInt("backup.interval", backupInterval);
-		backupwarn = config.getBoolean("backup.warn", backupwarn);
-		backupWarnTimes = config.getIntegerList("backup.warntime");
-		if (backupWarnTimes.size() == 0) {
-			backupWarnTimes.add(0);
-		}
 			//flat
 			flatbackupenabled = config.getBoolean("backup.flat.enabled",flatbackupenabled);	
 			MaxNumberOfWorldsBackups = config.getInt("backup.flat.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
@@ -208,8 +201,6 @@ public class AutoSaveConfig {
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
-		config.set("backup.warn", backupwarn);
-		config.set("backup.warntime", backupWarnTimes);
 			//flat
 			config.set("backup.flat.enabled",flatbackupenabled);	
 			config.set("backup.flat.worlds", backupWorlds);

@@ -17,25 +17,17 @@
 
 package autosaveworld.threads.backup;
 
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.Generic;
 
 public class AutoBackupThread extends Thread {
 
-	protected final Logger log = Bukkit.getLogger();
-	private volatile boolean run = true;
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-    private int i;
-    private boolean command = false;
-    public long datesec;
+
+
 
 	
 	// Constructor to define number of seconds to sleep
@@ -60,56 +52,38 @@ public class AutoBackupThread extends Thread {
     
 	
 	// The code to run...weee
+    private int i;
+	private volatile boolean run = true;
+    private boolean command = false;
 	public void run() {
 
-		log.info(String.format("[%s] AutoBackupThread Started: Interval is %d seconds",
-						plugin.getDescription().getName(), config.backupInterval
-					)
-				);
+		plugin.debug("[AutoSaveWorld] AutoBackupThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
 		
 		while (run) {
 			// Prevent AutoBackup from never sleeping
 			// If interval is 0, sleep for 10 seconds and skip backup
 			if(config.backupInterval == 0) {
-				try {
-					Thread.sleep(10000);
-				} catch(InterruptedException e) {}
+				try {Thread.sleep(10000);} catch(InterruptedException e) {}
 				continue;
 			}
 			
 			// Do our Sleep stuff!
 			for (i = 0; i < config.backupInterval; i++) {
-				try {
-										
-					boolean warn = config.backupwarn;
-					for (int w : config.backupWarnTimes) {
-						if (w != 0 && w + i == config.backupInterval) {
-							
-						} else {warn = false;}
-					}
-
-					if (warn) {
-						// Perform warning
-						if (config.backupEnabled) {
-							plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageBackupWarning));
-							log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageBackupWarning));
-						}
-					}
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					log.info("Could not sleep!");
-				}
+				if (!run) {return;}
+				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
-				if (config.backupEnabled||command) {performBackup();}
+			
+			if (config.backupEnabled||command) {performBackup();}
+			
 		}
 		
-		if (config.varDebug) {
-			log.info("[AutoSaveWorld] Graceful quit of AutoBackupThread");
-		}
+		plugin.debug("[AutoSaveWorld] Graceful quit of AutoBackupThread");
+
 	}
 	
-	
+
+    public long datesec;
 	private void performBackup()
 	{
 		if (plugin.backupInProgress) {
