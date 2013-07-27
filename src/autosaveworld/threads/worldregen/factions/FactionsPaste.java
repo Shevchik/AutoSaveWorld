@@ -79,6 +79,26 @@ public class FactionsPaste {
 					}
 				}
 		}
+		//delete Factions folder firectory
+		deleteDirectory(new File(schemfolder));
 	}
+	
+	
+	
+	private void deleteDirectory(File file)
+	  {
+	    if(!file.exists())
+	      return;
+	    if(file.isDirectory())
+	    {
+	      for(File f : file.listFiles())
+	        deleteDirectory(f);
+	      file.delete();
+	    }
+	    else
+	    {
+	      file.delete();
+	    }
+	  }
 	
 }
