@@ -17,27 +17,18 @@
 
 package autosaveworld.threads.save;
 
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.Generic;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 
 public class AutoSaveThread extends Thread {
 
-	protected final Logger log = Bukkit.getLogger();
-	private volatile boolean run = true;
+
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	public boolean command = false;
-	// Constructor to define number of seconds to sleep
 	public AutoSaveThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
@@ -48,66 +39,37 @@ public class AutoSaveThread extends Thread {
 	public void stopThread() {
 		this.run = false;
 	}
-	
-	
-	private int i;
+
 	public void startsave()
 	{
 		command = true;
 		i = config.saveInterval;
 	}
+	
 	// The code to run...weee
+	private int i;
+	private volatile boolean run = true;
+	public boolean command = false;
 	public void run() {
-		if (config == null) {
-			return;
-		}
 
-		log.info(String.format("[%s] AutoSaveThread Started: Interval is %d seconds",
-						plugin.getDescription().getName(), config.saveInterval
-					)
-				);
+		plugin.debug("[AutoSaveWorld] AutoSaveThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
+		
 		while (run) {
 			// Prevent AutoSave from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving
 			if(config.saveInterval == 0) {
-				try {
-					Thread.sleep(5000);
-				} catch(InterruptedException e) {
-					// care
-				}
+				try {Thread.sleep(5000);} catch(InterruptedException e) {}
 				continue;
 			}
 			
-			
-			// Do our Sleep stuff!
+			//sleep
 			for (i = 0; i < config.saveInterval; i++) {
-				try {
-					if (!run) {
-						if (config.varDebug) {
-
-						}
-						return;
-					}
-					boolean warn = config.savewarn;
-					for (int w : config.saveWarnTimes) {
-						if (w != 0 && w + i == config.saveInterval) {
-						} else {warn = false;}
-					}
-
-					if (warn) {
-						// Perform warning
-						if (config.saveEnabled) {
-							plugin.getServer().broadcastMessage(Generic.parseColor(configmsg.messageWarning));
-							log.info(String.format("[%s] %s", plugin.getDescription().getName(), configmsg.messageWarning));
-						}
-					}
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					log.info("Could not sleep!");
-				}
+				if (!run) {return;}
+				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
+			//save
 			if (config.saveEnabled||command) {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { 
 					public void run() {performSave();}});
@@ -115,26 +77,23 @@ public class AutoSaveThread extends Thread {
 		}
 		
 		//finished
-		if (config.varDebug) {
-			log.info("[AutoSaveWorld] Graceful quit of AutoSaveThread");
-		}
+		plugin.debug("[AutoSaveWorld] Graceful quit of AutoSaveThread");
+
 	}
+	
+	
+	
+	
 	private void savePlayers() {
-		// Save the players
 		plugin.debug("Saving players");
 		plugin.getServer().savePlayers();
 	}
 
-	private int saveWorlds() {
-		// Save our worlds
-		int i = 0;
-		List<World> worlds = plugin.getServer().getWorlds();
-		for (World world : worlds) {
+	private void saveWorlds() {
+		for (World world : plugin.getServer().getWorlds()) {
 			plugin.debug(String.format("Saving world: %s", world.getName()));
 			world.save();
-			i++;
 		}
-		return i;
 	}
 
 
@@ -145,17 +104,17 @@ public class AutoSaveThread extends Thread {
 		}
 		
 		try {
+			
 			if (plugin.getServer().getOnlinePlayers().length == 0 && !command) {
 					// No players online, don't bother saving.
 					plugin.debug("Skipping save, no players online.");
-						return;
+					return;
 			}
 
 			// Lock
 			plugin.saveInProgress = true;
 
 			try {
-				
 				
 				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPre);}
 
@@ -164,10 +123,8 @@ public class AutoSaveThread extends Thread {
 				plugin.debug("Saved Players");
 
 				// Save the worlds
-				int saved = 0;
-				saved += saveWorlds();
-
-				plugin.debug(String.format("Saved %d Worlds", saved));
+				saveWorlds();
+				plugin.debug("Saved Worlds");
 
 				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPost);}
 			} catch (Exception e) 
@@ -177,8 +134,9 @@ public class AutoSaveThread extends Thread {
 			}
 
 			plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-			// Release
+
 		} finally {
+			// Release
 			command = false;
 			plugin.saveInProgress = false;
 		}

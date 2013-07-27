@@ -35,10 +35,8 @@ public class AutoSaveConfig {
 	public boolean varDebug = false;
 	//save
 	public int saveInterval = 900;
-	public List<Integer> saveWarnTimes = null;
 	public boolean saveBroadcast = true;
 	public boolean saveEnabled = true;
-	public boolean savewarn = false;
 	//backup
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
@@ -112,11 +110,6 @@ public class AutoSaveConfig {
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
 		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
 		saveInterval = config.getInt("save.interval", saveInterval);
-		savewarn = config.getBoolean("save.warn", savewarn);
-		saveWarnTimes = config.getIntegerList("save.warntime");
-		if (saveWarnTimes.size() == 0) {
-			saveWarnTimes.add(0);
-		}
 
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
@@ -211,10 +204,7 @@ public class AutoSaveConfig {
 		config.set("save.enabled",saveEnabled);
 		config.set("save.interval", saveInterval);
 		config.set("save.broadcast", saveBroadcast);
-		config.set("save.warn", savewarn);
-		config.set("save.warntime", saveWarnTimes);
 
-		
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
