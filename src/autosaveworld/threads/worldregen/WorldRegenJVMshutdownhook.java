@@ -36,7 +36,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 		deleteDirectory(new File(fldtodelete+File.separator+"region"));
 		try {
 			//create file that indicates that AutoSaveWorld should paste regions from schematics back to map
-			new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste").createNewFile();
+			new File(WorldRegenConstants.getShouldpasteFile()).createNewFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -58,7 +58,7 @@ public class WorldRegenPasteThread extends Thread {
 				}
 			});
 			
-			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml"));
+			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(WorldRegenConstants.getWorldnameFile()));
 			worldtopasteto = cfg.getString("wname");
 
 			// wait until world is loaded

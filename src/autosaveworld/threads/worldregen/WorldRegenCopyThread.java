@@ -104,7 +104,7 @@ public class WorldRegenCopyThread extends Thread {
 		
 		FileConfiguration cfg = new YamlConfiguration();
 		cfg.set("wname", worldtoregen);
-		cfg.save(new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml"));
+		cfg.save(new File(WorldRegenConstants.getWorldnameFile()));
 		
 		//kick all player and deny them from join
 		AntiJoinListener jl = new AntiJoinListener(plugin,configmsg);

@@ -39,6 +39,7 @@ import autosaveworld.threads.restart.CrashRestartThread;
 import autosaveworld.threads.restart.JVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
 import autosaveworld.threads.worldregen.AntiJoinListener;
+import autosaveworld.threads.worldregen.WorldRegenConstants;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
@@ -101,8 +102,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.CONSOLECOMMAND);
 		// Start WorldRegenThread
 		startThread(ThreadType.WORLDREGEN);
-		//Check if we are in WOrldRegen stage 3, if so - do our job
-		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
+		//Check if we are in WorldRegen stage 3, if so - do our job
+		File check = new File(WorldRegenConstants.getShouldpasteFile());
 		if (check.exists()) {
 			ajl = new AntiJoinListener(this,configmsg);
 			getServer().getPluginManager().registerEvents(ajl, this);
@@ -138,13 +139,13 @@ public class AutoSaveWorld extends JavaPlugin {
 		eh = null;
 		HandlerList.unregisterAll(this);
 		//Check if we just finished WorldRegen, if so - clean garbage
-		File check = new File("plugins/AutoSaveWorld/WorldRegenTemp/shouldpaste");
+		File check = new File(WorldRegenConstants.getShouldpasteFile());
 		if (check.exists() && worldregenfinished) {
 			PlayerJoinEvent.getHandlerList().unregister(ajl);
 			wrp = null;
 			check.delete();
-			new File("plugins/AutoSaveWorld/WorldRegenTemp/wname.yml").delete();
-			new File("plugins/AutoSaveWorld/WorldRegenTemp/").delete();
+			new File(WorldRegenConstants.getWorldnameFile()).delete();
+			new File(WorldRegenConstants.getTempFolder()).delete();
 		}
 		log.info(String.format("[%s] Version %s is disabled", getDescription()
 				.getName(), getDescription().getVersion()));

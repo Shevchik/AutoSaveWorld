@@ -31,6 +31,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 public class WorldGuardPaste {
 
@@ -52,7 +53,7 @@ public class WorldGuardPaste {
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		final RegionManager m = wg.getRegionManager(wtopaste);
 		final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-		final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/WG/";
+		final String schemfolder = WorldRegenConstants.getWGTempFolder();
 		// restore region from schematic
 		for (final ProtectedRegion rg : m.getRegions().values()) {
 			Runnable copypaste = new Runnable() {

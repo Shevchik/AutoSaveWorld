@@ -39,6 +39,7 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 public class FactionsCopy {
 
@@ -57,7 +58,7 @@ public class FactionsCopy {
 	{
 		plugin.debug("Saving factions homes to schematics");
 	    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-		final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/Factions/";
+		final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 		new File(schemfolder).mkdirs();
 		//save all factions buildings
 		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll())

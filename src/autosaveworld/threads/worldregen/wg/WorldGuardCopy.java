@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
@@ -53,7 +54,7 @@ public class WorldGuardCopy {
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		final RegionManager m = wg.getRegionManager(wtoregen);
 	    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-		final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/WG/";
+		final String schemfolder = WorldRegenConstants.getWGTempFolder();
 		new File(schemfolder).mkdirs();
 			//save region to schematic
 			for (final ProtectedRegion rg : m.getRegions().values()) {
