@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen.factions;
 
 import java.io.File;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -27,7 +28,9 @@ import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.schematic.SchematicFormat;
+
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 public class FactionsPaste {
 
@@ -46,14 +49,14 @@ public class FactionsPaste {
 	{
 		plugin.debug("Pasting factions lands from schematics");
 	    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-		final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/Factions/";
+		final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 		
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll())
 		{
 		    	Runnable copypaste = new Runnable() {
 					public void run(){
 						try {
-						plugin.debug("Restoring Faction land "+f.getName()+" to schematic");
+						plugin.debug("Restoring Faction land "+f.getName()+" from schematic");
 						//copy to clipboard
 						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
 						File file = new File(schemfolder+f.getName());
