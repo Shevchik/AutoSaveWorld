@@ -29,6 +29,8 @@ import org.bukkit.entity.Player;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.factions.FactionsCopy;
+import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
 
 public class WorldRegenCopyThread extends Thread {
 

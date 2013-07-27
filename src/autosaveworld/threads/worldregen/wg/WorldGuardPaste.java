@@ -15,7 +15,7 @@
  * 
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.threads.worldregen.wg;
 
 import java.io.File;
 

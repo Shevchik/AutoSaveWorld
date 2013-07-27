@@ -26,11 +26,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.factions.FactionsPaste;
+import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
 
 public class WorldRegenPasteThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
-	@SuppressWarnings("unused")
 	private AutoSaveConfig config;
 	@SuppressWarnings("unused")
 	private AutoSaveConfigMSG configmsg;
@@ -64,17 +65,17 @@ public class WorldRegenPasteThread extends Thread {
 			while (loaded == 0) {
 				Thread.sleep(1000);
 			}
-			//cancel no longet needed task
+			//cancel no longer needed task
 			Bukkit.getScheduler().cancelTask(ltask);
 			
 			
 			// paste WG buildings
-			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
+			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
 				new WorldGuardPaste(plugin, worldtopasteto).pasteAllFromSchematics();
 			}
 			
-			if (Bukkit.getPluginManager().getPlugin("Factions") != null) {
-				
+			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
+				new FactionsPaste(plugin, worldtopasteto).pasteAllFromSchematics();
 			}
 
 			// restart

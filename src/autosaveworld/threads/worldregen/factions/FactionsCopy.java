@@ -15,7 +15,7 @@
  * 
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.threads.worldregen.factions;
 
 import java.io.File;
 import java.util.ArrayList;
