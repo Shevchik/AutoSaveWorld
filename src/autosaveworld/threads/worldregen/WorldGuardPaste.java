@@ -53,15 +53,14 @@ public class WorldGuardPaste {
 		final RegionManager m = wg.getRegionManager(wtopaste);
 		final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
 		final String schemfolder = "plugins/AutoSaveWorld/WorldRegenTemp/WG/";
-		new File(schemfolder).mkdirs();
-		// restore region to schematic
+		// restore region from schematic
 		for (final ProtectedRegion rg : m.getRegions().values()) {
 			Runnable copypaste = new Runnable() {
 				public void run() {
 					try {
 						plugin.debug("Pasting region "+rg.getId()+" from schematics");
 						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
-						File f = new File("plugins/AutoSaveWorld/WorldRegenTemp/WG/"+rg.getId());
+						File f = new File(schemfolder+rg.getId());
 						CuboidClipboard cc = format.load(f);
 						cc.place(es, cc.getOrigin(), false);
 						plugin.debug("Pasted regions "+rg.getId()+" from schematics");
