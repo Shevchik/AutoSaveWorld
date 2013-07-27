@@ -176,17 +176,17 @@ import autosaveworld.core.AutoSaveWorld;
 		{
 			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null)
 			{
-				plugin.sendMessage(sender, "You need WorldEdit installed to do that");
+				plugin.sendMessage(sender, "[AutoSaveWorld] You need WorldEdit installed to do that");
 				return true;
 			}
 			if (Bukkit.getWorld(args[1]) == null)
 			{
-				plugin.sendMessage(sender, "This world doesn't exist");
+				plugin.sendMessage(sender, "[AutoSaveWorld] This world doesn't exist");
 				return true;
 			}
-			if (plugin.worldregenThread.isRegenerationInProcess())
+			if (plugin.worldregenInProcess)
 			{
-				plugin.sendMessage(sender, "Please wait before previous world regeneration is finished");
+				plugin.sendMessage(sender, "[AutoSaveWorld] Please wait before previous world regeneration is finished");
 				return true;
 			}
 			plugin.worldregenThread.startworldregen(args[1]);

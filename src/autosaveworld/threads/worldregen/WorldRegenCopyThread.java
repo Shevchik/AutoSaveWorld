@@ -60,16 +60,11 @@ public class WorldRegenCopyThread extends Thread {
 	}
 	
 	public void startworldregen(String worldname) {
+		plugin.worldregenInProcess = true;
 		doregen = true;
 		this.worldtoregen = worldname;
 	}
-	
-	public boolean isRegenerationInProcess()
-	{
-		return doregen;
-	}
-	
-	
+		
 	public void run()
 	{
 		log.info("[AutoSaveWorld] WorldRegenThread Started");

@@ -65,6 +65,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public volatile boolean saveInProgress = false;
 	public volatile boolean backupInProgress = false;
 	public volatile boolean purgeInProgress = false;
+	public volatile boolean worldregenInProcess = false;
 	public String LastSave = "No save was since the server start";
 	public String LastBackup = "No backup was since the server start";
 
@@ -105,6 +106,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		//Check if we are in WorldRegen stage 3, if so - do our job
 		File check = new File(WorldRegenConstants.getShouldpasteFile());
 		if (check.exists()) {
+			worldregenInProcess = true;
 			ajl = new AntiJoinListener(this,configmsg);
 			getServer().getPluginManager().registerEvents(ajl, this);
 			wrp = new WorldRegenPasteThread(this,config,configmsg);
