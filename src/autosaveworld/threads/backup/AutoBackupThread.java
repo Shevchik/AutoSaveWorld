@@ -20,6 +20,7 @@ package autosaveworld.threads.backup;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
@@ -132,6 +133,7 @@ public class AutoBackupThread extends Thread {
 		plugin.backupInProgress = true;
 		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
 		
+		datesec = System.currentTimeMillis();
 		
 		if (config.flatbackupenabled)
 		{

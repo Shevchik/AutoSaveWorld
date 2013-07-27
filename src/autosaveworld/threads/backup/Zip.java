@@ -24,16 +24,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import autosaveworld.config.AutoSaveConfig;
-
 public class Zip {
-	AutoSaveConfig config;
 
-	Zip(AutoSaveConfig config) {
-		this.config = config;
+	private List<String> excludefolders;
+
+	Zip(List<String> excludefolders) {
+		this.excludefolders = excludefolders;
 	}
 
 	private ZipOutputStream zipOutStream;
@@ -75,7 +75,7 @@ public class Zip {
 
 			if (srcFile.isDirectory()) {
 				boolean copy = true;
-				for (String efname : config.excludefolders) {
+				for (String efname : excludefolders) {
 					if ((new File(srcDir.getName() + File.separator
 							+ currentDir + child).getAbsoluteFile())
 							.equals(new File(efname).getAbsoluteFile())) {
