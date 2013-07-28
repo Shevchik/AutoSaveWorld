@@ -65,12 +65,12 @@ public class AutoSaveThread extends Thread {
 			
 			//sleep
 			for (i = 0; i < config.saveInterval; i++) {
-				if (!run) {return;}
+				if (!run) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
 			//save
-			if (config.saveEnabled||command) {
+			if (run&&(config.saveEnabled||command)) {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { 
 					public void run() {performSave();}});
 			}

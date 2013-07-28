@@ -63,11 +63,11 @@ public class AutoBackupThread extends Thread {
 			
 			// Do our Sleep stuff!
 			for (i = 0; i < config.backupInterval; i++) {
-				if (!run) {return;}
+				if (!run) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 			
-			if (config.backupEnabled||command) {performBackup();}
+			if (run&&(config.backupEnabled||command)) {performBackup();}
 			
 		}
 		

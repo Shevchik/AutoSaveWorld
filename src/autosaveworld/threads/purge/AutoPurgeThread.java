@@ -67,11 +67,11 @@ public class AutoPurgeThread extends Thread {
 
 			// Do our Sleep stuff!
 			for (i = 0; i < config.purgeInterval; i++) {
-				if (!run) {return;}
+				if (!run) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
-			if (config.purgeEnabled || command) {performPurge();}
+			if (run&&(config.purgeEnabled || command)) {performPurge();}
 
 		}
 		
