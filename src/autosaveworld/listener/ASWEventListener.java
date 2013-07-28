@@ -142,6 +142,7 @@ import autosaveworld.core.AutoSaveWorld;
 			plugin.sendMessage(sender,"&f/asw purge&7 - &3Purges plugins info from inactive players");
 			plugin.sendMessage(sender,"&f/purge&7 - &3Same as /asw purge");
 			plugin.sendMessage(sender,"&f/asw restart&7 - &3Restarts server");
+			plugin.sendMessage(sender,"&f/asw regenworld {world}&7 - &3Regenerates world");
 			plugin.sendMessage(sender,"&f/asw reload&7 - &3Reload all configs)");
 			plugin.sendMessage(sender,"&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 			plugin.sendMessage(sender,"&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
