@@ -63,6 +63,12 @@ public class WorldRegenPasteThread extends Thread {
 			//cancel no longer needed task
 			Bukkit.getScheduler().cancelTask(ltask);
 			
+			//check for worldedit
+			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
+				plugin.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server");
+				return;
+			}
+			
 			plugin.debug("restoring buildings");
 			
 			// paste WG buildings
@@ -70,6 +76,7 @@ public class WorldRegenPasteThread extends Thread {
 				new WorldGuardPaste(plugin, worldtopasteto).pasteAllFromSchematics();
 			}
 			
+			//paste Factions buildings
 			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
 				new FactionsPaste(plugin, worldtopasteto).pasteAllFromSchematics();
 			}
