@@ -91,7 +91,7 @@ public class AutoSaveConfig {
 	public List<String> ccintervalcommands = new ArrayList<String>();
 	//worldregen
 	public boolean worldregensavewg = true;
-	public boolean worldregensavefactions = true;
+	public boolean worldregensavefactions = false;
 	
 
 
