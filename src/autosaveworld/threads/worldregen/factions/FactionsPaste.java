@@ -22,6 +22,7 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColls;
 import com.sk89q.worldedit.CuboidClipboard;
@@ -53,6 +54,8 @@ public class FactionsPaste {
 		
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll())
 		{
+			if (BoardColls.get().getForWorld(wtopaste.getName()).getChunks(f).size() != 0)
+			{
 		    	Runnable copypaste = new Runnable() {
 					public void run(){
 						try {
@@ -78,6 +81,7 @@ public class FactionsPaste {
 						e.printStackTrace();
 					}
 				}
+			}
 		}
 		//delete Factions folder firectory
 		deleteDirectory(new File(schemfolder));
