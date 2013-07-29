@@ -67,7 +67,7 @@ public class FactionsCopy {
 		  	//check if faction has claimed land
 		   	if (chunks.size() != 0 && !f.getName().equals("WarZone") && !f.getName().equals("SafeZone"))
 		   	{
-		   		//now we will have to iterate over all chunks and find put the bounds
+		   		//now we will have to iterate over all chunks and find out the bounds
 		    	List<Integer> xcoords = new ArrayList<Integer>(); List<Integer> zcoords = new ArrayList<Integer>();
 		    	for (PS ps : chunks)
 		    	{

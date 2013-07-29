@@ -60,10 +60,11 @@ public class FactionsPaste {
 					public void run(){
 						try {
 						plugin.debug("Restoring Faction land "+f.getName()+" from schematic");
-						//copy to clipboard
+						//load from schematic to clipboard
 						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
 						File file = new File(schemfolder+f.getName());
 						CuboidClipboard cc = format.load(file);
+						//paste clipboard at origin
 						cc.place(es, cc.getOrigin(), false);
 						plugin.debug("Pasted faction land "+f.getName()+" from schematics");
 						} catch (Exception e)

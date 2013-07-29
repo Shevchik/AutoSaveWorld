@@ -60,9 +60,11 @@ public class WorldGuardPaste {
 				public void run() {
 					try {
 						plugin.debug("Pasting region "+rg.getId()+" from schematics");
+						//load from schematic to clipboard
 						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
 						File f = new File(schemfolder+rg.getId());
 						CuboidClipboard cc = format.load(f);
+						//paste clipboard at origin
 						cc.place(es, cc.getOrigin(), false);
 						plugin.debug("Pasted regions "+rg.getId()+" from schematics");
 					} catch (Exception e) {
