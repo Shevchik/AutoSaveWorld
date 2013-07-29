@@ -54,7 +54,7 @@ public class FactionsPaste {
 		
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll())
 		{
-			if (BoardColls.get().getForWorld(wtopaste.getName()).getChunks(f).size() != 0)
+			if (BoardColls.get().getForWorld(wtopaste.getName()).getChunks(f).size() != 0  && !f.getName().equals("WarZone") && !f.getName().equals("SafeZone"))
 			{
 		    	Runnable copypaste = new Runnable() {
 					public void run(){
