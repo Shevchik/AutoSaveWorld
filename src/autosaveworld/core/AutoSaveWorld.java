@@ -43,28 +43,39 @@ import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 public class AutoSaveWorld extends JavaPlugin {
+	
 	private static final Logger log = Bukkit.getLogger();
 
-	
+	//save
 	public AutoSaveThread saveThread = null;
+	//backup
 	public AutoBackupThread backupThread6 = null;
+	//purge
 	public AutoPurgeThread purgeThread = null;
+	//restart
 	public CrashRestartThread crashrestartThread = null;
 	public AutoRestartThread autorestartThread = null;
 	public JVMshutdownhook JVMsh = null;
+	//autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread = null;
+	//worldregen
 	public WorldRegenCopyThread worldregenThread = null;
 	public WorldRegenPasteThread wrp = null;
-	public boolean worldregenfinished = false;
+	public volatile boolean worldregenfinished = false;
+	//configs
 	public AutoSaveConfigMSG configmsg;
 	public AutoSaveConfig config;
 	public LocaleLoader localeloader;
+	//event listener
 	public EventsListener eh;
+	//command executor
 	public CommandsHandler ch;
+	//locks
 	public volatile boolean saveInProgress = false;
 	public volatile boolean backupInProgress = false;
 	public volatile boolean purgeInProgress = false;
 	public volatile boolean worldregenInProcess = false;
+	//info
 	public String LastSave = "No save was since the server start";
 	public String LastBackup = "No backup was since the server start";
 
