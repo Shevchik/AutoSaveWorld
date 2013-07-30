@@ -82,7 +82,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		debug(String.format("Enabling self", getDescription().getVersion()));
 		// Load Configuration
 		config = new AutoSaveConfig();
 		config.load();
@@ -122,8 +121,6 @@ public class AutoSaveWorld extends JavaPlugin {
 			wrp = new WorldRegenPasteThread(this,config, configmsg);
 			wrp.start();
 		}
-		// Notify on logger load
-		debug(String.format("Version %s is enabled", getDescription().getVersion()));
 	}
 	
 	
@@ -158,7 +155,6 @@ public class AutoSaveWorld extends JavaPlugin {
 			new File(WorldRegenConstants.getWorldnameFile()).delete();
 			new File(WorldRegenConstants.getTempFolder()).delete();
 		}
-		debug(String.format("Version %s is disabled", getDescription().getVersion()));
 	}	
 	
 	
