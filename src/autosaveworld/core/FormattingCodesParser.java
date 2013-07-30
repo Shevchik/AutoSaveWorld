@@ -19,10 +19,9 @@ package autosaveworld.core;
 
 import org.bukkit.ChatColor;
 
-public class Generic {
+public class FormattingCodesParser {
 
-	// Parse Colors
-	public static String parseColor(String message) {
+	public static String parseFormattingCodes(String message) {
 		message = message.replaceAll("&0", ChatColor.BLACK + "");
 		message = message.replaceAll("&1", ChatColor.DARK_BLUE + "");
 		message = message.replaceAll("&2", ChatColor.DARK_GREEN + "");
@@ -47,8 +46,7 @@ public class Generic {
 		return message;
 	}
 
-	// Parse Colors
-	public static String stripColor(String message) {
+	public static String stripFormattingCodes(String message) {
 		message = message.replaceAll("&0", "");
 		message = message.replaceAll("&1", "");
 		message = message.replaceAll("&2", "");

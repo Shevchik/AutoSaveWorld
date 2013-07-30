@@ -315,34 +315,31 @@ public class AutoSaveWorld extends JavaPlugin {
 	
 	public void sendMessage(CommandSender sender, String message) {
 		if (!message.equals("")) {
-			sender.sendMessage(Generic.parseColor(message));
+			sender.sendMessage(FormattingCodesParser.parseFormattingCodes(message));
 		}
 	}
 
 	public void broadcast(String message) {
 		if (!message.equals("")) {
-			getServer().broadcastMessage(Generic.parseColor(message));
-			log.info(String.format("[%s] %s", getDescription().getName(),
-					Generic.stripColor(message)));
+			getServer().broadcastMessage(FormattingCodesParser.parseFormattingCodes(message));
 		}
-
 	}
 	
 	public void kickPlayer(Player player, String message)
 	{
-		player.kickPlayer(Generic.parseColor(message));
+		player.kickPlayer(FormattingCodesParser.parseFormattingCodes(message));
 	}
 
 	public void debug(String message) {
 		if (config.varDebug) {
 			log.info(String.format("[%s] %s", getDescription().getName(),
-					Generic.stripColor(message)));
+					FormattingCodesParser.stripFormattingCodes(message)));
 		}
 	}
 
 	public void warn(String message) {
 		log.warning(String.format("[%s] %s", getDescription().getName(),
-				Generic.stripColor(message)));
+				FormattingCodesParser.stripFormattingCodes(message)));
 	}
 
 }
