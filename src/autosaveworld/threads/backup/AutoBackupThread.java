@@ -98,7 +98,6 @@ public class AutoBackupThread extends Thread {
 		try 
 		{
 			// Lock
-			plugin.saveInProgress = true;
 			plugin.backupInProgress = true;
 			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBroadcastBackupPre);}
 		
@@ -118,7 +117,6 @@ public class AutoBackupThread extends Thread {
 		{
 			// Release
 			command = false;
-			plugin.saveInProgress = false;
 			plugin.backupInProgress = false;
 		}
 	}

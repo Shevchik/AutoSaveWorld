@@ -100,6 +100,7 @@ public class AutoPurgeThread extends Thread {
 			command = false;
 			
 			plugin.purgeInProgress = true;
+			
 			if (config.purgeBroadcast) {
 				plugin.broadcast(configmsg.messagePurgePre);
 			}
