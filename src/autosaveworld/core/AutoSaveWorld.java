@@ -126,7 +126,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		debug(String.format("Disabling self", getDescription().getVersion()));
 		debug("Saving");
 		// Perform a Save NOW!
 		saveThread.command = true;
