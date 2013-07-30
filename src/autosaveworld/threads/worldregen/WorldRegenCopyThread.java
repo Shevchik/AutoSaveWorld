@@ -18,8 +18,6 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,9 +32,6 @@ import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
 
 public class WorldRegenCopyThread extends Thread {
 
-	protected final Logger log = Bukkit.getLogger();
-	
-	
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
@@ -108,8 +103,8 @@ public class WorldRegenCopyThread extends Thread {
 		cfg.save(new File(WorldRegenConstants.getWorldnameFile()));
 		
 		//kick all player and deny them from join
-		AntiJoinListener jl = new AntiJoinListener(plugin,configmsg);
-		Bukkit.getPluginManager().registerEvents(jl, plugin);
+		AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
+		Bukkit.getPluginManager().registerEvents(ajl, plugin);
 		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
 			public void run()

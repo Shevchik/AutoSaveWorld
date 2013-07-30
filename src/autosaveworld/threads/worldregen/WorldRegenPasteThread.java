@@ -22,8 +22,8 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
@@ -32,7 +32,8 @@ public class WorldRegenPasteThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
-	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveConfig config) {
+	private AutoSaveConfigMSG configmsg;
+	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 	};
@@ -43,6 +44,10 @@ public class WorldRegenPasteThread extends Thread {
 		try {
 			
 			Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");	
+			
+			//deny players from join
+			AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
+			Bukkit.getPluginManager().registerEvents(ajl, plugin);
 			
 			//create task that will tell us that server is loaded
 			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
