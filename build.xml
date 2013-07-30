@@ -9,6 +9,7 @@
         <javac source="1.6" target="1.6" encoding="UTF-8" srcdir="src" destdir="build/classes" classpathref="libs" debug="on" />
 		<copy todir="build/classes">
      		<fileset file="src/plugin.yml" />
+			<fileset file="src/LICENSE" />
 		</copy>
 		<mkdir dir="build/classes/autosaveworld/config/localefiles" />
 		<copy todir="build/classes/autosaveworld/config/localefiles">
