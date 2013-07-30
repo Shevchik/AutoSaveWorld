@@ -28,16 +28,16 @@ public class AutoSaveConfigMSG {
 		this.config = config;
 	}
 	// Messages
-	public String messageBroadcastPre = "&9AutoSaving";
-	public String messageBroadcastPost = "&9AutoSave Complete";
-	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
-	public String messageBroadcastBackupPre = "&9AutoBackuping";
-	public String messageBroadcastBackupPost = "&9AutoBackup Complete";
-	public String messagePurgePre = "&9AutoPurging";
-	public String messagePurgePost = "&9AutoPurge Complete";
+	public String messageSaveBroadcastPre = "&9AutoSaving";
+	public String messageSaveBroadcastPost = "&9AutoSave Complete";
+	public String messageBackupBroadcastPre = "&9AutoBackuping";
+	public String messageBackupBroadcastPost = "&9AutoBackup Complete";
+	public String messagePurgeBroadcastPre = "&9AutoPurging";
+	public String messagePurgeBroadcastPost = "&9AutoPurge Complete";
 	public String messageAutoRestart = "&9Server is restarting";
 	public String messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
 	public String messageWorldRegenKick = "&9Server is regenerating map, please come back later";
+	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
 	
 	public void loadmsg() {
 		if (!config.switchtolangfile) {
@@ -57,12 +57,12 @@ public class AutoSaveConfigMSG {
 	
 	private void loadMessages()
 	{
-		messageBroadcastPre =configmsg.getString("broadcast.pre", messageBroadcastPre);
-		messageBroadcastPost =configmsg.getString("broadcast.post", messageBroadcastPost);
-		messageBroadcastBackupPre =configmsg.getString("broadcastbackup.pre", messageBroadcastBackupPre);
-		messageBroadcastBackupPost =configmsg.getString("broadcastbackup.post", messageBroadcastBackupPost);
-		messagePurgePre =configmsg.getString("broadcastpurge.pre", messagePurgePre);
-		messagePurgePost =configmsg.getString("broadcastpurge.post", messagePurgePost);
+		messageSaveBroadcastPre =configmsg.getString("broadcast.pre", messageSaveBroadcastPre);
+		messageSaveBroadcastPost =configmsg.getString("broadcast.post", messageSaveBroadcastPost);
+		messageBackupBroadcastPre =configmsg.getString("broadcastbackup.pre", messageBackupBroadcastPre);
+		messageBackupBroadcastPost =configmsg.getString("broadcastbackup.post", messageBackupBroadcastPost);
+		messagePurgeBroadcastPre =configmsg.getString("broadcastpurge.pre", messagePurgeBroadcastPre);
+		messagePurgeBroadcastPost =configmsg.getString("broadcastpurge.post", messagePurgeBroadcastPost);
 		messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
 		messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
 		messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
@@ -72,12 +72,12 @@ public class AutoSaveConfigMSG {
 	private void saveMessages()
 	{
 		configmsg = new YamlConfiguration();
-		configmsg.set("broadcast.pre", messageBroadcastPre);
-		configmsg.set("broadcast.post", messageBroadcastPost);
-		configmsg.set("broadcastbackup.pre", messageBroadcastBackupPre);
-		configmsg.set("broadcastbackup.post", messageBroadcastBackupPost);
-		configmsg.set("broadcastpurge.pre", messagePurgePre);
-		configmsg.set("broadcastpurge.post", messagePurgePost);
+		configmsg.set("broadcast.pre", messageSaveBroadcastPre);
+		configmsg.set("broadcast.post", messageSaveBroadcastPost);
+		configmsg.set("broadcastbackup.pre", messageBackupBroadcastPre);
+		configmsg.set("broadcastbackup.post", messageBackupBroadcastPost);
+		configmsg.set("broadcastpurge.pre", messagePurgeBroadcastPre);
+		configmsg.set("broadcastpurge.post", messagePurgeBroadcastPost);
 		configmsg.set("autorestart.restarting",messageAutoRestart);
 		configmsg.set("autorestart.countdown",messageAutoRestartCountdown);
 		configmsg.set("worldregen.kickmessage", messageWorldRegenKick);

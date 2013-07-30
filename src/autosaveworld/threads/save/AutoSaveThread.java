@@ -119,7 +119,7 @@ public class AutoSaveThread extends Thread {
 
 			try {
 				
-				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPre);}
+				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPre);}
 
 				// Save the players
 				savePlayers();
@@ -129,7 +129,7 @@ public class AutoSaveThread extends Thread {
 				saveWorlds();
 				plugin.debug("Saved Worlds");
 
-				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageBroadcastPost);}
+				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPost);}
 			} catch (Exception e) 
 			{
 				if (config.saveBroadcast){plugin.broadcast("&4AutoSave Failed");}

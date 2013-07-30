@@ -102,7 +102,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.purgeInProgress = true;
 			
 			if (config.purgeBroadcast) {
-				plugin.broadcast(configmsg.messagePurgePre);
+				plugin.broadcast(configmsg.messagePurgeBroadcastPre);
 			}
 			
 			long awaytime = config.purgeAwayTime * 1000;
@@ -164,7 +164,7 @@ public class AutoPurgeThread extends Thread {
 			
 
 			if (config.purgeBroadcast) {
-				plugin.broadcast(configmsg.messagePurgePost);
+				plugin.broadcast(configmsg.messagePurgeBroadcastPost);
 			}
 			
 			plugin.purgeInProgress = false;
