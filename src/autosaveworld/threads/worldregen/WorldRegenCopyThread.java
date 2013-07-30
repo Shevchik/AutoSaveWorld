@@ -111,7 +111,7 @@ public class WorldRegenCopyThread extends Thread {
 			{
 				for (Player p : Bukkit.getOnlinePlayers())
 				{
-					p.kickPlayer(configmsg.messageWorldRegenKick);
+					plugin.kickPlayer(p,configmsg.messageWorldRegenKick);
 				}
 			}
 		});
