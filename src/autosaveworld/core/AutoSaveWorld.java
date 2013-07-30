@@ -24,13 +24,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import autosaveworld.commands.CommandsHandler;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.config.LocaleLoader;
-import autosaveworld.listener.ASWEventListener;
+import autosaveworld.listener.EventsListener;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.threads.purge.AutoPurgeThread;
@@ -38,7 +38,6 @@ import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
 import autosaveworld.threads.restart.JVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
-import autosaveworld.threads.worldregen.AntiJoinListener;
 import autosaveworld.threads.worldregen.WorldRegenConstants;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
@@ -60,8 +59,8 @@ public class AutoSaveWorld extends JavaPlugin {
 	public AutoSaveConfigMSG configmsg;
 	public AutoSaveConfig config;
 	public LocaleLoader localeloader;
-	public ASWEventListener eh;
-	public AntiJoinListener ajl;
+	public EventsListener eh;
+	public CommandsHandler ch;
 	public volatile boolean saveInProgress = false;
 	public volatile boolean backupInProgress = false;
 	public volatile boolean purgeInProgress = false;
@@ -72,18 +71,20 @@ public class AutoSaveWorld extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		debug(String.format("Enabling self", getDescription().getVersion()));
 		// Load Configuration
 		config = new AutoSaveConfig();
 		config.load();
 		configmsg = new AutoSaveConfigMSG(config);
 		configmsg.loadmsg();
 		localeloader = new LocaleLoader(this, config, configmsg);
-		eh = new ASWEventListener(this, config, configmsg, localeloader);
+		eh = new EventsListener(this);
+		ch = new CommandsHandler(this,config,configmsg,localeloader);
 		// register events and commands
-		getCommand("autosaveworld").setExecutor(eh);
-		getCommand("autosave").setExecutor(eh);
-		getCommand("autobackup").setExecutor(eh);
-		getCommand("autopurge").setExecutor(eh);
+		getCommand("autosaveworld").setExecutor(ch);
+		getCommand("autosave").setExecutor(ch);
+		getCommand("autobackup").setExecutor(ch);
+		getCommand("autopurge").setExecutor(ch);
 		getServer().getPluginManager().registerEvents(eh, this);
 		// Start AutoSave Thread
 		startThread(ThreadType.SAVE);
@@ -107,21 +108,18 @@ public class AutoSaveWorld extends JavaPlugin {
 		File check = new File(WorldRegenConstants.getShouldpasteFile());
 		if (check.exists()) {
 			worldregenInProcess = true;
-			ajl = new AntiJoinListener(this,configmsg);
-			getServer().getPluginManager().registerEvents(ajl, this);
-			wrp = new WorldRegenPasteThread(this,config);
+			wrp = new WorldRegenPasteThread(this,config, configmsg);
 			wrp.start();
 		}
 		// Notify on logger load
-		log.info(String.format("[%s] Version %s is enabled",
-					getDescription().getName(), getDescription().getVersion()
-					)
-				);
+		debug(String.format("Version %s is enabled", getDescription().getVersion()));
 	}
 	
 	
 	@Override
 	public void onDisable() {
+		debug(String.format("Disabling self", getDescription().getVersion()));
+		debug("Saving");
 		// Perform a Save NOW!
 		saveThread.command = true;
 		saveThread.performSave();
@@ -139,18 +137,17 @@ public class AutoSaveWorld extends JavaPlugin {
 		config = null; 
 		localeloader = null;
 		eh = null;
+		ch = null;
 		HandlerList.unregisterAll(this);
 		//Check if we just finished WorldRegen, if so - clean garbage
 		File check = new File(WorldRegenConstants.getShouldpasteFile());
 		if (check.exists() && worldregenfinished) {
-			PlayerJoinEvent.getHandlerList().unregister(ajl);
 			wrp = null;
 			check.delete();
 			new File(WorldRegenConstants.getWorldnameFile()).delete();
 			new File(WorldRegenConstants.getTempFolder()).delete();
 		}
-		log.info(String.format("[%s] Version %s is disabled", getDescription()
-				.getName(), getDescription().getVersion()));
+		debug(String.format("Version %s is disabled", getDescription().getVersion()));
 	}	
 	
 	
