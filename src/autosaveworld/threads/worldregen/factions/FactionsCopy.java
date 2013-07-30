@@ -56,7 +56,7 @@ public class FactionsCopy {
 	
 	public void copyAllToSchematics()
 	{
-		plugin.debug("Saving factions homes to schematics");
+		plugin.debug("Saving factions lands to schematics");
 	    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
 		final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 		new File(schemfolder).mkdirs();
@@ -73,8 +73,6 @@ public class FactionsCopy {
 		    	{
 		    		xcoords.add(ps.asBukkitChunk().getX());
 		    		zcoords.add(ps.asBukkitChunk().getZ());
-		    		System.out.println(ps.asBukkitChunk().getX());
-		    		System.out.println(ps.asBukkitChunk().getZ());
 		    	}
 		    	Collections.sort(xcoords);
 		    	Collections.sort(zcoords);
@@ -110,7 +108,7 @@ public class FactionsCopy {
 						//save to schematic
 				        File schematic = new File(schemfolder + f.getName());
 				        format.save(clipboard, schematic);
-				        plugin.debug("Faction Land "+f.getName()+" saved");
+				        plugin.debug("Faction land "+f.getName()+" saved");
 						} catch (Exception e)
 						{
 							e.printStackTrace();
