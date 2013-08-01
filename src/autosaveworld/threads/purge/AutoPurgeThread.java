@@ -42,11 +42,9 @@ public class AutoPurgeThread extends Thread {
 
 	public void startpurge() {
 		command = true;
-		i = config.purgeInterval;
 	}
 
 	// The code to run...weee
-	private int i;
 	private volatile boolean run = true;
 	private boolean command = false;
 	public void run() {
@@ -57,7 +55,7 @@ public class AutoPurgeThread extends Thread {
 		
 		while (run) {
 			// Prevent AutoPurge from never sleeping
-			// If interval is 0, sleep for 10 seconds and skip saving
+			// If interval is 0, sleep for 10 seconds and skip purging
 			if (config.purgeInterval == 0) {
 				try {
 					Thread.sleep(10000);
@@ -66,8 +64,9 @@ public class AutoPurgeThread extends Thread {
 			}
 
 			// Do our Sleep stuff!
-			for (i = 0; i < config.purgeInterval; i++) {
+			for (int i = 0; i < config.purgeInterval; i++) {
 				if (!run) {break;}
+				if (command) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
@@ -75,7 +74,6 @@ public class AutoPurgeThread extends Thread {
 
 		}
 		
-		//message before disabling thread
 		plugin.debug("Graceful quit of AutoPurgeThread");
 		
 	}
@@ -84,6 +82,9 @@ public class AutoPurgeThread extends Thread {
 
 
 	public void performPurge() {
+		
+		command = false;
+		
 		//do not purge if one of this is running or this may end bad
 		if (plugin.purgeInProgress) {
 			plugin.warn("Multiple concurrent purges attempted! Purge interval is likely too short!");
@@ -95,9 +96,8 @@ public class AutoPurgeThread extends Thread {
 		}
 		if (plugin.worldregenInProcess) {
 			plugin.warn("WorldRegen is in progress. Purge cancelled.");
+			return;
 		}
-			
-			command = false;
 			
 			plugin.purgeInProgress = true;
 			

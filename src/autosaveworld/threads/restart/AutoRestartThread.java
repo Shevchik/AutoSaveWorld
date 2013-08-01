@@ -61,6 +61,7 @@ public class AutoRestartThread  extends Thread{
 			 if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command)
 			 {
 				run = false;
+				command = false;
 				
 				if (config.autorestartcountdown)
 				{

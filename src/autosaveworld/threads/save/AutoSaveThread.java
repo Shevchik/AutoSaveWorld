@@ -40,8 +40,7 @@ public class AutoSaveThread extends Thread {
 		this.run = false;
 	}
 
-	public void startsave()
-	{
+	public void startsave() {
 		command = true;
 		i = config.saveInterval;
 	}
@@ -97,6 +96,16 @@ public class AutoSaveThread extends Thread {
 
 
 	public void performSave() {
+		
+		
+		if (plugin.getServer().getOnlinePlayers().length == 0 && !command) {
+			// No players online, don't bother saving.
+			plugin.debug("Skipping save, no players online.");
+			return;
+		}
+		
+		command = false;
+		
 		if (plugin.saveInProgress) {
 			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
 			return;
@@ -108,12 +117,6 @@ public class AutoSaveThread extends Thread {
 		
 		try {
 			
-			if (plugin.getServer().getOnlinePlayers().length == 0 && !command) {
-					// No players online, don't bother saving.
-					plugin.debug("Skipping save, no players online.");
-					return;
-			}
-
 			// Lock
 			plugin.saveInProgress = true;
 
@@ -140,7 +143,6 @@ public class AutoSaveThread extends Thread {
 
 		} finally {
 			// Release
-			command = false;
 			plugin.saveInProgress = false;
 		}
 	}

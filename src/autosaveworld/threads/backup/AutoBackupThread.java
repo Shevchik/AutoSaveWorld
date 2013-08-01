@@ -37,15 +37,12 @@ public class AutoBackupThread extends Thread {
 		this.run = false;
 	}
 	
-	public void startbackup()
-	{
-	command = true;
-	i = config.backupInterval;
+	public void startbackup() {
+		command = true;
 	}
     
 	
 	// The code to run...weee
-    private int i;
 	private volatile boolean run = true;
     private boolean command = false;
 	public void run() {
@@ -62,8 +59,9 @@ public class AutoBackupThread extends Thread {
 			}
 			
 			// Do our Sleep stuff!
-			for (i = 0; i < config.backupInterval; i++) {
+			for (int i = 0; i < config.backupInterval; i++) {
 				if (!run) {break;}
+				if (command) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 			
@@ -78,6 +76,8 @@ public class AutoBackupThread extends Thread {
 	public long datesec;
 	private void performBackup()
 	{
+		command = false;
+		
 		if (plugin.backupInProgress) {
 			plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
 			return;
@@ -116,7 +116,6 @@ public class AutoBackupThread extends Thread {
 		finally 
 		{
 			// Release
-			command = false;
 			plugin.backupInProgress = false;
 		}
 	}

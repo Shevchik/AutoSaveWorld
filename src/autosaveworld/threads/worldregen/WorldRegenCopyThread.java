@@ -73,6 +73,7 @@ public class WorldRegenCopyThread extends Thread {
 					e.printStackTrace();
 				}
 				doregen = false;
+				run = false;
 			}
 			try {
 				Thread.sleep(1000);
