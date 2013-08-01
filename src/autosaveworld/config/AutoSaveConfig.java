@@ -40,8 +40,8 @@ public class AutoSaveConfig {
 	//backup
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
-		//flat backup
-		public boolean flatbackupenabled = true;
+		//localfs backup
+		public boolean localfsbackupenabled = true;
 		public List<String> backupWorlds = null;
 		public int MaxNumberOfWorldsBackups = 30;
 		public int MaxNumberOfPluginsBackups = 30;
@@ -112,18 +112,18 @@ public class AutoSaveConfig {
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
 		backupInterval = config.getInt("backup.interval", backupInterval);
-			//flat
-			flatbackupenabled = config.getBoolean("backup.flat.enabled",flatbackupenabled);	
-			MaxNumberOfWorldsBackups = config.getInt("backup.flat.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
-			MaxNumberOfPluginsBackups = config.getInt("backup.flat.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
-			backupBroadcast = config.getBoolean("backup.flat.broadcast", backupBroadcast);
-			backuptoextfolders = config.getBoolean("backup.flat.toextfolders", backuptoextfolders);
-			extfolders = config.getStringList("backup.flat.extfolders");
-			donotbackuptointfld = config.getBoolean("backup.flat.disableintfolder", donotbackuptointfld);
-			backuppluginsfolder = config.getBoolean("backup.flat.pluginsfolder", backuppluginsfolder);
-			excludefolders = config.getStringList("backup.flat.excludefolders");
-			backupzip = config.getBoolean("backup.flat.zip", backupzip);
-			backupWorlds = config.getStringList("backup.flat.worlds");
+			//localfs
+			localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);	
+			MaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
+			MaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
+			backupBroadcast = config.getBoolean("backup.localfs.broadcast", backupBroadcast);
+			backuptoextfolders = config.getBoolean("backup.localfs.toextfolders", backuptoextfolders);
+			extfolders = config.getStringList("backup.localfs.extfolders");
+			donotbackuptointfld = config.getBoolean("backup.localfs.disableintfolder", donotbackuptointfld);
+			backuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", backuppluginsfolder);
+			excludefolders = config.getStringList("backup.localfs.excludefolders");
+			backupzip = config.getBoolean("backup.localfs.zip", backupzip);
+			backupWorlds = config.getStringList("backup.localfs.worlds");
 			if (backupWorlds.size() == 0) {
 				backupWorlds.add("*");
 			}
@@ -201,18 +201,18 @@ public class AutoSaveConfig {
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
-			//flat
-			config.set("backup.flat.enabled",flatbackupenabled);	
-			config.set("backup.flat.worlds", backupWorlds);
-			config.set("backup.flat.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
-			config.set("backup.flat.pluginsfolder", backuppluginsfolder);
-			config.set("backup.flat.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
-			config.set("backup.flat.excludefolders",excludefolders);
-			config.set("backup.flat.broadcast", backupBroadcast);
-			config.set("backup.flat.toextfolders", backuptoextfolders);
-			config.set("backup.flat.disableintfolder", donotbackuptointfld);
-			config.set("backup.flat.extfolders",extfolders);
-			config.set("backup.flat.zip",backupzip);
+			//localfs
+			config.set("backup.localfs.enabled",localfsbackupenabled);	
+			config.set("backup.localfs.worlds", backupWorlds);
+			config.set("backup.localfs.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
+			config.set("backup.localfs.pluginsfolder", backuppluginsfolder);
+			config.set("backup.localfs.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
+			config.set("backup.localfs.excludefolders",excludefolders);
+			config.set("backup.localfs.broadcast", backupBroadcast);
+			config.set("backup.localfs.toextfolders", backuptoextfolders);
+			config.set("backup.localfs.disableintfolder", donotbackuptointfld);
+			config.set("backup.localfs.extfolders",extfolders);
+			config.set("backup.localfs.zip",backupzip);
 
 		
 		//purge variables

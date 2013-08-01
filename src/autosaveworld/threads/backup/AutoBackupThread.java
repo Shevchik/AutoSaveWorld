@@ -103,7 +103,7 @@ public class AutoBackupThread extends Thread {
 		
 			datesec = System.currentTimeMillis();
 		
-			if (config.flatbackupenabled)
+			if (config.localfsbackupenabled)
 			{
 				new FlatBackup(plugin, config).performBackup();
 			}
