@@ -105,7 +105,7 @@ public class AutoBackupThread extends Thread {
 		
 			if (config.localfsbackupenabled)
 			{
-				new FlatBackup(plugin, config).performBackup();
+				new LocalFSBackup(plugin, config).performBackup();
 			}
 		
 			plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");

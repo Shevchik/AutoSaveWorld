@@ -39,7 +39,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
 
-public class FlatBackup {
+public class LocalFSBackup {
 	
     private FileConfiguration configbackup;
     private String datebackup;
@@ -47,7 +47,7 @@ public class FlatBackup {
     
     private AutoSaveWorld plugin;
     private AutoSaveConfig config;
-    public FlatBackup(AutoSaveWorld plugin, AutoSaveConfig config)
+    public LocalFSBackup(AutoSaveWorld plugin, AutoSaveConfig config)
     {
     	this.plugin = plugin;
     	this.config = config;
