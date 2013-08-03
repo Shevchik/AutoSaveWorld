@@ -56,7 +56,7 @@ public class WorldRegenCopyThread extends Thread {
 	
 	private String worldtoregen = "";
 	private int taskid;
-	private boolean run = true;
+	private volatile boolean run = true;
 	private boolean doregen = false;
 	public void run()
 	{
