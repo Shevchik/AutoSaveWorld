@@ -218,7 +218,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			} else {
 				saveThread.stopThread();
 				try {
-					saveThread.join(1000);
+					saveThread.join(2000);
 					saveThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -232,7 +232,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			} else {
 				backupThread6.stopThread();
 				try {
-					backupThread6.join(1000);
+					backupThread6.join(2000);
 					backupThread6 = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -246,7 +246,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			} else {
 				purgeThread.stopThread();
 				try {
-					purgeThread.join(1000);
+					purgeThread.join(2000);
 					purgeThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -260,7 +260,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			} else {
 				crashrestartThread.stopThread();
 				try {
-					crashrestartThread.join(1000);
+					crashrestartThread.join(2000);
 					crashrestartThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -274,7 +274,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			} else {
 				autorestartThread.stopThread();
 				try {
-					autorestartThread.join(1000);
+					autorestartThread.join(2000);
 					autorestartThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -288,7 +288,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			} else {
 				consolecommandThread.stopThread();
 				try {
-					consolecommandThread.join(1000);
+					consolecommandThread.join(2000);
 					consolecommandThread = null;
 					return true;
 				} catch (InterruptedException e) {
@@ -302,7 +302,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			} else {
 				worldregenThread.stopThread();
 				try {
-					worldregenThread.join(1000);
+					worldregenThread.join(2000);
 					worldregenThread = null;
 					return true;
 				} catch (InterruptedException e) {
