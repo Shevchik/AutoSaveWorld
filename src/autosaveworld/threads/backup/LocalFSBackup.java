@@ -83,17 +83,17 @@ public class LocalFSBackup {
 	
 	public void performBackup() {
 
-		boolean zip = config.backupzip;
+		boolean zip = config.lfsbackupzip;
 	    List<String> backupfoldersdest = new ArrayList<String>();
 
 		//adding internal folder to list of folders to which we should backup everything 
-		if (!(config.donotbackuptointfld && config.backuptoextfolders))  {
+		if (!(config.lfsdonotbackuptointfld && config.lfsbackuptoextfolders))  {
 			try {
 				backupfoldersdest.add(new File(".").getCanonicalPath());
 			} catch (IOException e) {e.printStackTrace();}
 		}
 		//adding external folders to list of folders to which we should backup everything 
-		if (config.backuptoextfolders) {backupfoldersdest.addAll(config.extfolders);}
+		if (config.lfsbackuptoextfolders) {backupfoldersdest.addAll(config.lfsextfolders);}
 		
 		//backup time	
 		for (String extpath : backupfoldersdest)
@@ -103,7 +103,7 @@ public class LocalFSBackup {
 
 			//start worlds backup
 			//delete oldest worlds backup if needed
-			if (!(config.MaxNumberOfWorldsBackups == 0) && (numberofbackupsext >= config.MaxNumberOfWorldsBackups)) {
+			if (!(config.lfsMaxNumberOfWorldsBackups == 0) && (numberofbackupsext >= config.lfsMaxNumberOfWorldsBackups)) {
 				plugin.debug("Deleting oldest worlds backup");
 				String pathtoworldsfld = extpath+File.separator+"backups"+File.separator+"worlds";
 				//delete worlds oldest backup
@@ -118,15 +118,15 @@ public class LocalFSBackup {
 			}
 			//do worlds backup
 			plugin.debug("Backuping Worlds");
-			backupWorlds(config.backupWorlds, zip, extpath);
+			backupWorlds(config.lfsbackupWorlds, zip, extpath);
 			plugin.debug("Backuped Worlds");
 			backupnamesext.add(plugin.backupThread6.datesec);
 			numberofbackupsext++;
 			
 			//now do plugins backup
-			if (config.backuppluginsfolder) {
+			if (config.lfsbackuppluginsfolder) {
 				//remove oldest plugins backup
-				if (!(config.MaxNumberOfPluginsBackups == 0) && (numberofbackupspl >= config.MaxNumberOfPluginsBackups)) {
+				if (!(config.lfsMaxNumberOfPluginsBackups == 0) && (numberofbackupspl >= config.lfsMaxNumberOfPluginsBackups)) {
 					plugin.debug("Deleting oldest plugins backup");
 					String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+datebackup;
 					deleteDirectory(new File(fldtodel));
@@ -162,7 +162,7 @@ public class LocalFSBackup {
 		
 		//now get list of worlds
 		boolean all= false;
-		if (config.backupWorlds.contains("*")) {all = true;}
+		if (config.lfsbackupWorlds.contains("*")) {all = true;}
 		List<World> worlds = plugin.getServer().getWorlds();
 		for (final World world : worlds) {
 		if (worldNames.contains(world.getWorldFolder().getName())||all) {
@@ -180,7 +180,7 @@ public class LocalFSBackup {
 								if (!zip) {
 									copyDirectory((worldfolder), new File(pathtoworldsb));
 								} else { 
-									Zip zipfld = new Zip(config.excludefolders);
+									Zip zipfld = new Zip(config.lfsexcludefolders);
 									zipfld.ZipFolder((worldfolder), new File(pathtoworldsb+".zip"));
 								}
 							} catch (Exception e) {
@@ -210,7 +210,7 @@ public class LocalFSBackup {
 			if (!zip) {
 				copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto));
 			} else  {
-				Zip zipfld = new Zip(config.excludefolders);
+				Zip zipfld = new Zip(config.lfsexcludefolders);
 				zipfld.ZipFolder(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto+".zip"));
 			}
 		} catch (IOException e) {e.printStackTrace();}
@@ -230,7 +230,7 @@ public class LocalFSBackup {
 			        for (int i=0; i<children.length; i++) {
 			        	boolean copy = true;
 		        		//ignore configured folders
-			        	for (String efname : config.excludefolders)
+			        	for (String efname : config.lfsexcludefolders)
 			        	{
 			        		if ((new File(sourceLocation, children[i]).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {copy = false; break;}
 			        	}

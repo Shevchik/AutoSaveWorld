@@ -40,18 +40,18 @@ public class AutoSaveConfig {
 	//backup
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
+	public boolean backupBroadcast = true;
 		//localfs backup
 		public boolean localfsbackupenabled = true;
-		public List<String> backupWorlds = null;
-		public int MaxNumberOfWorldsBackups = 30;
-		public int MaxNumberOfPluginsBackups = 30;
-		public boolean backupBroadcast = true;
-		public List<String> extfolders;
-		public List<String> excludefolders;
-		public boolean backuptoextfolders = false;
-		public boolean donotbackuptointfld = true;
-		public boolean backuppluginsfolder = false;
-		public boolean backupzip = false;
+		public List<String> lfsbackupWorlds = null;
+		public int lfsMaxNumberOfWorldsBackups = 30;
+		public int lfsMaxNumberOfPluginsBackups = 30;
+		public List<String> lfsextfolders;
+		public List<String> lfsexcludefolders;
+		public boolean lfsbackuptoextfolders = false;
+		public boolean lfsdonotbackuptointfld = true;
+		public boolean lfsbackuppluginsfolder = false;
+		public boolean lfsbackupzip = false;
 	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
@@ -112,20 +112,20 @@ public class AutoSaveConfig {
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
 		backupInterval = config.getInt("backup.interval", backupInterval);
+		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
 			//localfs
 			localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);	
-			MaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
-			MaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
-			backupBroadcast = config.getBoolean("backup.localfs.broadcast", backupBroadcast);
-			backuptoextfolders = config.getBoolean("backup.localfs.toextfolders", backuptoextfolders);
-			extfolders = config.getStringList("backup.localfs.extfolders");
-			donotbackuptointfld = config.getBoolean("backup.localfs.disableintfolder", donotbackuptointfld);
-			backuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", backuppluginsfolder);
-			excludefolders = config.getStringList("backup.localfs.excludefolders");
-			backupzip = config.getBoolean("backup.localfs.zip", backupzip);
-			backupWorlds = config.getStringList("backup.localfs.worlds");
-			if (backupWorlds.size() == 0) {
-				backupWorlds.add("*");
+			lfsMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
+			lfsMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
+			lfsbackuptoextfolders = config.getBoolean("backup.localfs.toextfolders", lfsbackuptoextfolders);
+			lfsextfolders = config.getStringList("backup.localfs.extfolders");
+			lfsdonotbackuptointfld = config.getBoolean("backup.localfs.disableintfolder", lfsdonotbackuptointfld);
+			lfsbackuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
+			lfsexcludefolders = config.getStringList("backup.localfs.excludefolders");
+			lfsbackupzip = config.getBoolean("backup.localfs.zip", lfsbackupzip);
+			lfsbackupWorlds = config.getStringList("backup.localfs.worlds");
+			if (lfsbackupWorlds.size() == 0) {
+				lfsbackupWorlds.add("*");
 			}
 
 		
@@ -201,18 +201,18 @@ public class AutoSaveConfig {
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
+		config.set("backup.broadcast", backupBroadcast);
 			//localfs
 			config.set("backup.localfs.enabled",localfsbackupenabled);	
-			config.set("backup.localfs.worlds", backupWorlds);
-			config.set("backup.localfs.MaxNumberOfWorldsBackups", MaxNumberOfWorldsBackups);
-			config.set("backup.localfs.pluginsfolder", backuppluginsfolder);
-			config.set("backup.localfs.MaxNumberOfPluginsBackups", MaxNumberOfPluginsBackups);
-			config.set("backup.localfs.excludefolders",excludefolders);
-			config.set("backup.localfs.broadcast", backupBroadcast);
-			config.set("backup.localfs.toextfolders", backuptoextfolders);
-			config.set("backup.localfs.disableintfolder", donotbackuptointfld);
-			config.set("backup.localfs.extfolders",extfolders);
-			config.set("backup.localfs.zip",backupzip);
+			config.set("backup.localfs.worlds", lfsbackupWorlds);
+			config.set("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
+			config.set("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
+			config.set("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
+			config.set("backup.localfs.excludefolders",lfsexcludefolders);
+			config.set("backup.localfs.toextfolders", lfsbackuptoextfolders);
+			config.set("backup.localfs.disableintfolder", lfsdonotbackuptointfld);
+			config.set("backup.localfs.extfolders",lfsextfolders);
+			config.set("backup.localfs.zip",lfsbackupzip);
 
 		
 		//purge variables
