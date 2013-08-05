@@ -71,8 +71,8 @@ public class FactionsCopy {
 		    	List<Integer> xcoords = new ArrayList<Integer>(); List<Integer> zcoords = new ArrayList<Integer>();
 		    	for (PS ps : chunks)
 		    	{
-		    		xcoords.add(ps.asBukkitChunk().getX());
-		    		zcoords.add(ps.asBukkitChunk().getZ());
+		    		xcoords.add(ps.getChunkX());
+		    		zcoords.add(ps.getChunkZ());
 		    	}
 		    	Collections.sort(xcoords);
 		    	Collections.sort(zcoords);
