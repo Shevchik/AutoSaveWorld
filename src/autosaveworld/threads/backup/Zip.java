@@ -32,7 +32,7 @@ public class Zip {
 
 	private List<String> excludefolders;
 
-	Zip(List<String> excludefolders) {
+	public Zip(List<String> excludefolders) {
 		this.excludefolders = excludefolders;
 	}
 
@@ -76,9 +76,7 @@ public class Zip {
 			if (srcFile.isDirectory()) {
 				boolean copy = true;
 				for (String efname : excludefolders) {
-					if ((new File(srcDir.getName() + File.separator
-							+ currentDir + child).getAbsoluteFile())
-							.equals(new File(efname).getAbsoluteFile())) {
+					if ((new File(srcDir.getName() + File.separator + currentDir + child).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {
 						copy = false;
 						break;
 					}
@@ -87,32 +85,35 @@ public class Zip {
 					zipDir(srcDir, currentDir + child);
 				}
 			} else
-				zipFile(srcFile, srcDir.getName() + File.separator + currentDir
-						+ child);
+				zipFile(srcFile, srcDir.getName() + File.separator + currentDir + child);
 		}
 	}
 
 	private void zipFile(final File srcFile, final String entry)
 			throws IOException {
-		final InputStream inStream = new FileInputStream(srcFile);
-		try {
-			final ZipEntry zipEntry = new ZipEntry(entry);
-			zipEntry.setTime(srcFile.lastModified());
-			zipOutStream.putNextEntry(zipEntry);
-
-			final byte[] buf = new byte[4096];
-			int len;
-
+		if (!srcFile.getName().endsWith(".lck"))
+		{
+			final InputStream inStream = new FileInputStream(srcFile);
 			try {
-				while ((len = inStream.read(buf)) > -1)
-					if (len > 0)
-						zipOutStream.write(buf, 0, len);
-			} catch (final IOException e) {
+
+				final ZipEntry zipEntry = new ZipEntry(entry);
+				zipEntry.setTime(srcFile.lastModified());
+				zipOutStream.putNextEntry(zipEntry);
+				
+				final byte[] buf = new byte[4096];
+				int len;
+				
+				try {
+					while ((len = inStream.read(buf)) > -1)
+						if (len > 0)
+							zipOutStream.write(buf, 0, len);
+				} catch (final IOException e) {
+				} finally {
+					zipOutStream.closeEntry();
+				}
 			} finally {
-				zipOutStream.closeEntry();
+				inStream.close();
 			}
-		} finally {
-			inStream.close();
 		}
 	}
 }

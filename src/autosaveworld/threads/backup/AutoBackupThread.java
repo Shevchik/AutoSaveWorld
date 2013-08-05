@@ -20,6 +20,7 @@ package autosaveworld.threads.backup;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.backup.localfs.LocalFSBackup;
 
 public class AutoBackupThread extends Thread {
 
