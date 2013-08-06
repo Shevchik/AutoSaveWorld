@@ -64,8 +64,6 @@ public class FactionsPaste {
 			}
 		}
 		
-		//delete Factions folder firectory
-		deleteDirectory(new File(schemfolder));
 	}
 	
 	
@@ -103,24 +101,5 @@ public class FactionsPaste {
 		}
 		plugin.debug("Pasted faction land "+f.getName()+" from schematic");
  	}
-	
-	
-	
-	private void deleteDirectory(File file)
-	{
-		if(!file.exists())  {return;}
-	    if(file.isDirectory())
-	    {
-	    	for(File f : file.listFiles())
-	    	{
-	    		deleteDirectory(f);
-	    	}
-	    	file.delete();
-	    }
-	    else
-	    {
-	    	file.delete();
-	    }
-	}
 	
 }

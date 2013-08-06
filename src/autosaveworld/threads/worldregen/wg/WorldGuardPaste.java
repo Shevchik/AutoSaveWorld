@@ -80,26 +80,6 @@ public class WorldGuardPaste {
 				try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
 			}
 		}
-		//delete WG temp folder firectory
-		deleteDirectory(new File(schemfolder));
-	}
-	
-	
-	private void deleteDirectory(File file)
-	{
-		if(!file.exists())  {return;}
-	    if(file.isDirectory())
-	    {
-	    	for(File f : file.listFiles())
-	    	{
-	    		deleteDirectory(f);
-	    	}
-	    	file.delete();
-	    }
-	    else
-	    {
-	    	file.delete();
-	    }
 	}
 	
 }

@@ -74,7 +74,7 @@ public class WorldRegenPasteThread extends Thread {
 				return;
 			}
 			
-			plugin.debug("restoring buildings");
+			plugin.debug("Restoring buildings");
 			
 			// paste WG buildings
 			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
@@ -85,8 +85,14 @@ public class WorldRegenPasteThread extends Thread {
 			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
 				new FactionsPaste(plugin, worldtopasteto).pasteAllFromSchematics();
 			}
+
+			//clear temp folder
+			plugin.debug("Cleaning temp folder");
 			
-			plugin.debug("restore finished");
+			deleteDirectory(new File(WorldRegenConstants.getWGTempFolder()));
+			deleteDirectory(new File(WorldRegenConstants.getFactionsTempFolder()));
+			
+			plugin.debug("Restore finished");
 
 			// restart
 			plugin.worldregenfinished = true;
@@ -98,5 +104,22 @@ public class WorldRegenPasteThread extends Thread {
 		}
 	}
 	
+	
+	private void deleteDirectory(File file)
+	{
+		if(!file.exists())  {return;}
+	    if(file.isDirectory())
+	    {
+	    	for(File f : file.listFiles())
+	    	{
+	    		deleteDirectory(f);
+	    	}
+	    	file.delete();
+	    }
+	    else
+	    {
+	    	file.delete();
+	    }
+	}
 	
 }
