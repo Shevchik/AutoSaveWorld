@@ -58,12 +58,13 @@ public class WorldGuardCopy {
 		new File(schemfolder).mkdirs();
 			//save region to schematic
 			for (final ProtectedRegion rg : m.getRegions().values()) {
+				if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 				Runnable copypaste = new Runnable() 
 				{
 					public void run()
 					{
 						try {
-						plugin.debug("Saving WG Regions "+rg.getId()+" to schematic");
+						plugin.debug("Saving WG Region "+rg.getId()+" to schematic");
 						//copy to clipboard
 						EditSession es = new EditSession(new BukkitWorld(wtoregen),Integer.MAX_VALUE);
 						Vector bvmin = rg.getMinimumPoint().toBlockPoint();

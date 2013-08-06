@@ -56,6 +56,7 @@ public class WorldGuardPaste {
 		final String schemfolder = WorldRegenConstants.getWGTempFolder();
 		// restore region from schematic
 		for (final ProtectedRegion rg : m.getRegions().values()) {
+			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 			Runnable copypaste = new Runnable() 
 			{
 				public void run() 
@@ -68,7 +69,7 @@ public class WorldGuardPaste {
 						CuboidClipboard cc = format.load(f);
 						//paste clipboard at origin
 						cc.place(es, cc.getOrigin(), false);
-						plugin.debug("Pasted regions "+rg.getId()+" from schematics");
+						plugin.debug("Pasted region "+rg.getId()+" from schematics");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
