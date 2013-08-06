@@ -111,7 +111,7 @@ public class AutoBackupThread extends Thread {
 		
 			plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");
 			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPost);}
-			plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(java.util.Calendar.getInstance().getTime());
+			plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 
 		} 
 		finally 
