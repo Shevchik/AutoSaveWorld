@@ -9,8 +9,6 @@ public class WorldRegenConstants {
 	private static String wgtempfolder = "WG/";
 	
 	private static String factionstempfolder = "Factions/";
-	private static String factionswarzonetempfolder = "WarZone/";
-	private static String factionssafezonetempfolder = "SafeZone/";
 	
 	public static String getTempFolder()
 	{
@@ -35,14 +33,6 @@ public class WorldRegenConstants {
 	public static String getFactionsTempFolder()
 	{
 		return getTempFolder()+factionstempfolder;
-	}
-	public static String getFactionsWarZoneTempFolder()
-	{
-		return getFactionsTempFolder()+factionswarzonetempfolder;
-	}
-	public static String getFactionsSafeZoneTempFolder()
-	{
-		return getFactionsTempFolder()+factionssafezonetempfolder;
 	}
 	
 }
