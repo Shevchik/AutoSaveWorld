@@ -34,24 +34,23 @@ public class FileUtils {
 	{
 			    if (sourceLocation.isDirectory()) 
 			    {
-			    	if (!targetLocation.exists()) {
+			    	if (!targetLocation.exists()) 
+			    	{
 			            targetLocation.mkdirs();
 			        }
 			        String[] children = sourceLocation.list();
-			        for (int i=0; i<children.length; i++) {
+			        for (int i=0; i<children.length; i++) 
+			        {
 			        	boolean copy = true;
 		        		//ignore configured folders
-			        	for (String efname : excludefolders)
-			        	{
+			        	for (String efname : excludefolders) {
 			        		if ((new File(sourceLocation, children[i]).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {copy = false; break;}
 			        	}
-		        		//ignore others worlds folders (mcpc+ only)
-			        	for (World w : Bukkit.getWorlds())
-			        	{
+		        		//ignore others worlds folders (for mcpc+)
+			        	for (World w : Bukkit.getWorlds()) {
 			        		if (new File(sourceLocation, children[i]).isDirectory() && new File(sourceLocation, children[i]).getName().equals(w.getWorldFolder().getName())) {copy = false; break;}
 			        	}
-			        	if (copy) 
-			        	{
+			        	if (copy) {
 			        		copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]), excludefolders); 
 			        	}
 			        }
@@ -72,6 +71,7 @@ public class FileUtils {
 			       			in.close();
 			       			out.close();
 			    		} catch (Exception e) {
+			    			
 			       		}
 			       		try {Thread.sleep(0);} catch (Exception e) {e.printStackTrace();};
 			    	}
@@ -84,7 +84,9 @@ public class FileUtils {
 	    if(file.isDirectory())
 	    {
 	    	for(File f : file.listFiles())
-	    	  deleteDirectory(f);
+	    	{
+	    		deleteDirectory(f);
+	    	}
 	    	file.delete();
 	    }
 	    else
