@@ -58,8 +58,10 @@ public class WorldGuardCopy {
 		new File(schemfolder).mkdirs();
 			//save region to schematic
 			for (final ProtectedRegion rg : m.getRegions().values()) {
-				Runnable copypaste = new Runnable() {
-					public void run(){
+				Runnable copypaste = new Runnable() 
+				{
+					public void run()
+					{
 						try {
 						plugin.debug("Saving WG Regions "+rg.getId()+" to schematic");
 						//copy to clipboard
@@ -76,8 +78,7 @@ public class WorldGuardCopy {
 				        File schematic = new File(schemfolder + rg.getId());
 				        format.save(clipboard, schematic);
 				        plugin.debug("WG Region "+rg.getId()+" saved");
-						} catch (Exception e)
-						{
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}

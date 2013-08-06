@@ -56,8 +56,10 @@ public class WorldGuardPaste {
 		final String schemfolder = WorldRegenConstants.getWGTempFolder();
 		// restore region from schematic
 		for (final ProtectedRegion rg : m.getRegions().values()) {
-			Runnable copypaste = new Runnable() {
-				public void run() {
+			Runnable copypaste = new Runnable() 
+			{
+				public void run() 
+				{
 					try {
 						plugin.debug("Pasting region "+rg.getId()+" from schematics");
 						//load from schematic to clipboard
@@ -72,8 +74,7 @@ public class WorldGuardPaste {
 					}
 				}
 			};
-			taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(
-					plugin, copypaste);
+			taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
 			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
 				try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
 			}
