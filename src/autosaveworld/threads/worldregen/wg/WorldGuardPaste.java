@@ -84,19 +84,20 @@ public class WorldGuardPaste {
 	
 	
 	private void deleteDirectory(File file)
-	  {
-	    if(!file.exists())
-	      return;
+	{
+		if(!file.exists())  {return;}
 	    if(file.isDirectory())
 	    {
-	      for(File f : file.listFiles())
-	        deleteDirectory(f);
-	      file.delete();
+	    	for(File f : file.listFiles())
+	    	{
+	    		deleteDirectory(f);
+	    	}
+	    	file.delete();
 	    }
 	    else
 	    {
-	      file.delete();
+	    	file.delete();
 	    }
-	  }
+	}
 	
 }
