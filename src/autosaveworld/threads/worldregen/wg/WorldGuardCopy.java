@@ -86,11 +86,7 @@ public class WorldGuardCopy {
 				taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
 				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 				{
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 				}
 			}
 	}
