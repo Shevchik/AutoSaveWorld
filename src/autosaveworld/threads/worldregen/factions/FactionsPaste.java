@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen.factions;
 
 import java.io.File;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -25,6 +26,7 @@ import org.bukkit.World;
 import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColls;
+import com.massivecraft.mcore.ps.PS;
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -45,65 +47,129 @@ public class FactionsPaste {
 	}
 	
 	private int taskid;
+    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
 	
 	public void pasteAllFromSchematics()
 	{
 		plugin.debug("Pasting factions lands from schematics");
-	    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-		final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 		
+		plugin.debug("Pasting users faction lands");
+		//paste users lands
+		final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll())
 		{
 			if (BoardColls.get().getForWorld(wtopaste.getName()).getChunks(f).size() != 0  && !f.getName().equals("WarZone") && !f.getName().equals("SafeZone"))
 			{
-		    	Runnable copypaste = new Runnable() {
-					public void run(){
-						try {
-						plugin.debug("Restoring Faction land "+f.getName()+" from schematic");
-						//load from schematic to clipboard
-						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
-						File file = new File(schemfolder+f.getName());
-						CuboidClipboard cc = format.load(file);
-						//paste clipboard at origin
-						cc.place(es, cc.getOrigin(), false);
-						plugin.debug("Pasted faction land "+f.getName()+" from schematics");
-						} catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-					}
-				};
-				taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-				{
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+				pasteFactionLand(f,schemfolder);
 			}
 		}
+		
+		plugin.debug("Pasting special faction zones");
+		Faction f = null;
+		Set<PS> chunks = null;
+		//paste warzone
+		final String warzoneschemfolder = WorldRegenConstants.getFactionsWarZoneTempFolder();
+		new File(warzoneschemfolder).mkdirs();
+		f = FactionColls.get().getForWorld(wtopaste.getName()).getWarzone();
+		chunks = BoardColls.get().getChunks(f);
+		if (chunks.size() != 0)
+		{
+			pasteFactionSpecialZone(f, warzoneschemfolder);
+		}
+		//paste safezone
+		final String safezoneschemfolder = WorldRegenConstants.getFactionsSafeZoneTempFolder();
+		new File(safezoneschemfolder).mkdirs();
+		f = FactionColls.get().getForWorld(wtopaste.getName()).getSafezone();
+		chunks = BoardColls.get().getChunks(f);
+		if (chunks.size() != 0)
+		{
+			pasteFactionSpecialZone(f, safezoneschemfolder);
+		}
+		
 		//delete Factions folder firectory
 		deleteDirectory(new File(schemfolder));
 	}
 	
 	
+	//paste normal faction land
+	private void pasteFactionLand(final Faction f, final String schemfolder)
+	{
+    	Runnable copypaste = new Runnable() 
+    	{
+			public void run()
+			{
+				try {
+					plugin.debug("Pasting faction land "+f.getName()+" from schematic");
+					//load from schematic to clipboard
+					EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
+					File file = new File(schemfolder+f.getName());
+					CuboidClipboard cc = format.load(file);
+					//paste clipboard at origin
+					cc.place(es, cc.getOrigin(), false);
+					plugin.debug("Pasted faction land "+f.getName()+" from schematic");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+		{
+			try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		}
+	}
+	
+	//paste special faction zone
+	private void pasteFactionSpecialZone(final Faction f, final String schemfolder)
+	{
+		Set<PS> chunks = BoardColls.get().getChunks(f);
+		for (PS ps : chunks)
+		{
+			final int xcoord = ps.getChunkX();
+		 	final int zcoord = ps.getChunkZ();
+		   	Runnable copypaste = new Runnable() 
+	    	{
+				public void run()
+				{
+					try {
+						plugin.debug("Pasting "+f.getName()+" chunk from schematic");
+						//load from schematic to clipboard
+						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
+						File file = new File(schemfolder+"X"+xcoord+"Z"+zcoord);
+						CuboidClipboard cc = format.load(file);
+						//paste clipboard at origin
+						cc.place(es, cc.getOrigin(), false);
+						plugin.debug("Pasted "+f.getName()+" chunk from schematic");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
+			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+			{
+				try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+			}
+		}
+ 	}
+	
+	
 	
 	private void deleteDirectory(File file)
-	  {
-	    if(!file.exists())
-	      return;
+	{
+		if(!file.exists())  {return;}
 	    if(file.isDirectory())
 	    {
-	      for(File f : file.listFiles())
-	        deleteDirectory(f);
-	      file.delete();
+	    	for(File f : file.listFiles())
+	    	{
+	    		deleteDirectory(f);
+	    	}
+	    	file.delete();
 	    }
 	    else
 	    {
-	      file.delete();
+	    	file.delete();
 	    }
-	  }
+	}
 	
 }
