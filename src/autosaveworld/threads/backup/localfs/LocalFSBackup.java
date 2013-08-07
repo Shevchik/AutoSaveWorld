@@ -89,7 +89,7 @@ public class LocalFSBackup {
 		for (String extpath : backupfoldersdest)
 		{
 			//load backup operations class
-			BackupOperations bo = new BackupOperations(plugin, zip, extpath, config.lfsbackupexcludefolders);
+			LFSBackupOperations bo = new LFSBackupOperations(plugin, zip, extpath, config.lfsbackupexcludefolders);
 			
 			//load info about backups stored in file backups.yml
 			loadConfigBackupExt(extpath);

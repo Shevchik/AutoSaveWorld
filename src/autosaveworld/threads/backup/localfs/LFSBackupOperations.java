@@ -32,22 +32,22 @@ import org.bukkit.World;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.backup.Zip;
 
-public class BackupOperations {
+public class LFSBackupOperations {
 
 	AutoSaveWorld plugin;
 	final boolean zip;
 	final String extpath;
 	final List<String> excludefolders;
     private String datebackup;
-    private FileUtils fu;
-	public BackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders)
+    private LFSFileUtils fu;
+	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders)
 	{
 		this.plugin = plugin;
 		this.zip = zip;
 		this.extpath = extpath;
 		this.excludefolders = excludefolders;
 		datebackup = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(plugin.backupThread6.datesec);
-		fu = new FileUtils();
+		fu = new LFSFileUtils();
 	}
 	
 	//worlds backup operations

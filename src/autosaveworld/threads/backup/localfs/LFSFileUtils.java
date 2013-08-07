@@ -28,7 +28,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-public class FileUtils {
+public class LFSFileUtils {
 
 	public void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders) throws IOException 
 	{
