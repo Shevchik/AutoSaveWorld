@@ -27,9 +27,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class AutoSaveConfig {
 		
 	private FileConfiguration config;
-	public AutoSaveConfig() {}
-	
-	
+		
 	// Variables
 	//debug
 	public boolean varDebug = false;
