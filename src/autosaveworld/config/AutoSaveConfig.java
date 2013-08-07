@@ -41,6 +41,7 @@ public class AutoSaveConfig {
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
 	public boolean backupBroadcast = true;
+	public boolean backupsaveBefore = true;
 		//localfs backup
 		public boolean localfsbackupenabled = true;
 		public List<String> lfsbackupWorldsList = null;
@@ -53,11 +54,14 @@ public class AutoSaveConfig {
 		public boolean lfsdonotbackuptointfld = true;
 		public boolean lfsbackupzip = false;
 		//ftp backup
+		public String ftphostname = "127.0.0.1";
+		public int ftpport = 21;
+		public String ftpusername = "user";
+		public String ftppassworld = "password";
+		public String ftppath = "/asw/";
 		public boolean ftpbackupenabled = false;
 		public List<String> ftpbackupWorlds = null;
-		public int ftpMaxNumberOfWorldsBackups = 5;
 		public boolean ftpbackuppluginsfolder = false;
-		public int ftpMaxNumberOfPluginsBackups = 5;
 		public List<String> ftpbackupexcludefolders;
 		public boolean ftpbackupzip = false;
 	//purge
@@ -121,6 +125,7 @@ public class AutoSaveConfig {
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
 		backupInterval = config.getInt("backup.interval", backupInterval);
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
+		backupsaveBefore = config.getBoolean("backup.savebefore",backupsaveBefore);
 			//localfs
 			localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);	
 			lfsMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
@@ -209,6 +214,7 @@ public class AutoSaveConfig {
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
+		config.set("backup.savebefore",backupsaveBefore);
 		config.set("backup.broadcast", backupBroadcast);
 			//localfs
 			config.set("backup.localfs.enabled",localfsbackupenabled);	

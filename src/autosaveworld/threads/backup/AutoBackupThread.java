@@ -17,6 +17,8 @@
 
 package autosaveworld.threads.backup;
 
+import org.bukkit.Bukkit;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
@@ -98,12 +100,29 @@ public class AutoBackupThread extends Thread {
 		
 		try 
 		{
+			if (config.backupsaveBefore)
+			{
+				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+				{
+						public void run()
+						{
+							plugin.saveThread.command = true;
+							plugin.saveThread.performSave();
+						}
+
+				});
+				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+				{
+					try {Thread.sleep(100);} catch (Exception e) {e.printStackTrace();}
+				}
+			}
 			// Lock
 			plugin.backupInProgress = true;
+			
 			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPre);}
 		
 			datesec = System.currentTimeMillis();
-		
+					
 			if (config.localfsbackupenabled)
 			{
 				new LocalFSBackup(plugin, config).performBackup();
