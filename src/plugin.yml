@@ -1,7 +1,7 @@
 name: AutoSaveWorld
 main: autosaveworld.core.AutoSaveWorld
 version: 4.9.devel
-author: Shevchik
+author: _Shevchik_
 load: STARTUP 
 description: >
              Provides automatic world saves at defined intervals.  The focus
