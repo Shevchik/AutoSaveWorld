@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.backup.ftp.FTPBackup;
 import autosaveworld.threads.backup.localfs.LocalFSBackup;
 
 public class AutoBackupThread extends Thread {
@@ -125,7 +126,16 @@ public class AutoBackupThread extends Thread {
 					
 			if (config.localfsbackupenabled)
 			{
+				plugin.debug("Starting LocalFS backup");
 				new LocalFSBackup(plugin, config).performBackup();
+				plugin.debug("LocalFS backup finished");
+			}
+			
+			if (config.ftpbackupenabled)
+			{
+				plugin.debug("Starting FTP backup");
+				new FTPBackup(plugin, config).performBackup();
+				plugin.debug("FTP backup finished");
 			}
 		
 			plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");

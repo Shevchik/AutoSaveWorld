@@ -52,12 +52,12 @@ public class AutoSaveConfig {
 		public boolean lfsdonotbackuptointfld = true;
 		public boolean lfsbackupzip = false;
 		//ftp backup
+		public boolean ftpbackupenabled = false;
 		public String ftphostname = "127.0.0.1";
 		public int ftpport = 21;
 		public String ftpusername = "user";
 		public String ftppassworld = "password";
 		public String ftppath = "/asw/";
-		public boolean ftpbackupenabled = false;
 		public List<String> ftpbackupWorlds = null;
 		public boolean ftpbackuppluginsfolder = false;
 		public List<String> ftpbackupexcludefolders;
@@ -138,6 +138,21 @@ public class AutoSaveConfig {
 			if (lfsbackupWorldsList.size() == 0) {
 				lfsbackupWorldsList.add("*");
 			}
+			//ftp
+			ftpbackupenabled = config.getBoolean("backup.ftp.enabled",ftpbackupenabled);
+			ftphostname = config.getString("backup.ftp.hostname",ftphostname);
+			ftpport = config.getInt("backup.ftp.port",ftpport);
+			ftpusername = config.getString("backup.ftp.login",ftpusername);
+			ftppassworld = config.getString("backup.ftp.password",ftppassworld);
+			ftppath = config.getString("backup.ftp.path",ftppath);
+			ftpbackupWorlds = config.getStringList("backup.ftp.worlds");
+			ftpbackuppluginsfolder = config.getBoolean("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
+			ftpbackupexcludefolders = config.getStringList("backup.ftp.excludefolders");
+			ftpbackupzip = config.getBoolean("backup.ftp.zip",ftpbackupzip);
+			if (ftpbackupWorlds.size() == 0) {
+				ftpbackupWorlds.add("*");
+			}
+
 
 		
 		//purge variables
@@ -225,8 +240,18 @@ public class AutoSaveConfig {
 			config.set("backup.localfs.disableintfolder", lfsdonotbackuptointfld);
 			config.set("backup.localfs.extfolders",lfsextfolders);
 			config.set("backup.localfs.zip",lfsbackupzip);
+			//ftp
+			config.set("backup.ftp.enabled",ftpbackupenabled);
+			config.set("backup.ftp.hostname",ftphostname);
+			config.set("backup.ftp.port",ftpport);
+			config.set("backup.ftp.login",ftpusername);
+			config.set("backup.ftp.password",ftppassworld);
+			config.set("backup.ftp.path",ftppath);
+			config.set("backup.ftp.worlds",ftpbackupWorlds);
+			config.set("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
+			config.set("backup.ftp.excludefolders",ftpbackupexcludefolders);
+			config.set("backup.ftp.zip",ftpbackupzip);
 
-		
 		//purge variables
 		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.interval", purgeInterval);
