@@ -49,7 +49,11 @@ public class WorldRegenPasteThread extends Thread {
 			AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
 			Bukkit.getPluginManager().registerEvents(ajl, plugin);
 			
-			//create task that will tell us that server is loaded
+			//load config
+			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(WorldRegenConstants.getWorldnameFile()));
+			worldtopasteto = cfg.getString("wname");
+			
+			//wait for server to load
 			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
 				public void run()
@@ -57,15 +61,9 @@ public class WorldRegenPasteThread extends Thread {
 					loaded = System.currentTimeMillis();
 				}
 			});
-			
-			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(WorldRegenConstants.getWorldnameFile()));
-			worldtopasteto = cfg.getString("wname");
-
-			// wait until world is loaded
 			while (loaded == 0) {
 				Thread.sleep(1000);
 			}
-			//cancel no longer needed task
 			Bukkit.getScheduler().cancelTask(ltask);
 			
 			//check for worldedit
