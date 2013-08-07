@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+
 public class Zip {
 
 	private List<String> excludefolders;
@@ -73,19 +76,30 @@ public class Zip {
 		for (final String child : zipDir.list()) {
 			final File srcFile = new File(zipDir, child);
 
-			if (srcFile.isDirectory()) {
+			if (srcFile.isDirectory()) 
+			{
 				boolean copy = true;
+				//ignore configured fodlers
 				for (String efname : excludefolders) {
 					if ((new File(srcDir.getName() + File.separator + currentDir + child).getAbsoluteFile()).equals(new File(efname).getAbsoluteFile())) {
 						copy = false;
 						break;
 					}
 				}
+        		//ignore others worlds folders (for mcpc+)
+	        	for (World w : Bukkit.getWorlds()) {
+	        		if (new File(srcDir.getName() + File.separator + currentDir + child).isDirectory() && new File(srcDir.getName() + File.separator + currentDir + child).getName().equals(w.getWorldFolder().getName())) {
+	        			copy = false; break;
+	        		}
+	        	}
 				if (copy) {
 					zipDir(srcDir, currentDir + child);
 				}
-			} else
+			}
+			else
+			{
 				zipFile(srcFile, srcDir.getName() + File.separator + currentDir + child);
+			}
 		}
 	}
 
