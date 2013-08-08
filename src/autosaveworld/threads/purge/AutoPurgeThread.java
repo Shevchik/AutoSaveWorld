@@ -110,27 +110,27 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Purge started");
 			
 			if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)
-					&& config.wg) {
+					&& config.purgewg) {
 				plugin.debug("WG found, purging");
 				try {
-					new WGpurge(plugin).doWGPurgeTask(awaytime, config.wgregenrg, config.wgnoregenoverlap);
+					new WGpurge(plugin).doWGPurgeTask(awaytime, config.purgewgregenrg, config.purgewgnoregenoverlap);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
 			if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null)
-					&& config.lwc) {
+					&& config.purgelwc) {
 				plugin.debug("LWC found, purging");
 				try {
-					new LWCpurge(plugin).doLWCPurgeTask(awaytime, config.lwcdelprotectedblocks);
+					new LWCpurge(plugin).doLWCPurgeTask(awaytime, config.purgelwcdelprotectedblocks);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
 			if ((Bukkit.getPluginManager().getPlugin("Multiverse-Inventories") !=null) 
-					&& config.mvinv ) {
+					&& config.purgemvinv ) {
 				plugin.debug("Multiverse-Inventories found, purging");
 				try {
 					new MVInvpurge(plugin).doMVInvPurgeTask(awaytime);
@@ -140,17 +140,17 @@ public class AutoPurgeThread extends Thread {
 			}
 			
 			if ((Bukkit.getPluginManager().getPlugin("PlotMe") !=null) 
-					&& config.pm) {
+					&& config.purgepm) {
 				plugin.debug("PlotMe found, purging");
 				try {
-					new PlotMepurge(plugin).doPlotMePurgeTask(awaytime, config.pmregen);
+					new PlotMepurge(plugin).doPlotMePurgeTask(awaytime, config.purgepmregen);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
 			plugin.debug("Purging player .dat files");
-			if (config.dat) {
+			if (config.purgedat) {
 				try {
 					new Datfilepurge(plugin).doDelPlayerDatFileTask(awaytime);
 				} catch (Exception e) {

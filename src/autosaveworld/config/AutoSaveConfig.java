@@ -67,15 +67,15 @@ public class AutoSaveConfig {
 	public long purgeAwayTime = 60*60*24*30;
 	public boolean purgeEnabled = false;
 	public boolean purgeBroadcast = true;
-	public boolean wg = true;
-	public boolean wgregenrg = true;
-	public boolean wgnoregenoverlap = true;
-	public boolean lwc = true;
-	public boolean lwcdelprotectedblocks = false;
-	public boolean mvinv = true;
-	public boolean pm = true;
-	public boolean pmregen = true;
-	public boolean dat = true;
+	public boolean purgewg = true;
+	public boolean purgewgregenrg = true;
+	public boolean purgewgnoregenoverlap = true;
+	public boolean purgelwc = true;
+	public boolean purgelwcdelprotectedblocks = false;
+	public boolean purgemvinv = true;
+	public boolean purgepm = true;
+	public boolean purgepmregen = true;
+	public boolean purgedat = true;
 	//lang
 	public boolean switchtolangfile = false;
 	public String langfilesuffix = "ru";
@@ -102,6 +102,7 @@ public class AutoSaveConfig {
 	//worldregen
 	public boolean worldregensavewg = true;
 	public boolean worldregensavefactions = true;
+	public boolean worldregensavegp = true;
 	
 
 
@@ -160,15 +161,15 @@ public class AutoSaveConfig {
 		purgeAwayTime = config.getLong("purge.awaytime", purgeAwayTime);
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
-		wg = config.getBoolean("purge.wg.enabled", wg);
-		wgregenrg = config.getBoolean("purge.wg.regenpurgedregion", wgregenrg);
-		wgnoregenoverlap = config.getBoolean("purge.wg.noregenoverlapregion",wgnoregenoverlap);
-		lwc = config.getBoolean("purge.lwc.enabled", lwc);
-		lwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",lwcdelprotectedblocks);
-		mvinv = config.getBoolean("purge.mvinv.enabled",mvinv);
-		pm = config.getBoolean("purge.pm.enabled", pm);
-		pmregen = config.getBoolean("purge.pm.regenpurgedplot",pmregen);
-		dat = config.getBoolean("purge.dat.enabled", dat);
+		purgewg = config.getBoolean("purge.wg.enabled", purgewg);
+		purgewgregenrg = config.getBoolean("purge.wg.regenpurgedregion", purgewgregenrg);
+		purgewgnoregenoverlap = config.getBoolean("purge.wg.noregenoverlapregion",purgewgnoregenoverlap);
+		purgelwc = config.getBoolean("purge.lwc.enabled", purgelwc);
+		purgelwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",purgelwcdelprotectedblocks);
+		purgemvinv = config.getBoolean("purge.mvinv.enabled",purgemvinv);
+		purgepm = config.getBoolean("purge.pm.enabled", purgepm);
+		purgepmregen = config.getBoolean("purge.pm.regenpurgedplot",purgepmregen);
+		purgedat = config.getBoolean("purge.dat.enabled", purgedat);
 		
 		//crashrestart variables
 		crashrestartenabled = config.getBoolean("crashrestart.enabled",crashrestartenabled);
@@ -225,6 +226,7 @@ public class AutoSaveConfig {
 		//worldregen variables
 		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
 		worldregensavefactions = config.getBoolean("worldregen.savefactions",worldregensavefactions);
+		worldregensavegp = config.getBoolean("worldregen.savegp",worldregensavegp);
 		
 		//locale variables
 		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
@@ -279,15 +281,15 @@ public class AutoSaveConfig {
 		config.set("purge.interval", purgeInterval);
 		config.set("purge.awaytime", purgeAwayTime);
 		config.set("purge.broadcast",purgeBroadcast);
-		config.set("purge.wg.enabled", wg);
-		config.set("purge.wg.regenpurgedregion", wgregenrg);
-		config.set("purge.wg.noregenoverlapregion",wgnoregenoverlap);
-		config.set("purge.lwc.enabled", lwc);
-		config.set("purge.mvinv.enabled",mvinv);
-		config.set("purge.pm.enabled", pm);
-		config.set("purge.pm.regenpurgedplot",pmregen);
-		config.set("purge.lwc.deletepurgedblocks", lwcdelprotectedblocks);
-		config.set("purge.dat.enabled", dat);
+		config.set("purge.wg.enabled", purgewg);
+		config.set("purge.wg.regenpurgedregion", purgewgregenrg);
+		config.set("purge.wg.noregenoverlapregion",purgewgnoregenoverlap);
+		config.set("purge.lwc.enabled", purgelwc);
+		config.set("purge.mvinv.enabled",purgemvinv);
+		config.set("purge.pm.enabled", purgepm);
+		config.set("purge.pm.regenpurgedplot",purgepmregen);
+		config.set("purge.lwc.deletepurgedblocks", purgelwcdelprotectedblocks);
+		config.set("purge.dat.enabled", purgedat);
 		
 		//crashrestart variables
 		config.set("crashrestart.enabled",crashrestartenabled);
@@ -328,6 +330,7 @@ public class AutoSaveConfig {
 		//worldregen variables
 		config.set("worldregen.savewg",worldregensavewg);
 		config.set("worldregen.savefactions",worldregensavefactions);
+		config.set("worldregen.savegp",worldregensavegp);
 		
 		//locale variables
 		config.set("locale.switchtolangfile",switchtolangfile);
