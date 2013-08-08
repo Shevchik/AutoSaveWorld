@@ -51,7 +51,7 @@ public class WorldGuardPaste {
 	
 	public void pasteAllFromSchematics()
 	{
-		plugin.debug("Pasting wg regions from schematics");
+		plugin.debug("Pasting WG regions from schematics");
 		
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		final RegionManager m = wg.getRegionManager(wtopaste);
@@ -70,14 +70,14 @@ public class WorldGuardPaste {
 			public void run() 
 			{
 				try {
-					plugin.debug("Pasting region "+rg.getId()+" from schematics");
+					plugin.debug("Pasting WG region "+rg.getId()+" from schematic");
 					//load from schematic to clipboard
 					EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
 					File f = new File(schemfolder+rg.getId());
 					CuboidClipboard cc = format.load(f);
 					//paste clipboard at origin
 					cc.place(es, cc.getOrigin(), false);
-					plugin.debug("Pasted region "+rg.getId()+" from schematics");
+					plugin.debug("Pasted WG region "+rg.getId()+" from schematic");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

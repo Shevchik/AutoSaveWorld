@@ -52,7 +52,7 @@ public class WorldGuardCopy {
 	
 	public void copyAllToSchematics()
 	{
-		plugin.debug("Saving wg regions to schematics");
+		plugin.debug("Saving WG regions to schematics");
 		
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		final RegionManager m = wg.getRegionManager(wtoregen);
