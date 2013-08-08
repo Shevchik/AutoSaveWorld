@@ -19,7 +19,6 @@ package autosaveworld.threads.consolecommand;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
