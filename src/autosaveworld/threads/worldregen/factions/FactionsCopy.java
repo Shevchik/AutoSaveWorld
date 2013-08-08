@@ -51,13 +51,14 @@ public class FactionsCopy {
 	
 	private int taskid;
     private final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
+	final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 	
 	public void copyAllToSchematics()
 	{
 		plugin.debug("Saving factions lands to schematics");
 
-		final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 		new File(schemfolder).mkdirs();
+		
 		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll())
 		{
 		  	Set<PS> chunks = BoardColls.get().getChunks(f);

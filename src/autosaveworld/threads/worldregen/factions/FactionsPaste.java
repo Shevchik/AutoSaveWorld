@@ -48,13 +48,12 @@ public class FactionsPaste {
 	
 	private int taskid;
     final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
+	final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 	
 	public void pasteAllFromSchematics()
 	{
 		plugin.debug("Pasting factions lands from schematics");
 		
-		//paste users lands
-		final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll())
 		{
 		  	Set<PS> chunks = BoardColls.get().getChunks(f);

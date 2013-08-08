@@ -47,48 +47,55 @@ public class WorldGuardCopy {
 	
 	
 	private int taskid;
+    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
+	final String schemfolder = WorldRegenConstants.getWGTempFolder();
 	
 	public void copyAllToSchematics()
 	{
 		plugin.debug("Saving wg regions to schematics");
+		
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		final RegionManager m = wg.getRegionManager(wtoregen);
-	    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-		final String schemfolder = WorldRegenConstants.getWGTempFolder();
 		new File(schemfolder).mkdirs();
-			//save region to schematic
-			for (final ProtectedRegion rg : m.getRegions().values()) {
-				if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
-				Runnable copypaste = new Runnable() 
-				{
-					public void run()
-					{
-						try {
-						plugin.debug("Saving WG Region "+rg.getId()+" to schematic");
-						//copy to clipboard
-						EditSession es = new EditSession(new BukkitWorld(wtoregen),Integer.MAX_VALUE);
-						Vector bvmin = rg.getMinimumPoint().toBlockPoint();
-						Vector bvmax = rg.getMaximumPoint().toBlockPoint();
-						Vector pos = bvmax;
-						CuboidClipboard clipboard = new CuboidClipboard(
-								bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-								bvmin, bvmin.subtract(pos)
-						);
-						clipboard.copy(es);
-						//save to schematic
-				        File schematic = new File(schemfolder + rg.getId());
-				        format.save(clipboard, schematic);
-				        plugin.debug("WG Region "+rg.getId()+" saved");
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				};
-				taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-				{
-					try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+
+		for (final ProtectedRegion rg : m.getRegions().values()) {
+			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
+			saveWGRegion(rg);
+		}
+	}
+	
+	
+	private void saveWGRegion(final ProtectedRegion rg)
+	{
+		Runnable copypaste = new Runnable() 
+		{
+			public void run()
+			{
+				try {
+				plugin.debug("Saving WG Region "+rg.getId()+" to schematic");
+				//copy to clipboard
+				EditSession es = new EditSession(new BukkitWorld(wtoregen),Integer.MAX_VALUE);
+				Vector bvmin = rg.getMinimumPoint().toBlockPoint();
+				Vector bvmax = rg.getMaximumPoint().toBlockPoint();
+				Vector pos = bvmax;
+				CuboidClipboard clipboard = new CuboidClipboard(
+						bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
+						bvmin, bvmin.subtract(pos)
+				);
+				clipboard.copy(es);
+				//save to schematic
+		        File schematic = new File(schemfolder + rg.getId());
+		        format.save(clipboard, schematic);
+		        plugin.debug("WG Region "+rg.getId()+" saved");
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
+		};
+		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+		{
+			try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		}
 	}
 }
