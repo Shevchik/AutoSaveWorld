@@ -68,7 +68,7 @@ public class AutoConsoleCommandThread extends Thread {
 		while (run) {
 			
 			//handle times mode
-			if (run && config.cctimeenabled) 
+			if (config.cctimeenabled) 
 			{
 				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 				String ctime = getCurTime();
@@ -81,7 +81,7 @@ public class AutoConsoleCommandThread extends Thread {
 			}
 			
 			//handle interval mode
-			if (run && config.ccintervalenabled)
+			if (config.ccintervalenabled)
 			{
 				for (int interval : getIntervalsToExecute()) 
 				{
@@ -102,17 +102,20 @@ public class AutoConsoleCommandThread extends Thread {
 
 	private void executeCommands(final List<String> commands)
 	{
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		if (plugin != null && plugin.isEnabled())
 		{
-			public void run()
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
-				ConsoleCommandSender csender = Bukkit.getConsoleSender();
-				for (String command : commands)
+				public void run()
 				{
-					Bukkit.dispatchCommand(csender, command);
+					ConsoleCommandSender csender = Bukkit.getConsoleSender();
+					for (String command : commands)
+					{
+						Bukkit.dispatchCommand(csender, command);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 	
 	
