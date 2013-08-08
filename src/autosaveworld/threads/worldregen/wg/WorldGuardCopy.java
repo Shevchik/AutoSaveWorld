@@ -72,21 +72,21 @@ public class WorldGuardCopy {
 			public void run()
 			{
 				try {
-				plugin.debug("Saving WG Region "+rg.getId()+" to schematic");
-				//copy to clipboard
-				EditSession es = new EditSession(new BukkitWorld(wtoregen),Integer.MAX_VALUE);
-				Vector bvmin = rg.getMinimumPoint().toBlockPoint();
-				Vector bvmax = rg.getMaximumPoint().toBlockPoint();
-				Vector pos = bvmax;
-				CuboidClipboard clipboard = new CuboidClipboard(
-						bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-						bvmin, bvmin.subtract(pos)
-				);
-				clipboard.copy(es);
-				//save to schematic
-		        File schematic = new File(schemfolder + rg.getId());
-		        format.save(clipboard, schematic);
-		        plugin.debug("WG Region "+rg.getId()+" saved");
+					plugin.debug("Saving WG Region "+rg.getId()+" to schematic");
+					//copy to clipboard
+					EditSession es = new EditSession(new BukkitWorld(wtoregen),Integer.MAX_VALUE);
+					Vector bvmin = rg.getMinimumPoint().toBlockPoint();
+					Vector bvmax = rg.getMaximumPoint().toBlockPoint();
+					Vector pos = bvmax;
+					CuboidClipboard clipboard = new CuboidClipboard(
+							bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
+							bvmin, bvmin.subtract(pos)
+							);
+					clipboard.copy(es);
+					//save to schematic
+					File schematic = new File(schemfolder + rg.getId());
+					format.save(clipboard, schematic);
+					plugin.debug("WG Region "+rg.getId()+" saved");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
