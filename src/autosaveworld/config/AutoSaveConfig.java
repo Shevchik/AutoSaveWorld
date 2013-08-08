@@ -97,8 +97,8 @@ public class AutoSaveConfig {
 	public List<String> cctimetimes = new ArrayList<String>();
 	public HashMap<String, ArrayList<String>> cctimescommands = new HashMap<String, ArrayList<String>>();
 	public boolean ccintervalenabled = false;
-	public int ccintervalinterval = 600;
-	public List<String> ccintervalcommands = new ArrayList<String>();
+	public List<Integer> ccintervalstimes = new ArrayList<Integer>();
+	public HashMap<Integer, ArrayList<String>> ccintervalscommands = new HashMap<Integer, ArrayList<String>>();
 	//worldregen
 	public boolean worldregensavewg = true;
 	public boolean worldregensavefactions = false;
@@ -197,8 +197,20 @@ public class AutoSaveConfig {
 			cctimescommands.put(cctime, (ArrayList<String>) config.getStringList("consolecommand.timemode.times."+cctime));
 		}
 		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
-		ccintervalinterval = config.getInt("consolecommand.intervalmode.interval", ccintervalinterval);
-		ccintervalcommands = config.getStringList("consolecommand.intervalmode.commands");
+		if (config.getConfigurationSection("consolecommand.intervalmode.intervals") != null)
+		{
+			Set<String> keytimes = config.getConfigurationSection("consolecommand.intervalmode.intervals").getKeys(false);
+			ccintervalstimes = new ArrayList<Integer>();
+			for (String key : keytimes)
+			{
+				try {ccintervalstimes.add(Integer.valueOf(key));} catch (Exception e) {e.printStackTrace();}
+			}
+		}
+		for (int inttime : ccintervalstimes)
+		{
+			ccintervalscommands.put(inttime, (ArrayList<String>) config.getStringList("consolecommand.intervalmode.intervals."+inttime));
+		}
+		cctimescommands.clear();
 		
 		//worldregen variables
 		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
@@ -294,8 +306,14 @@ public class AutoSaveConfig {
 			config.set("consolecommand.timemode.times."+cctime, cctimescommands.get(cctime));
 		}
 		config.set("consolecommand.intervalmode.enabled", ccintervalenabled);
-		config.set("consolecommand.intervalmode.interval", ccintervalinterval);
-		config.set("consolecommand.intervalmode.commands", ccintervalcommands);
+		if (ccintervalscommands.isEmpty())
+		{
+			config.createSection("consolecommand.intervalmode.intervals");
+		}
+		for (int inttime : ccintervalscommands.keySet())
+		{
+			config.set("consolecommand.intervalmode.intervals."+inttime, ccintervalscommands.get(inttime));
+		}
 		
 		//worldregen variables
 		config.set("worldregen.savewg",worldregensavewg);

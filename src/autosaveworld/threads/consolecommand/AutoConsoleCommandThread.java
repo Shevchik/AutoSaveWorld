@@ -18,7 +18,10 @@
 package autosaveworld.threads.consolecommand;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
@@ -39,8 +42,9 @@ public class AutoConsoleCommandThread extends Thread {
 		this.run = false;
 	}
 	
-	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-	SimpleDateFormat msdf = new SimpleDateFormat("mm");
+	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	private SimpleDateFormat msdf = new SimpleDateFormat("mm");
+	private long loaded = 0;
 	
 	private volatile boolean run = true;
 	public void run() {
@@ -48,10 +52,25 @@ public class AutoConsoleCommandThread extends Thread {
 		plugin.debug("AutoConsoleCommandThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 		
+		//wait for server to start
+		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		{
+			public void run()
+			{
+				loaded = System.currentTimeMillis();
+			}
+		});
+		while (loaded == 0) {
+			try{Thread.sleep(1000);} catch (Exception e) {e.printStackTrace();}
+		}
+		Bukkit.getScheduler().cancelTask(ltask);
+		
+		
 		while (run) {
 			
 			//handle times mode
-			if (config.cctimeenabled) {
+			if (run && config.cctimeenabled) 
+			{
 				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 				String ctime = getCurTime();
 				if (cminute != minute && config.cctimetimes.contains(ctime))
@@ -63,15 +82,14 @@ public class AutoConsoleCommandThread extends Thread {
 			}
 			
 			//handle interval mode
-			if (config.ccintervalenabled)
+			if (run && config.ccintervalenabled)
 			{
-				long cseconds = System.currentTimeMillis()/1000;
-				if (cseconds - lastintervalexecute >= config.ccintervalinterval)
+				for (int interval : getIntervalsToExecute()) 
 				{
 					plugin.debug("Executing console commands (intervalmode)");
-					lastintervalexecute = cseconds;
-					executeCommands(config.ccintervalcommands);
+					executeCommands(config.ccintervalscommands.get(interval));
 				}
+				intervalcounter++;
 			}
 			
 			//sleep for a second
@@ -103,13 +121,23 @@ public class AutoConsoleCommandThread extends Thread {
 	private int minute = -1;
 	private String getCurTime()
 	{
-		String curtime = sdf.format(System.currentTimeMillis());
-		return curtime;
+		return sdf.format(System.currentTimeMillis());
 	}
 	
 	//intervalmode checks (to know when we last executed interval command)
-	private long lastintervalexecute = System.currentTimeMillis()/1000;
-	
+	private long intervalcounter = 0;
+	private List<Integer> getIntervalsToExecute()
+	{
+		List<Integer> inttoexecute = new ArrayList<Integer>();
+		for (int interval : config.ccintervalstimes)
+		{
+			if (intervalcounter % interval == 0)
+			{
+				inttoexecute.add(interval);
+			}
+		}
+		return inttoexecute;
+	}
 	
 	
 }
