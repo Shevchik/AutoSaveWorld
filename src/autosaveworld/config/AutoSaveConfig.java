@@ -186,6 +186,8 @@ public class AutoSaveConfig {
 		astop = config.getBoolean("autorestart.juststop", astop);
 		if (autorestartbroadcastonseconds.size() == 0)
 		{
+			autorestartbroadcastonseconds.add(60);
+			autorestartbroadcastonseconds.add(30);
 			for (int i = 1; i<=10; i++)
 			{
 				autorestartbroadcastonseconds.add(i);
