@@ -76,7 +76,7 @@ public class AutoSaveConfig {
 	public boolean purgepm = true;
 	public boolean purgepmregen = false;
 	public boolean purgeresidence = true;
-	public boolean purgeresregenrg = false;
+	public boolean purgeresregenarena = false;
 	public boolean purgedat = true;
 	//lang
 	public boolean switchtolangfile = false;
@@ -171,6 +171,8 @@ public class AutoSaveConfig {
 		purgemvinv = config.getBoolean("purge.mvinv.enabled",purgemvinv);
 		purgepm = config.getBoolean("purge.pm.enabled", purgepm);
 		purgepmregen = config.getBoolean("purge.pm.regenpurgedplot",purgepmregen);
+		purgeresidence = config.getBoolean("purge.residence.enabled", purgeresidence);
+		purgeresregenarena = config.getBoolean("purge.residence.regenpurgedresidence",purgeresregenarena);
 		purgedat = config.getBoolean("purge.dat.enabled", purgedat);
 		
 		//crashrestart variables
@@ -210,6 +212,7 @@ public class AutoSaveConfig {
 			cctimescommands.put(cctime, (ArrayList<String>) config.getStringList("consolecommand.timemode.times."+cctime));
 		}
 		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
+		ccintervalstimes.clear();
 		if (config.getConfigurationSection("consolecommand.intervalmode.intervals") != null)
 		{
 			Set<String> keytimes = config.getConfigurationSection("consolecommand.intervalmode.intervals").getKeys(false);
@@ -287,10 +290,12 @@ public class AutoSaveConfig {
 		config.set("purge.wg.regenpurgedregion", purgewgregenrg);
 		config.set("purge.wg.noregenoverlapregion",purgewgnoregenoverlap);
 		config.set("purge.lwc.enabled", purgelwc);
+		config.set("purge.lwc.deletepurgedblocks", purgelwcdelprotectedblocks);
 		config.set("purge.mvinv.enabled",purgemvinv);
 		config.set("purge.pm.enabled", purgepm);
 		config.set("purge.pm.regenpurgedplot",purgepmregen);
-		config.set("purge.lwc.deletepurgedblocks", purgelwcdelprotectedblocks);
+		config.set("purge.residence.enabled", purgeresidence);
+		config.set("purge.residence.regenpurgedresidence",purgeresregenarena);
 		config.set("purge.dat.enabled", purgedat);
 		
 		//crashrestart variables
