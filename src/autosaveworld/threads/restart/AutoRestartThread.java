@@ -65,9 +65,12 @@ public class AutoRestartThread  extends Thread{
 				
 				if (config.autorestartcountdown)
 				{
-					for (int i = config.autorestartseconds; i>0; i--)
+					for (int i = config.autorestartbroadcastonseconds.get(0); i>0; i--)
 					{
-						plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)));
+						if (config.autorestartbroadcastonseconds.contains(i))
+						{
+							plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)));
+						}
 						try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					} 
 				}
