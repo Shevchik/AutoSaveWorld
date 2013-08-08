@@ -213,6 +213,7 @@ public class AutoSaveConfig {
 		}
 		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
 		ccintervalstimes.clear();
+		ccintervalscommands.clear();
 		if (config.getConfigurationSection("consolecommand.intervalmode.intervals") != null)
 		{
 			Set<String> keytimes = config.getConfigurationSection("consolecommand.intervalmode.intervals").getKeys(false);
