@@ -19,11 +19,8 @@ package autosaveworld.threads.restart;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 
 public class JVMshutdownhook extends Thread {
@@ -81,8 +78,16 @@ public class JVMshutdownhook extends Thread {
 	
 	public void run()
 	{
-		if (!canRestart()) {System.out.println("[AutoSaveWorld] Waiting for WorldRegen shutdownhook to finish");}
-		while (!canRestart())
+		if (!RestartWaiter.canRestartNow())
+		{
+			System.out.println("Delaying restart");
+			System.out.println("Reasons:");
+			for (String reason : RestartWaiter.getReasons())
+			{
+				System.out.println(reason);
+			}
+		}
+		while (!RestartWaiter.canRestartNow())
 		{
 			try {
 			Thread.sleep(1000);
@@ -92,26 +97,5 @@ public class JVMshutdownhook extends Thread {
 		}
 		restart();
 	}
-	
-	@SuppressWarnings("unchecked")
-	boolean canRestart()
-	{
-		boolean b = true;
-		try {
-		    Class<?> hookclass = Class.forName("java.lang.ApplicationShutdownHooks");
-		    Field field = hookclass.getDeclaredField("hooks");
-		    field.setAccessible(true);
-		    Map<Thread, Thread> hooks = (Map<Thread, Thread>) field.get(null);
-		    for (Thread hook : hooks.keySet())
-		    {
-		    	if (hook.getName().equals("AutoSaveWorld WorldRegenShutdownHook"))
-		    	{b=false;}
-		    }
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return b;
-	}
-	
+		
 }

@@ -22,10 +22,12 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
+import autosaveworld.threads.worldregen.griefprevention.GPPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
 
 public class WorldRegenPasteThread extends Thread {
@@ -75,20 +77,29 @@ public class WorldRegenPasteThread extends Thread {
 			plugin.debug("Restoring buildings");
 			
 			// paste WG buildings
-			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
+			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) 
+			{
 				new WorldGuardPaste(plugin, worldtopasteto).pasteAllFromSchematics();
 			}
 			
 			//paste Factions buildings
-			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
+			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) 
+			{
 				new FactionsPaste(plugin, worldtopasteto).pasteAllFromSchematics();
+			}
+			
+			//paste GriefPrevention claims
+			if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp)
+			{
+				new GPPaste(plugin,worldtopasteto).pasteAllFromSchematics();
 			}
 
 			//clear temp folder
-			plugin.debug("Cleaning temp folder");
+			plugin.debug("Cleaning temp folders");
 			
 			deleteDirectory(new File(WorldRegenConstants.getWGTempFolder()));
 			deleteDirectory(new File(WorldRegenConstants.getFactionsTempFolder()));
+			deleteDirectory(new File(WorldRegenConstants.getGPTempFolder()));
 			
 			plugin.debug("Restore finished");
 

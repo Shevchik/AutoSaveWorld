@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,6 +29,7 @@ import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.worldregen.factions.FactionsCopy;
+import autosaveworld.threads.worldregen.griefprevention.GPCopy;
 import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
 
 public class WorldRegenCopyThread extends Thread {
@@ -133,6 +135,12 @@ public class WorldRegenCopyThread extends Thread {
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions)
 		{
 			new FactionsCopy(plugin, worldtoregen).copyAllToSchematics();
+		}
+		
+		//save GriefPrevention claims
+		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp)
+		{
+			new GPCopy(plugin, worldtoregen).copyAllToSchematics();
 		}
 		
 		plugin.debug("Saving finished");

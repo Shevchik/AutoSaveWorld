@@ -10,6 +10,8 @@ public class WorldRegenConstants {
 	
 	private static String factionstempfolder = "Factions/";
 	
+	private static String griefpreventionfolder = "GP/";
+	
 	public static String getTempFolder()
 	{
 		return tempfolder;
@@ -35,4 +37,8 @@ public class WorldRegenConstants {
 		return getTempFolder()+factionstempfolder;
 	}
 	
+	public static String getGPTempFolder()
+	{
+		return getTempFolder()+griefpreventionfolder;
+	}
 }

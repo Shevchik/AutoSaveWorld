@@ -20,6 +20,8 @@ package autosaveworld.threads.worldregen;
 import java.io.File;
 import java.io.IOException;
 
+import autosaveworld.threads.restart.RestartWaiter;
+
 public class WorldRegenJVMshutdownhook extends Thread {
 	
 	String fldtodelete;
@@ -32,15 +34,19 @@ public class WorldRegenJVMshutdownhook extends Thread {
 	
 	public void run()
 	{
+		//notify autorestart that it should wait
+		String reason = "WorldRegen is deleting regions directory";
+		RestartWaiter.addReason(reason);
 		//Delete region from world folder
 		deleteDirectory(new File(fldtodelete+File.separator+"region"));
 		try {
 			//create file that indicates that AutoSaveWorld should paste regions from schematics back to map
 			new File(WorldRegenConstants.getShouldpasteFile()).createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//remove autorestart notification
+		RestartWaiter.removeReason(reason);
 	}
 	
 	
