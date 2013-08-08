@@ -68,13 +68,15 @@ public class AutoSaveConfig {
 	public boolean purgeEnabled = false;
 	public boolean purgeBroadcast = true;
 	public boolean purgewg = true;
-	public boolean purgewgregenrg = true;
+	public boolean purgewgregenrg = false;
 	public boolean purgewgnoregenoverlap = true;
 	public boolean purgelwc = true;
 	public boolean purgelwcdelprotectedblocks = false;
 	public boolean purgemvinv = true;
 	public boolean purgepm = true;
-	public boolean purgepmregen = true;
+	public boolean purgepmregen = false;
+	public boolean purgeresidence = true;
+	public boolean purgeresregenrg = false;
 	public boolean purgedat = true;
 	//lang
 	public boolean switchtolangfile = false;
