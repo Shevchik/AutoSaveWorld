@@ -101,7 +101,7 @@ public class AutoSaveConfig {
 	public HashMap<Integer, ArrayList<String>> ccintervalscommands = new HashMap<Integer, ArrayList<String>>();
 	//worldregen
 	public boolean worldregensavewg = true;
-	public boolean worldregensavefactions = false;
+	public boolean worldregensavefactions = true;
 	
 
 
