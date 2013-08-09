@@ -149,6 +149,16 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 			
+			if ((Bukkit.getPluginManager().getPlugin("Residence") !=null) 
+					&& config.purgeresidence) {
+				plugin.debug("Residence found, purging");
+				try {
+					new Residencepurge(plugin).doResidencePurgeTask(awaytime, config.purgeresregenarena);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
 			plugin.debug("Purging player .dat files");
 			if (config.purgedat) {
 				try {
