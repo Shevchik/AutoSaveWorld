@@ -97,10 +97,10 @@ public class AutoSaveConfig {
 	//consolecmmand
 	public boolean cctimeenabled = false;
 	public List<String> cctimetimes = new ArrayList<String>();
-	public HashMap<String, ArrayList<String>> cctimescommands = new HashMap<String, ArrayList<String>>();
+	public HashMap<String, List<String>> cctimescommands = new HashMap<String, List<String>>();
 	public boolean ccintervalenabled = false;
 	public List<Integer> ccintervalstimes = new ArrayList<Integer>();
-	public HashMap<Integer, ArrayList<String>> ccintervalscommands = new HashMap<Integer, ArrayList<String>>();
+	public HashMap<Integer, List<String>> ccintervalscommands = new HashMap<Integer, List<String>>();
 	//worldregen
 	public boolean worldregensavewg = true;
 	public boolean worldregensavefactions = true;
@@ -202,14 +202,15 @@ public class AutoSaveConfig {
 		
 		//autoconsolecommand variables
 		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
+		cctimescommands.clear();
 		if (config.getConfigurationSection("consolecommand.timemode.times") != null)
 		{
 			cctimetimes = new ArrayList<String>(config.getConfigurationSection("consolecommand.timemode.times").getKeys(false));
+			System.out.println(cctimetimes);
 		}
-		cctimescommands.clear();
 		for (String cctime : cctimetimes)
 		{
-			cctimescommands.put(cctime, (ArrayList<String>) config.getStringList("consolecommand.timemode.times."+cctime));
+			cctimescommands.put(cctime, config.getStringList("consolecommand.timemode.times."+cctime));
 		}
 		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
 		ccintervalstimes.clear();
@@ -225,9 +226,8 @@ public class AutoSaveConfig {
 		}
 		for (int inttime : ccintervalstimes)
 		{
-			ccintervalscommands.put(inttime, (ArrayList<String>) config.getStringList("consolecommand.intervalmode.intervals."+inttime));
+			ccintervalscommands.put(inttime, config.getStringList("consolecommand.intervalmode.intervals."+inttime));
 		}
-		cctimescommands.clear();
 		
 		//worldregen variables
 		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
