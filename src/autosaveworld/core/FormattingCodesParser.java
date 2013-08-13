@@ -21,7 +21,7 @@ import org.bukkit.ChatColor;
 
 public class FormattingCodesParser {
 
-	public static String parseFormattingCodes(String message) {
+	public String parseFormattingCodes(String message) {
 		message = message.replaceAll("&0", ChatColor.BLACK + "");
 		message = message.replaceAll("&1", ChatColor.DARK_BLUE + "");
 		message = message.replaceAll("&2", ChatColor.DARK_GREEN + "");
@@ -46,7 +46,7 @@ public class FormattingCodesParser {
 		return message;
 	}
 
-	public static String stripFormattingCodes(String message) {
+	public String stripFormattingCodes(String message) {
 		message = message.replaceAll("&0", "");
 		message = message.replaceAll("&1", "");
 		message = message.replaceAll("&2", "");

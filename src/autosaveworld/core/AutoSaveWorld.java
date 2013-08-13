@@ -45,6 +45,7 @@ import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 public class AutoSaveWorld extends JavaPlugin {
 	
 	private static final Logger log = Bukkit.getLogger();
+	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser(); 
 
 	//save
 	public AutoSaveThread saveThread = null;
@@ -321,31 +322,31 @@ public class AutoSaveWorld extends JavaPlugin {
 	
 	public void sendMessage(CommandSender sender, String message) {
 		if (!message.equals("")) {
-			sender.sendMessage(FormattingCodesParser.parseFormattingCodes(message));
+			sender.sendMessage(formattingCodesParser.parseFormattingCodes(message));
 		}
 	}
 
 	public void broadcast(String message) {
 		if (!message.equals("")) {
-			getServer().broadcastMessage(FormattingCodesParser.parseFormattingCodes(message));
+			getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
 		}
 	}
 	
 	public void kickPlayer(Player player, String message)
 	{
-		player.kickPlayer(FormattingCodesParser.parseFormattingCodes(message));
+		player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
 	}
 
 	public void debug(String message) {
 		if (config.varDebug) {
 			log.info(String.format("[%s] %s", getDescription().getName(),
-					FormattingCodesParser.stripFormattingCodes(message)));
+					formattingCodesParser.stripFormattingCodes(message)));
 		}
 	}
 
 	public void warn(String message) {
 		log.warning(String.format("[%s] %s", getDescription().getName(),
-				FormattingCodesParser.stripFormattingCodes(message)));
+				formattingCodesParser.stripFormattingCodes(message)));
 	}
 
 }
