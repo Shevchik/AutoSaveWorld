@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 
 public class PermissionCheck {
 
-	public static boolean isAllowed(CommandSender sender,final String commandName, String[] args)
+	public boolean isAllowed(CommandSender sender,final String commandName, String[] args)
 	{
 		boolean allowed = false;
 		

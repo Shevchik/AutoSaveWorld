@@ -33,7 +33,6 @@ public class CommandsHandler implements CommandExecutor {
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	private LocaleLoader localeloader;
-
 	public CommandsHandler(AutoSaveWorld plugin, AutoSaveConfig config,
 			AutoSaveConfigMSG configmsg, LocaleLoader localeloader) {
 		this.plugin = plugin;
@@ -41,6 +40,8 @@ public class CommandsHandler implements CommandExecutor {
 		this.configmsg = configmsg;
 		this.localeloader = localeloader;
 	};
+	
+	private PermissionCheck permCheck = new PermissionCheck();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
@@ -48,7 +49,7 @@ public class CommandsHandler implements CommandExecutor {
 		String commandName = command.getName().toLowerCase();
 
 		//check permissions
-		if (!PermissionCheck.isAllowed(sender, commandName, args)) {
+		if (!permCheck.isAllowed(sender, commandName, args)) {
 			plugin.sendMessage(sender, configmsg.messageInsufficientPermissions);
 			return true;
 		}
