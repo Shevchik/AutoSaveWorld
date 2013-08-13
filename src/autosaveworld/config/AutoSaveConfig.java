@@ -206,7 +206,6 @@ public class AutoSaveConfig {
 		if (config.getConfigurationSection("consolecommand.timemode.times") != null)
 		{
 			cctimetimes = new ArrayList<String>(config.getConfigurationSection("consolecommand.timemode.times").getKeys(false));
-			System.out.println(cctimetimes);
 		}
 		for (String cctime : cctimetimes)
 		{
