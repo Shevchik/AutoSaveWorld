@@ -23,8 +23,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import autosaveworld.threads.backup.ExcludeManager;
 
 public class FTPFileUtils {
 
@@ -36,16 +35,7 @@ public class FTPFileUtils {
            ftp.makeDirectory(src.getName());
            ftp.changeWorkingDirectory(src.getName());
            for (File file : src.listFiles()) {
-        	   	boolean copy = true;
-        	   	//ignore configured folders
-        	   	for (String efname : excludefolders) {
-        		   if (file.getAbsoluteFile().equals(new File(efname).getAbsoluteFile())) {copy = false; break;}
-        	   	}
-       			//ignore others worlds folders (for mcpc+)
-        	   	for (World w : Bukkit.getWorlds()) {
-        	   		if (file.isDirectory() && file.getName().equals(w.getWorldFolder().getName())) {copy = false; break;}
-	        	}
-        	   	if (copy) {
+        	   	if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
         	   		uploadDirectoryToFTP(ftp, file, excludefolders);
         	   	}
            }
