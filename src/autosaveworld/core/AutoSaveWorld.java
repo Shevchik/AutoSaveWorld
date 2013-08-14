@@ -44,7 +44,7 @@ import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 public class AutoSaveWorld extends JavaPlugin {
 	
-	private static final Logger log = Bukkit.getLogger();
+	private static Logger log = Bukkit.getLogger();
 	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser(); 
 
 	//save
@@ -146,6 +146,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeloader = null;
 		eh = null;
 		ch = null;
+		log = null;
+		formattingCodesParser = null;
 		HandlerList.unregisterAll(this);
 		//Check if we just finished WorldRegen, if so - clean garbage
 		File check = new File(WorldRegenConstants.getShouldpasteFile());
