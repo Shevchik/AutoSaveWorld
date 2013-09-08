@@ -20,7 +20,6 @@ package autosaveworld.core;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -44,7 +43,7 @@ import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 public class AutoSaveWorld extends JavaPlugin {
 	
-	private static Logger log = Bukkit.getLogger();
+	private Logger log;
 	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser(); 
 
 	//save
@@ -84,6 +83,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		// Load Configuration
+		log = getLogger();
 		config = new AutoSaveConfig();
 		config.load();
 		configmsg = new AutoSaveConfigMSG(config);
@@ -146,7 +146,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeloader = null;
 		eh = null;
 		ch = null;
-		log = null;
 		formattingCodesParser = null;
 		HandlerList.unregisterAll(this);
 		//Check if we just finished WorldRegen, if so - clean garbage
@@ -334,21 +333,18 @@ public class AutoSaveWorld extends JavaPlugin {
 		}
 	}
 	
-	public void kickPlayer(Player player, String message)
-	{
+	public void kickPlayer(Player player, String message) {
 		player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
 	}
 
 	public void debug(String message) {
 		if (config.varDebug) {
-			log.info(String.format("[%s] %s", getDescription().getName(),
-					formattingCodesParser.stripFormattingCodes(message)));
+			log.info(formattingCodesParser.stripFormattingCodes(message));
 		}
 	}
 
 	public void warn(String message) {
-		log.warning(String.format("[%s] %s", getDescription().getName(),
-				formattingCodesParser.stripFormattingCodes(message)));
+		log.warning(formattingCodesParser.stripFormattingCodes(message));
 	}
 
 }
