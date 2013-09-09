@@ -82,10 +82,6 @@ public class AutoBackupThread extends Thread {
 	{
 		command = false;
 		
-		if (plugin.backupInProgress) {
-			plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
-			return;
-		}
 		if (plugin.purgeInProgress) {
 			plugin.warn("AutoPurge is in progress. Backup cancelled.");
 			return;

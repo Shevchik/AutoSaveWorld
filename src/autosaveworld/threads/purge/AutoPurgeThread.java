@@ -84,12 +84,7 @@ public class AutoPurgeThread extends Thread {
 	public void performPurge() {
 		
 		command = false;
-		
-		//do not purge if one of this is running or this may end bad
-		if (plugin.purgeInProgress) {
-			plugin.warn("Multiple concurrent purges attempted! Purge interval is likely too short!");
-			return;
-		} 
+
 		if (plugin.backupInProgress) {
 			plugin.warn("AutoBackup is in progress. Purge cancelled.");
 			return;
