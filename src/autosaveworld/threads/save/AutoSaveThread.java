@@ -41,6 +41,10 @@ public class AutoSaveThread extends Thread {
 	}
 
 	public void startsave() {
+		if (plugin.saveInProgress) {
+			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
+			return;
+		}
 		command = true;
 		i = config.saveInterval;
 	}

@@ -42,6 +42,10 @@ public class AutoBackupThread extends Thread {
 	}
 	
 	public void startbackup() {
+		if (plugin.backupInProgress) {
+			plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
+			return;
+		}
 		command = true;
 	}
     

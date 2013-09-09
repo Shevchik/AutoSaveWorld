@@ -41,6 +41,10 @@ public class AutoPurgeThread extends Thread {
 	}
 
 	public void startpurge() {
+		if (plugin.purgeInProgress) {
+			plugin.warn("Multiple concurrent purges attempted! Purge interval is likely too short!");
+			return;
+		}
 		command = true;
 	}
 
