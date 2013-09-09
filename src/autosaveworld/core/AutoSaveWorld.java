@@ -131,6 +131,9 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Perform a Save NOW!
 		saveThread.command = true;
 		saveThread.performSave();
+		// Save config
+		debug("Saving config");
+		config.save();
 		// Stop threads
 		debug("Stopping Threads");
 		stopThread(ThreadType.SAVE);
