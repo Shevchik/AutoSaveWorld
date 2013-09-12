@@ -17,7 +17,7 @@
 
 package autosaveworld.threads.purge;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,57 +72,44 @@ public class WGpurge {
 			final RegionManager m = wg.getRegionManager(w);
 			
 			// searching for inactive players in regions
-			List<String> rgtodel = new ArrayList<String>();
-			for (ProtectedRegion rg : m.getRegions().values()) {
+			Collection<ProtectedRegion> regions = new HashSet<ProtectedRegion>(m.getRegions().values());
+			for (final ProtectedRegion rg : regions) {
 				
 				plugin.debug("Checking region " + rg.getId());
-				ArrayList<String> pltodelete = new ArrayList<String>();
 				Set<String> ddpl = rg.getOwners().getPlayers();
+				int inactiveplayers = 0;
 				for (String checkPlayer : ddpl) {
 						if (!onlineplncs.contains(checkPlayer)) {
-							pltodelete.add(checkPlayer);
+							plugin.debug(checkPlayer+ " is inactive");
+							inactiveplayers++;
 					}
 				}
-
 				// check region for remove (ignore regions without owners)
-				if (!ddpl.isEmpty()) {
-					if (pltodelete.size()  == ddpl.size()) {
-						// adding region to removal list, we will work with them later
-						rgtodel.add(rg.getId());
-						plugin.debug("No active owners for region "+rg.getId()+" Added to removal list");
-					}
-				}
-
-			}
-
-			// now deal with the regions that must be deleted
-			for (final String delrg : rgtodel) {
-					plugin.debug("Purging region " + delrg);
+				if (!ddpl.isEmpty() && inactiveplayers == ddpl.size()) {
+					plugin.debug("No active owners for region "+rg.getId()+". Purging region");
 					boolean overlap = false;
-					if (noregenoverlap)	{
-						if (m.getApplicableRegions(m.getRegion(delrg)).size() >0){
-							overlap = true;
-						};
+					if (noregenoverlap && m.getApplicableRegions(rg).size() > 0) {
+						overlap = true;
 					}
 					final boolean rgoverlap = overlap;
 					//regen should be done in main thread
 					Runnable rgregen =  new Runnable()
 					{
-						BlockVector minpoint = m.getRegion(delrg).getMinimumPoint();
-						BlockVector maxpoint = m.getRegion(delrg).getMaximumPoint();
+						BlockVector minpoint = rg.getMinimumPoint();
+						BlockVector maxpoint = rg.getMaximumPoint();
 						BukkitWorld lw = new BukkitWorld(w);
 						public void run()
 						{
 							try {
 								if (regenrg && !rgoverlap) {
-									plugin.debug("Regenerating region " + delrg);
+									plugin.debug("Regenerating region " + rg.getId());
 									lw.regenerate(
 											new CuboidRegion(lw,minpoint,maxpoint),
 											new EditSession(lw,Integer.MAX_VALUE)
 											);
 								}
-								plugin.debug("Deleting region " + delrg);
-								m.removeRegion(delrg);
+								plugin.debug("Deleting region " + rg.getId());
+								m.removeRegion(rg.getId());
 								m.save();
 							} catch (Exception e) {}
 						}
@@ -135,14 +122,13 @@ public class WGpurge {
 					{
 						try {Thread.sleep(100);} catch (InterruptedException e) {}
 					}
-									
-			}	
-			
-			deletedrg += rgtodel.size();
-			
+					
+					deletedrg += 1;
+				}
+			}
 		}
-		
+
 		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
-		
 	}
+
 }
