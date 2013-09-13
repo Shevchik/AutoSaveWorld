@@ -135,7 +135,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgemvinv ) {
 				plugin.debug("Multiverse-Inventories found, purging");
 				try {
-					new MVInvpurge(plugin).doMVInvPurgeTask(awaytime);
+					new MVInvpurge(plugin).doMVInvPurgeTask(pacheck);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}

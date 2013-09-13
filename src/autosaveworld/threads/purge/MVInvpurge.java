@@ -20,7 +20,6 @@ package autosaveworld.threads.purge;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
 import com.onarandombox.multiverseinventories.MultiverseInventories;
@@ -38,21 +37,23 @@ public class MVInvpurge {
 	}
 	
 	
-	public void doMVInvPurgeTask(long awaytime)
+	public void doMVInvPurgeTask(PlayerActiveCheck pacheck)
 	{
-		try {
-		MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
-		File mcinvpfld = new File("plugins/Multiverse-Inventories/players/");
 		int deleted = 0;
-		//We will get all files from MVInv player directory, and get player names from there
-		for (String plfile : mcinvpfld.list())
-		{
-			String plname = plfile.substring(0, plfile.indexOf("."));
+		try {
+			MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
+			File mcinvpfld = new File("plugins/Multiverse-Inventories/players/");
+			//We will get all files from MVInv player directory, and get player names from there
+			for (String plfile : mcinvpfld.list())
+			{
+				String plname = plfile.substring(0, plfile.indexOf("."));
 				
-				if (!isActive(plname,awaytime)) {
+				if (!pacheck.isActiveCS(plname)) 
+				{
 					plugin.debug("Removing "+plname+" MVInv files");
 					//remove files from MVInv world folders
-					for (World wname : Bukkit.getWorlds()) {
+					for (World wname : Bukkit.getWorlds()) 
+					{
 						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData(Bukkit.getOfflinePlayer(plname));
 					}
 					//remove files from MVInv player folder
@@ -66,27 +67,10 @@ public class MVInvpurge {
 					//count deleted player file
 					deleted += 1;
 				}
-		}
+			}
+		} catch (Exception e) {}
 		
 		plugin.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
-		
-		} catch (Exception e) {e.printStackTrace();}
-	}
-	
-	
-	private boolean isActive(String player, long awaytime)
-	{
-		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
-		boolean active = true;
-		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
-		{
-			active = false;
-		}
-		if (offpl.isOnline())
-		{
-			active = true;
-		}
-		return active;
 	}
 	
 }
