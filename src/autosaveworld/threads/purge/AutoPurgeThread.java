@@ -108,11 +108,14 @@ public class AutoPurgeThread extends Thread {
 			
 			plugin.debug("Purge started");
 			
+			plugin.debug("Gathering active players list");
+			PlayerActiveCheck pacheck = new PlayerActiveCheck(awaytime);
+			
 			if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)
 					&& config.purgewg) {
 				plugin.debug("WG found, purging");
 				try {
-					new WGpurge(plugin).doWGPurgeTask(awaytime, config.purgewgregenrg, config.purgewgnoregenoverlap);
+					new WGpurge(plugin).doWGPurgeTask(pacheck, config.purgewgregenrg, config.purgewgnoregenoverlap);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

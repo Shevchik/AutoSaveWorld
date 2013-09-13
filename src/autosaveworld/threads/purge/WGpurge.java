@@ -22,10 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
-
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -45,26 +42,14 @@ public class WGpurge {
 		this.plugin = plugin;
 	}
 	
-	public void doWGPurgeTask(long awaytime, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(PlayerActiveCheck pacheck, final boolean regenrg, boolean noregenoverlap) {
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");
 		
 		plugin.debug("WG purge started");
 		
-		//get all active players 
-		HashSet<String> onlineplncs = new HashSet<String>();
-		for (Player plname : Bukkit.getOnlinePlayers()) {
-			onlineplncs.add(plname.getName().toLowerCase());
-		}
-		for (OfflinePlayer plname : Bukkit.getOfflinePlayers()) {
-			if (System.currentTimeMillis() - plname.getLastPlayed() < awaytime) {
-				onlineplncs.add(plname.getName().toLowerCase());
-			}
-		}
-		
-		int deletedrg = 0;
-		
+		int deletedrg = 0;		
 		for (final World w : Bukkit.getWorlds()) {
 			plugin.debug("Checking WG protections in world " + w.getName());
 			final RegionManager m = wg.getRegionManager(w);
@@ -77,7 +62,7 @@ public class WGpurge {
 				Set<String> ddpl = rg.getOwners().getPlayers();
 				int inactiveplayers = 0;
 				for (String checkPlayer : ddpl) {
-						if (!onlineplncs.contains(checkPlayer)) {
+						if (!pacheck.isActiveNCS(checkPlayer)) {
 							plugin.debug(checkPlayer+ " is inactive");
 							inactiveplayers++;
 					}
