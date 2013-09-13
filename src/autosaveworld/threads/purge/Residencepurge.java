@@ -1,8 +1,11 @@
 package autosaveworld.threads.purge;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+
 import autosaveworld.core.AutoSaveWorld;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -29,27 +32,18 @@ public class Residencepurge {
 		
 		int deletedres = 0;
 		
-		ArrayList<String> restodel = new ArrayList<String>();
+		List<String> reslist = new ArrayList<String>(Arrays.asList(Residence.getResidenceManager().getResidenceList()));
 		boolean wepresent = (Bukkit.getPluginManager().getPlugin("WorldEdit") != null);
 		
 		//search for residences with inactive players
-		for (String res : Residence.getResidenceManager().getResidenceList())
+		for (final String res : reslist)
 		{
 			plugin.debug("Checking residence " + res);
-			ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
+			final ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
 			if (!pacheck.isActiveCS(cres.getOwner())) 
 			{
-				plugin.debug("Owner of residence "+res+" is inactive.");
-				restodel.add(res);
-			}
-		}
-		
-		//now deal with residences that must be deleted
-		for (final String res : restodel)
-		{
-			try 
-			{
-				final ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
+				plugin.debug("Owner of residence "+res+" is inactive. Purgin residence");
+
 				//regen residence areas if needed
 				if (regenres && wepresent)
 				{
@@ -72,40 +66,35 @@ public class Residencepurge {
 							}
 						};
 						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, caregen);
-
-				
+						
 						//Wait until previous residence regeneration is finished to avoid full main thread freezing
 						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 						{
 							try {Thread.sleep(100);} catch (InterruptedException e) {}
 						}
 					}
-				}
-				//delete residence from db
-				plugin.debug("Deleting residence "+res);
-				Runnable delres = new Runnable()
-				{
-					public void run()
+					//delete residence from db
+					plugin.debug("Deleting residence "+res);
+					Runnable delres = new Runnable()
 					{
-						cres.remove();
-						Residence.getResidenceManager().save();
+						public void run()
+						{
+							cres.remove();
+							Residence.getResidenceManager().save();
+						}
+					};
+					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delres);
+					
+					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+					{
+						try {Thread.sleep(100);} catch (InterruptedException e) {}
 					}
-				};
-				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delres);
-				
-				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-				{
-					try {Thread.sleep(100);} catch (InterruptedException e) {}
+					
+					deletedres += 1;
 				}
-				
-				deletedres += 1;
-			} 
-			catch (Exception e)
-			{
-				e.printStackTrace();
 			}
 		}
-		
+
 		plugin.debug("Residence purge finished, deleted "+ deletedres+" inactive residences");
 	}
 
