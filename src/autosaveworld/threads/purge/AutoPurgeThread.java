@@ -125,7 +125,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgelwc) {
 				plugin.debug("LWC found, purging");
 				try {
-					new LWCpurge(plugin).doLWCPurgeTask(awaytime, config.purgelwcdelprotectedblocks);
+					new LWCpurge(plugin).doLWCPurgeTask(pacheck, config.purgelwcdelprotectedblocks);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

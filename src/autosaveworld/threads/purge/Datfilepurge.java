@@ -42,14 +42,14 @@ public class Datfilepurge {
 			{
 				if (!pacheck.isActiveCS(pl.getName())) 
 				{
-							File pldatFile = new File(
-											worldfoldername
-											+ File.separator + "players"
-											+ File.separator + pl.getName()
-											+ ".dat");
-							pldatFile.delete();
-							plugin.debug(pl.getName() + " is inactive. Removing dat file");
-							deleted += 1;
+					File pldatFile = new File(
+									worldfoldername
+									+ File.separator + "players"
+									+ File.separator + pl.getName()
+									+ ".dat");
+					pldatFile.delete();
+					plugin.debug(pl.getName() + " is inactive. Removing dat file");
+					deleted += 1;
 				}
 			}
 		} catch (Exception e) {}
