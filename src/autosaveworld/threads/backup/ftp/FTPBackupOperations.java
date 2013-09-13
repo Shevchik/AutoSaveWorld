@@ -45,11 +45,10 @@ public class FTPBackupOperations {
 		this.excludefolders = excludefolders;
 		fu = new FTPFileUtils();
 		this.ftp = ftp;
+		localtempfolder = plugin.constants.getBackupTempFolder();
 	}
 	
-	
-    private String localtempfolder = "plugins/AutoSaveWorld/FTPTemp/";
-	
+	private String localtempfolder;
 	public void backupWorlds(List<String> worldNames)
 	{
 		List<World> worlds = Bukkit.getWorlds();

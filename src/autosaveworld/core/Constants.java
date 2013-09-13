@@ -33,6 +33,12 @@ public class Constants {
 		return getPluginFolder()+cf[0]+"_"+suffix+"."+cf[1];
 	}
 
+	//backup
+	private String backuptempfolder = "BackupTemp/";
+	public String getBackupTempFolder()
+	{
+		return getPluginFolder()+backuptempfolder;
+	}
 
 	//worldregen
 	private String worldregentempfolder = "WorldRegenTemp/";
