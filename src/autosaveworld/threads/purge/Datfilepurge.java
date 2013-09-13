@@ -53,9 +53,8 @@ public class Datfilepurge {
 				}
 			}
 		} catch (Exception e) {}
-		
+
 		plugin.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
-		
 	}
 
 }
