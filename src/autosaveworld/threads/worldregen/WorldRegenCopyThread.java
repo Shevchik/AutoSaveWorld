@@ -103,7 +103,7 @@ public class WorldRegenCopyThread extends Thread {
 		
 		FileConfiguration cfg = new YamlConfiguration();
 		cfg.set("wname", worldtoregen);
-		cfg.save(new File(WorldRegenConstants.getWorldnameFile()));
+		cfg.save(new File(plugin.constants.getWorldnameFile()));
 		
 		//kick all player and deny them from join
 		AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
@@ -147,7 +147,7 @@ public class WorldRegenCopyThread extends Thread {
 		
 		//Shutdown server and delegate world removal to JVMShutdownHook
 		plugin.debug("Deleting map and restarting server");
-		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath());
+		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath(), plugin.constants.getShouldpasteFile());
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		config.autorestartcountdown = false;
 		plugin.autorestartThread.startrestart();

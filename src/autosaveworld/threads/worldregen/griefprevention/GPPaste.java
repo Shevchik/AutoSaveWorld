@@ -29,7 +29,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
@@ -45,12 +44,13 @@ public class GPPaste {
 	{
 		this.plugin = plugin;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
+		schemfolder = plugin.constants.getGPTempFolder();
 	}
 	
 	
 	private int taskid;
 	final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder = WorldRegenConstants.getGPTempFolder();
+	final String schemfolder;
 	
 	public void pasteAllFromSchematics()
 	{

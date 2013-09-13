@@ -18,13 +18,18 @@
 package autosaveworld.config;
 
 import java.io.*;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import autosaveworld.core.AutoSaveWorld;
 
 public class AutoSaveConfigMSG {
 	private FileConfiguration configmsg;
 	private AutoSaveConfig config;
-	public AutoSaveConfigMSG(AutoSaveConfig config) {
+	private AutoSaveWorld plugin;
+	public AutoSaveConfigMSG(AutoSaveWorld plugin, AutoSaveConfig config) {
+		this.plugin = plugin;
 		this.config = config;
 	}
 	// Messages
@@ -41,17 +46,14 @@ public class AutoSaveConfigMSG {
 	
 	public void loadmsg() {
 		if (!config.switchtolangfile) {
-			configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg.yml"));
+			configmsg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGPath()));
 			loadMessages();
 			saveMessages();
 		} else
 		{
-			configmsg = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/configmsg_"+config.langfilesuffix+".yml"));
+			configmsg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGWithSuffix(config.langfilesuffix)));
 			loadMessages();
 		}
-		
-
-		
 	}
 	
 	

@@ -37,7 +37,6 @@ import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
 import autosaveworld.threads.restart.JVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
-import autosaveworld.threads.worldregen.WorldRegenConstants;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
@@ -46,6 +45,8 @@ public class AutoSaveWorld extends JavaPlugin {
 	private Logger log;
 	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser(); 
 
+	//constatns
+	public Constants constants = null;
 	//save
 	public AutoSaveThread saveThread = null;
 	//backup
@@ -84,9 +85,10 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void onEnable() {
 		// Load Configuration
 		log = getLogger();
-		config = new AutoSaveConfig();
+		constants = new Constants(this);
+		config = new AutoSaveConfig(this);
 		config.load();
-		configmsg = new AutoSaveConfigMSG(config);
+		configmsg = new AutoSaveConfigMSG(this,config);
 		configmsg.loadmsg();
 		localeloader = new LocaleLoader(this, config, configmsg);
 		eh = new EventsListener(this);
@@ -116,7 +118,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start WorldRegenThread
 		startThread(ThreadType.WORLDREGEN);
 		//Check if we are in WorldRegen stage 3, if so - do our job
-		File check = new File(WorldRegenConstants.getShouldpasteFile());
+		File check = new File(constants.getShouldpasteFile());
 		if (check.exists()) {
 			worldregenInProcess = true;
 			wrp = new WorldRegenPasteThread(this,config, configmsg);
@@ -152,13 +154,14 @@ public class AutoSaveWorld extends JavaPlugin {
 		formattingCodesParser = null;
 		HandlerList.unregisterAll(this);
 		//Check if we just finished WorldRegen, if so - clean garbage
-		File check = new File(WorldRegenConstants.getShouldpasteFile());
+		File check = new File(constants.getShouldpasteFile());
 		if (check.exists() && worldregenfinished) {
 			wrp = null;
 			check.delete();
-			new File(WorldRegenConstants.getWorldnameFile()).delete();
-			new File(WorldRegenConstants.getTempFolder()).delete();
+			new File(constants.getWorldnameFile()).delete();
+			new File(constants.getWorldRegenTempFolder()).delete();
 		}
+		constants = null;
 	}	
 	
 	

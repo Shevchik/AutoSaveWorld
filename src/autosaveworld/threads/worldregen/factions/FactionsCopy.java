@@ -36,7 +36,6 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 public class FactionsCopy {
 
@@ -47,11 +46,12 @@ public class FactionsCopy {
 	{
 		this.plugin = plugin;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		schemfolder = plugin.constants.getFactionsTempFolder();
 	}
 	
 	private int taskid;
     private final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
+	final String schemfolder;
 	
 	public void copyAllToSchematics()
 	{

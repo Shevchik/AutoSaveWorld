@@ -31,7 +31,6 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 public class WorldGuardPaste {
 
@@ -42,12 +41,13 @@ public class WorldGuardPaste {
 	{
 		this.plugin = plugin;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
+		schemfolder = plugin.constants.getWGTempFolder();
 	}
 	
 	
 	private int taskid;
 	final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder = WorldRegenConstants.getWGTempFolder();
+	final String schemfolder;
 	
 	public void pasteAllFromSchematics()
 	{

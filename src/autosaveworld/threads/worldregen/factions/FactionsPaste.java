@@ -33,7 +33,6 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 public class FactionsPaste {
 
@@ -44,11 +43,12 @@ public class FactionsPaste {
 	{
 		this.plugin = plugin;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
+		schemfolder = plugin.constants.getFactionsTempFolder();
 	}
 	
 	private int taskid;
     final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder = WorldRegenConstants.getFactionsTempFolder();
+	final String schemfolder;
 	
 	public void pasteAllFromSchematics()
 	{

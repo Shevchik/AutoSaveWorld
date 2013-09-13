@@ -23,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
@@ -43,12 +42,13 @@ public class WorldGuardCopy {
 	{
 		this.plugin = plugin;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		schemfolder = plugin.constants.getWGTempFolder();
 	}
 	
 	
 	private int taskid;
     final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder = WorldRegenConstants.getWGTempFolder();
+	final String schemfolder;
 	
 	public void copyAllToSchematics()
 	{

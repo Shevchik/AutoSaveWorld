@@ -23,11 +23,19 @@ import java.util.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import autosaveworld.core.AutoSaveWorld;
+
 
 public class AutoSaveConfig {
 		
 	private FileConfiguration config;
-		
+	private AutoSaveWorld plugin;
+	public AutoSaveConfig(AutoSaveWorld plugin) {
+		this.plugin = plugin;
+	}
+
+	
+	
 	// Variables
 	//debug
 	public boolean varDebug = false;
@@ -107,12 +115,10 @@ public class AutoSaveConfig {
 	public boolean worldregensavegp = true;
 	
 
-
-	
 	//config load/save functions
 	public void load() {
 		
-		config = YamlConfiguration.loadConfiguration(new File("plugins/AutoSaveWorld/config.yml"));
+		config = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigPath()));
 		
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
@@ -343,11 +349,7 @@ public class AutoSaveConfig {
 		config.set("locale.switchtolangfile",switchtolangfile);
 		config.set("locale.langfilesuffix",langfilesuffix);
 		
-		
-		try {
-			config.save(new File("plugins/AutoSaveWorld/config.yml"));
-		} catch (IOException ex) {}
-		
+		try {config.save(new File(plugin.constants.getConfigPath()));} catch (IOException ex) {}		
 	}
 	
 }

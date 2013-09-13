@@ -37,7 +37,6 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenConstants;
 
 public class GPCopy {
 
@@ -48,11 +47,12 @@ public class GPCopy {
 	{
 		this.plugin = plugin;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		schemfolder = plugin.constants.getGPTempFolder();
 	}
 	
 	private int taskid;
     final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder = WorldRegenConstants.getGPTempFolder();
+	final String schemfolder;
 	
 	public void copyAllToSchematics()
 	{

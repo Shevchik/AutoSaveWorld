@@ -41,7 +41,7 @@ public class LocaleLoader {
 	private AutoSaveConfigMSG configmsg;
 	
 	
-	//availible locales
+	//available locales
 	public List<String> getAvailableLocales()
 	{
 		List<String> locales = new ArrayList<String>(Arrays.asList("en"));
@@ -78,7 +78,7 @@ public class LocaleLoader {
 		if (locale.equalsIgnoreCase("en"))
 		{
 			//if it's en (default locale) we will recreate default messages file
-			new File("plugins/AutoSaveWorld/configmsg.yml").delete();
+			new File(plugin.constants.getConfigMSGPath()).delete();
 			plugin.debug("switching to en");
 			config.switchtolangfile = false;
 			configmsg.messageSaveBroadcastPre = "&9AutoSaving";
@@ -112,7 +112,7 @@ public class LocaleLoader {
 	{
 		try {
 			InputStream in = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
-			OutputStream out = new FileOutputStream(new File("plugins/AutoSaveWorld/configmsg_"+locale+".yml"));
+			OutputStream out = new FileOutputStream(new File(plugin.constants.getConfigMSGWithSuffix(locale)));
 
 			byte[] buf = new byte[4096];
 			int len;

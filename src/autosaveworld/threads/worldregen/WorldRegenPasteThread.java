@@ -52,7 +52,7 @@ public class WorldRegenPasteThread extends Thread {
 			Bukkit.getPluginManager().registerEvents(ajl, plugin);
 			
 			//load config
-			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(WorldRegenConstants.getWorldnameFile()));
+			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getWorldnameFile()));
 			worldtopasteto = cfg.getString("wname");
 			
 			//wait for server to load
@@ -97,9 +97,9 @@ public class WorldRegenPasteThread extends Thread {
 			//clear temp folder
 			plugin.debug("Cleaning temp folders");
 			
-			deleteDirectory(new File(WorldRegenConstants.getWGTempFolder()));
-			deleteDirectory(new File(WorldRegenConstants.getFactionsTempFolder()));
-			deleteDirectory(new File(WorldRegenConstants.getGPTempFolder()));
+			deleteDirectory(new File(plugin.constants.getWGTempFolder()));
+			deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
+			deleteDirectory(new File(plugin.constants.getGPTempFolder()));
 			
 			plugin.debug("Restore finished");
 
