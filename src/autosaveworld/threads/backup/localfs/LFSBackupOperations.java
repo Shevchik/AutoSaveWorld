@@ -40,14 +40,14 @@ public class LFSBackupOperations {
 	final List<String> excludefolders;
     private String datebackup;
     private LFSFileUtils fu;
-	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders)
+	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders, long timestamp)
 	{
 		this.plugin = plugin;
 		this.zip = zip;
 		this.extpath = extpath;
 		this.excludefolders = excludefolders;
-		datebackup = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(plugin.backupThread6.datesec);
 		fu = new LFSFileUtils();
+		datebackup = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(timestamp);
 	}
 	
 	//worlds backup operations

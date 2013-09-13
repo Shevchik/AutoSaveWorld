@@ -81,7 +81,7 @@ public class AutoBackupThread extends Thread {
 
 	}
 
-	public long datesec;
+
 	private void performBackup()
 	{
 		command = false;
@@ -120,10 +120,10 @@ public class AutoBackupThread extends Thread {
 			// Lock
 			plugin.backupInProgress = true;
 			
+			long timestart = System.currentTimeMillis();
+			
 			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPre);}
 		
-			datesec = System.currentTimeMillis();
-					
 			if (config.localfsbackupenabled)
 			{
 				plugin.debug("Starting LocalFS backup");
@@ -138,7 +138,7 @@ public class AutoBackupThread extends Thread {
 				plugin.debug("FTP backup finished");
 			}
 		
-			plugin.debug("Full backup time: "+(System.currentTimeMillis()-datesec)+" milliseconds");
+			plugin.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
 			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPost);}
 			plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 

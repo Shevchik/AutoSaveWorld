@@ -61,7 +61,7 @@ public class FTPBackup {
 	    	ftpclient.changeWorkingDirectory(config.ftppath);
 	    	ftpclient.makeDirectory("backups");
 	    	ftpclient.changeWorkingDirectory("backups");
-	    	String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(plugin.backupThread6.datesec);
+	    	String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 	    	ftpclient.makeDirectory(datedir);
 	    	ftpclient.changeWorkingDirectory(datedir);
 	        ftpclient.setFileType(FTPClient.BINARY_FILE_TYPE);

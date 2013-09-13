@@ -88,8 +88,11 @@ public class LocalFSBackup {
 		//backup	
 		for (String extpath : backupfoldersdest)
 		{
+			//create timestamp
+			long timestamp = System.currentTimeMillis();
+			
 			//load backup operations class
-			LFSBackupOperations bo = new LFSBackupOperations(plugin, zip, extpath, config.lfsbackupexcludefolders);
+			LFSBackupOperations bo = new LFSBackupOperations(plugin, zip, extpath, config.lfsbackupexcludefolders, timestamp);
 			
 			//load info about backups stored in file backups.yml
 			loadConfigBackupExt(extpath);
@@ -118,7 +121,7 @@ public class LocalFSBackup {
 			}
 			bo.backupWorlds(worldstobackup);
 			plugin.debug("Backuped Worlds");
-			backupnamesw.add(plugin.backupThread6.datesec);
+			backupnamesw.add(timestamp);
 			numberofbackupsw++;
 			
 			
@@ -137,7 +140,7 @@ public class LocalFSBackup {
 				plugin.debug("Backuping plugins");
 				bo.backupPlugins();
 				plugin.debug("Backuped plugins");
-				backupnamespl.add(plugin.backupThread6.datesec);
+				backupnamespl.add(timestamp);
 				numberofbackupspl++;
 				
 			}
