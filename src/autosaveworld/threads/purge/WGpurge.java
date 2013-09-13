@@ -19,7 +19,6 @@ package autosaveworld.threads.purge;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -66,8 +65,7 @@ public class WGpurge {
 		
 		int deletedrg = 0;
 		
-		List<World> worldlist = Bukkit.getWorlds();
-		for (final World w : worldlist) {
+		for (final World w : Bukkit.getWorlds()) {
 			plugin.debug("Checking WG protections in world " + w.getName());
 			final RegionManager m = wg.getRegionManager(w);
 			
