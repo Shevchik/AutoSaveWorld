@@ -50,28 +50,34 @@ public class WGpurge {
 		plugin.debug("WG purge started");
 		
 		int deletedrg = 0;		
-		for (final World w : Bukkit.getWorlds()) {
+		for (final World w : Bukkit.getWorlds()) 
+		{
 			plugin.debug("Checking WG protections in world " + w.getName());
 			final RegionManager m = wg.getRegionManager(w);
 			
 			// searching for inactive players in regions
 			Collection<ProtectedRegion> regions = new HashSet<ProtectedRegion>(m.getRegions().values());
-			for (final ProtectedRegion rg : regions) {
+			for (final ProtectedRegion rg : regions) 
+			{
 				
 				plugin.debug("Checking region " + rg.getId());
 				Set<String> ddpl = rg.getOwners().getPlayers();
 				int inactiveplayers = 0;
-				for (String checkPlayer : ddpl) {
-						if (!pacheck.isActiveNCS(checkPlayer)) {
-							plugin.debug(checkPlayer+ " is inactive");
-							inactiveplayers++;
+				for (String checkPlayer : ddpl) 
+				{
+					if (!pacheck.isActiveNCS(checkPlayer)) 
+					{
+						plugin.debug(checkPlayer+ " is inactive");
+						inactiveplayers++;
 					}
 				}
 				// check region for remove (ignore regions without owners)
-				if (!ddpl.isEmpty() && inactiveplayers == ddpl.size()) {
+				if (!ddpl.isEmpty() && inactiveplayers == ddpl.size()) 
+				{
 					plugin.debug("No active owners for region "+rg.getId()+". Purging region");
 					boolean overlap = false;
-					if (noregenoverlap && m.getApplicableRegions(rg).size() > 0) {
+					if (noregenoverlap && m.getApplicableRegions(rg).size() > 0) 
+					{
 						overlap = true;
 					}
 					final boolean rgoverlap = overlap;
@@ -84,7 +90,8 @@ public class WGpurge {
 						public void run()
 						{
 							try {
-								if (regenrg && !rgoverlap) {
+								if (regenrg && !rgoverlap) 
+								{
 									plugin.debug("Regenerating region " + rg.getId());
 									lw.regenerate(
 											new CuboidRegion(lw,minpoint,maxpoint),
