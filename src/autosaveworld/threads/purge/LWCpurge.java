@@ -42,36 +42,35 @@ public class LWCpurge {
 		
 		int deleted = 0;
 		
-		
 		//we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
 		{
-				if (!pacheck.isActiveCS(pr.getOwner()))
+			if (!pacheck.isActiveCS(pr.getOwner()))
+			{
+				//delete block
+				if (delblocks)
 				{
-					//delete block
-					if (delblocks)
+					Runnable remchest = new Runnable()
 					{
-						Runnable remchest = new Runnable()
+						Block chest = pr.getBlock();
+						public void run() 
 						{
-							Block chest = pr.getBlock();
-							public void run() 
-							{
-								chest.setType(Material.AIR);
-							}
-								
-						};
-						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
-						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-						{
-							try {Thread.sleep(50);} catch (InterruptedException e) {}
-						}
+							chest.setType(Material.AIR);
+						}				
+					};
+					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
+				
+					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+					{
+						try {Thread.sleep(50);} catch (InterruptedException e) {}
 					}
-					plugin.debug("Removing protection for inactive player "+pr.getOwner());
-					//delete protections
-					lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
-					//count deleted protections
-					deleted += 1;
 				}
+				plugin.debug("Removing protection for inactive player "+pr.getOwner());
+				//delete protections
+				lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
+				//count deleted protections
+				deleted += 1;
+			}
 		}
 		
 		plugin.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
