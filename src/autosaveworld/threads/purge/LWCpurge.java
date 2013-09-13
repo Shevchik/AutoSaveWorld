@@ -19,7 +19,6 @@ package autosaveworld.threads.purge;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 
 import autosaveworld.core.AutoSaveWorld;
@@ -36,7 +35,7 @@ public class LWCpurge {
 		this.plugin = plugin;
 	}
 	
-	public void doLWCPurgeTask(long awaytime, boolean delblocks) {
+	public void doLWCPurgeTask(PlayerActiveCheck pacheck, boolean delblocks) {
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 		
 		plugin.debug("LWC purge started");
@@ -47,56 +46,35 @@ public class LWCpurge {
 		//we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
 		{
-					if (!isActive(pr.getOwner(),awaytime))
+				if (!pacheck.isActiveCS(pr.getOwner()))
+				{
+					//delete block
+					if (delblocks)
 					{
-						//delete block
-						if (delblocks)
+						Runnable remchest = new Runnable()
 						{
-
-							Runnable remchest = new Runnable()
+							Block chest = pr.getBlock();
+							public void run() 
 							{
-								Block chest = pr.getBlock();
-								public void run() {
-									chest.setType(Material.AIR);
-								}
-								
-							};
-							int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
-							while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-							{
-								try {
-									Thread.sleep(10);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
+								chest.setType(Material.AIR);
 							}
+								
+						};
+						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
+						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+						{
+							try {Thread.sleep(50);} catch (InterruptedException e) {}
 						}
-						plugin.debug("Removing protection for inactive player "+pr.getOwner());
-						//delete protections
-						lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
-						//count deleted protections
-						deleted += 1;
 					}
+					plugin.debug("Removing protection for inactive player "+pr.getOwner());
+					//delete protections
+					lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
+					//count deleted protections
+					deleted += 1;
+				}
 		}
 		
 		plugin.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
-		
-	}
-	
-	
-	private boolean isActive(String player, long awaytime)
-	{
-		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
-		boolean active = true;
-		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
-		{
-			active = false;
-		}
-		if (offpl.isOnline())
-		{
-			active = true;
-		}
-		return active;
 	}
 	
 }
