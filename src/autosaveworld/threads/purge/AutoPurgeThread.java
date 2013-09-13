@@ -155,7 +155,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgeresidence) {
 				plugin.debug("Residence found, purging");
 				try {
-					new Residencepurge(plugin).doResidencePurgeTask(awaytime, config.purgeresregenarena);
+					new Residencepurge(plugin).doResidencePurgeTask(pacheck, config.purgeresregenarena);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}

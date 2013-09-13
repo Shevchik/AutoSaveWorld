@@ -3,8 +3,6 @@ package autosaveworld.threads.purge;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 import autosaveworld.core.AutoSaveWorld;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -25,7 +23,7 @@ public class Residencepurge {
 		this.plugin = plugin;
 	}
 	
-	public void doResidencePurgeTask(long awaytime, final boolean regenres)
+	public void doResidencePurgeTask(PlayerActiveCheck pacheck, final boolean regenres)
 	{
 		plugin.debug("Residence purge started");
 		
@@ -39,14 +37,9 @@ public class Residencepurge {
 		{
 			plugin.debug("Checking residence " + res);
 			ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
-			String owner = null;
-			try {
-				owner = cres.getOwner();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (owner != null && !isActive(owner, awaytime)) {
-				plugin.debug("Owner of residence "+res+" is inactive Added to removal list");
+			if (!pacheck.isActiveCS(cres.getOwner())) 
+			{
+				plugin.debug("Owner of residence "+res+" is inactive.");
 				restodel.add(res);
 			}
 		}
@@ -114,23 +107,6 @@ public class Residencepurge {
 		}
 		
 		plugin.debug("Residence purge finished, deleted "+ deletedres+" inactive residences");
-		
 	}
-	
-	
-	private boolean isActive(String player, long awaytime)
-	{
-		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
-		boolean active = true;
-		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
-		{
-			active = false;
-		}
-		if (offpl.isOnline())
-		{
-			active = true;
-		}
-		return active;
-	}
-	
+
 }
