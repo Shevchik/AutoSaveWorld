@@ -52,30 +52,29 @@ public class PlotMepurge {
 				HashSet<Plot> plots = new HashSet<Plot>(PlotManager.getPlots(w).values());
 				for (final Plot p : plots)
 				{
-					plugin.debug("Checking plot " + p.id);
+					final String PlotID = p.id;
+					plugin.debug("Checking plot " + PlotID);
 					
 					if (!pacheck.isActiveCS(p.getOwner()))
 					{
-						plugin.debug("Plot owner is inactive. Purging plot "+p.id);
+						plugin.debug("Plot owner is inactive. Purging plot "+PlotID);
 						
 						Runnable delPlot = new Runnable()
 						{
-							World thisWorld = w;
-							Plot PlotId = p;
 							public void run()
 							{
 								if (regenplot)
 								{
-									plugin.debug("Regenerating plot "+PlotId.id);
-									PlotManager.clear(thisWorld, PlotId);
+									plugin.debug("Regenerating plot "+PlotID);
+									PlotManager.clear(w, p);
 								}
-								plugin.debug("Deleting plot "+PlotId.id);
-								PlotManager.getPlots(thisWorld).remove(PlotId.id);
+								plugin.debug("Deleting plot "+PlotID);
+								PlotManager.getPlots(w).remove(PlotID);
 								
-								PlotManager.removeOwnerSign(thisWorld, PlotId.id);
-								PlotManager.removeSellSign(thisWorld, PlotId.id);
+								PlotManager.removeOwnerSign(w, PlotID);
+								PlotManager.removeSellSign(w, PlotID);
 													
-								SqlManager.deletePlot(PlotManager.getIdX(PlotId.id), PlotManager.getIdZ(PlotId.id), thisWorld.getName().toLowerCase());
+								SqlManager.deletePlot(PlotManager.getIdX(PlotID), PlotManager.getIdZ(PlotID), w.getName().toLowerCase());
 							}
 						};
 						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delPlot);
