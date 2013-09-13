@@ -32,14 +32,16 @@ public class Datfilepurge {
 		this.plugin = plugin;
 	}
 	
-	public void doDelPlayerDatFileTask(long awaytime) {
+	public void doDelPlayerDatFileTask(PlayerActiveCheck pacheck) {
 		int deleted = 0;
 		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
 
 		try {
 			String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
-			for (OfflinePlayer pl : checkPlayers) {
-				if (!isActive(pl.getName(),awaytime)) {
+			for (OfflinePlayer pl : checkPlayers) 
+			{
+				if (!pacheck.isActiveCS(pl.getName())) 
+				{
 							File pldatFile = new File(
 											worldfoldername
 											+ File.separator + "players"
@@ -50,29 +52,10 @@ public class Datfilepurge {
 							deleted += 1;
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {}
 		
 		plugin.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
 		
 	}
-	
-	
-	
-	private boolean isActive(String player, long awaytime)
-	{
-		OfflinePlayer offpl = Bukkit.getOfflinePlayer(player);
-		boolean active = true;
-		if (System.currentTimeMillis() - offpl.getLastPlayed() >= awaytime)
-		{
-			active = false;
-		}
-		if (offpl.isOnline())
-		{
-			active = true;
-		}
-		return active;
-	}
-	
+
 }

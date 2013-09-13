@@ -164,7 +164,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Purging player .dat files");
 			if (config.purgedat) {
 				try {
-					new Datfilepurge(plugin).doDelPlayerDatFileTask(awaytime);
+					new Datfilepurge(plugin).doDelPlayerDatFileTask(pacheck);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
