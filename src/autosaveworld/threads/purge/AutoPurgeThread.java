@@ -145,7 +145,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgepm) {
 				plugin.debug("PlotMe found, purging");
 				try {
-					new PlotMepurge(plugin).doPlotMePurgeTask(awaytime, config.purgepmregen);
+					new PlotMepurge(plugin).doPlotMePurgeTask(pacheck, config.purgepmregen);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
