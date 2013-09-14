@@ -70,6 +70,9 @@ public class AutoSaveConfig {
 		public boolean ftpbackuppluginsfolder = false;
 		public List<String> ftpbackupexcludefolders;
 		public boolean ftpbackupzip = false;
+		//script
+		public boolean scriptbackupenabled = false;
+		public String scriptbackupscriptpath = "";
 	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
@@ -162,6 +165,9 @@ public class AutoSaveConfig {
 			if (ftpbackupWorlds.size() == 0) {
 				ftpbackupWorlds.add("*");
 			}
+			//script
+			scriptbackupenabled = config.getBoolean("backup.script.enabled",scriptbackupenabled);
+			scriptbackupscriptpath = config.getString("backup.script.scriptpath",scriptbackupscriptpath);
 
 
 		
@@ -288,7 +294,11 @@ public class AutoSaveConfig {
 			config.set("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
 			config.set("backup.ftp.excludefolders",ftpbackupexcludefolders);
 			config.set("backup.ftp.zip",ftpbackupzip);
-
+			//script
+			config.set("backup.script.enabled",scriptbackupenabled);
+			config.set("backup.script.scriptpath",scriptbackupscriptpath);
+			
+			
 		//purge variables
 		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.interval", purgeInterval);

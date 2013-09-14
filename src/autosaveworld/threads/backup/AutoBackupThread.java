@@ -24,6 +24,7 @@ import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.backup.ftp.FTPBackup;
 import autosaveworld.threads.backup.localfs.LocalFSBackup;
+import autosaveworld.threads.backup.script.ScriptBackup;
 
 public class AutoBackupThread extends Thread {
 
@@ -136,6 +137,13 @@ public class AutoBackupThread extends Thread {
 				plugin.debug("Starting FTP backup");
 				new FTPBackup(plugin, config).performBackup();
 				plugin.debug("FTP backup finished");
+			}
+			
+			if (config.scriptbackupenabled)
+			{
+				plugin.debug("Starting Script Backup");
+				new ScriptBackup(plugin, config).performBackup();
+				plugin.debug("Script Backup Finished");
 			}
 		
 			plugin.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
