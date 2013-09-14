@@ -42,6 +42,11 @@ public class CrashRestartThread extends Thread{
 		plugin.debug("CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 		
+		plugin.debug("Delaying crashrestart checker start for "+config.crdelay+" seconds");
+		//wait for configurable delay
+		try {Thread.sleep(config.crdelay*1000);} catch (InterruptedException e) {}
+
+		plugin.debug("Running crashrestart checker");
 		//schedule sync task in, this will provide us info about when the last server tick occured
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			public void run() {

@@ -94,6 +94,7 @@ public class AutoSaveConfig {
 	public String crashrestartscriptpath="start.sh";
 	public boolean crstop = false;
 	public long crtimeout = 60;
+	public int crdelay = 20;
 	//autorestart
 	public boolean autorestart = false;
 	public boolean autorestartBroadcast = true;
@@ -183,6 +184,7 @@ public class AutoSaveConfig {
 		
 		//crashrestart variables
 		crashrestartenabled = config.getBoolean("crashrestart.enabled",crashrestartenabled);
+		crdelay = config.getInt("crashrestart.startdelay",crdelay);
 		crashrestartscriptpath = config.getString("crashrestart.scriptpath",crashrestartscriptpath);
 		crtimeout = config.getLong("crashrestart.timeout",crtimeout);
 		crstop = config.getBoolean("crashrestart.juststop", crstop);
@@ -306,6 +308,7 @@ public class AutoSaveConfig {
 		
 		//crashrestart variables
 		config.set("crashrestart.enabled",crashrestartenabled);
+		config.set("crashrestart.startdelay",crdelay);
 		config.set("crashrestart.scriptpath",crashrestartscriptpath);
 		config.set("crashrestart.timeout",crtimeout);
 		config.set("crashrestart.juststop", crstop);
