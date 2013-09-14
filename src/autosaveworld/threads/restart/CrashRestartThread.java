@@ -63,8 +63,8 @@ public class CrashRestartThread extends Thread{
 
 				if (config.crashrestartenabled) 
 				{
-					plugin.debug("[AutoSaveWorld] Server has stopped responding. Probably this is a crash.");
-					plugin.debug("[AutoSaveWorld] Restarting Server");
+					plugin.debug("Server has stopped responding. Probably this is a crash.");
+					plugin.debug("Restarting Server");
 					
 					if (!config.crstop) 
 					{
