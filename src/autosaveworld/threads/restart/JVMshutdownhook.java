@@ -21,11 +21,12 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 
 public class JVMshutdownhook extends Thread {
 
-	private String crashrestartscriptpath = "start.sh"; 
+	private String crashrestartscriptpath = ""; 
 	
 	public void setPath(String path)
 	{
