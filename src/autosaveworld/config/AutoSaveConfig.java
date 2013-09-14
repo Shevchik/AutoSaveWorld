@@ -94,14 +94,14 @@ public class AutoSaveConfig {
 	public String langfilesuffix = "ru";
 	//crashrestart
 	public boolean crashrestartenabled = false;
-	public String crashrestartscriptpath="start.sh";
+	public String crashrestartscriptpath="";
 	public boolean crstop = false;
 	public long crtimeout = 60;
 	public int crdelay = 20;
 	//autorestart
 	public boolean autorestart = false;
 	public boolean autorestartBroadcast = true;
-	public String autorestartscriptpath = "start.sh";
+	public String autorestartscriptpath = "";
 	public List<String> autorestarttime = new ArrayList<String>();
 	public boolean autorestartcountdown = true;
 	public List<Integer> autorestartbroadcastonseconds = new ArrayList<Integer>();

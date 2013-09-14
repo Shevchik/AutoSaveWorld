@@ -38,7 +38,7 @@ public class JVMshutdownhook extends Thread {
 	try {
 		File restartscript = new File(crashrestartscriptpath);
 		String OS = System.getProperty("os.name").toLowerCase();
-		if (restartscript.exists()) 
+		if (!crashrestartscriptpath.isEmpty() && restartscript.exists()) 
 		{
 			System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
 			if (OS.contains("win")) {
