@@ -63,6 +63,8 @@ public class AutoSaveWorld extends JavaPlugin {
 	public WorldRegenCopyThread worldregenThread = null;
 	public WorldRegenPasteThread wrp = null;
 	public volatile boolean worldregenfinished = false;
+	//global restart allowed waiter
+	public RestartWaiter restartwaiter;
 	//configs
 	public AutoSaveConfigMSG configmsg;
 	public AutoSaveConfig config;
@@ -93,6 +95,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeloader = new LocaleLoader(this, config, configmsg);
 		eh = new EventsListener(this);
 		ch = new CommandsHandler(this,config,configmsg,localeloader);
+		//load restart waiter
+		restartwaiter = new RestartWaiter();
 		// register events and commands
 		getCommand("autosaveworld").setExecutor(ch);
 		getCommand("autosave").setExecutor(ch);
@@ -112,7 +116,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start AutoRestartThread
 		startThread(ThreadType.AUTORESTART);
 		// Create JVMsh
-		JVMsh = new JVMshutdownhook();
+		JVMsh = new JVMshutdownhook(restartwaiter);
 		// Start ConsoleCommandThread
 		startThread(ThreadType.CONSOLECOMMAND);
 		// Start WorldRegenThread
@@ -162,6 +166,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			new File(constants.getWorldRegenTempFolder()).delete();
 		}
 		constants = null;
+		restartwaiter = null;
 	}	
 	
 	
@@ -207,7 +212,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			return true;
 		case WORLDREGEN:
 			if (worldregenThread == null || !worldregenThread.isAlive()) {
-				worldregenThread = new WorldRegenCopyThread(this, config ,configmsg);
+				worldregenThread = new WorldRegenCopyThread(restartwaiter, this, config ,configmsg);
 				worldregenThread.start();
 			}
 			return true;

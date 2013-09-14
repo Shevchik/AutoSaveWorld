@@ -15,35 +15,34 @@
  * 
  */
 
-package autosaveworld.threads.restart;
+package autosaveworld.core;
 
 import java.util.HashSet;
 
-//autorestart shutdown hook uses this class to check if no others shutdown hooks are requring for restart to wait.
+//autorestart shutdown hook uses this class to check if no others shutdown hooks are requiring for restart to wait.
 public class RestartWaiter {
 
 	//if this hashset is empty then autorestart shutdown hook will start restarting process.
 	//if it is not empty autorestart will wait until it becomes empty
-	private volatile static HashSet<String> reasons = new HashSet<String>();
+	private volatile HashSet<String> reasons = new HashSet<String>();
 	
-	public static boolean canRestartNow()
+	public boolean canRestartNow()
 	{
-		boolean can = true;
-		if (!reasons.isEmpty()) {can = false;}
-		return can;
+		if (!reasons.isEmpty()) {return false;}
+		return true;
 	}
 	
-	public static HashSet<String> getReasons()
+	public HashSet<String> getReasons()
 	{
 		return reasons;
 	}
 	
-	public static void addReason(String reason)
+	public void addReason(String reason)
 	{
 		reasons.add(reason);
 	}
 	
-	public static void removeReason(String reason)
+	public void removeReason(String reason)
 	{
 		reasons.remove(reason);
 	}
