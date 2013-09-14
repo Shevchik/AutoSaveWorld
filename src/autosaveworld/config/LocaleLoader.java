@@ -48,7 +48,7 @@ public class LocaleLoader {
 		
 		try {
 		//add additional locales based on files in the jar.
-    	final ZipFile zipFile = new ZipFile(AutoSaveWorld.class.getProtectionDomain().getCodeSource().getLocation().getFile());
+    	final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
     	Enumeration<? extends ZipEntry> entries = zipFile.entries();
     	while (entries.hasMoreElements())
     	{
