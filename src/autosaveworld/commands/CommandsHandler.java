@@ -17,10 +17,20 @@
 
 package autosaveworld.commands;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
@@ -43,6 +53,7 @@ public class CommandsHandler implements CommandExecutor {
 	
 	private PermissionCheck permCheck = new PermissionCheck();
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		
@@ -79,6 +90,7 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw purge&7 - &3Purges plugins info from inactive players");
 				plugin.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
 				plugin.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
+				plugin.sendMessage(sender, "&f/asw selfrestart&7 - &3Fully restarts "+plugin.getName());
 				plugin.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
 				plugin.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 				plugin.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
@@ -89,6 +101,52 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw info&7 - &3Shows some info");
 				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("selfrestart")) {
+				try {
+					PluginManager pluginmanager = Bukkit.getPluginManager();
+					Class<? extends PluginManager> managerclass = pluginmanager.getClass();
+					//disable plugin
+					pluginmanager.disablePlugin(plugin);
+					//remove from plugins field
+					Field pluginsField = managerclass.getDeclaredField("plugins");
+					pluginsField.setAccessible(true);
+					List<Plugin> plugins = (List<Plugin>) pluginsField.get(pluginmanager);
+					plugins.remove(plugin);
+					//remove from lookupnames
+					Field lookupNamesField = managerclass.getDeclaredField("lookupNames");
+					lookupNamesField.setAccessible(true);
+					Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
+					lookupNames.remove(plugin.getName());
+					//remove from command fields
+					Field commandMapField = managerclass.getDeclaredField("commandMap");
+					commandMapField.setAccessible(true);
+					CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
+					Field knownCommandsField = null;
+					Map<String, Command> knownCommands = null;
+					knownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
+					knownCommandsField.setAccessible(true);
+					knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
+					for (String plugincommandName : new HashSet<String>(knownCommands.keySet()))
+					{
+						if (knownCommands.get(plugincommandName) instanceof PluginCommand)
+						{
+							PluginCommand plugincommand = (PluginCommand) knownCommands.get(plugincommandName);
+							if (plugincommand.getPlugin().getName().equals(plugin.getName()))
+							{
+								plugincommand.unregister(commandMap);
+								knownCommands.remove(plugincommandName);
+							}
+						}
+					}
+					//load plugin
+					File pluginfile = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
+					Plugin p = Bukkit.getPluginManager().loadPlugin(pluginfile);
+					//enable plugin
+					pluginmanager.enablePlugin(p);
+					return true;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
 				//save
 				plugin.saveThread.startsave();
