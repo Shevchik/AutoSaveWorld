@@ -78,7 +78,7 @@ public class CrashRestartThread extends Thread{
 				
 			}
 			
-			try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 		
 		plugin.debug("Graceful quit of CrashRestartThread");

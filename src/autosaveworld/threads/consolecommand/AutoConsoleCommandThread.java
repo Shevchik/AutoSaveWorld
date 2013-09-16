@@ -60,7 +60,7 @@ public class AutoConsoleCommandThread extends Thread {
 			}
 		});
 		while (loaded == 0) {
-			try{Thread.sleep(1000);} catch (Exception e) {e.printStackTrace();}
+			try{Thread.sleep(1000);} catch (Exception e) {}
 		}
 		Bukkit.getScheduler().cancelTask(ltask);
 		
