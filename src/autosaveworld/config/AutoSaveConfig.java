@@ -20,6 +20,7 @@ package autosaveworld.config;
 import java.io.*;
 import java.util.*;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -108,10 +109,8 @@ public class AutoSaveConfig {
 	public boolean astop = false;
 	//consolecmmand
 	public boolean cctimeenabled = false;
-	public List<String> cctimetimes = new ArrayList<String>();
 	public HashMap<String, List<String>> cctimescommands = new HashMap<String, List<String>>();
 	public boolean ccintervalenabled = false;
-	public List<Integer> ccintervalstimes = new ArrayList<Integer>();
 	public HashMap<Integer, List<String>> ccintervalscommands = new HashMap<Integer, List<String>>();
 	//worldregen
 	public boolean worldregensavewg = true;
@@ -217,31 +216,27 @@ public class AutoSaveConfig {
 		//autoconsolecommand variables
 		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
 		cctimescommands.clear();
-		if (config.getConfigurationSection("consolecommand.timemode.times") != null)
+		ConfigurationSection cctimescs = config.getConfigurationSection("consolecommand.timemode.times");
+		if (cctimescs != null)
 		{
-			cctimetimes = new ArrayList<String>(config.getConfigurationSection("consolecommand.timemode.times").getKeys(false));
-		}
-		for (String cctime : cctimetimes)
-		{
-			cctimescommands.put(cctime, config.getStringList("consolecommand.timemode.times."+cctime));
-		}
-		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
-		ccintervalstimes.clear();
-		ccintervalscommands.clear();
-		if (config.getConfigurationSection("consolecommand.intervalmode.intervals") != null)
-		{
-			Set<String> keytimes = config.getConfigurationSection("consolecommand.intervalmode.intervals").getKeys(false);
-			ccintervalstimes = new ArrayList<Integer>();
-			for (String key : keytimes)
+			for (String time : cctimescs.getKeys(false))
 			{
-				try {ccintervalstimes.add(Integer.valueOf(key));} catch (Exception e) {e.printStackTrace();}
+				cctimescommands.put(time, cctimescs.getStringList(time));
 			}
 		}
-		for (int inttime : ccintervalstimes)
+		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
+		ccintervalscommands.clear();
+		ConfigurationSection ccintervalscs = config.getConfigurationSection("consolecommand.intervalmode.intervals");
+		if (ccintervalscs != null)
 		{
-			ccintervalscommands.put(inttime, config.getStringList("consolecommand.intervalmode.intervals."+inttime));
+			for (String interval : ccintervalscs.getKeys(false))
+			{
+				try {
+					ccintervalscommands.put(Integer.valueOf(interval), ccintervalscs.getStringList(interval));
+				} catch (Exception e) {}
+			}
 		}
-		
+
 		//worldregen variables
 		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
 		worldregensavefactions = config.getBoolean("worldregen.savefactions",worldregensavefactions);

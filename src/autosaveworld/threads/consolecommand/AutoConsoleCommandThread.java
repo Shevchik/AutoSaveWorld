@@ -72,7 +72,7 @@ public class AutoConsoleCommandThread extends Thread {
 			{
 				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 				String ctime = getCurTime();
-				if (cminute != minute && config.cctimetimes.contains(ctime))
+				if (cminute != minute && config.cctimescommands.containsKey(ctime))
 				{
 					plugin.debug("Executing console commands (timesmode)");
 					minute = cminute;
@@ -131,7 +131,7 @@ public class AutoConsoleCommandThread extends Thread {
 	private List<Integer> getIntervalsToExecute()
 	{
 		List<Integer> inttoexecute = new ArrayList<Integer>();
-		for (int interval : config.ccintervalstimes)
+		for (int interval : config.ccintervalscommands.keySet())
 		{
 			if (intervalcounter % interval == 0)
 			{
