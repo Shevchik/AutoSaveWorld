@@ -17,6 +17,8 @@
 
 package autosaveworld.threads.backup.localfs;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -51,8 +53,8 @@ public class LFSFileUtils {
 			    	if (!sourceLocation.getName().endsWith(".lck"))
 			    	{
 					    try {
-					    	InputStream in = new FileInputStream(sourceLocation);
-			       			OutputStream out = new FileOutputStream(targetLocation);
+					    	BufferedInputStream in = new BufferedInputStream(new FileInputStream(sourceLocation));
+			       			BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(targetLocation));
 			       			byte[] buf = new byte[4096];
 			       			int len;
 			       			while ((len = in.read(buf)) > 0) {
