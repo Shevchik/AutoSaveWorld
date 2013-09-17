@@ -119,21 +119,21 @@ public class AutoConsoleCommandThread extends Thread {
 	}
 	
 	
-	//timesmode checks (to executed command only once per minute)
+	//timesmode checks
 	private int minute = -1;
 	private String getCurTime()
 	{
 		return sdf.format(System.currentTimeMillis());
 	}
 	
-	//intervalmode checks (to know when we last executed interval command)
+	//intervalmode checks
 	private long intervalcounter = 0;
 	private List<Integer> getIntervalsToExecute()
 	{
 		List<Integer> inttoexecute = new ArrayList<Integer>();
 		for (int interval : config.ccintervalscommands.keySet())
 		{
-			if (intervalcounter % interval == 0)
+			if (intervalcounter != 0 && intervalcounter % interval == 0)
 			{
 				inttoexecute.add(interval);
 			}
