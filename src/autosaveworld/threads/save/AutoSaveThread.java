@@ -151,7 +151,7 @@ public class AutoSaveThread extends Thread {
 		// Lock
 		plugin.saveInProgress = true;
 
-		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPre);}
+		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
 		// Save the players
 		savePlayers();
@@ -159,7 +159,7 @@ public class AutoSaveThread extends Thread {
 		// Save the worlds
 		saveWorlds();
 
-		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPost);}
+		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 
 		plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 

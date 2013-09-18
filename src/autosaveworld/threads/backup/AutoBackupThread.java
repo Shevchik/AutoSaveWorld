@@ -118,7 +118,7 @@ public class AutoBackupThread extends Thread {
 			
 		long timestart = System.currentTimeMillis();
 			
-		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPre);}
+		plugin.broadcast(configmsg.messageBackupBroadcastPre, config.backupBroadcast);
 		
 		if (config.localfsbackupenabled)
 		{
@@ -143,7 +143,7 @@ public class AutoBackupThread extends Thread {
 		
 		plugin.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
 		
-		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPost);}
+		plugin.broadcast(configmsg.messageBackupBroadcastPost, config.backupBroadcast);
 		
 		plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 

@@ -70,7 +70,7 @@ public class WorldRegenPasteThread extends Thread {
 			
 			//check for worldedit
 			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
-				plugin.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server");
+				plugin.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server",true);
 				return;
 			}
 			

@@ -330,7 +330,7 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	private void performSaveOnDisable()
 	{
-		if (config.saveBroadcast) {broadcast(configmsg.messageSaveBroadcastPre);}
+		broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 		debug("Saving players");
 		getServer().savePlayers();
 		debug("Saved Players");
@@ -340,8 +340,8 @@ public class AutoSaveWorld extends JavaPlugin {
 			debug(String.format("Saving world: %s", w.getName()));
 			w.save();
 		}
-		if (config.saveBroadcast) {broadcast(configmsg.messageSaveBroadcastPost);}
 		debug("Saved Worlds");
+		broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 	}
 	
 	
@@ -352,8 +352,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		}
 	}
 
-	public void broadcast(String message) {
-		if (!message.equals("")) {
+	public void broadcast(String message, boolean broadcast) {
+		if (!message.equals("") && broadcast) {
 			getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
 		}
 	}

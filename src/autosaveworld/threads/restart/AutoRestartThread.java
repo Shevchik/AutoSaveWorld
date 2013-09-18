@@ -69,16 +69,13 @@ public class AutoRestartThread  extends Thread{
 					{
 						if (config.autorestartbroadcastonseconds.contains(i))
 						{
-							plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)));
+							plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)), true);
 						}
 						try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					} 
 				}
 				
-				if (config.autorestartBroadcast) 
-				{
-					plugin.broadcast(configmsg.messageAutoRestart);
-				}
+				plugin.broadcast(configmsg.messageAutoRestart, config.autorestartBroadcast);
 				
 				plugin.debug("[AutoSaveWorld] AutoRestarting server");
 				
