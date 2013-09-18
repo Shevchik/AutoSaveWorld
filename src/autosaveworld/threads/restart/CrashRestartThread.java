@@ -45,6 +45,8 @@ public class CrashRestartThread extends Thread{
 		plugin.debug("Delaying crashrestart checker start for "+config.crdelay+" seconds");
 		//wait for configurable delay
 		try {Thread.sleep(config.crdelay*1000);} catch (InterruptedException e) {}
+		//do not enable self if plugin is disabled
+		if (!plugin.isEnabled()) {return;}
 
 		plugin.debug("Running crashrestart checker");
 		//schedule sync task in, this will provide us info about when the last server tick occured
