@@ -73,26 +73,14 @@ public class LocalFSBackup {
 	
 	public void performBackup() {
 
-		boolean zip = config.lfsbackupzip;
-	    List<String> backupfoldersdest = new ArrayList<String>();
-
-		//adding internal folder to list of folders to which we should backup everything 
-		if (!(config.lfsdonotbackuptointfld && config.lfsbackuptoextfolders))  {
-			try {
-				backupfoldersdest.add(new File(".").getCanonicalPath());
-			} catch (IOException e) {e.printStackTrace();}
-		}
-		//adding external folders to list of folders to which we should backup everything 
-		if (config.lfsbackuptoextfolders) {backupfoldersdest.addAll(config.lfsextfolders);}
-		
 		//backup	
-		for (String extpath : backupfoldersdest)
+		for (String extpath : config.lfsextfolders)
 		{
 			//create timestamp
 			long timestamp = System.currentTimeMillis();
 			
 			//load backup operations class
-			LFSBackupOperations bo = new LFSBackupOperations(plugin, zip, extpath, config.lfsbackupexcludefolders, timestamp);
+			LFSBackupOperations bo = new LFSBackupOperations(plugin, config.lfsbackupzip, extpath, config.lfsbackupexcludefolders, timestamp);
 			
 			//load info about backups stored in file backups.yml
 			loadConfigBackupExt(extpath);

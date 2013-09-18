@@ -57,8 +57,6 @@ public class AutoSaveConfig {
 		public int lfsMaxNumberOfPluginsBackups = 15;
 		public List<String> lfsextfolders;
 		public List<String> lfsbackupexcludefolders;
-		public boolean lfsbackuptoextfolders = false;
-		public boolean lfsdonotbackuptointfld = true;
 		public boolean lfsbackupzip = false;
 		//ftp backup
 		public boolean ftpbackupenabled = false;
@@ -140,9 +138,13 @@ public class AutoSaveConfig {
 			localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);	
 			lfsMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
 			lfsMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
-			lfsbackuptoextfolders = config.getBoolean("backup.localfs.toextfolders", lfsbackuptoextfolders);
-			lfsextfolders = config.getStringList("backup.localfs.extfolders");
-			lfsdonotbackuptointfld = config.getBoolean("backup.localfs.disableintfolder", lfsdonotbackuptointfld);
+			lfsextfolders = config.getStringList("backup.localfs.destinationfolders");
+			if (lfsextfolders.isEmpty())
+			{
+				try {
+				lfsextfolders.add(new File(".").getCanonicalPath());
+				} catch (Exception e) {}
+			}
 			lfsbackuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
 			lfsbackupexcludefolders = config.getStringList("backup.localfs.excludefolders");
 			lfsbackupzip = config.getBoolean("backup.localfs.zip", lfsbackupzip);
@@ -274,9 +276,7 @@ public class AutoSaveConfig {
 			config.set("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
 			config.set("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
 			config.set("backup.localfs.excludefolders",lfsbackupexcludefolders);
-			config.set("backup.localfs.toextfolders", lfsbackuptoextfolders);
-			config.set("backup.localfs.disableintfolder", lfsdonotbackuptointfld);
-			config.set("backup.localfs.extfolders",lfsextfolders);
+			config.set("backup.localfs.destinationfolders",lfsextfolders);
 			config.set("backup.localfs.zip",lfsbackupzip);
 			//ftp
 			config.set("backup.ftp.enabled",ftpbackupenabled);
