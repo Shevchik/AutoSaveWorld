@@ -17,7 +17,8 @@
 
 package autosaveworld.threads.backup;
 
-import org.bukkit.Bukkit;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
@@ -100,64 +101,56 @@ public class AutoBackupThread extends Thread {
 			return;
 		}
 		
-		try 
+		if (config.backupsaveBefore)
 		{
-			if (config.backupsaveBefore)
-			{
-				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-				{
-						public void run()
-						{
-							plugin.saveThread.command = true;
-							plugin.saveThread.performSave();
-						}
-
-				});
-				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-				{
-					try {Thread.sleep(100);} catch (Exception e) {e.printStackTrace();}
-				}
-			}
-			// Lock
-			plugin.backupInProgress = true;
-			
-			long timestart = System.currentTimeMillis();
-			
-			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPre);}
-		
-			if (config.localfsbackupenabled)
-			{
-				plugin.debug("Starting LocalFS backup");
-				new LocalFSBackup(plugin, config).performBackup();
-				plugin.debug("LocalFS backup finished");
-			}
-			
-			if (config.ftpbackupenabled)
-			{
-				plugin.debug("Starting FTP backup");
-				new FTPBackup(plugin, config).performBackup();
-				plugin.debug("FTP backup finished");
-			}
-			
-			if (config.scriptbackupenabled)
-			{
-				plugin.debug("Starting Script Backup");
-				new ScriptBackup(plugin, config).performBackup();
-				plugin.debug("Script Backup Finished");
-			}
-		
-			plugin.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
-			if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPost);}
-			plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-
-		} 
-		finally 
-		{
-			// Release
-			plugin.backupInProgress = false;
+			try {
+				Field f = plugin.saveThread.getClass().getDeclaredField("command");
+				f.setAccessible(true);
+				f.set(plugin.saveThread, true);
+				Method m = plugin.saveThread.getClass().getDeclaredMethod("performSave");
+				m.setAccessible(true);
+				m.invoke(plugin.saveThread);
+			} catch (Exception e) {e.printStackTrace();}
 		}
+
+		// Lock
+		plugin.backupInProgress = true;
+			
+		long timestart = System.currentTimeMillis();
+			
+		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPre);}
+		
+		if (config.localfsbackupenabled)
+		{
+			plugin.debug("Starting LocalFS backup");
+			new LocalFSBackup(plugin, config).performBackup();
+			plugin.debug("LocalFS backup finished");
+		}
+		
+		if (config.ftpbackupenabled)
+		{
+			plugin.debug("Starting FTP backup");
+			new FTPBackup(plugin, config).performBackup();
+			plugin.debug("FTP backup finished");
+		}
+		
+		if (config.scriptbackupenabled)
+		{
+			plugin.debug("Starting Script Backup");
+			new ScriptBackup(plugin, config).performBackup();
+			plugin.debug("Script Backup Finished");
+		}
+		
+		plugin.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
+		
+		if (config.backupBroadcast){plugin.broadcast(configmsg.messageBackupBroadcastPost);}
+		
+		plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
+
+		// Release
+		plugin.backupInProgress = false;
 	}
-	
+
 }
 	
 

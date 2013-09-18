@@ -17,7 +17,9 @@
 
 package autosaveworld.threads.save;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.config.AutoSaveConfig;
@@ -36,12 +38,15 @@ public class AutoSaveThread extends Thread {
 	}
 
 
-	public void stopThread() {
+	public void stopThread() 
+	{
 		this.run = false;
 	}
 
-	public void startsave() {
-		if (plugin.saveInProgress) {
+	public void startsave() 
+	{
+		if (plugin.saveInProgress)
+		{
 			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
 			return;
 		}
@@ -52,8 +57,9 @@ public class AutoSaveThread extends Thread {
 	// The code to run...weee
 	private int i;
 	private volatile boolean run = true;
-	public boolean command = false;
-	public void run() {
+	private boolean command = false;
+	public void run() 
+	{
 
 		plugin.debug("AutoSaveThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
@@ -74,8 +80,7 @@ public class AutoSaveThread extends Thread {
 
 			//save
 			if (run&&(config.saveEnabled||command)) {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { 
-					public void run() {performSave();}});
+				performSave();
 			}
 		}
 		
@@ -86,22 +91,50 @@ public class AutoSaveThread extends Thread {
 	
 	
 	
-	private void savePlayers() {
+	private void savePlayers() 
+	{
 		plugin.debug("Saving players");
-		plugin.getServer().savePlayers();
-	}
-
-	private void saveWorlds() {
-		for (World world : plugin.getServer().getWorlds()) {
-			plugin.debug(String.format("Saving world: %s", world.getName()));
-			world.save();
+		BukkitScheduler scheduler = Bukkit.getScheduler();
+		int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
+		{
+			public void run()
+			{
+				Bukkit.savePlayers();
+			}
+		});
+		while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
+		{
+			try {Thread.sleep(100);} catch (InterruptedException e) {}
 		}
+		plugin.debug("Saved Players");
+	}
+
+	private void saveWorlds() 
+	{
+		plugin.debug("Saving worlds");
+		BukkitScheduler scheduler = Bukkit.getScheduler();
+		for (final World world : plugin.getServer().getWorlds()) 
+		{
+			plugin.debug(String.format("Saving world: %s", world.getName()));
+			int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
+			{
+				public void run()
+				{
+					world.save();
+				}
+			});
+			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
+			{
+				try {Thread.sleep(100);} catch (InterruptedException e) {}
+			}
+		}
+		plugin.debug("Saved Worlds");
 	}
 
 
-	public void performSave() {
-		
-		
+	private void performSave() 
+	{
+	
 		if (plugin.getServer().getOnlinePlayers().length == 0 && !command) {
 			// No players online, don't bother saving.
 			plugin.debug("Skipping save, no players online.");
@@ -115,37 +148,23 @@ public class AutoSaveThread extends Thread {
 			return;
 		}
 		
-		try {
-			
-			// Lock
-			plugin.saveInProgress = true;
+		// Lock
+		plugin.saveInProgress = true;
 
-			try {
-				
-				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPre);}
+		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPre);}
 
-				// Save the players
-				savePlayers();
-				plugin.debug("Saved Players");
+		// Save the players
+		savePlayers();
+		
+		// Save the worlds
+		saveWorlds();
 
-				// Save the worlds
-				saveWorlds();
-				plugin.debug("Saved Worlds");
+		if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPost);}
 
-				if (config.saveBroadcast) {plugin.broadcast(configmsg.messageSaveBroadcastPost);}
-			} catch (Exception e) 
-			{
-				if (config.saveBroadcast){plugin.broadcast("&4AutoSave Failed");}
-				if (config.varDebug) {e.printStackTrace();}
-			}
+		plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 
-			plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-
-		} finally {
-			// Release
-			plugin.saveInProgress = false;
-		}
+		// Release
+		plugin.saveInProgress = false;
 	}
-
 
 }
