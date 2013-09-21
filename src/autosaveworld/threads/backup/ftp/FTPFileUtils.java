@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
+
 import autosaveworld.threads.backup.ExcludeManager;
 
 public class FTPFileUtils {
@@ -54,6 +55,7 @@ public class FTPFileUtils {
 	    		finally {
 	    			is.close();
 	    		}
+	       		try {Thread.sleep(0);} catch (Exception e) {}
 	    	}
        }
    }

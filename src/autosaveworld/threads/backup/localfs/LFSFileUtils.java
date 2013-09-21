@@ -63,7 +63,7 @@ public class LFSFileUtils {
 			    		} catch (Exception e) {
 			    			
 			       		}
-			       		try {Thread.sleep(0);} catch (Exception e) {e.printStackTrace();};
+			       		try {Thread.sleep(0);} catch (Exception e) {}
 			    	}
 			    }
 	}
