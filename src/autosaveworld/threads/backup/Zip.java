@@ -103,7 +103,7 @@ public class Zip {
 			} finally {
 				inStream.close();
 			}
-       		try {Thread.sleep(0);} catch (Exception e) {}
+       		Thread.yield();
 		}
 	}
 
