@@ -72,6 +72,9 @@ public class CommandsHandler implements CommandExecutor {
 			if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 				// help
 				plugin.sendMessage(sender, "&f/asw help&7 - &3Shows this help");
+				plugin.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
+				plugin.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
+				plugin.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
 				plugin.sendMessage(sender, "&f/asw save&7 - &3Saves all worlds and players");
 				plugin.sendMessage(sender, "&f/save&7 - &3Same as /asw save");
 				plugin.sendMessage(sender, "&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds) and plugins (if enabled in config)");
@@ -79,7 +82,6 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw purge&7 - &3Purges plugins info from inactive players");
 				plugin.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
 				plugin.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
-				plugin.sendMessage(sender, "&f/asw selfrestart&7 - &3Fully restarts "+plugin.getName());
 				plugin.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
 				plugin.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 				plugin.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
