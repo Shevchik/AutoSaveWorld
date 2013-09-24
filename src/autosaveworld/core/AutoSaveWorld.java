@@ -161,6 +161,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		eh = null;
 		ch = null;
 		formattingCodesParser = null;
+		pmanager = null;
 		HandlerList.unregisterAll(this);
 		//Check if we just finished WorldRegen, if so - clean garbage
 		File check = new File(constants.getShouldpasteFile());
