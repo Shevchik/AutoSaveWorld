@@ -89,6 +89,7 @@ public class GPPaste {
 					plugin.debug("Pasting GP region "+claim.getID()+" from schematics");
 					//load from schematic to clipboard
 					EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
+					es.setFastMode(true);
 					File f = new File(schemfolder+claim.getID());
 					CuboidClipboard cc = format.load(f);
 					//paste clipboard at origin

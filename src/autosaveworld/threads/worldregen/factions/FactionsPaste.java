@@ -82,6 +82,7 @@ public class FactionsPaste {
 						plugin.debug("Pasting "+f.getName()+" chunk from schematic");
 						//load from schematic to clipboard
 						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
+						es.setFastMode(true);
 						File file = new File(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord);
 						CuboidClipboard cc = format.load(file);
 						//paste clipboard at origin

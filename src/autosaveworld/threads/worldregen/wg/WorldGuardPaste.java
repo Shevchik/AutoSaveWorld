@@ -73,6 +73,7 @@ public class WorldGuardPaste {
 					plugin.debug("Pasting WG region "+rg.getId()+" from schematic");
 					//load from schematic to clipboard
 					EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
+					es.setFastMode(true);
 					File f = new File(schemfolder+rg.getId());
 					CuboidClipboard cc = format.load(f);
 					//paste clipboard at origin
