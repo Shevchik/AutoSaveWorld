@@ -57,7 +57,7 @@ public class AutoSaveThread extends Thread {
 	// The code to run...weee
 	private int i;
 	private volatile boolean run = true;
-	private boolean command = false;
+	public boolean command = false;
 	public void run() 
 	{
 
@@ -132,9 +132,8 @@ public class AutoSaveThread extends Thread {
 	}
 
 
-	private void performSave() 
+	public void performSave() 
 	{
-	
 		if (plugin.getServer().getOnlinePlayers().length == 0 && !command) {
 			// No players online, don't bother saving.
 			plugin.debug("Skipping save, no players online.");

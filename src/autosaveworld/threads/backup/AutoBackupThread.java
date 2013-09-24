@@ -17,9 +17,6 @@
 
 package autosaveworld.threads.backup;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
@@ -104,12 +101,8 @@ public class AutoBackupThread extends Thread {
 		if (config.backupsaveBefore)
 		{
 			try {
-				Field f = plugin.saveThread.getClass().getDeclaredField("command");
-				f.setAccessible(true);
-				f.set(plugin.saveThread, true);
-				Method m = plugin.saveThread.getClass().getDeclaredMethod("performSave");
-				m.setAccessible(true);
-				m.invoke(plugin.saveThread);
+				plugin.saveThread.command = true;
+				plugin.saveThread.performSave();
 			} catch (Exception e) {e.printStackTrace();}
 		}
 
