@@ -31,6 +31,7 @@ import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.config.LocaleLoader;
 import autosaveworld.listener.EventsListener;
+import autosaveworld.pluginmanager.ASWPluginManager;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.threads.purge.AutoPurgeThread;
@@ -66,6 +67,8 @@ public class AutoSaveWorld extends JavaPlugin {
 	public volatile boolean worldregenfinished = false;
 	//global restart allowed waiter
 	public RestartWaiter restartwaiter;
+	//plugin manager
+	public ASWPluginManager pmanager;
 	//configs
 	public AutoSaveConfigMSG configmsg;
 	public AutoSaveConfig config;
@@ -96,6 +99,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeloader = new LocaleLoader(this, config, configmsg);
 		eh = new EventsListener(this);
 		ch = new CommandsHandler(this,config,configmsg,localeloader);
+		//load plugin manager
+		pmanager = new ASWPluginManager(this);
 		//load restart waiter
 		restartwaiter = new RestartWaiter();
 		// register events and commands

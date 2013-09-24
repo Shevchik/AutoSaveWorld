@@ -101,6 +101,9 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw info&7 - &3Shows some info");
 				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
+			} else if (args.length == 3 && args[0].equalsIgnoreCase("pmanager")) {
+				plugin.pmanager.handlePluginManagerCommand(sender, args[1], args[2]);
+				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("selfrestart")) {
 				try {
 					PluginManager pluginmanager = Bukkit.getPluginManager();
