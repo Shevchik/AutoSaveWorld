@@ -17,20 +17,10 @@
 
 package autosaveworld.commands;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
@@ -53,7 +43,6 @@ public class CommandsHandler implements CommandExecutor {
 	
 	private PermissionCheck permCheck = new PermissionCheck();
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		
@@ -104,52 +93,6 @@ public class CommandsHandler implements CommandExecutor {
 			} else if (args.length == 3 && args[0].equalsIgnoreCase("pmanager")) {
 				plugin.pmanager.handlePluginManagerCommand(sender, args[1], args[2]);
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("selfrestart")) {
-				try {
-					PluginManager pluginmanager = Bukkit.getPluginManager();
-					Class<? extends PluginManager> managerclass = pluginmanager.getClass();
-					//disable plugin
-					pluginmanager.disablePlugin(plugin);
-					//remove from plugins field
-					Field pluginsField = managerclass.getDeclaredField("plugins");
-					pluginsField.setAccessible(true);
-					List<Plugin> plugins = (List<Plugin>) pluginsField.get(pluginmanager);
-					plugins.remove(plugin);
-					//remove from lookupnames
-					Field lookupNamesField = managerclass.getDeclaredField("lookupNames");
-					lookupNamesField.setAccessible(true);
-					Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
-					lookupNames.remove(plugin.getName());
-					//remove from command fields
-					Field commandMapField = managerclass.getDeclaredField("commandMap");
-					commandMapField.setAccessible(true);
-					CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
-					Field knownCommandsField = null;
-					Map<String, Command> knownCommands = null;
-					knownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
-					knownCommandsField.setAccessible(true);
-					knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
-					for (String plugincommandName : new HashSet<String>(knownCommands.keySet()))
-					{
-						if (knownCommands.get(plugincommandName) instanceof PluginCommand)
-						{
-							PluginCommand plugincommand = (PluginCommand) knownCommands.get(plugincommandName);
-							if (plugincommand.getPlugin().getName().equals(plugin.getName()))
-							{
-								plugincommand.unregister(commandMap);
-								knownCommands.remove(plugincommandName);
-							}
-						}
-					}
-					//load plugin
-					File pluginfile = new File(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
-					Plugin p = Bukkit.getPluginManager().loadPlugin(pluginfile);
-					//enable plugin
-					pluginmanager.enablePlugin(p);
-					return true;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
 				//save
 				plugin.saveThread.startsave();
