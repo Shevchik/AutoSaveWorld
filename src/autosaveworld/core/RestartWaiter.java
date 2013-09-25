@@ -28,8 +28,7 @@ public class RestartWaiter {
 	
 	public boolean canRestartNow()
 	{
-		if (!reasons.isEmpty()) {return false;}
-		return true;
+		return reasons.isEmpty();
 	}
 	
 	public HashSet<String> getReasons()
