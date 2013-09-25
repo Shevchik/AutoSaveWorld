@@ -50,6 +50,13 @@ public class Constants {
 		return getPluginFolder()+cf[0]+"_"+suffix+"."+cf[1];
 	}
 
+	
+	private String backuppreserverfile = "backupintervalpreserve.yml";
+	public String getBackupIntervalPreservePath()
+	{
+		return getPluginFolder()+backuppreserverfile;
+	}
+	
 	//backup
 	private String backuptempfolder = "BackupTemp/";
 	public String getBackupTempFolder()

@@ -17,6 +17,12 @@
 
 package autosaveworld.threads.backup;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
@@ -37,7 +43,15 @@ public class AutoBackupThread extends Thread {
 	
 
 	public void stopThread() {
-		this.run = false;
+		//save counter on disable
+		if (config.backupEnabled)
+		{
+			FileConfiguration config = new YamlConfiguration();
+			config.set("counter", counter);
+			try {config.save(new File(plugin.constants.getBackupIntervalPreservePath()));} catch (IOException e) {}
+		}
+		//stop
+		run = false;
 	}
 	
 	public void startbackup() {
@@ -52,10 +66,20 @@ public class AutoBackupThread extends Thread {
 	// The code to run...weee
 	private volatile boolean run = true;
     private boolean command = false;
+    private int counter = 0;
 	public void run() {
 
 		plugin.debug("AutoBackupThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
+		
+		//load counter on enable
+		if (config.backupEnabled)
+		{
+			File preservefile = new File(plugin.constants.getBackupIntervalPreservePath());
+			FileConfiguration config = YamlConfiguration.loadConfiguration(preservefile);
+			counter = config.getInt("counter",0);
+			preservefile.delete();
+		}
 		
 		while (run) {
 			// Prevent AutoBackup from never sleeping
@@ -66,12 +90,12 @@ public class AutoBackupThread extends Thread {
 			}
 			
 			// Do our Sleep stuff!
-			for (int i = 0; i < config.backupInterval; i++) {
-				if (!run) {break;}
-				if (command) {break;}
+			for (; counter < config.backupInterval; counter++) {
+				if (!run || command) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 			
+			counter = 0;
 			if (run&&(config.backupEnabled||command)) {performBackup();}
 			
 		}
