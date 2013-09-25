@@ -73,7 +73,14 @@ public class JVMshutdownhook extends Thread {
 			
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.command(execsequence);
-			pb.start();
+			Process p = pb.start();
+			
+			//send IO to hell
+			OutputThread output = new OutputThread(p);
+			output.start();
+			ErrorThread err = new ErrorThread(p);
+			err.start();
+
 
 		}
 	} catch (Exception e)
