@@ -32,6 +32,8 @@ import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.config.LocaleLoader;
 import autosaveworld.listener.EventsListener;
 import autosaveworld.pluginmanager.ASWPluginManager;
+import autosaveworld.threads.RestartWaiter;
+import autosaveworld.threads.ThreadType;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.threads.purge.AutoPurgeThread;

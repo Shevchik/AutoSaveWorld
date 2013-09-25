@@ -15,7 +15,7 @@
  * 
  */
 
-package autosaveworld.core;
+package autosaveworld.threads;
 
 import java.util.HashSet;
 

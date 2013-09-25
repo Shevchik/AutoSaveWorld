@@ -15,7 +15,7 @@
  * 
  */
 
-package autosaveworld.core;
+package autosaveworld.threads;
 
 public enum ThreadType {
 	SAVE, BACKUP, PURGE, SELFRESTART, CRASHRESTART, AUTORESTART, CONSOLECOMMAND, WORLDREGEN;

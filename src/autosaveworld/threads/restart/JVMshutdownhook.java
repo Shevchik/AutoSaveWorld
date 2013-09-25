@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.core.RestartWaiter;
+import autosaveworld.threads.RestartWaiter;
 
 public class JVMshutdownhook extends Thread {
 

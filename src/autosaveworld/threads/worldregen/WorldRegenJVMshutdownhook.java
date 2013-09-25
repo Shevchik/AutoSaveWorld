@@ -20,7 +20,7 @@ package autosaveworld.threads.worldregen;
 import java.io.File;
 import java.io.IOException;
 
-import autosaveworld.core.RestartWaiter;
+import autosaveworld.threads.RestartWaiter;
 
 public class WorldRegenJVMshutdownhook extends Thread {
 	
