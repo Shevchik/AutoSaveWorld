@@ -64,6 +64,7 @@ public class InternalUtils {
 		//load plugin
 		Plugin plugin = Bukkit.getPluginManager().loadPlugin(pluginfile);
 		//enable plugin
+		plugin.onLoad();
 		pluginmanager.enablePlugin(plugin);
 	}
 	
