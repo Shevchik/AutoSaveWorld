@@ -28,7 +28,7 @@ public class ExcludeManager {
 	
 	public static boolean isFolderExcluded(List<String> excludelist, String folder)
 	{
-		//ignore configured fodlers
+		//ignore configured folders
 		for (String ef : excludelist) {
 			if (ef.contains("*") && ef.indexOf("*") == ef.length()-1) {
 				//resolve wildcard
