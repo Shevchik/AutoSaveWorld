@@ -105,8 +105,7 @@ public class WorldRegenPasteThread extends Thread {
 
 			// restart
 			plugin.worldregenfinished = true;
-			config.autorestartcountdown = false;
-			plugin.autorestartThread.startrestart();
+			plugin.autorestartThread.startrestart(true);
 
 		} catch (Exception e) {
 			e.printStackTrace();

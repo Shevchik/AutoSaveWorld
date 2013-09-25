@@ -40,14 +40,16 @@ public class AutoRestartThread  extends Thread{
 		this.run = false;
 	}
 	
-	public void startrestart()
+	public void startrestart(boolean skipcountdown)
 	{
 		this.command = true;
+		this.skipcountdown = skipcountdown;
 	}
 	
 
 	private volatile boolean run = true;
 	private boolean command = false;
+	private boolean skipcountdown = false;
 	public void run()
 	{	
 		plugin.debug("AutoRestartThread started");
@@ -63,7 +65,7 @@ public class AutoRestartThread  extends Thread{
 				run = false;
 				command = false;
 				
-				if (config.autorestartcountdown)
+				if (config.autorestartcountdown && !skipcountdown)
 				{
 					for (int i = config.autorestartbroadcastonseconds.get(0); i>0; i--)
 					{

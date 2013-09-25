@@ -152,8 +152,7 @@ public class WorldRegenCopyThread extends Thread {
 		plugin.debug("Deleting map and restarting server");
 		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(restartwaiter, wtoregen.getWorldFolder().getCanonicalPath(), plugin.constants.getShouldpasteFile());
 		Runtime.getRuntime().addShutdownHook(wrsh);
-		config.autorestartcountdown = false;
-		plugin.autorestartThread.startrestart();
+		plugin.autorestartThread.startrestart(true);
 		
 	}
 	

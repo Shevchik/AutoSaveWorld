@@ -109,7 +109,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if ((args.length == 1 && args[0].equalsIgnoreCase("restart"))) {
 				//restart
-				plugin.autorestartThread.startrestart();
+				plugin.autorestartThread.startrestart(false);
 				return true;
 			} else if ((args.length == 2 && args[0].equalsIgnoreCase("regenworld"))) {
 				//regen world
