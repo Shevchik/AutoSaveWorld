@@ -47,13 +47,14 @@ public class AutoSaveConfigMSG {
 	
 	public void loadmsg() 
 	{
-		File configfile;
 		if (!config.switchtolangfile) {
-			configfile = new File(plugin.constants.getConfigMSGPath());
+			File configfile = new File(plugin.constants.getConfigMSGPath());lLoader.loadLocaleMessegaes(configfile);
+			enMessages.loadMessagesEN();
+			enMessages.saveMessagesEN(configfile);
 		} else {
-			configfile = new File(plugin.constants.getConfigMSGWithSuffix(config.langfilesuffix));
+			File configfile = new File(plugin.constants.getConfigMSGWithSuffix(config.langfilesuffix));
+			lLoader.loadLocaleMessegaes(configfile);
 		}
-		lLoader.loadLocaleMessegaes(configfile);
 	}
 
 }
