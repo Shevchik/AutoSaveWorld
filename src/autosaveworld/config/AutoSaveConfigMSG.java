@@ -19,19 +19,20 @@ package autosaveworld.config;
 
 import java.io.*;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import autosaveworld.core.AutoSaveWorld;
 
 public class AutoSaveConfigMSG {
-	private FileConfiguration configmsg;
+
 	private AutoSaveConfig config;
-	private AutoSaveWorld plugin;
+	private AutoSaveWorld plugin;	
 	public AutoSaveConfigMSG(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
-		this.config = config;
+		this.config = config;		
 	}
+	
+	public ENDefaults enMessages = new ENDefaults(this);
+	private LocaleLoader lLoader  = new LocaleLoader(this);
+	
 	// Messages
 	public String messageSaveBroadcastPre = "&9AutoSaving";
 	public String messageSaveBroadcastPost = "&9AutoSave Complete";
@@ -44,55 +45,15 @@ public class AutoSaveConfigMSG {
 	public String messageWorldRegenKick = "&9Server is regenerating map, please come back later";
 	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
 	
-	public void loadmsg() {
+	public void loadmsg() 
+	{
+		File configfile;
 		if (!config.switchtolangfile) {
-			configmsg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGPath()));
-			loadMessages();
-			saveMessages();
-		} else
-		{
-			configmsg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGWithSuffix(config.langfilesuffix)));
-			loadMessages();
+			configfile = new File(plugin.constants.getConfigMSGPath());
+		} else {
+			configfile = new File(plugin.constants.getConfigMSGWithSuffix(config.langfilesuffix));
 		}
+		lLoader.loadLocaleMessegaes(configfile);
 	}
-	
-	
-	private void loadMessages()
-	{
-		messageSaveBroadcastPre =configmsg.getString("broadcast.pre", messageSaveBroadcastPre);
-		messageSaveBroadcastPost =configmsg.getString("broadcast.post", messageSaveBroadcastPost);
-		messageBackupBroadcastPre =configmsg.getString("broadcastbackup.pre", messageBackupBroadcastPre);
-		messageBackupBroadcastPost =configmsg.getString("broadcastbackup.post", messageBackupBroadcastPost);
-		messagePurgeBroadcastPre =configmsg.getString("broadcastpurge.pre", messagePurgeBroadcastPre);
-		messagePurgeBroadcastPost =configmsg.getString("broadcastpurge.post", messagePurgeBroadcastPost);
-		messageInsufficientPermissions =configmsg.getString("insufficentpermissions", messageInsufficientPermissions);
-		messageAutoRestart = configmsg.getString("autorestart.restarting",messageAutoRestart);
-		messageAutoRestartCountdown = configmsg.getString("autorestart.countdown",messageAutoRestartCountdown);
-		messageWorldRegenKick = configmsg.getString("worldregen.kickmessage", messageWorldRegenKick);
-	}
-	
-	private void saveMessages()
-	{
-		configmsg = new YamlConfiguration();
-		configmsg.set("broadcast.pre", messageSaveBroadcastPre);
-		configmsg.set("broadcast.post", messageSaveBroadcastPost);
-		configmsg.set("broadcastbackup.pre", messageBackupBroadcastPre);
-		configmsg.set("broadcastbackup.post", messageBackupBroadcastPost);
-		configmsg.set("broadcastpurge.pre", messagePurgeBroadcastPre);
-		configmsg.set("broadcastpurge.post", messagePurgeBroadcastPost);
-		configmsg.set("autorestart.restarting",messageAutoRestart);
-		configmsg.set("autorestart.countdown",messageAutoRestartCountdown);
-		configmsg.set("worldregen.kickmessage", messageWorldRegenKick);
-		configmsg.set("insufficentpermissions", messageInsufficientPermissions);
-		try {
-			configmsg.save(new File("plugins/AutoSaveWorld/configmsg.yml"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	
-	
+
 }

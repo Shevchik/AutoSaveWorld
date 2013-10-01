@@ -24,7 +24,7 @@ import org.bukkit.command.CommandSender;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
-import autosaveworld.config.LocaleLoader;
+import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
 
 public class CommandsHandler implements CommandExecutor {
@@ -32,13 +32,13 @@ public class CommandsHandler implements CommandExecutor {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private LocaleLoader localeloader;
+	private LocaleChanger localeChanger;
 	public CommandsHandler(AutoSaveWorld plugin, AutoSaveConfig config,
-			AutoSaveConfigMSG configmsg, LocaleLoader localeloader) {
+			AutoSaveConfigMSG configmsg, LocaleChanger localeChanger) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
-		this.localeloader = localeloader;
+		this.localeChanger = localeChanger;
 	};
 	
 	private PermissionCheck permCheck = new PermissionCheck();
@@ -170,15 +170,15 @@ public class CommandsHandler implements CommandExecutor {
 					plugin.sendMessage(sender, "Current locale is " + config.langfilesuffix);
 					return true;
 				} else if (args.length == 2 && args[1].equalsIgnoreCase("available")) {
-					plugin.sendMessage(sender, "Available locales: "+ localeloader.getAvailableLocales());
+					plugin.sendMessage(sender, "Available locales: "+ localeChanger.getAvailableLocales());
 					return true;
 				} else if (args.length == 2 && args[1].equalsIgnoreCase("load")) {
 					plugin.sendMessage(sender,"You should specify a locale to load (get available locales using /asw locale available command)");
 					return true;
 				} else if (args.length == 3 && args[1].equalsIgnoreCase("load")) {
-					if (localeloader.getAvailableLocales().contains(args[2])) {
+					if (localeChanger.getAvailableLocales().contains(args[2])) {
 						plugin.sendMessage(sender, "Loading locale " + args[2]);
-						localeloader.loadLocale(args[2]);
+						localeChanger.loadLocale(args[2]);
 						plugin.sendMessage(sender, "Loaded locale " + args[2]);
 						return true;
 					} else {

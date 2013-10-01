@@ -29,7 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import autosaveworld.commands.CommandsHandler;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
-import autosaveworld.config.LocaleLoader;
+import autosaveworld.config.LocaleChanger;
 import autosaveworld.listener.EventsListener;
 import autosaveworld.pluginmanager.ASWPluginManager;
 import autosaveworld.threads.RestartWaiter;
@@ -74,7 +74,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	//configs
 	public AutoSaveConfigMSG configmsg;
 	public AutoSaveConfig config;
-	public LocaleLoader localeloader;
+	public LocaleChanger localeChanger;
 	//event listener
 	public EventsListener eh;
 	//command executor
@@ -98,9 +98,9 @@ public class AutoSaveWorld extends JavaPlugin {
 		config.load();
 		configmsg = new AutoSaveConfigMSG(this,config);
 		configmsg.loadmsg();
-		localeloader = new LocaleLoader(this, config, configmsg);
+		localeChanger = new LocaleChanger(this, config, configmsg);
 		eh = new EventsListener(this);
-		ch = new CommandsHandler(this,config,configmsg,localeloader);
+		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		//load plugin manager
 		pmanager = new ASWPluginManager(this);
 		//load restart waiter
@@ -159,7 +159,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.WORLDREGEN);
 		configmsg = null;
 		config = null; 
-		localeloader = null;
+		localeChanger = null;
 		eh = null;
 		ch = null;
 		formattingCodesParser = null;

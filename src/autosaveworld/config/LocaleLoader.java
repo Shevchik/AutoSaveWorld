@@ -18,114 +18,32 @@
 package autosaveworld.config;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-import autosaveworld.core.AutoSaveWorld;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LocaleLoader {
-	public LocaleLoader(AutoSaveWorld plugin,AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
-		this.plugin = plugin;
-		this.config = config;
+
+	private AutoSaveConfigMSG configmsg;
+	public LocaleLoader(AutoSaveConfigMSG configmsg)
+	{
 		this.configmsg = configmsg;
 	}
-	private AutoSaveWorld plugin;
-	private AutoSaveConfig config;
-	private AutoSaveConfigMSG configmsg;
 	
-	
-	//available locales
-	public List<String> getAvailableLocales()
+	//load messages from config
+	public void loadLocaleMessegaes(File localeFile)
 	{
-		List<String> locales = new ArrayList<String>(Arrays.asList("en"));
-		
-		try {
-		//add additional locales based on files in the jar.
-    	final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
-    	Enumeration<? extends ZipEntry> entries = zipFile.entries();
-    	while (entries.hasMoreElements())
-    	{
-    		ZipEntry ze = entries.nextElement();
-    		if (!ze.isDirectory())
-    		{
-    			if (ze.getName().contains("localefiles"))
-    			{
-    				String lname = new File(ze.getName()).getName();
-    				lname = lname.split("[_]")[1];
-    				lname = lname.split("[.]")[0];
-    				locales.add(lname);
-    			}
-    		}
-    	}
-    	zipFile.close();
-		} catch (Exception e)
-		{
-		}
-		
-   		return locales;
+		FileConfiguration cfg = YamlConfiguration.loadConfiguration(localeFile);
+		configmsg.messageSaveBroadcastPre = cfg.getString("broadcast.pre", configmsg.messageSaveBroadcastPre);
+		configmsg.messageSaveBroadcastPost = cfg.getString("broadcast.post", configmsg.messageSaveBroadcastPost);
+		configmsg.messageBackupBroadcastPre = cfg.getString("broadcastbackup.pre", configmsg.messageBackupBroadcastPre);
+		configmsg.messageBackupBroadcastPost = cfg.getString("broadcastbackup.post", configmsg.messageBackupBroadcastPost);
+		configmsg.messagePurgeBroadcastPre = cfg.getString("broadcastpurge.pre", configmsg.messagePurgeBroadcastPre);
+		configmsg.messagePurgeBroadcastPost = cfg.getString("broadcastpurge.post", configmsg.messagePurgeBroadcastPost);
+		configmsg.messageInsufficientPermissions = cfg.getString("insufficentpermissions", configmsg.messageInsufficientPermissions);
+		configmsg.messageAutoRestart = cfg.getString("autorestart.restarting", configmsg.messageAutoRestart);
+		configmsg.messageAutoRestartCountdown = cfg.getString("autorestart.countdown", configmsg.messageAutoRestartCountdown);
+		configmsg.messageWorldRegenKick = cfg.getString("worldregen.kickmessage", configmsg.messageWorldRegenKick);
 	}
-	
-	public void loadLocale(String locale)
-	{
-		//chose needed locale
-		if (locale.equalsIgnoreCase("en"))
-		{
-			//if it's en (default locale) we will recreate default messages file
-			new File(plugin.constants.getConfigMSGPath()).delete();
-			plugin.debug("switching to en");
-			config.switchtolangfile = false;
-			configmsg.messageSaveBroadcastPre = "&9AutoSaving";
-			configmsg.messageSaveBroadcastPost = "&9AutoSave Complete";
-			configmsg.messageInsufficientPermissions = "&cYou do not have access to that command.";
-			configmsg.messageBackupBroadcastPre = "&9AutoBackuping";
-			configmsg.messageBackupBroadcastPost = "&9AutoBackup Complete";
-			configmsg.messagePurgeBroadcastPre = "&9AutoPurging";
-			configmsg.messagePurgeBroadcastPost = "&9AutoPurge Complete";
-			configmsg.messageAutoRestart = "&9Server is restarting";
-			configmsg.messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
-			configmsg.messageWorldRegenKick = "&9Server is regenerating map, please come back later";
-		} else 
-		{
-			//if it is other locale we will load messages file from package
-			plugin.debug("switching to "+locale);
-			config.switchtolangfile = true;
-			config.langfilesuffix = locale;
-			loadLocaleFile(locale);
-		}
-		//now load it
-		plugin.debug("loading configs");
-		config.save();
-		config.load();
-		configmsg.loadmsg();
-		
-	}
-	
-	//load needed locale file
-	private void loadLocaleFile(String locale)
-	{
-		try {
-			InputStream in = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
-			OutputStream out = new FileOutputStream(new File(plugin.constants.getConfigMSGWithSuffix(locale)));
-
-			byte[] buf = new byte[4096];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
-		} catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-	}
-	
 
 }
