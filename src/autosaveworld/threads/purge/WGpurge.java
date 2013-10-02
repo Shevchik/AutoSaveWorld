@@ -42,7 +42,7 @@ public class WGpurge {
 		this.plugin = plugin;
 	}
 	
-	public void doWGPurgeTask(PlayerActiveCheck pacheck, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(PlayerActiveCheck pacheck, boolean delasync, final boolean regenrg, boolean noregenoverlap) {
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");
@@ -75,47 +75,88 @@ public class WGpurge {
 				if (!ddpl.isEmpty() && inactiveplayers == ddpl.size()) 
 				{
 					plugin.debug("No active owners for region "+rg.getId()+". Purging region");
-					//regen should be done in main thread
-					boolean overlap = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
-					if (regenrg && !overlap) 
+					if (delasync)
 					{
-						Runnable rgregen =  new Runnable()
-						{
-							BlockVector minpoint = rg.getMinimumPoint();
-							BlockVector maxpoint = rg.getMaximumPoint();
-							BukkitWorld lw = new BukkitWorld(w);
-							public void run()
-							{
-								try {
-									plugin.debug("Regenerating region " + rg.getId());
-									lw.regenerate(
-											new CuboidRegion(lw,minpoint,maxpoint),
-											new EditSession(lw,Integer.MAX_VALUE)
-											);
-								} catch (Exception e) {}
-							}
-						};
-						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
-
-						//Wait until previous region regeneration is finished to avoid full main thread freezing
-						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-						{
-							try {Thread.sleep(100);} catch (InterruptedException e) {}
-						}
+						purgeAsync(m,w,rg,regenrg,noregenoverlap);
+					} else
+					{
+						purgeSync(m,w,rg,regenrg,noregenoverlap);
 					}
-					//delete region
-					try {
-						plugin.debug("Deleting region " + rg.getId());
-						m.removeRegion(rg.getId());
-						m.save();
-					} catch (Exception e) {}
-					
 					deletedrg += 1;
 				}
 			}
 		}
 
 		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
+	}
+	
+	private void purgeSync(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, boolean noregenoverlap)
+	{
+		final boolean overlap = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
+		Runnable rgregen =  new Runnable()
+		{
+			BlockVector minpoint = rg.getMinimumPoint();
+			BlockVector maxpoint = rg.getMaximumPoint();
+			BukkitWorld lw = new BukkitWorld(w);
+			public void run()
+			{
+				try {
+					if (regenrg && !overlap) 
+					{
+						plugin.debug("Regenerating region " + rg.getId());
+						lw.regenerate(
+							new CuboidRegion(lw,minpoint,maxpoint),
+							new EditSession(lw,Integer.MAX_VALUE)
+						);
+						m.removeRegion(rg.getId());
+						m.save();
+					}
+				} catch (Exception e) {}
+			}
+		};
+		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
+
+		//Wait until previous region regeneration is finished to avoid full main thread freezing
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+		{
+			try {Thread.sleep(100);} catch (InterruptedException e) {}
+		}
+	}
+	
+	private void purgeAsync(RegionManager m, final World w, final ProtectedRegion rg, boolean regenrg, boolean noregenoverlap)
+	{
+		//regen should be done in main thread anyway
+		boolean overlap = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
+		if (regenrg && !overlap) 
+		{
+			Runnable rgregen =  new Runnable()
+			{
+				BlockVector minpoint = rg.getMinimumPoint();
+				BlockVector maxpoint = rg.getMaximumPoint();
+				BukkitWorld lw = new BukkitWorld(w);
+				public void run()
+				{
+					plugin.debug("Regenerating region " + rg.getId());
+					lw.regenerate(
+						new CuboidRegion(lw,minpoint,maxpoint),
+						new EditSession(lw,Integer.MAX_VALUE)
+					);
+				}
+			};
+			int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
+
+			//Wait until previous region regeneration is finished to avoid full main thread freezing
+			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+			{
+				try {Thread.sleep(100);} catch (InterruptedException e) {}
+			}
+		}
+		//delete region
+		try {
+			plugin.debug("Deleting region " + rg.getId());
+			m.removeRegion(rg.getId());
+			m.save();
+		} catch (Exception e) {}
 	}
 	
 }
