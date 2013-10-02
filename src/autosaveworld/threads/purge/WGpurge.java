@@ -75,43 +75,43 @@ public class WGpurge {
 				if (!ddpl.isEmpty() && inactiveplayers == ddpl.size()) 
 				{
 					plugin.debug("No active owners for region "+rg.getId()+". Purging region");
-					boolean overlap = false;
-					if (noregenoverlap && m.getApplicableRegions(rg).size() > 0) 
-					{
-						overlap = true;
-					}
-					final boolean rgoverlap = overlap;
 					//regen should be done in main thread
-					Runnable rgregen =  new Runnable()
+					boolean overlap = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
+					if (regenrg && !overlap) 
 					{
-						BlockVector minpoint = rg.getMinimumPoint();
-						BlockVector maxpoint = rg.getMaximumPoint();
-						BukkitWorld lw = new BukkitWorld(w);
-						public void run()
+						Runnable rgregen =  new Runnable()
 						{
-							try {
-								if (regenrg && !rgoverlap) 
-								{
+							BlockVector minpoint = rg.getMinimumPoint();
+							BlockVector maxpoint = rg.getMaximumPoint();
+							BukkitWorld lw = new BukkitWorld(w);
+							public void run()
+							{
+								try {
 									plugin.debug("Regenerating region " + rg.getId());
 									lw.regenerate(
 											new CuboidRegion(lw,minpoint,maxpoint),
 											new EditSession(lw,Integer.MAX_VALUE)
 											);
-								}
-								plugin.debug("Deleting region " + rg.getId());
-								m.removeRegion(rg.getId());
-								m.save();
-							} catch (Exception e) {}
-						}
-					};
-					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
+								} catch (Exception e) {}
+							}
+						};
+						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
 
-			
-					//Wait until previous region regeneration is finished to avoid full main thread freezing
-					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-					{
-						try {Thread.sleep(100);} catch (InterruptedException e) {}
+						//Wait until previous region regeneration is finished to avoid full main thread freezing
+						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+						{
+							try {Thread.sleep(100);} catch (InterruptedException e) {}
+						}
 					}
+					//delete region
+					try {
+						synchronized (m)
+						{
+							plugin.debug("Deleting region " + rg.getId());
+							m.removeRegion(rg.getId());
+							m.save();
+						}
+					} catch (Exception e) {}
 					
 					deletedrg += 1;
 				}
@@ -120,5 +120,5 @@ public class WGpurge {
 
 		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
 	}
-
+	
 }
