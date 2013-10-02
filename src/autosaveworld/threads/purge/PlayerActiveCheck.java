@@ -27,7 +27,8 @@ public class PlayerActiveCheck {
 
 	private HashSet<String> plactivencs = new HashSet<String>();
 	private HashSet<String> plactivecs = new HashSet<String>();
-	public PlayerActiveCheck(long awaytime)
+
+	public void gatherActivePlayersList(long awaytime)
 	{
 		//fill no case sensitive list
 		for (Player plname : Bukkit.getOnlinePlayers()) {

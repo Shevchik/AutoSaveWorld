@@ -107,7 +107,8 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Purge started");
 			
 			plugin.debug("Gathering active players list");
-			PlayerActiveCheck pacheck = new PlayerActiveCheck(awaytime);
+			PlayerActiveCheck pacheck = new PlayerActiveCheck();
+			pacheck.gatherActivePlayersList(awaytime);
 			
 			if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)
 					&& config.purgewg) {
