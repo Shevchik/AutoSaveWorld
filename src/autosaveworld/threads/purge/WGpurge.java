@@ -105,12 +105,9 @@ public class WGpurge {
 					}
 					//delete region
 					try {
-						synchronized (m)
-						{
-							plugin.debug("Deleting region " + rg.getId());
-							m.removeRegion(rg.getId());
-							m.save();
-						}
+						plugin.debug("Deleting region " + rg.getId());
+						m.removeRegion(rg.getId());
+						m.save();
 					} catch (Exception e) {}
 					
 					deletedrg += 1;
