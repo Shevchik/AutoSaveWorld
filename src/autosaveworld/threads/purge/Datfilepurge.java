@@ -19,8 +19,6 @@ package autosaveworld.threads.purge;
 
 import java.io.File;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 import autosaveworld.core.AutoSaveWorld;
 
 public class Datfilepurge {
@@ -34,21 +32,16 @@ public class Datfilepurge {
 	
 	public void doDelPlayerDatFileTask(PlayerActiveCheck pacheck) {
 		int deleted = 0;
-		OfflinePlayer[] checkPlayers = Bukkit.getServer().getOfflinePlayers();
-
 		try {
 			String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
-			for (OfflinePlayer pl : checkPlayers) 
+			File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
+			for (File playerfile : playersdatfolder.listFiles()) 
 			{
-				if (!pacheck.isActiveCS(pl.getName())) 
+				String playername = playerfile.getName().substring(0, playerfile.getName().indexOf("."));
+				if (!pacheck.isActiveCS(playername)) 
 				{
-					File pldatFile = new File(
-									worldfoldername
-									+ File.separator + "players"
-									+ File.separator + pl.getName()
-									+ ".dat");
-					pldatFile.delete();
-					plugin.debug(pl.getName() + " is inactive. Removing dat file");
+					plugin.debug(playername + " is inactive. Removing dat file");
+					playerfile.delete();
 					deleted += 1;
 				}
 			}
