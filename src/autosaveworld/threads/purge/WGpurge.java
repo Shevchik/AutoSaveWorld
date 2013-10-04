@@ -61,7 +61,6 @@ public class WGpurge {
 			HashSet<ProtectedRegion> regions = new HashSet<ProtectedRegion>(m.getRegions().values());
 			for (final ProtectedRegion rg : regions) 
 			{
-				
 				plugin.debug("Checking region " + rg.getId());
 				Set<String> ddpl = rg.getOwners().getPlayers();
 				int inactiveplayers = 0;
@@ -89,6 +88,8 @@ public class WGpurge {
 					deletedrg += 1;
 				}
 			}
+			//delete the rest of the regions in batch
+			flushBatch(m);
 		}
 
 		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
@@ -128,38 +129,42 @@ public class WGpurge {
 		}
 	}
 	
-	private List<String> rgtodel = new ArrayList<String>();
+	private List<String> rgtodel = new ArrayList<String>(40);
 	private void deleteRGbatch(final RegionManager m, final ProtectedRegion rg)
 	{
 		//delete regions if maximum batch size reached
 		if (rgtodel.size() == 40)
 		{
-			//detete regions
-			Runnable deleteregions = new Runnable()
-			{
-				public void run()
-				{
-					for (String regionid : rgtodel)
-					{
-						plugin.debug("Deleting region " + regionid);
-						m.removeRegion(regionid);
-					}
-					try {
-						m.save();
-					} catch (Exception e) {}
-					rgtodel.clear();
-				}
-			};
-			int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteregions);
-			
-			//Wait until previous regions delete is finished to avoid full main thread freezing
-			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-			{
-				try {Thread.sleep(100);} catch (InterruptedException e) {}
-			}
+			flushBatch(m);
 		}
 		//add region to delete batch
 		rgtodel.add(rg.getId());
+	}
+	private void flushBatch(final RegionManager m)
+	{
+		//detete regions
+		Runnable deleteregions = new Runnable()
+		{
+			public void run()
+			{
+				for (String regionid : rgtodel)
+				{
+					plugin.debug("Deleting region " + regionid);
+					m.removeRegion(regionid);
+				}
+				try {
+					m.save();
+				} catch (Exception e) {}
+				rgtodel.clear();
+			}
+		};
+		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteregions);
+		
+		//Wait until previous regions delete is finished to avoid full main thread freezing
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+		{
+			try {Thread.sleep(100);} catch (InterruptedException e) {}
+		}
 	}
 	
 }
