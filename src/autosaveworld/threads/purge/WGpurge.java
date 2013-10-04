@@ -113,6 +113,7 @@ public class WGpurge {
 							new EditSession(lw,Integer.MAX_VALUE)
 						);
 					}
+					plugin.debug("Deleting region " + rg.getId());
 					m.removeRegion(rg.getId());
 					m.save();
 				} catch (Exception e) {}
@@ -130,11 +131,8 @@ public class WGpurge {
 	private List<String> rgtodel = new ArrayList<String>();
 	private void deleteRGbatch(final RegionManager m, final ProtectedRegion rg)
 	{
-		if (rgtodel.size() < 40)
-		{
-			//add region to delete batch
-			rgtodel.add(rg.getId());
-		} else
+		//delete regions if maximum batch size reached
+		if (rgtodel.size() == 40)
 		{
 			//detete regions
 			Runnable deleteregions = new Runnable()
@@ -143,6 +141,7 @@ public class WGpurge {
 				{
 					for (String regionid : rgtodel)
 					{
+						plugin.debug("Deleting region " + regionid);
 						m.removeRegion(regionid);
 					}
 					try {
@@ -159,6 +158,8 @@ public class WGpurge {
 				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
 		}
+		//add region to delete batch
+		rgtodel.add(rg.getId());
 	}
 	
 }
