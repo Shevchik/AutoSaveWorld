@@ -371,7 +371,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	}
 
 	public void debug(String message) {
-		if (config.varDebug) {
+		if (isEnabled() && config.varDebug) {
 			log.info(formattingCodesParser.stripFormattingCodes(message));
 		}
 	}
