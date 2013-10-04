@@ -78,7 +78,6 @@ public class AutoSaveConfig {
 	public boolean purgeEnabled = false;
 	public boolean purgeBroadcast = true;
 	public boolean purgewg = true;
-	public boolean purgewgdelasync = false;
 	public boolean purgewgregenrg = false;
 	public boolean purgewgnoregenoverlap = true;
 	public boolean purgelwc = true;
@@ -179,7 +178,6 @@ public class AutoSaveConfig {
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
 		purgewg = config.getBoolean("purge.wg.enabled", purgewg);
-		purgewgdelasync = config.getBoolean("purge.wg.deleteasync",purgewgdelasync);
 		purgewgregenrg = config.getBoolean("purge.wg.regenpurgedregion", purgewgregenrg);
 		purgewgnoregenoverlap = config.getBoolean("purge.wg.noregenoverlapregion",purgewgnoregenoverlap);
 		purgelwc = config.getBoolean("purge.lwc.enabled", purgelwc);
@@ -302,7 +300,6 @@ public class AutoSaveConfig {
 		config.set("purge.awaytime", purgeAwayTime);
 		config.set("purge.broadcast",purgeBroadcast);
 		config.set("purge.wg.enabled", purgewg);
-		config.set("purge.wg.deleteasync",purgewgdelasync);
 		config.set("purge.wg.regenpurgedregion", purgewgregenrg);
 		config.set("purge.wg.noregenoverlapregion",purgewgnoregenoverlap);
 		config.set("purge.lwc.enabled", purgelwc);

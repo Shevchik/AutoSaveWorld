@@ -17,12 +17,14 @@
 
 package autosaveworld.threads.purge;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -42,7 +44,7 @@ public class WGpurge {
 		this.plugin = plugin;
 	}
 	
-	public void doWGPurgeTask(PlayerActiveCheck pacheck, boolean delasync, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(PlayerActiveCheck pacheck, final boolean regenrg, boolean noregenoverlap) {
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");
@@ -56,7 +58,7 @@ public class WGpurge {
 			final RegionManager m = wg.getRegionManager(w);
 			
 			// searching for inactive players in regions
-			Collection<ProtectedRegion> regions = new HashSet<ProtectedRegion>(m.getRegions().values());
+			HashSet<ProtectedRegion> regions = new HashSet<ProtectedRegion>(m.getRegions().values());
 			for (final ProtectedRegion rg : regions) 
 			{
 				
@@ -75,12 +77,14 @@ public class WGpurge {
 				if (!ddpl.isEmpty() && inactiveplayers == ddpl.size()) 
 				{
 					plugin.debug("No active owners for region "+rg.getId()+". Purging region");
-					if (delasync)
+					if (regenrg)
 					{
-						purgeAsync(m,w,rg,regenrg,noregenoverlap);
+						//regen and delete region
+						purgeRG(m,w,rg,regenrg,noregenoverlap);
 					} else
 					{
-						purgeSync(m,w,rg,regenrg,noregenoverlap);
+						//add region to batch delete
+						deleteRGbatch(m,rg);
 					}
 					deletedrg += 1;
 				}
@@ -90,9 +94,9 @@ public class WGpurge {
 		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
 	}
 	
-	private void purgeSync(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, boolean noregenoverlap)
+	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, boolean noregenoverlap)
 	{
-		final boolean overlap = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
+		final boolean donotregen = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
 		Runnable rgregen =  new Runnable()
 		{
 			BlockVector minpoint = rg.getMinimumPoint();
@@ -101,16 +105,16 @@ public class WGpurge {
 			public void run()
 			{
 				try {
-					if (regenrg && !overlap) 
+					if (!donotregen) 
 					{
 						plugin.debug("Regenerating region " + rg.getId());
 						lw.regenerate(
 							new CuboidRegion(lw,minpoint,maxpoint),
 							new EditSession(lw,Integer.MAX_VALUE)
 						);
-						m.removeRegion(rg.getId());
-						m.save();
 					}
+					m.removeRegion(rg.getId());
+					m.save();
 				} catch (Exception e) {}
 			}
 		};
@@ -123,40 +127,38 @@ public class WGpurge {
 		}
 	}
 	
-	private void purgeAsync(RegionManager m, final World w, final ProtectedRegion rg, boolean regenrg, boolean noregenoverlap)
+	private List<String> rgtodel = new ArrayList<String>();
+	private void deleteRGbatch(final RegionManager m, final ProtectedRegion rg)
 	{
-		//regen should be done in main thread anyway
-		boolean overlap = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
-		if (regenrg && !overlap) 
+		if (rgtodel.size() < 40)
 		{
-			Runnable rgregen =  new Runnable()
+			//add region to delete batch
+			rgtodel.add(rg.getId());
+		} else
+		{
+			//detete regions
+			Runnable deleteregions = new Runnable()
 			{
-				BlockVector minpoint = rg.getMinimumPoint();
-				BlockVector maxpoint = rg.getMaximumPoint();
-				BukkitWorld lw = new BukkitWorld(w);
 				public void run()
 				{
-					plugin.debug("Regenerating region " + rg.getId());
-					lw.regenerate(
-						new CuboidRegion(lw,minpoint,maxpoint),
-						new EditSession(lw,Integer.MAX_VALUE)
-					);
+					for (String regionid : rgtodel)
+					{
+						m.removeRegion(regionid);
+					}
+					try {
+						m.save();
+					} catch (Exception e) {}
+					rgtodel.clear();
 				}
 			};
-			int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
-
-			//Wait until previous region regeneration is finished to avoid full main thread freezing
+			int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteregions);
+			
+			//Wait until previous regions delete is finished to avoid full main thread freezing
 			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 			{
 				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
 		}
-		//delete region
-		try {
-			plugin.debug("Deleting region " + rg.getId());
-			m.removeRegion(rg.getId());
-			m.save();
-		} catch (Exception e) {}
 	}
 	
 }
