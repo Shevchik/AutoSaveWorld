@@ -88,8 +88,11 @@ public class WGpurge {
 					deletedrg += 1;
 				}
 			}
-			//delete the rest of the regions in batch
-			flushBatch(m);
+			if (!regenrg)
+			{
+				//delete the rest of the regions in batch
+				flushBatch(m);
+			}
 		}
 
 		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
