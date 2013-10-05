@@ -30,22 +30,15 @@ public class PlayerActiveCheck {
 
 	public void gatherActivePlayersList(long awaytime)
 	{
-		//fill no case sensitive list
+		//fill lists
 		for (Player plname : Bukkit.getOnlinePlayers()) {
+			plactivecs.add(plname.getName());
 			plactivencs.add(plname.getName().toLowerCase());
 		}
 		for (OfflinePlayer plname : Bukkit.getOfflinePlayers()) {
 			if (System.currentTimeMillis() - plname.getLastPlayed() < awaytime) {
-				plactivencs.add(plname.getName().toLowerCase());
-			}
-		}
-		//fill case sensitive list
-		for (Player plname : Bukkit.getOnlinePlayers()) {
-			plactivecs.add(plname.getName());
-		}
-		for (OfflinePlayer plname : Bukkit.getOfflinePlayers()) {
-			if (System.currentTimeMillis() - plname.getLastPlayed() < awaytime) {
 				plactivecs.add(plname.getName());
+				plactivencs.add(plname.getName().toLowerCase());
 			}
 		}
 	}
