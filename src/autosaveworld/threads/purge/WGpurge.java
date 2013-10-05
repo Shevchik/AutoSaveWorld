@@ -62,20 +62,29 @@ public class WGpurge {
 			for (final ProtectedRegion rg : regions) 
 			{
 				plugin.debug("Checking region " + rg.getId());
-				Set<String> ddpl = rg.getOwners().getPlayers();
-				int inactiveplayers = 0;
-				for (String checkPlayer : ddpl) 
+				Set<String> owners = rg.getOwners().getPlayers();
+				Set<String> members = rg.getMembers().getPlayers();
+				int inactive = 0;
+				for (String checkPlayer : owners) 
 				{
 					if (!pacheck.isActiveNCS(checkPlayer)) 
 					{
 						plugin.debug(checkPlayer+ " is inactive");
-						inactiveplayers++;
+						inactive++;
+					}
+				}
+				for (String checkPlayer : members)
+				{
+					if (!pacheck.isActiveNCS(checkPlayer)) 
+					{
+						plugin.debug(checkPlayer+ " is inactive");
+						inactive++;
 					}
 				}
 				// check region for remove (ignore regions without owners)
-				if (rg.hasMembersOrOwners() && inactiveplayers == ddpl.size()) 
+				if (rg.hasMembersOrOwners() && inactive == owners.size() + members.size()) 
 				{
-					plugin.debug("No active owners for region "+rg.getId()+". Purging region");
+					plugin.debug("No active owners and members for region "+rg.getId()+". Purging region");
 					if (regenrg)
 					{
 						//regen and delete region
