@@ -44,51 +44,42 @@ public class JVMshutdownhook extends Thread {
 	
 	public void restart()
 	{
-	try {
-		File restartscript = new File(crashrestartscriptpath);
-		String OS = System.getProperty("os.name").toLowerCase();
-		if (!crashrestartscriptpath.isEmpty() && restartscript.exists()) 
-		{
-			System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
-			if (OS.contains("win")) {
-				Runtime.getRuntime().exec("cmd /c start " + restartscript.getCanonicalPath());
-			} else {
-				Runtime.getRuntime().exec(restartscript.getCanonicalPath());
-			}
-		} 
-		else 
-		{
-			System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
-			//requred info for start script
-			String jarfilename = Bukkit.class.getResource("").getFile();
-			jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
-			jarfilename = new File(jarfilename).getName()+".jar";
-			List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();			
-			//start script building
-			List<String> execsequence = new ArrayList<String>();
-			execsequence.add("java");
-			execsequence.addAll(arguments);
-			execsequence.add("-jar");
-			execsequence.add(jarfilename);
-			
+		try {
 			ProcessBuilder pb = new ProcessBuilder();
-			pb.command(execsequence);
+			File restartscript = new File(crashrestartscriptpath);
+			if (!crashrestartscriptpath.isEmpty() && restartscript.exists()) 
+			{
+				System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
+				pb.command(restartscript.getCanonicalPath());
+			} 
+			else 
+			{
+				System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
+				//requred info for start script
+				String jarfilename = Bukkit.class.getResource("").getFile();
+				jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
+				jarfilename = new File(jarfilename).getName()+".jar";
+				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();			
+				//start script building
+				List<String> execsequence = new ArrayList<String>();
+				execsequence.add("java");
+				execsequence.addAll(arguments);
+				execsequence.add("-jar");
+				execsequence.add(jarfilename);
+				pb.command(execsequence);
+			}
 			Process p = pb.start();
-			
+		
 			//send IO to hell
 			OutputThread output = new OutputThread(p);
 			output.start();
 			ErrorThread err = new ErrorThread(p);
 			err.start();
-
-
+		} catch (Exception e)
+		{
+			System.out.println("[AutoSaveWorld] Restart failed");
+			e.printStackTrace();
 		}
-	} catch (Exception e)
-	{
-		System.out.println("[AutoSaveWorld] Restart failed");
-		e.printStackTrace();
-	}
-	
 	}
 	
 	
