@@ -50,8 +50,9 @@ public class JVMshutdownhook extends Thread {
 			if (!crashrestartscriptpath.isEmpty() && restartscript.exists()) 
 			{
 				System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
+				restartscript.setExecutable(true);
 				pb.command(restartscript.getCanonicalPath());
-			} 
+			}
 			else 
 			{
 				System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
