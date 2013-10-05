@@ -17,6 +17,8 @@
 
 package autosaveworld.threads.purge;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
@@ -35,10 +37,24 @@ public class PlayerActiveCheck {
 			plactivecs.add(plname.getName());
 			plactivencs.add(plname.getName().toLowerCase());
 		}
+		HashSet<OfflinePlayer> offlinePlayers = new HashSet<OfflinePlayer>();
+		offlinePlayers.addAll(Arrays.asList(Bukkit.getOfflinePlayers()));
 		for (OfflinePlayer plname : Bukkit.getOfflinePlayers()) {
 			if (System.currentTimeMillis() - plname.getLastPlayed() < awaytime) {
 				plactivecs.add(plname.getName());
 				plactivencs.add(plname.getName().toLowerCase());
+			}
+		}
+		//for some reason getOfflinePlayers() misses some players so we will assume that they are active
+		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
+		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
+		for (String playerfilename : playersdatfolder.list()) 
+		{
+			String playername = playerfilename.substring(0, playerfilename.indexOf("."));
+			if (!offlinePlayers.contains(playername))
+			{
+				plactivecs.add(playername);
+				plactivencs.add(playername.toLowerCase());
 			}
 		}
 	}
