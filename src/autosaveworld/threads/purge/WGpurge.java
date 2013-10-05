@@ -73,7 +73,7 @@ public class WGpurge {
 					}
 				}
 				// check region for remove (ignore regions without owners)
-				if (!ddpl.isEmpty() && inactiveplayers == ddpl.size()) 
+				if (rg.hasMembersOrOwners() && inactiveplayers == ddpl.size()) 
 				{
 					plugin.debug("No active owners for region "+rg.getId()+". Purging region");
 					if (regenrg)
