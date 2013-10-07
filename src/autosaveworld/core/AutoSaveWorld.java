@@ -160,14 +160,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		formattingCodesParser = null;
 		pmanager = null;
 		HandlerList.unregisterAll(this);
-		//Check if we just finished WorldRegen, if so - clean garbage
-		File check = new File(constants.getShouldpasteFile());
-		if (check.exists() && worldregenfinished) {
-			wrp = null;
-			check.delete();
-			new File(constants.getWorldnameFile()).delete();
-			new File(constants.getWorldRegenTempFolder()).delete();
-		}
+		wrp = null;
 		constants = null;
 	}	
 	

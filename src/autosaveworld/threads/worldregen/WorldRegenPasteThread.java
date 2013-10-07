@@ -100,13 +100,15 @@ public class WorldRegenPasteThread extends Thread {
 			deleteDirectory(new File(plugin.constants.getWGTempFolder()));
 			deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
 			deleteDirectory(new File(plugin.constants.getGPTempFolder()));
+			new File(plugin.constants.getShouldpasteFile()).delete();
+			new File(plugin.constants.getWorldnameFile()).delete();
+			new File(plugin.constants.getWorldRegenTempFolder()).delete();
 			
 			plugin.debug("Restore finished");
 
 			// restart
-			plugin.worldregenfinished = true;
+			plugin.debug("Restarting server");
 			plugin.autorestartThread.startrestart(true);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
