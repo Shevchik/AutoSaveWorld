@@ -63,9 +63,8 @@ public class AutoSaveWorld extends JavaPlugin {
 	//autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread = null;
 	//worldregen
-	public WorldRegenCopyThread worldregenThread = null;
+	public WorldRegenCopyThread worldregencopyThread = null;
 	public WorldRegenPasteThread wrp = null;
-	public volatile boolean worldregenfinished = false;
 	//plugin manager
 	public ASWPluginManager pmanager;
 	//configs
@@ -123,7 +122,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start ConsoleCommandThread
 		startThread(ThreadType.CONSOLECOMMAND);
 		// Start WorldRegenThread
-		startThread(ThreadType.WORLDREGEN);
+		startThread(ThreadType.WORLDREGENCOPY);
 		//Check if we are in WorldRegen stage 3, if so - do our job
 		File check = new File(constants.getShouldpasteFile());
 		if (check.exists()) {
@@ -151,7 +150,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.AUTORESTART);
 		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
-		stopThread(ThreadType.WORLDREGEN);
+		stopThread(ThreadType.WORLDREGENCOPY);
 		configmsg = null;
 		config = null; 
 		localeChanger = null;
@@ -205,10 +204,10 @@ public class AutoSaveWorld extends JavaPlugin {
 				consolecommandThread.start();
 			}
 			return true;
-		case WORLDREGEN:
-			if (worldregenThread == null || !worldregenThread.isAlive()) {
-				worldregenThread = new WorldRegenCopyThread(this, config ,configmsg);
-				worldregenThread.start();
+		case WORLDREGENCOPY:
+			if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
+				worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg);
+				worldregencopyThread.start();
 			}
 			return true;
 		default:
@@ -304,14 +303,14 @@ public class AutoSaveWorld extends JavaPlugin {
 					return false;
 				}
 			}
-		case WORLDREGEN:
-			if (worldregenThread == null) {
+		case WORLDREGENCOPY:
+			if (worldregencopyThread == null) {
 				return true;
 			} else {
-				worldregenThread.stopThread();
+				worldregencopyThread.stopThread();
 				try {
-					worldregenThread.join(2000);
-					worldregenThread = null;
+					worldregencopyThread.join(2000);
+					worldregencopyThread = null;
 					return true;
 				} catch (InterruptedException e) {
 					warn("Could not stop WorldRegenThread");

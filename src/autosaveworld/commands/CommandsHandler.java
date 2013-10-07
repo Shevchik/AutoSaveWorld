@@ -125,7 +125,7 @@ public class CommandsHandler implements CommandExecutor {
 					plugin.sendMessage(sender, "[AutoSaveWorld] Please wait before previous world regeneration is finished");
 					return true;
 				}
-				plugin.worldregenThread.startworldregen(args[1]);
+				plugin.worldregencopyThread.startworldregen(args[1]);
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
 				//reload
