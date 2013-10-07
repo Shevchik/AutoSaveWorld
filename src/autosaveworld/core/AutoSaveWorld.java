@@ -17,7 +17,6 @@
 
 package autosaveworld.core;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.World;
@@ -64,7 +63,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public AutoConsoleCommandThread consolecommandThread = null;
 	//worldregen
 	public WorldRegenCopyThread worldregencopyThread = null;
-	public WorldRegenPasteThread wrp = null;
+	public WorldRegenPasteThread worldregenpasteThread = null;
 	//plugin manager
 	public ASWPluginManager pmanager;
 	//configs
@@ -121,15 +120,10 @@ public class AutoSaveWorld extends JavaPlugin {
 		JVMsh = new RestartJVMshutdownhook();
 		// Start ConsoleCommandThread
 		startThread(ThreadType.CONSOLECOMMAND);
-		// Start WorldRegenThread
+		// Start WorldRegenCopyThread
 		startThread(ThreadType.WORLDREGENCOPY);
-		//Check if we are in WorldRegen stage 3, if so - do our job
-		File check = new File(constants.getShouldpasteFile());
-		if (check.exists()) {
-			worldregenInProcess = true;
-			wrp = new WorldRegenPasteThread(this,config, configmsg);
-			wrp.start();
-		}
+		// Start WorldRegenPasteThread
+		startThread(ThreadType.WORLDREGENPASTE);
 	}
 	
 	
@@ -151,6 +145,9 @@ public class AutoSaveWorld extends JavaPlugin {
 		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
 		stopThread(ThreadType.WORLDREGENCOPY);
+		//worldregenpaste will stop itself at server start, so we should not care about stopping this thread.
+		worldregenpasteThread = null;
+		//null values
 		configmsg = null;
 		config = null; 
 		localeChanger = null;
@@ -158,9 +155,9 @@ public class AutoSaveWorld extends JavaPlugin {
 		ch = null;
 		formattingCodesParser = null;
 		pmanager = null;
-		HandlerList.unregisterAll(this);
-		wrp = null;
 		constants = null;
+		//unregister handlers
+		HandlerList.unregisterAll(this);
 	}	
 	
 	
@@ -208,6 +205,13 @@ public class AutoSaveWorld extends JavaPlugin {
 			if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
 				worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg);
 				worldregencopyThread.start();
+			}
+			return true;
+		case WORLDREGENPASTE:
+			if (worldregenpasteThread == null || !worldregenpasteThread.isAlive()) {
+				worldregenpasteThread = new WorldRegenPasteThread(this,config, configmsg);
+				worldregenpasteThread.checkIfShouldPaste();
+				worldregenpasteThread.start();
 			}
 			return true;
 		default:

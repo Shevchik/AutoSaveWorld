@@ -40,10 +40,24 @@ public class WorldRegenPasteThread extends Thread {
 		this.config = config;
 	};
 
+	private boolean paste = false;
+	public void checkIfShouldPaste()
+	{
+		File check = new File(plugin.constants.getShouldpasteFile());
+		if (check.exists()) {
+			plugin.worldregenInProcess = true;
+			paste = true;
+		}
+	}
+	
 	public long loaded = 0;
 	private String worldtopasteto;
 	public void run() {
 		try {
+			
+			//do not do anything if we are not regenerating world
+			if (!paste) {return;}
+			
 			
 			Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");	
 			
