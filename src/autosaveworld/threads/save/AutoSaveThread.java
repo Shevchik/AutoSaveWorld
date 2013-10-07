@@ -93,20 +93,23 @@ public class AutoSaveThread extends Thread {
 	
 	private void savePlayers() 
 	{
-		plugin.debug("Saving players");
-		BukkitScheduler scheduler = Bukkit.getScheduler();
-		int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
+		if (plugin.isEnabled())
 		{
-			public void run()
+			plugin.debug("Saving players");
+			BukkitScheduler scheduler = Bukkit.getScheduler();
+			int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
 			{
-				Bukkit.savePlayers();
+				public void run()
+				{
+					Bukkit.savePlayers();
+				}
+			});
+			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
+			{
+				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
-		});
-		while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
-		{
-			try {Thread.sleep(100);} catch (InterruptedException e) {}
+			plugin.debug("Saved Players");
 		}
-		plugin.debug("Saved Players");
 	}
 
 	private void saveWorlds() 
@@ -115,17 +118,20 @@ public class AutoSaveThread extends Thread {
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		for (final World world : plugin.getServer().getWorlds()) 
 		{
-			plugin.debug(String.format("Saving world: %s", world.getName()));
-			int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
+			if (plugin.isEnabled())
 			{
-				public void run()
+				plugin.debug(String.format("Saving world: %s", world.getName()));
+				int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
 				{
+					public void run()
+					{
 					world.save();
+					}
+				});
+				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
+				{
+					try {Thread.sleep(100);} catch (InterruptedException e) {}
 				}
-			});
-			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
-			{
-				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
 		}
 		plugin.debug("Saved Worlds");
