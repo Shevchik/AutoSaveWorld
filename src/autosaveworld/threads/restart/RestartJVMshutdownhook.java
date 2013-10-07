@@ -24,15 +24,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.threads.RestartWaiter;
-
-public class JVMshutdownhook extends Thread {
-
-	private RestartWaiter restartwaiter;
-	public JVMshutdownhook(RestartWaiter restartwaiter)
-	{
-		this.restartwaiter = restartwaiter;
-	}
+public class RestartJVMshutdownhook extends Thread {
 	
 	private String crashrestartscriptpath = ""; 
 
@@ -86,23 +78,6 @@ public class JVMshutdownhook extends Thread {
 	
 	public void run()
 	{
-		if (!restartwaiter.canRestartNow())
-		{
-			System.out.println("Delaying restart");
-			System.out.println("Reasons:");
-			for (String reason : restartwaiter.getReasons())
-			{
-				System.out.println(reason);
-			}
-		}
-		while (!restartwaiter.canRestartNow())
-		{
-			try {
-			Thread.sleep(1000);
-			} catch (Exception e){
-				e.printStackTrace();
-			}
-		}
 		restart();
 	}
 		

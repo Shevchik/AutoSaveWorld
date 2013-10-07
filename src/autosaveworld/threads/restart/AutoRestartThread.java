@@ -43,7 +43,6 @@ public class AutoRestartThread  extends Thread{
 	public void startrestart(boolean skipcountdown)
 	{
 		this.command = true;
-		this.skipcountdown = skipcountdown;
 	}
 	
 

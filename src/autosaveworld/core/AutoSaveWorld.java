@@ -32,14 +32,13 @@ import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.listener.EventsListener;
 import autosaveworld.pluginmanager.ASWPluginManager;
-import autosaveworld.threads.RestartWaiter;
 import autosaveworld.threads.ThreadType;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.threads.purge.AutoPurgeThread;
 import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
-import autosaveworld.threads.restart.JVMshutdownhook;
+import autosaveworld.threads.restart.RestartJVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
@@ -60,15 +59,13 @@ public class AutoSaveWorld extends JavaPlugin {
 	//restart
 	public CrashRestartThread crashrestartThread = null;
 	public AutoRestartThread autorestartThread = null;
-	public JVMshutdownhook JVMsh = null;
+	public RestartJVMshutdownhook JVMsh = null;
 	//autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread = null;
 	//worldregen
 	public WorldRegenCopyThread worldregenThread = null;
 	public WorldRegenPasteThread wrp = null;
 	public volatile boolean worldregenfinished = false;
-	//global restart allowed waiter
-	public RestartWaiter restartwaiter;
 	//plugin manager
 	public ASWPluginManager pmanager;
 	//configs
@@ -103,8 +100,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		//load plugin manager
 		pmanager = new ASWPluginManager(this);
-		//load restart waiter
-		restartwaiter = new RestartWaiter();
 		// register events and commands
 		getCommand("autosaveworld").setExecutor(ch);
 		getCommand("autosave").setExecutor(ch);
@@ -124,7 +119,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start AutoRestartThread
 		startThread(ThreadType.AUTORESTART);
 		// Create JVMsh
-		JVMsh = new JVMshutdownhook(restartwaiter);
+		JVMsh = new RestartJVMshutdownhook();
 		// Start ConsoleCommandThread
 		startThread(ThreadType.CONSOLECOMMAND);
 		// Start WorldRegenThread
@@ -174,7 +169,6 @@ public class AutoSaveWorld extends JavaPlugin {
 			new File(constants.getWorldRegenTempFolder()).delete();
 		}
 		constants = null;
-		restartwaiter = null;
 	}	
 	
 	
@@ -220,7 +214,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			return true;
 		case WORLDREGEN:
 			if (worldregenThread == null || !worldregenThread.isAlive()) {
-				worldregenThread = new WorldRegenCopyThread(restartwaiter, this, config ,configmsg);
+				worldregenThread = new WorldRegenCopyThread(this, config ,configmsg);
 				worldregenThread.start();
 			}
 			return true;

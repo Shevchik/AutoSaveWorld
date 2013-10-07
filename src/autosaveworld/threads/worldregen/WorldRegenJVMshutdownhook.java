@@ -20,27 +20,24 @@ package autosaveworld.threads.worldregen;
 import java.io.File;
 import java.io.IOException;
 
-import autosaveworld.threads.RestartWaiter;
+import autosaveworld.threads.restart.RestartJVMshutdownhook;
 
 public class WorldRegenJVMshutdownhook extends Thread {
 	
 	private String shouldpastefile;
 	private String fldtodelete;
-	private RestartWaiter restartwaiter;
+	private RestartJVMshutdownhook jvmsh;
 	
-	public WorldRegenJVMshutdownhook(RestartWaiter restartwaiter, String fldtodelete, String shouldpastefile)
+	public WorldRegenJVMshutdownhook(RestartJVMshutdownhook jvmsh, String fldtodelete, String shouldpastefile)
 	{
 		this.fldtodelete = fldtodelete;
 		this.shouldpastefile = shouldpastefile;
-		this.restartwaiter = restartwaiter;
-		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
+		this.jvmsh = jvmsh;
 	}
 	
 	public void run()
 	{
-		//notify autorestart that it should wait
-		String reason = "WorldRegen is deleting regions directory";
-		restartwaiter.addReason(reason);
+		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
 		//Delete region from world folder
 		deleteDirectory(new File(fldtodelete+File.separator+"region"));
 		try {
@@ -49,8 +46,8 @@ public class WorldRegenJVMshutdownhook extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//remove autorestart notification
-		restartwaiter.removeReason(reason);
+		//restart
+		jvmsh.run();
 	}
 	
 	
