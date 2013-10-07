@@ -145,7 +145,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
 		stopThread(ThreadType.WORLDREGENCOPY);
-		//worldregenpaste will stop itself at server start, so we should not care about stopping this thread.
+		//worldregenpaste will stop itself at server start if it don't need to paste something, so we should not care about stopping this thread.
 		worldregenpasteThread = null;
 		//null values
 		configmsg = null;
