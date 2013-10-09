@@ -146,6 +146,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.WORLDREGENCOPY);
 		//worldregenpaste will stop itself at server start if it don't need to paste something, so we should not care about stopping this thread.
 		worldregenpasteThread = null;
+		//null plugin manager
+		pmanager = null;
 		//null values
 		configmsg = null;
 		config = null; 
@@ -153,7 +155,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		eh = null;
 		ch = null;
 		formattingCodesParser = null;
-		pmanager = null;
 		constants = null;
 		//unregister handlers
 		HandlerList.unregisterAll(this);
