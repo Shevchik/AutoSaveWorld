@@ -19,7 +19,6 @@ package autosaveworld.core;
 
 import java.util.logging.Logger;
 
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -131,7 +130,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void onDisable() {
 		debug("Saving");
 		// Perform a Save NOW!
-		performSaveOnDisable();
+		saveThread.performSaveForce();
 		// Save config
 		debug("Saving config");
 		config.save();
@@ -326,24 +325,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		}
 	}
 
-	private void performSaveOnDisable()
-	{
-		broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
-		debug("Saving players");
-		getServer().savePlayers();
-		debug("Saved Players");
-		debug("Saving worlds");
-		for (World w : getServer().getWorlds())
-		{
-			debug(String.format("Saving world: %s", w.getName()));
-			w.save();
-		}
-		debug("Saved Worlds");
-		broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
-	}
-	
-	
-	
 	public void sendMessage(CommandSender sender, String message) {
 		if (!message.equals("")) {
 			sender.sendMessage(formattingCodesParser.parseFormattingCodes(message));

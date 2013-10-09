@@ -57,7 +57,7 @@ public class AutoSaveThread extends Thread {
 	// The code to run...weee
 	private int i;
 	private volatile boolean run = true;
-	public boolean command = false;
+	private boolean command = false;
 	public void run() 
 	{
 
@@ -137,8 +137,7 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Saved Worlds");
 	}
 
-
-	public void performSave() 
+	private void performSave() 
 	{
 		if (plugin.getServer().getOnlinePlayers().length == 0 && !command) {
 			// No players online, don't bother saving.
@@ -172,4 +171,22 @@ public class AutoSaveThread extends Thread {
 		plugin.saveInProgress = false;
 	}
 
+	public void performSaveForce()
+	{
+		plugin.saveInProgress = true;
+		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
+		plugin.debug("Saving players");
+		plugin.getServer().savePlayers();
+		plugin.debug("Saved Players");
+		plugin.debug("Saving worlds");
+		for (World w : Bukkit.getWorlds())
+		{
+			plugin.debug(String.format("Saving world: %s", w.getName()));
+			w.save();
+		}
+		plugin.debug("Saved Worlds");
+		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
+		plugin.saveInProgress = false;
+	}
+	
 }
