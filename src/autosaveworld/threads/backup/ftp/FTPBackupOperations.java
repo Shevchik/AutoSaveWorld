@@ -89,8 +89,10 @@ public class FTPBackupOperations {
 				fu.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
 			} else  {
 				File tempzip = new File(localtempfolder,plfolder.getName()+".zip");
-				excludefolders.add(localtempfolder);
-				Zip zipfld = new Zip(excludefolders);
+				List<String> excludefolderslist = new ArrayList<String>(excludefolders.size()+1);
+				excludefolderslist.addAll(excludefolders);
+				excludefolderslist.add(localtempfolder);
+				Zip zipfld = new Zip(excludefolderslist);
 				zipfld.ZipFolder(plfolder, tempzip);
 				fu.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
 				tempzip.delete();
