@@ -170,23 +170,5 @@ public class AutoSaveThread extends Thread {
 		// Release
 		plugin.saveInProgress = false;
 	}
-
-	public void performSaveForce()
-	{
-		plugin.saveInProgress = true;
-		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
-		plugin.debug("Saving players");
-		plugin.getServer().savePlayers();
-		plugin.debug("Saved Players");
-		plugin.debug("Saving worlds");
-		for (World w : Bukkit.getWorlds())
-		{
-			plugin.debug(String.format("Saving world: %s", w.getName()));
-			w.save();
-		}
-		plugin.debug("Saved Worlds");
-		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
-		plugin.saveInProgress = false;
-	}
 	
 }

@@ -129,7 +129,7 @@ public class AutoBackupThread extends Thread {
 			{
 				public void run()
 				{
-					plugin.saveThread.performSaveForce();
+					plugin.performSaveForce();
 				}
 			});
 			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
