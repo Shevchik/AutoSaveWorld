@@ -17,8 +17,8 @@
 
 package autosaveworld.threads.save;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import autosaveworld.core.AutoSaveWorld;
@@ -87,55 +87,6 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
-	
-	
-	
-	
-	private void savePlayers() 
-	{
-		if (plugin.isEnabled())
-		{
-			plugin.debug("Saving players");
-			BukkitScheduler scheduler = Bukkit.getScheduler();
-			int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
-			{
-				public void run()
-				{
-					Bukkit.savePlayers();
-				}
-			});
-			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
-			{
-				try {Thread.sleep(100);} catch (InterruptedException e) {}
-			}
-			plugin.debug("Saved Players");
-		}
-	}
-
-	private void saveWorlds() 
-	{
-		plugin.debug("Saving worlds");
-		BukkitScheduler scheduler = Bukkit.getScheduler();
-		for (final World world : plugin.getServer().getWorlds()) 
-		{
-			if (plugin.isEnabled())
-			{
-				plugin.debug(String.format("Saving world: %s", world.getName()));
-				int taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
-				{
-					public void run()
-					{
-					world.save();
-					}
-				});
-				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
-				{
-					try {Thread.sleep(100);} catch (InterruptedException e) {}
-				}
-			}
-		}
-		plugin.debug("Saved Worlds");
-	}
 
 	private void performSave() 
 	{
@@ -157,11 +108,13 @@ public class AutoSaveThread extends Thread {
 
 		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
-		// Save the players
-		savePlayers();
-		
-		// Save the worlds
-		saveWorlds();
+		if (!config.saveAsync)
+		{
+			saveSync();
+		} else
+		{
+			saveAsync();
+		}
 
 		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 
@@ -169,6 +122,76 @@ public class AutoSaveThread extends Thread {
 
 		// Release
 		plugin.saveInProgress = false;
+	}
+	
+	private void saveSync()
+	{
+		// Save the players
+		plugin.debug("Saving players");
+		BukkitScheduler scheduler = plugin.getServer().getScheduler();
+		int taskid;
+		if (plugin.isEnabled())
+		{
+			taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
+			{
+				public void run()
+				{
+					for (Player player : plugin.getServer().getOnlinePlayers())
+					{
+						plugin.debug(String.format("Saving player: %s", player.getName()));
+						player.saveData();
+					}
+				}
+			});
+			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
+			{
+				try {Thread.sleep(100);} catch (InterruptedException e) {}
+			}
+		}
+		plugin.debug("Saved Players");
+		// Save the worlds
+		plugin.debug("Saving worlds");
+		for (final World world : plugin.getServer().getWorlds()) 
+		{
+			if (plugin.isEnabled())
+			{
+				taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
+				{
+					public void run()
+					{
+						plugin.debug(String.format("Saving world: %s", world.getName()));
+						world.save();
+					}
+				});
+				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
+				{
+					try {Thread.sleep(100);} catch (InterruptedException e) {}
+				}
+			}
+		}
+		plugin.debug("Saved Worlds");
+	}
+	
+	private void saveAsync()
+	{
+		// Save the players
+		plugin.debug("Saving players");
+		for (Player player : plugin.getServer().getOnlinePlayers())
+		{
+			plugin.debug(String.format("Saving player: %s", player.getName()));
+			player.saveData();
+		}
+		plugin.debug("Saved Players");
+		// Save the worlds
+		plugin.debug("Saving worlds");
+		for (World world : plugin.getServer().getWorlds()) 
+		{
+			plugin.debug(String.format("Saving world: %s", world.getName()));
+			world.setAutoSave(false);
+			world.save();
+			world.setAutoSave(true);
+		}
+		plugin.debug("Saved Worlds");
 	}
 	
 }
