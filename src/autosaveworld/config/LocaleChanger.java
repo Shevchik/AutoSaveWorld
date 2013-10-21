@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -27,31 +26,27 @@ public class LocaleChanger {
 	//available locales
 	public List<String> getAvailableLocales()
 	{
-		List<String> locales = new ArrayList<String>(Arrays.asList("default"));
-		
+		List<String> locales = new ArrayList<String>();
 		try {
-		//add additional locales based on files in the jar.
-    	final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
-    	Enumeration<? extends ZipEntry> entries = zipFile.entries();
-    	while (entries.hasMoreElements())
-    	{
-    		ZipEntry ze = entries.nextElement();
-    		if (!ze.isDirectory())
-    		{
-    			if (ze.getName().contains("localefiles"))
+			//add additional locales based on files in the jar.
+			final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+			while (entries.hasMoreElements())
+			{
+				ZipEntry ze = entries.nextElement();
+    			if (!ze.isDirectory())
     			{
-    				String lname = new File(ze.getName()).getName();
-    				lname = lname.split("[_]")[1];
-    				lname = lname.split("[.]")[0];
-    				locales.add(lname);
+    				if (ze.getName().contains("localefiles"))
+    				{
+    					String lname = new File(ze.getName()).getName();
+    					lname = lname.split("[_]")[1];
+    					lname = lname.split("[.]")[0];
+    					locales.add(lname);
+    				}
     			}
-    		}
-    	}
-    	zipFile.close();
-		} catch (Exception e)
-		{
-		}
-		
+			}
+			zipFile.close();
+		} catch (Exception e) {}	
    		return locales;
 	}
 	
