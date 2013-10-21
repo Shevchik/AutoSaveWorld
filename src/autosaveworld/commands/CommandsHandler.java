@@ -166,10 +166,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if ((args.length >= 1 && args[0].equalsIgnoreCase("locale"))) {
 				//locale loader
-				if (args.length == 1) {
-					plugin.sendMessage(sender, "Current locale is " + config.langfilesuffix);
-					return true;
-				} else if (args.length == 2 && args[1].equalsIgnoreCase("available")) {
+				if (args.length == 2 && args[1].equalsIgnoreCase("available")) {
 					plugin.sendMessage(sender, "Available locales: "+ localeChanger.getAvailableLocales());
 					return true;
 				} else if (args.length == 2 && args[1].equalsIgnoreCase("load")) {

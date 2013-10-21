@@ -90,9 +90,9 @@ public class AutoSaveWorld extends JavaPlugin {
 		constants = new Constants(this);
 		config = new AutoSaveConfig(this);
 		config.load();
-		configmsg = new AutoSaveConfigMSG(this,config);
+		configmsg = new AutoSaveConfigMSG(this);
 		configmsg.loadmsg();
-		localeChanger = new LocaleChanger(this, config, configmsg);
+		localeChanger = new LocaleChanger(this, configmsg);
 		eh = new EventsListener(this);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		//load plugin manager

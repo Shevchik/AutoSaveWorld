@@ -88,9 +88,6 @@ public class AutoSaveConfig {
 	public boolean purgeresidence = true;
 	public boolean purgeresregenarena = false;
 	public boolean purgedat = true;
-	//lang
-	public boolean switchtolangfile = false;
-	public String langfilesuffix = "ru";
 	//crashrestart
 	public boolean crashrestartenabled = false;
 	public String crashrestartscriptpath="";
@@ -244,11 +241,6 @@ public class AutoSaveConfig {
 		worldregensavefactions = config.getBoolean("worldregen.savefactions",worldregensavefactions);
 		worldregensavegp = config.getBoolean("worldregen.savegp",worldregensavegp);
 		
-		//locale variables
-		switchtolangfile = config.getBoolean("locale.switchtolangfile",switchtolangfile);
-		langfilesuffix = config.getString("locale.langfilesuffix",langfilesuffix);
-		
-		
 		save();
 	}
 
@@ -352,11 +344,7 @@ public class AutoSaveConfig {
 		config.set("worldregen.savewg",worldregensavewg);
 		config.set("worldregen.savefactions",worldregensavefactions);
 		config.set("worldregen.savegp",worldregensavegp);
-		
-		//locale variables
-		config.set("locale.switchtolangfile",switchtolangfile);
-		config.set("locale.langfilesuffix",langfilesuffix);
-		
+
 		try {config.save(new File(plugin.constants.getConfigPath()));} catch (IOException ex) {}		
 	}
 	

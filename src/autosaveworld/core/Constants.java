@@ -44,13 +44,8 @@ public class Constants {
 	{
 		return getPluginFolder()+configmsgfile;
 	}
-	public String getConfigMSGWithSuffix(String suffix)
-	{
-		String[] cf = configmsgfile.split("[.]");
-		return getPluginFolder()+cf[0]+"_"+suffix+"."+cf[1];
-	}
 
-	
+	//counter preserve files
 	private String backuppreserverfile = "backupintervalpreserve.yml";
 	public String getBackupIntervalPreservePath()
 	{

@@ -17,11 +17,9 @@ public class LocaleChanger {
 
 	
 	private AutoSaveWorld plugin;
-	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	public LocaleChanger(AutoSaveWorld plugin,AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+	public LocaleChanger(AutoSaveWorld plugin, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
-		this.config = config;
 		this.configmsg = configmsg;
 	}
 
@@ -59,27 +57,12 @@ public class LocaleChanger {
 	
 	public void loadLocale(String locale)
 	{
-		//chose needed locale
-		if (locale.equalsIgnoreCase("default"))
-		{
-			plugin.debug("switching to default");
-			config.switchtolangfile = false;
-			configmsg.enMessages.loadMessagesEN();
-			configmsg.enMessages.saveMessagesEN(new File(plugin.constants.getConfigMSGPath()));
-		} else 
-		{
-			//if it is other locale we will load messages file from package
-			plugin.debug("switching to "+locale);
-			config.switchtolangfile = true;
-			config.langfilesuffix = locale;
-			loadLocaleFile(locale);
-		}
+		//load messages file from package
+		plugin.debug("switching to "+locale);
+		loadLocaleFile(locale);
 		//now load it
 		plugin.debug("loading configs");
-		config.save();
-		config.load();
-		configmsg.loadmsg();
-		
+		configmsg.loadmsg();	
 	}
 	
 	//load needed locale file
@@ -87,7 +70,7 @@ public class LocaleChanger {
 	{
 		try {
 			InputStream in = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
-			OutputStream out = new FileOutputStream(new File(plugin.constants.getConfigMSGWithSuffix(locale)));
+			OutputStream out = new FileOutputStream(new File(plugin.constants.getConfigMSGPath()));
 
 			byte[] buf = new byte[4096];
 			int len;

@@ -19,20 +19,18 @@ package autosaveworld.config;
 
 import java.io.*;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import autosaveworld.core.AutoSaveWorld;
 
 public class AutoSaveConfigMSG {
 
-	private AutoSaveConfig config;
 	private AutoSaveWorld plugin;	
-	public AutoSaveConfigMSG(AutoSaveWorld plugin, AutoSaveConfig config) {
-		this.plugin = plugin;
-		this.config = config;		
+	public AutoSaveConfigMSG(AutoSaveWorld plugin) {
+		this.plugin = plugin;		
 	}
-	
-	public ENDefaults enMessages = new ENDefaults(this);
-	private LocaleLoader lLoader  = new LocaleLoader(this);
-	
+
 	// Messages
 	public String messageSaveBroadcastPre = "&9AutoSaving";
 	public String messageSaveBroadcastPost = "&9AutoSave Complete";
@@ -47,14 +45,17 @@ public class AutoSaveConfigMSG {
 	
 	public void loadmsg() 
 	{
-		if (!config.switchtolangfile) {
-			File configfile = new File(plugin.constants.getConfigMSGPath());lLoader.loadLocaleMessegaes(configfile);
-			enMessages.loadMessagesEN();
-			enMessages.saveMessagesEN(configfile);
-		} else {
-			File configfile = new File(plugin.constants.getConfigMSGWithSuffix(config.langfilesuffix));
-			lLoader.loadLocaleMessegaes(configfile);
-		}
+		FileConfiguration configfile = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGPath()));
+		messageSaveBroadcastPre = configfile.getString("broadcast.pre", messageSaveBroadcastPre);
+		messageSaveBroadcastPost = configfile.getString("broadcast.post", messageSaveBroadcastPost);
+		messageBackupBroadcastPre = configfile.getString("broadcastbackup.pre", messageBackupBroadcastPre);
+		messageBackupBroadcastPost = configfile.getString("broadcastbackup.post", messageBackupBroadcastPost);
+		messagePurgeBroadcastPre = configfile.getString("broadcastpurge.pre", messagePurgeBroadcastPre);
+		messagePurgeBroadcastPost = configfile.getString("broadcastpurge.post", messagePurgeBroadcastPost);
+		messageInsufficientPermissions = configfile.getString("insufficentpermissions", messageInsufficientPermissions);
+		messageAutoRestart = configfile.getString("autorestart.restarting", messageAutoRestart);
+		messageAutoRestartCountdown = configfile.getString("autorestart.countdown", messageAutoRestartCountdown);
+		messageWorldRegenKick = configfile.getString("worldregen.kickmessage", messageWorldRegenKick);
 	}
 
 }
