@@ -56,6 +56,23 @@ public class AutoSaveConfigMSG {
 		messageAutoRestart = configfile.getString("autorestart.restarting", messageAutoRestart);
 		messageAutoRestartCountdown = configfile.getString("autorestart.countdown", messageAutoRestartCountdown);
 		messageWorldRegenKick = configfile.getString("worldregen.kickmessage", messageWorldRegenKick);
+		savemsg();
+	}
+	
+	private void savemsg()
+	{
+		FileConfiguration configfile = new YamlConfiguration();
+		configfile.set("broadcast.pre", messageSaveBroadcastPre);
+		configfile.set("broadcast.post", messageSaveBroadcastPost);
+		configfile.set("broadcastbackup.pre", messageBackupBroadcastPre);
+		configfile.set("broadcastbackup.post", messageBackupBroadcastPost);
+		configfile.set("broadcastpurge.pre", messagePurgeBroadcastPre);
+		configfile.set("broadcastpurge.post", messagePurgeBroadcastPost);
+		configfile.set("insufficentpermissions", messageInsufficientPermissions);
+		configfile.set("autorestart.restarting", messageAutoRestart);
+		configfile.set("autorestart.countdown", messageAutoRestartCountdown);
+		configfile.set("worldregen.kickmessage", messageWorldRegenKick);
+		try {configfile.save(new File(plugin.constants.getConfigMSGPath()));} catch (IOException e) {}
 	}
 
 }
