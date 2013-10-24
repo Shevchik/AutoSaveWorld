@@ -47,15 +47,13 @@ public class FTPFileUtils {
 	    	//ignore lock files
 	    	if (!src.getName().endsWith(".lck"))
 	    	{
-	    		InputStream is = null;
 	    		try {
+	    			InputStream is = null;
 	    			is = src.toURI().toURL().openStream();
 	    			ftp.storeFile(src.getName(), is);
-	    		}
-	    		finally {
 	    			is.close();
-	    		}
-	       		try {Thread.sleep(0);} catch (Exception e) {}
+	    		} catch (Exception e) {}
+	       		Thread.yield();
 	    	}
        }
    }
