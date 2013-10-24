@@ -38,6 +38,7 @@ public class WorldRegenPasteThread extends Thread {
 	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
+		this.configmsg = configmsg;
 	};
 
 	private boolean paste = false;
