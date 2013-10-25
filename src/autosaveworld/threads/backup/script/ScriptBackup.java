@@ -40,12 +40,9 @@ public class ScriptBackup {
     		final Process p;
     		ProcessBuilder pb = new ProcessBuilder();
     		pb.command(new File(config.scriptbackupscriptpath).getPath());
+    		pb.inheritIO();
     		try {
     			p = pb.start();
-    			OutputThread output = new OutputThread(p);
-    			output.start();
-    			ErrorThread err = new ErrorThread(p);
-    			err.start();
     			p.waitFor();
     		} catch (Exception e) {
     			e.printStackTrace();

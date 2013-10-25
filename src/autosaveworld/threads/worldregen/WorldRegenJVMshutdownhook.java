@@ -47,7 +47,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 			e.printStackTrace();
 		}
 		//restart
-		jvmsh.run();
+		jvmsh.restart();
 	}
 	
 	

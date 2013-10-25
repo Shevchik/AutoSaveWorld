@@ -61,13 +61,10 @@ public class RestartJVMshutdownhook extends Thread {
 				execsequence.add(jarfilename);
 				pb.command(execsequence);
 			}
-			Process p = pb.start();
-		
-			//send IO to hell
-			OutputThread output = new OutputThread(p);
-			output.start();
-			ErrorThread err = new ErrorThread(p);
-			err.start();
+			//inheritIO
+			pb.inheritIO();
+			//start process
+			pb.start();
 		} catch (Exception e)
 		{
 			System.out.println("[AutoSaveWorld] Restart failed");

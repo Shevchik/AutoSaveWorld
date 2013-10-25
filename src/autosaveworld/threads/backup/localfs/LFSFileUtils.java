@@ -17,12 +17,9 @@
 
 package autosaveworld.threads.backup.localfs;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import autosaveworld.threads.backup.ExcludeManager;
@@ -50,19 +47,7 @@ public class LFSFileUtils {
 			    	//ignore lock files
 			    	if (!sourceLocation.getName().endsWith(".lck"))
 			    	{
-					    try {
-					    	BufferedInputStream in = new BufferedInputStream(new FileInputStream(sourceLocation));
-			       			BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(targetLocation));
-			       			byte[] buf = new byte[4096];
-			       			int len;
-			       			while ((len = in.read(buf)) > 0) {
-			       				out.write(buf, 0, len);
-			       			}
-			       			in.close();
-			       			out.close();
-			    		} catch (Exception e) {
-			    			
-			       		}
+			    		Files.copy(sourceLocation.toPath(), sourceLocation.toPath());
 			       		Thread.yield();
 			    	}
 			    }
