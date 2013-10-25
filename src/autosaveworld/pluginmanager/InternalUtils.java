@@ -18,7 +18,9 @@
 package autosaveworld.pluginmanager;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +34,12 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
+import org.bukkit.plugin.java.PluginClassLoader;
 
 public class InternalUtils {
 
 	@SuppressWarnings("unchecked")
-	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException
 	{
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
@@ -72,6 +75,14 @@ public class InternalUtils {
 					knownCommands.remove(plugincommandName);
 				}
 			}
+		}
+		//close file in url classloader and then kill classloader
+		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
+		if (pluginClassLoader instanceof PluginClassLoader && pluginClassLoader instanceof URLClassLoader)
+		{
+			URLClassLoader urlloader= (URLClassLoader.class.cast(PluginClassLoader.class.cast(pluginClassLoader)));
+			urlloader.close();
+			urlloader = null;
 		}
 	}
 	
