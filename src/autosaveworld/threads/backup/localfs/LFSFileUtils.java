@@ -20,6 +20,7 @@ package autosaveworld.threads.backup.localfs;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import autosaveworld.threads.backup.ExcludeManager;
@@ -28,29 +29,28 @@ public class LFSFileUtils {
 
 	public void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders) throws IOException 
 	{
-			    if (sourceLocation.isDirectory()) 
-			    {
-			    	if (!targetLocation.exists()) 
-			    	{
-			            targetLocation.mkdirs();
-			        }
-			        String[] children = sourceLocation.list();
-			        for (int i=0; i<children.length; i++) 
-			        {
-			        	if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, children[i]).getPath())) {
-			        		copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]), excludefolders); 
-			        	}
-			        }
-			    } 
-			    else 
-			    {
-			    	//ignore lock files
-			    	if (!sourceLocation.getName().endsWith(".lck"))
-			    	{
-			    		Files.copy(sourceLocation.toPath(), sourceLocation.toPath());
-			       		Thread.yield();
-			    	}
-			    }
+		if (sourceLocation.isDirectory()) 
+		{
+			if (!targetLocation.exists()) 
+			{
+				targetLocation.mkdirs();
+			}
+			String[] filenames = sourceLocation.list();
+			for (String filename : filenames) 
+			{
+				if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) {
+					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders); 
+				}
+			}
+		} else 
+		{
+			//ignore lock files
+			if (!sourceLocation.getName().endsWith(".lck"))
+			{
+				Files.copy(sourceLocation.toPath(), targetLocation.toPath());
+				Thread.yield();
+			}
+		}
 	}
 			
 	public void deleteDirectory(File file)
