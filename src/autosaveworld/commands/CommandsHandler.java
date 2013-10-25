@@ -17,6 +17,8 @@
 
 package autosaveworld.commands;
 
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -92,8 +94,16 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw info&7 - &3Shows some info");
 				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
-			} else if (args.length == 3 && args[0].equalsIgnoreCase("pmanager")) {
-				plugin.pmanager.handlePluginManagerCommand(sender, args[1], args[2]);
+			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
+				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
+				StringBuilder sb = new StringBuilder(50);
+				for (String namearg : nameArray)
+				{
+					sb.append(namearg);
+					sb.append(" ");
+				}
+				sb.deleteCharAt(sb.length()-1);
+				plugin.pmanager.handlePluginManagerCommand(sender, args[1], sb.toString());
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
 				//save
