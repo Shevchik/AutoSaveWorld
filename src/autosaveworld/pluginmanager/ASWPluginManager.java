@@ -18,11 +18,14 @@
 package autosaveworld.pluginmanager;
 
 import java.io.File;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-
 import autosaveworld.core.AutoSaveWorld;
 
 public class ASWPluginManager {
@@ -58,7 +61,7 @@ public class ASWPluginManager {
 	
 	private void unloadPlugin(CommandSender sender, String pluginname)
 	{
-		Plugin pmplugin = Bukkit.getPluginManager().getPlugin(pluginname);
+		Plugin pmplugin = findPlugin(pluginname);
 		if (pmplugin != null)
 		{
 			try {
@@ -76,7 +79,7 @@ public class ASWPluginManager {
 	
 	private void loadPlugin(CommandSender sender, String pluginname)
 	{
-		File pmpluginfile = new File(plugin.getDataFolder().getParent()+File.separator+pluginname+".jar");
+		File pmpluginfile = findPluginFile(pluginname);
 		if (pmpluginfile.exists())
 		{
 			try {
@@ -90,6 +93,50 @@ public class ASWPluginManager {
 		{
 			sender.sendMessage("[AutoSaveWorld] File with this plugin name not found");
 		}
+	}
+	
+	private Plugin findPlugin(String pluginname)
+	{
+		Plugin pmplugin = Bukkit.getPluginManager().getPlugin(pluginname);
+		for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
+		{
+			if (plugin.getName().equalsIgnoreCase(pluginname))
+			{
+				pmplugin = plugin;
+				break;
+			}
+		}
+		return pmplugin;
+	}
+	
+	private File findPluginFile(String pluginname)
+	{
+		File pmpluginfile = new File(plugin.getDataFolder().getParent()+File.separator+pluginname+".jar");
+		try {
+			File pluginsfolder = plugin.getDataFolder().getParentFile();
+			for (File pluginfile : pluginsfolder.listFiles())
+			{
+				boolean found = false;
+				final JarFile jarFile = new JarFile(pluginfile);
+				JarEntry je = jarFile.getJarEntry("plugin.yml");
+				if (je != null)
+				{
+					FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
+					String jarpluginName = plugininfo.getString("name");
+					if (pluginname.equalsIgnoreCase(jarpluginName))
+					{
+						pluginname = jarpluginName;
+						found = true;
+					}
+				}
+				jarFile.close();
+				if (found)
+				{
+					break;
+				}
+			}
+		} catch (Exception e) {}
+		return pmpluginfile;
 	}
 
 }
