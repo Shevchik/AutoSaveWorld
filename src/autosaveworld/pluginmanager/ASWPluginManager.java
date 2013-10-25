@@ -61,37 +61,47 @@ public class ASWPluginManager {
 	
 	private void unloadPlugin(CommandSender sender, String pluginname)
 	{
+		//find plugin
 		Plugin pmplugin = findPlugin(pluginname);
-		if (pmplugin != null)
-		{
-			try {
-				iutils.unloadPlugin(pmplugin);
-				sender.sendMessage("[AutoSaveWorld] Plugin unloaded");
-			} catch (Exception e) {
-				e.printStackTrace();
-				sender.sendMessage("[AutoSaveWorld] Some error occured while loading plugin");
-			}
-		} else
+		//ignore if plugin is not loaded
+		if (pmplugin == null)
 		{
 			sender.sendMessage("[AutoSaveWorld] Plugin with this name not found");
+			return;
+		}
+		//now unload plugin
+		try {
+			iutils.unloadPlugin(pmplugin);
+			sender.sendMessage("[AutoSaveWorld] Plugin unloaded");
+		} catch (Exception e) {
+			e.printStackTrace();
+			sender.sendMessage("[AutoSaveWorld] Some error occured while loading plugin");
 		}
 	}
 	
 	private void loadPlugin(CommandSender sender, String pluginname)
 	{
-		File pmpluginfile = findPluginFile(pluginname);
-		if (pmpluginfile.exists())
+		//ignore if plugin is already loaded
+		if (isPluginAlreadyLoaded(pluginname)) 
 		{
-			try {
-				iutils.loadPlugin(pmpluginfile);
-				sender.sendMessage("[AutoSaveWorld] Plugin loaded");
-			} catch (Exception e) {
-				e.printStackTrace();
-				sender.sendMessage("[AutoSaveWorld] Some error occured while unloading plugin");
-			}
-		} else
+			sender.sendMessage("[AutoSaveWorld] Plugin is alreadt loaded");
+			return;
+		}
+		//find plugin file
+		File pmpluginfile = findPluginFile(pluginname);
+		//ignore if we can't find plugin file
+		if (!pmpluginfile.exists())
 		{
 			sender.sendMessage("[AutoSaveWorld] File with this plugin name not found");
+			return;
+		}
+		//now load plugin
+		try {
+			iutils.loadPlugin(pmpluginfile);
+			sender.sendMessage("[AutoSaveWorld] Plugin loaded");
+		} catch (Exception e) {
+			e.printStackTrace();
+			sender.sendMessage("[AutoSaveWorld] Some error occured while unloading plugin");
 		}
 	}
 	
@@ -137,6 +147,18 @@ public class ASWPluginManager {
 			}
 		} catch (Exception e) {}
 		return pmpluginfile;
+	}
+	
+	private boolean isPluginAlreadyLoaded(String pluginname)
+	{
+		for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
+		{
+			if (plugin.getName().equalsIgnoreCase(pluginname))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
