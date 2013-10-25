@@ -65,6 +65,7 @@ public class ASWPluginManager {
 				iutils.unloadPlugin(pmplugin);
 				sender.sendMessage("[AutoSaveWorld] Plugin unloaded");
 			} catch (Exception e) {
+				e.printStackTrace();
 				sender.sendMessage("[AutoSaveWorld] Some error uccured while loading plugin");
 			}
 		} else
@@ -82,7 +83,8 @@ public class ASWPluginManager {
 				iutils.loadPlugin(pmpluginfile);
 				sender.sendMessage("[AutoSaveWorld] Plugin loaded");
 			} catch (Exception e) {
-				sender.sendMessage("[AutoSaveWorld] Some error uccured while loading plugin");
+				e.printStackTrace();
+				sender.sendMessage("[AutoSaveWorld] Some error uccured while unloading plugin");
 			}
 		} else
 		{
