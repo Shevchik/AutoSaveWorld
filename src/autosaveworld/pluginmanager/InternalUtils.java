@@ -82,7 +82,6 @@ public class InternalUtils {
 		{
 			URLClassLoader urlloader= (URLClassLoader.class.cast(PluginClassLoader.class.cast(pluginClassLoader)));
 			urlloader.close();
-			urlloader = null;
 		}
 	}
 	
