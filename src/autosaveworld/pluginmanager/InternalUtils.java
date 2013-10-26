@@ -84,9 +84,6 @@ public class InternalUtils {
 			urlloader.close();
 		}
 		System.gc();
-		Thread.sleep(50);
-		System.gc();
-		Thread.sleep(50);
 	}
 	
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException
