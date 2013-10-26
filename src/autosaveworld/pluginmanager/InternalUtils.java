@@ -39,7 +39,7 @@ import org.bukkit.plugin.java.PluginClassLoader;
 public class InternalUtils {
 
 	@SuppressWarnings("unchecked")
-	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException
+	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException
 	{
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
@@ -83,6 +83,10 @@ public class InternalUtils {
 			URLClassLoader urlloader= (URLClassLoader.class.cast(PluginClassLoader.class.cast(pluginClassLoader)));
 			urlloader.close();
 		}
+		System.gc();
+		Thread.sleep(50);
+		System.gc();
+		Thread.sleep(50);
 	}
 	
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException
