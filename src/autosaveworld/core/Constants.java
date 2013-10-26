@@ -53,19 +53,19 @@ public class Constants {
 	}
 	
 	//backup
-	private String backuptempfolder = "BackupTemp/";
+	private String backuptempfolder = "BackupTemp"+File.separator;
 	public String getBackupTempFolder()
 	{
 		return getPluginFolder()+backuptempfolder;
 	}
 
 	//worldregen
-	private String worldregentempfolder = "WorldRegenTemp/";
+	private String worldregentempfolder = "WorldRegenTemp"+File.separator;
 	private String worldnamefile = "wname.yml";
 	private String shouldpastefile = "shouldpaste";
-	private String wgtempfolder = "WG/";
-	private String factionstempfolder = "Factions/";	
-	private String griefpreventionfolder = "GP/";
+	private String wgtempfolder = "WG"+File.separator;
+	private String factionstempfolder = "Factions"+File.separator;	
+	private String griefpreventionfolder = "GP"+File.separator;
 	public String getWorldRegenTempFolder()
 	{
 		return getPluginFolder()+worldregentempfolder;
