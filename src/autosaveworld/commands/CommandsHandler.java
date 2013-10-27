@@ -114,12 +114,12 @@ public class CommandsHandler implements CommandExecutor {
 				File file = new File(".");
 				long maxspacegb = file.getTotalSpace()/1024/1024/1024;
 				long freespacegb = file.getFreeSpace()/1024/1024/1024;
-				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.RED+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"%"+" ("+ChatColor.DARK_GREEN+freespacegb+"/"+maxspacegb+"GB"+")");
+				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.RED+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+freespacegb+"/"+maxspacegb+"GB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
 				//memory
 				Runtime runtime = Runtime.getRuntime();
 				long maxmemmb = runtime.maxMemory()/1024/1024;
 				long freememmb = (runtime.maxMemory()-(runtime.totalMemory()-runtime.freeMemory()))/1024/1024;
-				sender.sendMessage(ChatColor.GOLD+"Memory usage: "+ChatColor.RED+df.format((maxmemmb-freememmb)*100/maxmemmb)+"%"+" ("+ChatColor.DARK_GREEN+freememmb+"/"+maxmemmb+"MB"+")");
+				sender.sendMessage(ChatColor.GOLD+"Memory usage: "+ChatColor.RED+df.format((maxmemmb-freememmb)*100/maxmemmb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+freememmb+"/"+maxmemmb+"MB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
 				//processor (if available)
 				try {
 					com.sun.management.OperatingSystemMXBean systemBean = (com.sun.management.OperatingSystemMXBean) java.lang.management.ManagementFactory.getOperatingSystemMXBean();
