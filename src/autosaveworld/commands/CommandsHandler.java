@@ -114,7 +114,7 @@ public class CommandsHandler implements CommandExecutor {
 				File file = new File(".");
 				long maxspacegb = file.getTotalSpace()/1024/1024/1024;
 				long freespacegb = file.getFreeSpace()/1024/1024/1024;
-				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.GREEN+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"%"+" ("+ChatColor.DARK_GREEN+freespacegb+"/"+maxspacegb+"GB"+")");
+				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.RED+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"%"+" ("+ChatColor.DARK_GREEN+freespacegb+"/"+maxspacegb+"GB"+")");
 				//memory
 				Runtime runtime = Runtime.getRuntime();
 				long maxmemmb = runtime.maxMemory()/1024/1024;
@@ -125,7 +125,7 @@ public class CommandsHandler implements CommandExecutor {
 					com.sun.management.OperatingSystemMXBean systemBean = (com.sun.management.OperatingSystemMXBean) java.lang.management.ManagementFactory.getOperatingSystemMXBean();
 					double cpuusage = systemBean.getProcessCpuLoad()*100;
 					if (cpuusage > 0) {
-						sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.GREEN+df.format(cpuusage)+"%");
+						sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.RED+df.format(cpuusage)+"%");
 					} else {
 						sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.RED+"not available");
 					}
