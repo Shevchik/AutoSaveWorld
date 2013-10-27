@@ -127,7 +127,12 @@ public class CommandsHandler implements CommandExecutor {
 				//processor (if available)
 				try {
 					com.sun.management.OperatingSystemMXBean systemBean = (com.sun.management.OperatingSystemMXBean) java.lang.management.ManagementFactory.getOperatingSystemMXBean();
-					sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.GREEN+df.format(systemBean.getProcessCpuLoad())+"%");
+					double cpuusage = systemBean.getProcessCpuLoad()*100;
+					if (cpuusage > 0) {
+						sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.GREEN+df.format(cpuusage)+"%");
+					} else {
+						sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.RED+"not available");
+					}
 				} catch (Exception e) {}
 				return true;
 			}	else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
