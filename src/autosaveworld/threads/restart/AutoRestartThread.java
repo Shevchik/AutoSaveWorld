@@ -78,7 +78,7 @@ public class AutoRestartThread  extends Thread{
 				
 				plugin.broadcast(configmsg.messageAutoRestart, config.autorestartBroadcast);
 				
-				plugin.debug("[AutoSaveWorld] AutoRestarting server");
+				plugin.debug("AutoRestarting server");
 				
 				if (!config.astop) 
 				{
