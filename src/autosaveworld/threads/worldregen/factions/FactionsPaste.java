@@ -27,79 +27,47 @@ import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColls;
 import com.massivecraft.mcore.ps.PS;
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class FactionsPaste {
 
 	private AutoSaveWorld plugin;
+	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	
-	public FactionsPaste(AutoSaveWorld plugin, String worldtopasteto)
+	public FactionsPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto)
 	{
 		this.plugin = plugin;
+		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
-		schemfolder = plugin.constants.getFactionsTempFolder();
 	}
-	
-	private int taskid;
-    final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder;
-	
+
 	public void pasteAllFromSchematics()
 	{
 		plugin.debug("Pasting factions lands from schematics");
+
+		String schemfolder = plugin.constants.getFactionsTempFolder();
 		
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll())
 		{
+			plugin.debug("Pasting faction land "+f.getName()+" from schematic");
 		  	Set<PS> chunks = BoardColls.get().getChunks(f);
 			if (chunks.size() != 0)
 			{
-				pasteFactionLand(f,schemfolder);
-			}
-		}
-		
-	}
-	
-	
-	private void pasteFactionLand(final Faction f, final String schemfolder)
-	{
-		Set<PS> chunks = BoardColls.get().getChunks(f);
-		plugin.debug("Pasting faction land "+f.getName()+" from schematic");
-		for (PS ps : chunks)
-		{
-			final int xcoord = ps.getChunkX();
-		 	final int zcoord = ps.getChunkZ();
-		   	Runnable copypaste = new Runnable() 
-	    	{
-				public void run()
+				//paste all chunks
+				for (PS ps: chunks)
 				{
-					try {
-						plugin.debug("Pasting "+f.getName()+" chunk from schematic");
-						//load from schematic to clipboard
-						EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
-						es.setFastMode(true);
-						File file = new File(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord);
-						CuboidClipboard cc = format.load(file);
-						//paste clipboard at origin
-						cc.place(es, cc.getOrigin(), false);
-						plugin.debug("Pasted "+f.getName()+" chunk from schematic");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					final int xcoord = ps.getChunkX();
+				 	final int zcoord = ps.getChunkZ();
+				 	//paste
+					plugin.debug("Pasting "+f.getName()+" chunk from schematic");
+					wrthread.pasteFromSchematics(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+					plugin.debug("Pasted "+f.getName()+" chunk from schematic");
 				}
-			};
-			taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-			{
-				try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 			}
+			plugin.debug("Pasted faction land "+f.getName()+" from schematic");
 		}
-		plugin.debug("Pasted faction land "+f.getName()+" from schematic");
- 	}
-	
+	}
+
 }

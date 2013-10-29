@@ -20,8 +20,14 @@ package autosaveworld.threads.worldregen;
 import java.io.File;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
@@ -94,19 +100,19 @@ public class WorldRegenPasteThread extends Thread {
 			// paste WG buildings
 			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) 
 			{
-				new WorldGuardPaste(plugin, worldtopasteto).pasteAllFromSchematics();
+				new WorldGuardPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
 			
 			//paste Factions buildings
 			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) 
 			{
-				new FactionsPaste(plugin, worldtopasteto).pasteAllFromSchematics();
+				new FactionsPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
 			
 			//paste GriefPrevention claims
 			if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp)
 			{
-				new GPPaste(plugin,worldtopasteto).pasteAllFromSchematics();
+				new GPPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
 
 			//clear temp folder
@@ -129,6 +135,32 @@ public class WorldRegenPasteThread extends Thread {
 		}
 	}
 	
+	private int pfstaskid;
+    private final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
+	public void pasteFromSchematics(final String shematic, final World world)
+	{
+		Runnable copypaste = new Runnable() 
+		{
+			public void run() 
+			{
+				try {
+					//load from schematic to clipboard
+					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
+					es.setFastMode(true);
+					File f = new File(shematic);
+					CuboidClipboard cc = format.load(f);
+					//paste clipboard at origin
+					cc.place(es, cc.getOrigin(), false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
+		while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
+			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
+		}
+	}
 	
 	private void deleteDirectory(File file)
 	{

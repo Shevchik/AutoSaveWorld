@@ -17,77 +17,46 @@
 
 package autosaveworld.threads.worldregen.wg;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class WorldGuardPaste {
 
 	private AutoSaveWorld plugin;
+	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	
-	public WorldGuardPaste(AutoSaveWorld plugin, String worldtopasteto)
+	public WorldGuardPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto)
 	{
 		this.plugin = plugin;
-		this.wtopaste = Bukkit.getWorld(worldtopasteto);
-		schemfolder = plugin.constants.getWGTempFolder();
+		this.wrthread = wrthread;
+		this.wtopaste = Bukkit.getWorld(worldtopasteto);		
 	}
 	
-	
-	private int taskid;
-	final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder;
-	
+
 	public void pasteAllFromSchematics()
 	{
 		plugin.debug("Pasting WG regions from schematics");
 		
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+		
+		String schemfolder = plugin.constants.getWGTempFolder();
 		final RegionManager m = wg.getRegionManager(wtopaste);
-
+		//paste all regions
 		for (final ProtectedRegion rg : m.getRegions().values()) {
+			//ignore global region
 			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
-			pasteWGRegion(rg);
+			//paste
+			plugin.debug("Pasting WG region "+rg.getId()+" from schematic");
+			wrthread.pasteFromSchematics(schemfolder+rg.getId(), wtopaste);
+			plugin.debug("Pasted WG region "+rg.getId()+" from schematic");
 		}
 	}
-	
-	
-	private void pasteWGRegion(final ProtectedRegion rg)
-	{
-		Runnable copypaste = new Runnable() 
-		{
-			public void run() 
-			{
-				try {
-					plugin.debug("Pasting WG region "+rg.getId()+" from schematic");
-					//load from schematic to clipboard
-					EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
-					es.setFastMode(true);
-					File f = new File(schemfolder+rg.getId());
-					CuboidClipboard cc = format.load(f);
-					//paste clipboard at origin
-					cc.place(es, cc.getOrigin(), false);
-					plugin.debug("Pasted WG region "+rg.getId()+" from schematic");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
-		}
-	}
-	
+
 }

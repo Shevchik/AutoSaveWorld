@@ -17,7 +17,6 @@
 
 package autosaveworld.threads.worldregen.griefprevention;
 
-import java.io.File;
 import java.lang.reflect.Field;
 
 import me.ryanhamshire.GriefPrevention.Claim;
@@ -29,34 +28,30 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
-
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.schematic.SchematicFormat;
+import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class GPPaste {
 
 	private AutoSaveWorld plugin;
+	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	
-	public GPPaste(AutoSaveWorld plugin, String worldtopasteto)
+	public GPPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto)
 	{
 		this.plugin = plugin;
+		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
-		schemfolder = plugin.constants.getGPTempFolder();
 	}
 	
 	
-	private int taskid;
-	final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder;
-	
+
 	public void pasteAllFromSchematics()
 	{
 		plugin.debug("Pasting GP regions from schematics");
 		
+		final String schemfolder = plugin.constants.getGPTempFolder();
+		
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention"); 
+		//get database
 		ClaimArray ca = null;
 		try {
             Field fld = DataStore.class.getDeclaredField("claims");
@@ -71,38 +66,14 @@ public class GPPaste {
 			return;
 		}
 
+		//paste all claims
 		for (int i = 0; i<ca.size(); i++)
 		{
 			Claim claim = ca.get(i);
-			pasteGPRegion(claim);
-		}
-	}
-	
-	
-	private void pasteGPRegion(final Claim claim)
-	{
-		Runnable copypaste = new Runnable() 
-		{
-			public void run() 
-			{
-				try {
-					plugin.debug("Pasting GP region "+claim.getID()+" from schematics");
-					//load from schematic to clipboard
-					EditSession es = new EditSession(new BukkitWorld(wtopaste),Integer.MAX_VALUE);
-					es.setFastMode(true);
-					File f = new File(schemfolder+claim.getID());
-					CuboidClipboard cc = format.load(f);
-					//paste clipboard at origin
-					cc.place(es, cc.getOrigin(), false);
-					plugin.debug("Pasted GP region "+claim.getID()+" from schematics");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
+			//paste
+			plugin.debug("Pasting GP region "+claim.getID()+" from schematics");
+			wrthread.pasteFromSchematics(schemfolder+claim.getID(), wtopaste);
+			plugin.debug("Pasted GP region "+claim.getID()+" from schematics");
 		}
 	}
 	
