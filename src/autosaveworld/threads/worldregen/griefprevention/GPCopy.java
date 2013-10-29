@@ -53,7 +53,9 @@ public class GPCopy {
 		
 		new File(plugin.constants.getGPTempFolder()).mkdirs();
 		
-		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention"); 
+		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
+		
+		//get database
 		ClaimArray ca = null;
 		try {
             Field fld = DataStore.class.getDeclaredField("claims");
@@ -68,6 +70,7 @@ public class GPCopy {
 			return;
 		}
 
+		//save all claims
 		for (int i = 0; i<ca.size(); i++)
 		{
 			Claim claim = ca.get(i);
@@ -93,6 +96,7 @@ public class GPCopy {
 							zmax
 					)
 			);
+			//save
 			wrthread.saveToSchematic(plugin.constants.getGPTempFolder(), claim.getID().toString(), wtoregen, bvmin, bvmax);
 	        plugin.debug("GP Region "+claim.getID()+" saved");
 		}

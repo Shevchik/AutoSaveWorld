@@ -168,7 +168,6 @@ public class WorldRegenCopyThread extends Thread {
 			public void run()
 			{
 				try {
-
 					//copy to clipboard
 					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 					CuboidClipboard clipboard = new CuboidClipboard(
