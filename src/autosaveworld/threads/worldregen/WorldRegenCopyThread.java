@@ -25,6 +25,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.schematic.SchematicFormat;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
@@ -128,19 +134,19 @@ public class WorldRegenCopyThread extends Thread {
 		//save WorldGuard buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg)
 		{
-			new WorldGuardCopy(plugin, worldtoregen).copyAllToSchematics();
+			new WorldGuardCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 		
 		//save Factions homes
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions)
 		{
-			new FactionsCopy(plugin, worldtoregen).copyAllToSchematics();
+			new FactionsCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 		
 		//save GriefPrevention claims
 		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp)
 		{
-			new GPCopy(plugin, worldtoregen).copyAllToSchematics();
+			new GPCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 		
 		plugin.debug("Saving finished");
@@ -151,6 +157,38 @@ public class WorldRegenCopyThread extends Thread {
 		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(plugin.JVMsh, wtoregen.getWorldFolder().getCanonicalPath(), plugin.constants.getShouldpasteFile());
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		plugin.getServer().shutdown();
+	}
+
+	private int ststaskid;
+    private final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
+	public void saveToSchematic(final String schemfolder, final String name, final World world, final Vector bvmin, final Vector bvmax)
+	{
+		Runnable copypaste = new Runnable() 
+		{
+			public void run()
+			{
+				try {
+
+					//copy to clipboard
+					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
+					CuboidClipboard clipboard = new CuboidClipboard(
+							bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
+							bvmin, bvmin.subtract(bvmax)
+					);
+					clipboard.copy(es);
+					//save to schematic
+					File schematic = new File(schemfolder + name);
+					format.save(clipboard, schematic);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		ststaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
+		while (Bukkit.getScheduler().isCurrentlyRunning(ststaskid) || Bukkit.getScheduler().isQueued(ststaskid))
+		{
+			try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+		}
 	}
 	
 	

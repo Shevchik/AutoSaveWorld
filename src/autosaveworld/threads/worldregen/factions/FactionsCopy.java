@@ -28,103 +28,65 @@ import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColls;
 import com.massivecraft.mcore.ps.PS;
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
+
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 public class FactionsCopy {
 
 	private AutoSaveWorld plugin;
+	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	
-	public FactionsCopy(AutoSaveWorld plugin, String worldtoregen)
+	public FactionsCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen)
 	{
 		this.plugin = plugin;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
-		schemfolder = plugin.constants.getFactionsTempFolder();
+		this.wrthread = wrthread;
 	}
-	
-	private int taskid;
-    private final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	final String schemfolder;
 	
 	public void copyAllToSchematics()
 	{
 		plugin.debug("Saving factions lands to schematics");
 
-		new File(schemfolder).mkdirs();
+		new File(plugin.constants.getFactionsTempFolder()).mkdirs();
 		
 		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll())
 		{
 		  	Set<PS> chunks = BoardColls.get().getChunks(f);
 		   	if (chunks.size() != 0)
 		   	{
-		   		saveFactionLand(f,schemfolder);
+				plugin.debug("Saving faction land "+f.getName()+" to schematic");
+				for (PS ps : chunks)
+				{
+					plugin.debug("Saving "+f.getName()+" chunk to schematic");
+					new File(plugin.constants.getFactionsTempFolder()+f.getName()).mkdirs();
+					final int xcoord = ps.getChunkX();
+				 	final int zcoord = ps.getChunkZ();
+				    final Vector bvmin = BukkitUtil.toVector(
+				    		new Location(
+				    				wtoregen,
+				    				xcoord*16,
+				    				0,
+				    				zcoord*16
+				    		)
+				    );
+				    final Vector bvmax = BukkitUtil.toVector(
+				    		new Location(
+				   					wtoregen,
+				   					xcoord*16+15,
+				   					wtoregen.getMaxHeight(),
+				    				zcoord*16+15
+				   			)
+				   	);
+					wrthread.saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator, "X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+			        plugin.debug(f.getName()+" chunk saved");
+				}
+		        plugin.debug("faction land "+f.getName()+" saved");
 		    }
 		}
-	}
-	
-	private void saveFactionLand(final Faction f, final String schemfolder)
-	{
-		Set<PS> chunks = BoardColls.get().getChunks(f);
-		plugin.debug("Saving faction land "+f.getName()+" to schematic");
-		for (PS ps : chunks)
-		{
-			final int xcoord = ps.getChunkX();
-		 	final int zcoord = ps.getChunkZ();
-		    final Vector bvmin = BukkitUtil.toVector(
-		    		new Location(
-		    				wtoregen,
-		    				xcoord*16,
-		    				0,
-		    				zcoord*16
-		    		)
-		    );
-		    final Vector bvmax = BukkitUtil.toVector(
-		    		new Location(
-		   					wtoregen,
-		   					xcoord*16+15,
-		   					wtoregen.getMaxHeight(),
-		    				zcoord*16+15
-		   			)
-		   	);
-		   	Runnable copypaste = new Runnable() 
-		   	{
-		   		public void run() 
-		   		{
-					try {
-						plugin.debug("Saving "+f.getName()+" chunk to schematic");
-						//copy to clipboard
-						EditSession es = new EditSession(new BukkitWorld(wtoregen),Integer.MAX_VALUE);
-						Vector pos = bvmax;
-						CuboidClipboard clipboard = new CuboidClipboard(
-								bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-								bvmin, bvmin.subtract(pos)
-						);
-						clipboard.copy(es);
-						//save to schematic
-						new File(schemfolder+f.getName()).mkdirs();
-				        File schematic = new File(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord);
-				        format.save(clipboard, schematic);
-				        plugin.debug(f.getName()+" chunk saved");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-		   		}
-			};
-			taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-			{
-				try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-			}
-	 	}
-        plugin.debug("faction land "+f.getName()+" saved");
-	}
-	
+	}	
 
 }
