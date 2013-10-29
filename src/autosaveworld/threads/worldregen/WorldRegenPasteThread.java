@@ -57,8 +57,7 @@ public class WorldRegenPasteThread extends Thread {
 		}
 	}
 	
-	public long loaded = 0;
-	private String worldtopasteto;
+	private long loaded = 0;
 	public void run() {
 		try {
 			
@@ -74,7 +73,7 @@ public class WorldRegenPasteThread extends Thread {
 			
 			//load config
 			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getWorldnameFile()));
-			worldtopasteto = cfg.getString("wname");
+			String worldtopasteto = cfg.getString("wname");
 			
 			//wait for server to load
 			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
