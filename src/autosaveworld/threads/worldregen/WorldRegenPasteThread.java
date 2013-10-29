@@ -57,7 +57,6 @@ public class WorldRegenPasteThread extends Thread {
 		}
 	}
 	
-	private long loaded = 0;
 	public void run() {
 		try {
 			
@@ -79,14 +78,13 @@ public class WorldRegenPasteThread extends Thread {
 			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
 				public void run()
-				{
-					loaded = System.currentTimeMillis();
+				{	
 				}
 			});
-			while (loaded == 0) {
+			while (Bukkit.getScheduler().isCurrentlyRunning(ltask) || Bukkit.getScheduler().isQueued(ltask)) 
+			{
 				Thread.sleep(1000);
 			}
-			Bukkit.getScheduler().cancelTask(ltask);
 			
 			//check for worldedit
 			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
