@@ -124,12 +124,12 @@ public class CommandsHandler implements CommandExecutor {
 				Runtime runtime = Runtime.getRuntime();
 				long maxmemmb = runtime.maxMemory()/1024/1024;
 				long freememmb = (runtime.maxMemory()-(runtime.totalMemory()-runtime.freeMemory()))/1024/1024;
-				sender.sendMessage(ChatColor.GOLD+"Memory usage: "+ChatColor.RED+df.format((maxmemmb-freememmb)*100/maxmemmb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+freememmb+"/"+maxmemmb+" MB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
+				sender.sendMessage(ChatColor.GOLD+"Memory usage: "+ChatColor.RED+df.format((maxmemmb-freememmb)*100/maxmemmb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+(maxmemmb-freememmb)+"/"+maxmemmb+" MB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
 				//hard drive
 				File file = new File(".");
 				long maxspacegb = file.getTotalSpace()/1024/1024/1024;
 				long freespacegb = file.getFreeSpace()/1024/1024/1024;
-				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.RED+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+freespacegb+"/"+maxspacegb+" GB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
+				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.RED+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+(maxspacegb-freespacegb)+"/"+maxspacegb+" GB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
 				return true;
 			}	else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
 				//save
