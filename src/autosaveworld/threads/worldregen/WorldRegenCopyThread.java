@@ -56,9 +56,9 @@ public class WorldRegenCopyThread extends Thread {
 	}
 	
 	public void startworldregen(String worldname) {
+		this.worldtoregen = worldname;
 		plugin.worldregenInProcess = true;
 		doregen = true;
-		this.worldtoregen = worldname;
 	}
 		
 	
