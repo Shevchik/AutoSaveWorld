@@ -161,7 +161,7 @@ public class WorldRegenCopyThread extends Thread {
 
 	private int ststaskid;
     private final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
-	public void saveToSchematic(final String schemfolder, final String name, final World world, final Vector bvmin, final Vector bvmax)
+	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax)
 	{
 		Runnable copypaste = new Runnable() 
 		{
@@ -176,8 +176,8 @@ public class WorldRegenCopyThread extends Thread {
 					);
 					clipboard.copy(es);
 					//save to schematic
-					File schematic = new File(schemfolder + name);
-					format.save(clipboard, schematic);
+					File f= new File(schematic);
+					format.save(clipboard, f);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
