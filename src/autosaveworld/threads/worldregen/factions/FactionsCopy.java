@@ -63,7 +63,6 @@ public class FactionsCopy {
 				//save all chunks one by one
 				for (PS ps : chunks)
 				{
-					plugin.debug("Saving "+f.getName()+" chunk to schematic");
 					//create temp folder for faction
 					new File(plugin.constants.getFactionsTempFolder()+f.getName()).mkdirs();
 					//get coords
@@ -86,6 +85,7 @@ public class FactionsCopy {
 				   			)
 				   	);
 				    //save
+					plugin.debug("Saving "+f.getName()+" chunk to schematic");
 					wrthread.saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator, "X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
 			        plugin.debug(f.getName()+" chunk saved");
 				}

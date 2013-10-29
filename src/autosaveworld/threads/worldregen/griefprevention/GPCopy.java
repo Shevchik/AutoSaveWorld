@@ -74,7 +74,6 @@ public class GPCopy {
 		for (int i = 0; i<ca.size(); i++)
 		{
 			Claim claim = ca.get(i);
-			plugin.debug("Saving GP Region "+claim.getID()+" to schematic");
 			//get coords
 			double xmin = claim.getLesserBoundaryCorner().getX();
 			double zmin = claim.getLesserBoundaryCorner().getZ();
@@ -97,6 +96,7 @@ public class GPCopy {
 					)
 			);
 			//save
+			plugin.debug("Saving GP Region "+claim.getID()+" to schematic");
 			wrthread.saveToSchematic(plugin.constants.getGPTempFolder(), claim.getID().toString(), wtoregen, bvmin, bvmax);
 	        plugin.debug("GP Region "+claim.getID()+" saved");
 		}
