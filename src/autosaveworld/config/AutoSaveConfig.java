@@ -44,7 +44,6 @@ public class AutoSaveConfig {
 	public int saveInterval = 900;
 	public boolean saveBroadcast = true;
 	public boolean saveEnabled = true;
-	public boolean saveAsync = false;
 	//backup
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
@@ -126,7 +125,6 @@ public class AutoSaveConfig {
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
 		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
 		saveInterval = config.getInt("save.interval", saveInterval);
-		saveAsync = config.getBoolean("save.async",saveAsync);
 
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
@@ -257,7 +255,6 @@ public class AutoSaveConfig {
 		config.set("save.enabled",saveEnabled);
 		config.set("save.interval", saveInterval);
 		config.set("save.broadcast", saveBroadcast);
-		config.set("save.async",saveAsync);
 
 		//backup variables
 		config.set("backup.enabled", backupEnabled);

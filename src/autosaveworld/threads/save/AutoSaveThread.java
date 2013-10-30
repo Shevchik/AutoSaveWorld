@@ -108,13 +108,7 @@ public class AutoSaveThread extends Thread {
 
 		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
-		if (!config.saveAsync)
-		{
-			saveSync();
-		} else
-		{
-			saveAsync();
-		}
+		save();
 
 		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 
@@ -124,7 +118,7 @@ public class AutoSaveThread extends Thread {
 		plugin.saveInProgress = false;
 	}
 	
-	private void saveSync()
+	private void save()
 	{
 		// Save the players
 		plugin.debug("Saving players");
@@ -171,31 +165,5 @@ public class AutoSaveThread extends Thread {
 		}
 		plugin.debug("Saved Worlds");
 	}
-	
-	private void saveAsync()
-	{
-		// Save the players
-		plugin.debug("Saving players");
-		for (Player player : plugin.getServer().getOnlinePlayers())
-		{
-			plugin.debug(String.format("Saving player: %s", player.getName()));
-			player.saveData();
-		}
-		plugin.debug("Saved Players");
-		// Save the worlds
-		plugin.debug("Saving worlds");
-		for (World world : plugin.getServer().getWorlds()) 
-		{
-			plugin.debug(String.format("Saving world: %s", world.getName()));
-			world.setAutoSave(false);
-			try {
-				world.save();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			world.setAutoSave(true);
-		}
-		plugin.debug("Saved Worlds");
-	}
-	
+
 }
