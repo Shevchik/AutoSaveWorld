@@ -188,7 +188,11 @@ public class AutoSaveThread extends Thread {
 		{
 			plugin.debug(String.format("Saving world: %s", world.getName()));
 			world.setAutoSave(false);
-			world.save();
+			try {
+				world.save();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			world.setAutoSave(true);
 		}
 		plugin.debug("Saved Worlds");
