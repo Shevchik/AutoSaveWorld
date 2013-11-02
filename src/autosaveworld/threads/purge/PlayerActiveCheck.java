@@ -49,9 +49,9 @@ public class PlayerActiveCheck {
 		//add players that wasn't in getOfflinePlayers array but has their dat files
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-		for (File playerfile : playersdatfolder.listFiles()) 
+		for (String playerfile : playersdatfolder.list()) 
 		{
-			String playername = playerfile.getName().substring(0, playerfile.getName().indexOf("."));
+			String playername = playerfile.substring(0, playerfile.indexOf("."));
 			if (!foundplayers.contains(playername))
 			{
 				plactivecs.add(playername);
