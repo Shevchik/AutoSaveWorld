@@ -27,17 +27,17 @@ import com.onarandombox.multiverseinventories.api.profile.WorldGroupProfile;
 
 import autosaveworld.core.AutoSaveWorld;
 
-public class MVInvpurge {
+public class MVInvPurge {
 
 	private AutoSaveWorld plugin;
 
-	public MVInvpurge(AutoSaveWorld plugin)
+	public MVInvPurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
 	
 	
-	public void doMVInvPurgeTask(PlayerActiveCheck pacheck)
+	public void doMVInvPurgeTask(ActivePlayersList pacheck)
 	{
 		int deleted = 0;
 		try {

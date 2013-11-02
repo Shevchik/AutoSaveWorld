@@ -17,16 +17,16 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
-public class Residencepurge {
+public class ResidencePurge {
 
 	private AutoSaveWorld plugin;
 	
-	public Residencepurge(AutoSaveWorld plugin)
+	public ResidencePurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	public void doResidencePurgeTask(PlayerActiveCheck pacheck, final boolean regenres)
+	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres)
 	{
 		plugin.debug("Residence purge started");
 		

@@ -107,14 +107,14 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Purge started");
 			
 			plugin.debug("Gathering active players list");
-			PlayerActiveCheck pacheck = new PlayerActiveCheck();
-			pacheck.gatherActivePlayersList(awaytime);
+			ActivePlayersList aplist = new ActivePlayersList();
+			aplist.gatherActivePlayersList(awaytime);
 			
 			if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)
 					&& config.purgewg) {
 				plugin.debug("WG found, purging");
 				try {
-					new WGpurge(plugin).doWGPurgeTask(pacheck, config.purgewgregenrg, config.purgewgnoregenoverlap);
+					new WGPurge(plugin).doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -124,7 +124,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgelwc) {
 				plugin.debug("LWC found, purging");
 				try {
-					new LWCpurge(plugin).doLWCPurgeTask(pacheck, config.purgelwcdelprotectedblocks);
+					new LWCPurge(plugin).doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -134,7 +134,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgemvinv ) {
 				plugin.debug("Multiverse-Inventories found, purging");
 				try {
-					new MVInvpurge(plugin).doMVInvPurgeTask(pacheck);
+					new MVInvPurge(plugin).doMVInvPurgeTask(aplist);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -144,7 +144,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgepm) {
 				plugin.debug("PlotMe found, purging");
 				try {
-					new PlotMepurge(plugin).doPlotMePurgeTask(pacheck, config.purgepmregen);
+					new PlotMePurge(plugin).doPlotMePurgeTask(aplist, config.purgepmregen);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -154,7 +154,7 @@ public class AutoPurgeThread extends Thread {
 					&& config.purgeresidence) {
 				plugin.debug("Residence found, purging");
 				try {
-					new Residencepurge(plugin).doResidencePurgeTask(pacheck, config.purgeresregenarena);
+					new ResidencePurge(plugin).doResidencePurgeTask(aplist, config.purgeresregenarena);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -163,7 +163,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Purging player .dat files");
 			if (config.purgedat) {
 				try {
-					new Datfilepurge(plugin).doDelPlayerDatFileTask(pacheck);
+					new DatfilePurge(plugin).doDelPlayerDatFileTask(aplist);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

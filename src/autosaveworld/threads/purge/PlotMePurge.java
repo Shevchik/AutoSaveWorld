@@ -28,17 +28,17 @@ import com.worldcretornica.plotme.SqlManager;
 
 import autosaveworld.core.AutoSaveWorld;
 
-public class PlotMepurge {
+public class PlotMePurge {
 
 	private AutoSaveWorld plugin;
 
-	public PlotMepurge(AutoSaveWorld plugin)
+	public PlotMePurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
 	
 	
-	public void doPlotMePurgeTask(PlayerActiveCheck pacheck, final boolean regenplot)
+	public void doPlotMePurgeTask(ActivePlayersList pacheck, final boolean regenplot)
 	{
 		int delplots = 0;
 		

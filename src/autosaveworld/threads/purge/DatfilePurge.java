@@ -21,16 +21,16 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import autosaveworld.core.AutoSaveWorld;
 
-public class Datfilepurge {
+public class DatfilePurge {
 
 	private AutoSaveWorld plugin;
 
-	public Datfilepurge(AutoSaveWorld plugin)
+	public DatfilePurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	public void doDelPlayerDatFileTask(PlayerActiveCheck pacheck) {
+	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) {
 		int deleted = 0;
 		try {
 			String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();

@@ -35,16 +35,16 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import autosaveworld.core.AutoSaveWorld;
 
-public class WGpurge {
+public class WGPurge {
 	
 	private AutoSaveWorld plugin;
 	
-	public WGpurge(AutoSaveWorld plugin)
+	public WGPurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	public void doWGPurgeTask(PlayerActiveCheck pacheck, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap) {
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
 				.getPluginManager().getPlugin("WorldGuard");

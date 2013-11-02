@@ -26,16 +26,16 @@ import autosaveworld.core.AutoSaveWorld;
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;
 
-public class LWCpurge {
+public class LWCPurge {
 
 	private AutoSaveWorld plugin;
 
-	public LWCpurge(AutoSaveWorld plugin)
+	public LWCPurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	public void doLWCPurgeTask(PlayerActiveCheck pacheck, boolean delblocks) {
+	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks) {
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 		
 		plugin.debug("LWC purge started");

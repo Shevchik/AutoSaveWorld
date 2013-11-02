@@ -24,7 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-public class PlayerActiveCheck {
+public class ActivePlayersList {
 
 	private HashSet<String> plactivencs = new HashSet<String>();
 	private HashSet<String> plactivecs = new HashSet<String>();
