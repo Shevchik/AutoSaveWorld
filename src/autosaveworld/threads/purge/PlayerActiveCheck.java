@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.purge;
 
+import java.io.File;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
@@ -30,15 +31,31 @@ public class PlayerActiveCheck {
 
 	public void gatherActivePlayersList(long awaytime)
 	{
+		//due to some strange bug getOfflinePlayers don't get all the players from their .dat files, some are missing
+		HashSet<String> foundplayers = new HashSet<String>();
 		//fill lists
-		for (Player plname : Bukkit.getOnlinePlayers()) {
-			plactivecs.add(plname.getName());
-			plactivencs.add(plname.getName().toLowerCase());
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			plactivecs.add(player.getName());
+			plactivencs.add(player.getName().toLowerCase());
+			foundplayers.add(player.getName());
 		}
-		for (OfflinePlayer plname : Bukkit.getOfflinePlayers()) {
-			if (System.currentTimeMillis() - plname.getLastPlayed() < awaytime) {
-				plactivecs.add(plname.getName());
-				plactivencs.add(plname.getName().toLowerCase());
+		for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+			if (System.currentTimeMillis() - player.getLastPlayed() < awaytime) {
+				plactivecs.add(player.getName());
+				plactivencs.add(player.getName().toLowerCase());
+				foundplayers.add(player.getName());
+			}
+		}
+		//add players that wasn't in getOfflinePlayers array but has their dat files
+		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
+		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
+		for (File playerfile : playersdatfolder.listFiles()) 
+		{
+			String playername = playerfile.getName().substring(0, playerfile.getName().indexOf("."));
+			if (!foundplayers.contains(playername))
+			{
+				plactivecs.add(playername);
+				plactivencs.add(playername.toLowerCase());
 			}
 		}
 	}
