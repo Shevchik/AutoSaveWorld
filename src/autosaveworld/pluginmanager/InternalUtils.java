@@ -76,13 +76,14 @@ public class InternalUtils {
 				}
 			}
 		}
-		//close file in url classloader and then kill classloader
+		//close file in url classloader
 		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
 		if (pluginClassLoader instanceof PluginClassLoader && pluginClassLoader instanceof URLClassLoader)
 		{
 			URLClassLoader urlloader= (URLClassLoader.class.cast(PluginClassLoader.class.cast(pluginClassLoader)));
 			urlloader.close();
 		}
+		//force gc
 		System.gc();
 	}
 	
@@ -90,7 +91,7 @@ public class InternalUtils {
 	{
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		//load plugin
-		Plugin plugin = Bukkit.getPluginManager().loadPlugin(pluginfile);
+		Plugin plugin = pluginmanager.loadPlugin(pluginfile);
 		//enable plugin
 		plugin.onLoad();
 		pluginmanager.enablePlugin(plugin);
