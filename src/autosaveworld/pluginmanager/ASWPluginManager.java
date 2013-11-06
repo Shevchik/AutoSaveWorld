@@ -50,8 +50,7 @@ public class ASWPluginManager {
 		} else
 		if (command.equalsIgnoreCase("reload"))
 		{
-			unloadPlugin(sender,pluginname);
-			loadPlugin(sender,pluginname);
+			reloadPlugin(sender,pluginname);
 		}
 		else
 		{
@@ -84,7 +83,7 @@ public class ASWPluginManager {
 		//ignore if plugin is already loaded
 		if (isPluginAlreadyLoaded(pluginname)) 
 		{
-			sender.sendMessage("[AutoSaveWorld] Plugin is alreadt loaded");
+			sender.sendMessage("[AutoSaveWorld] Plugin is already loaded");
 			return;
 		}
 		//find plugin file
@@ -105,6 +104,35 @@ public class ASWPluginManager {
 		}
 	}
 	
+	private void reloadPlugin(CommandSender sender, String pluginname)
+	{
+		//find plugin
+		Plugin pmplugin = findPlugin(pluginname);
+		//find plugin file
+		File pmpluginfile = findPluginFile(pluginname);
+		//ignore if plugin is not loaded
+		if (pmplugin == null)
+		{
+			sender.sendMessage("[AutoSaveWorld] Plugin with this name not found");
+			return;
+		}
+		//ignore if we can't find plugin file
+		if (!pmpluginfile.exists())
+		{
+			sender.sendMessage("[AutoSaveWorld] File with this plugin name not found");
+			return;
+		}
+		//now reload plugin
+		try {
+			iutils.unloadPlugin(pmplugin);
+			iutils.loadPlugin(pmpluginfile);
+			sender.sendMessage("[AutoSaveWorld] Plugin reloaded");
+		} catch (Exception e) {
+			e.printStackTrace();
+			sender.sendMessage("[AutoSaveWorld] Some error occured while reloading plugin");
+		}
+	}
+	
 	private Plugin findPlugin(String pluginname)
 	{
 		Plugin pmplugin = Bukkit.getPluginManager().getPlugin(pluginname);
@@ -112,8 +140,7 @@ public class ASWPluginManager {
 		{
 			if (plugin.getName().equalsIgnoreCase(pluginname))
 			{
-				pmplugin = plugin;
-				break;
+				return plugin;
 			}
 		}
 		return pmplugin;
@@ -126,7 +153,6 @@ public class ASWPluginManager {
 			File pluginsfolder = plugin.getDataFolder().getParentFile();
 			for (File pluginfile : pluginsfolder.listFiles())
 			{
-				boolean found = false;
 				final JarFile jarFile = new JarFile(pluginfile);
 				JarEntry je = jarFile.getJarEntry("plugin.yml");
 				if (je != null)
@@ -135,15 +161,11 @@ public class ASWPluginManager {
 					String jarpluginName = plugininfo.getString("name");
 					if (pluginname.equalsIgnoreCase(jarpluginName))
 					{
-						pluginname = jarpluginName;
-						found = true;
+						jarFile.close();
+						return pluginfile;
 					}
 				}
 				jarFile.close();
-				if (found)
-				{
-					break;
-				}
 			}
 		} catch (Exception e) {}
 		return pmpluginfile;
