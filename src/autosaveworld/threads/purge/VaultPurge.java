@@ -40,7 +40,7 @@ public class VaultPurge {
 	
 	public void doPermissionsPurgeTask(ActivePlayersList pacheck)
 	{
-		Permission permission = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class).getProvider();
+		Permission permission = Bukkit.getServicesManager().getRegistration(Permission.class).getProvider();
 		int deleted = 0;
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
@@ -63,7 +63,7 @@ public class VaultPurge {
 	
 	public void doEconomyPurgeTask(ActivePlayersList pacheck)
 	{
-		Economy economy = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class).getProvider();
+		Economy economy = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
 		int deleted = 0;
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
