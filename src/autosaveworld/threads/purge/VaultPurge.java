@@ -58,7 +58,7 @@ public class VaultPurge {
 			}
 		}
 
-		plugin.debug("Player .dat purge finished, deleted "+deleted+" player permissions");
+		plugin.debug("Player permissions purge finished, deleted "+deleted+" player permissions");
 	}
 	
 	public void doEconomyPurgeTask(ActivePlayersList pacheck)
@@ -78,7 +78,7 @@ public class VaultPurge {
 			}
 		}
 
-		plugin.debug("Player .dat purge finished, deleted "+deleted+" player economy account");
+		plugin.debug("Player economy purge finished, deleted "+deleted+" player economy account");
 	}
 
 }
