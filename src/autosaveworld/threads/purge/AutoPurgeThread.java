@@ -17,7 +17,7 @@
 
 package autosaveworld.threads.purge;
 
-import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
@@ -110,7 +110,9 @@ public class AutoPurgeThread extends Thread {
 			ActivePlayersList aplist = new ActivePlayersList();
 			aplist.gatherActivePlayersList(awaytime);
 			
-			if ((plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null)
+			PluginManager pm = plugin.getServer().getPluginManager();
+			
+			if ((pm.getPlugin("WorldGuard") != null)
 					&& config.purgewg) {
 				plugin.debug("WG found, purging");
 				try {
@@ -120,7 +122,7 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 			
-			if ((plugin.getServer().getPluginManager().getPlugin("LWC") != null)
+			if ((pm.getPlugin("LWC") != null)
 					&& config.purgelwc) {
 				plugin.debug("LWC found, purging");
 				try {
@@ -130,7 +132,7 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 			
-			if ((Bukkit.getPluginManager().getPlugin("Multiverse-Inventories") !=null) 
+			if ((pm.getPlugin("Multiverse-Inventories") !=null) 
 					&& config.purgemvinv ) {
 				plugin.debug("Multiverse-Inventories found, purging");
 				try {
@@ -140,7 +142,7 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 			
-			if ((Bukkit.getPluginManager().getPlugin("PlotMe") !=null) 
+			if ((pm.getPlugin("PlotMe") !=null) 
 					&& config.purgepm) {
 				plugin.debug("PlotMe found, purging");
 				try {
@@ -150,7 +152,7 @@ public class AutoPurgeThread extends Thread {
 				}
 			}
 			
-			if ((Bukkit.getPluginManager().getPlugin("Residence") !=null) 
+			if ((pm.getPlugin("Residence") !=null) 
 					&& config.purgeresidence) {
 				plugin.debug("Residence found, purging");
 				try {
@@ -159,6 +161,19 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
+			
+			if (pm.getPlugin("Vault") != null) {
+				VaultPurge vp = new VaultPurge(plugin);
+				if (config.purgeeconomy) {
+					plugin.debug("Vault found, purging economy");
+					vp.doEconomyPurgeTask(aplist);
+				}
+				if (config.purgeperms) {
+					plugin.debug("Vault found, purging permissions");
+					vp.doPermissionsPurgeTask(aplist);
+				}
+			}
+			
 			
 			plugin.debug("Purging player .dat files");
 			if (config.purgedat) {
