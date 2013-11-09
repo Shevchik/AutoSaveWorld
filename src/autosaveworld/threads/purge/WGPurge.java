@@ -19,7 +19,6 @@ package autosaveworld.threads.purge;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -44,10 +43,10 @@ public class WGPurge {
 		this.plugin = plugin;
 	}
 	
-	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap) 
+	{
 
-		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer()
-				.getPluginManager().getPlugin("WorldGuard");
+		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 		
 		plugin.debug("WG purge started");
 		
@@ -91,8 +90,13 @@ public class WGPurge {
 						purgeRG(m,w,rg,regenrg,noregenoverlap);
 					} else
 					{
-						//add region to batch delete
-						deleteRGbatch(m,rg);
+						//add region to delete batch
+						rgtodel.add(rg.getId());
+						//delete regions if maximum batch size reached
+						if (rgtodel.size() == 40)
+						{
+							flushBatch(m);
+						}
 					}
 					deletedrg += 1;
 				}
@@ -141,17 +145,7 @@ public class WGPurge {
 		}
 	}
 	
-	private List<String> rgtodel = new ArrayList<String>(40);
-	private void deleteRGbatch(final RegionManager m, final ProtectedRegion rg)
-	{
-		//delete regions if maximum batch size reached
-		if (rgtodel.size() == 40)
-		{
-			flushBatch(m);
-		}
-		//add region to delete batch
-		rgtodel.add(rg.getId());
-	}
+	private ArrayList<String> rgtodel = new ArrayList<String>(70);
 	private void flushBatch(final RegionManager m)
 	{
 		//detete regions
@@ -164,9 +158,7 @@ public class WGPurge {
 					plugin.debug("Deleting region " + regionid);
 					m.removeRegion(regionid);
 				}
-				try {
-					m.save();
-				} catch (Exception e) {}
+				try {m.save();} catch (Exception e) {}
 				rgtodel.clear();
 			}
 		};
