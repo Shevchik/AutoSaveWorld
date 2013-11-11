@@ -17,25 +17,20 @@
 
 package autosaveworld.threads.backup.localfs;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class LocalFSBackup {
-	
-    private FileConfiguration configbackup;
 
-
-    
     private AutoSaveWorld plugin;
     private AutoSaveConfig config;
     public LocalFSBackup(AutoSaveWorld plugin, AutoSaveConfig config)
@@ -43,98 +38,47 @@ public class LocalFSBackup {
     	this.plugin = plugin;
     	this.config = config;
     }
-    
-	
-	private int numberofbackupsw = 0;
-	private List<Long> backupnamesw;
-	private int numberofbackupspl = 0;
-	private List<Long> backupnamespl;
-	private void loadConfigBackupExt(String extpath){
-		configbackup = YamlConfiguration.loadConfiguration(new File(extpath+File.separator+"backups"+File.separator+"backups.yml"));
-		numberofbackupsw = configbackup.getInt("worlds.numberofbackups", 0);
-		backupnamesw = configbackup.getLongList("worlds.listnames");
-		numberofbackupspl = configbackup.getInt("plugins.numberofbackups", 0);
-		backupnamespl = configbackup.getLongList("plugins.listnames");
-	}
-	
-	
-	private void saveConfigBackupExt(String extpath){
-		configbackup = new YamlConfiguration();
-		configbackup.set("worlds.numberofbackups", numberofbackupsw);
-		configbackup.set("worlds.listnames", backupnamesw);
-		configbackup.set("plugins.numberofbackups", numberofbackupspl);
-		configbackup.set("plugins.listnames", backupnamespl);
-		try {
-			configbackup.save(new File(extpath+File.separator+"backups"+File.separator+"backups.yml"));
-		} catch (IOException e) {
-		}
-	}
-	
-	
+
 	public void performBackup() {
 
 		//backup	
 		for (String extpath : config.lfsextfolders)
 		{
-			//create timestamp
-			long timestamp = System.currentTimeMillis();
-			
-			//load backup operations class
-			LFSBackupOperations bo = new LFSBackupOperations(plugin, config.lfsbackupzip, extpath, config.lfsbackupexcludefolders, timestamp);
-			
-			//load info about backups stored in file backups.yml
-			loadConfigBackupExt(extpath);
+			//init backup operations class
+			LFSBackupOperations bo = new LFSBackupOperations(plugin, config.lfsbackupzip, extpath, config.lfsbackupexcludefolders);
 
-			//start worlds backup
-			
-			//delete oldest worlds backup if needed
-			if (!(config.lfsMaxNumberOfWorldsBackups == 0) && (numberofbackupsw >= config.lfsMaxNumberOfWorldsBackups)) 
+			//create executor
+			int maxthreads = Runtime.getRuntime().availableProcessors() - 1;
+			if (maxthreads == 0) {maxthreads = 1;}
+			ExecutorService backupService = new ThreadPoolExecutor(maxthreads, maxthreads, 1, TimeUnit.MILLISECONDS,
+			    new ArrayBlockingQueue<Runnable>(maxthreads, true),
+			    new ThreadPoolExecutor.CallerRunsPolicy()
+			);
+
+			//create timestamp
+			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
+		
+			//start world backup
+			for (World world : Bukkit.getWorlds())
 			{
-				plugin.debug("Deleting oldest worlds backup");
-				bo.deleteOldestWorldBackup(new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(backupnamesw.get(0)));
-				backupnamesw.remove(0);
-				numberofbackupsw--;
-			}
-			
-			//do worlds backup
-			plugin.debug("Backuping Worlds");
-			//create list of worlds that we need to backup
-			List<String> worldstobackup = new ArrayList<String>();
-			if ((config.lfsbackupWorldsList).contains("*")) {
-				for (World w : Bukkit.getWorlds()) {
-					worldstobackup.add(w.getWorldFolder().getName());
+				//check if we need to backup this world
+				if ((config.lfsbackupWorldsList).contains("*") || config.lfsbackupWorldsList.contains(world.getName()))
+				{
+					//backup world
+					bo.startWorldBackup(backupService, world, config.lfsMaxNumberOfWorldsBackups, backuptimestamp);
 				}
-			} else {
-				worldstobackup = config.lfsbackupWorldsList;
 			}
-			bo.backupWorlds(worldstobackup);
-			plugin.debug("Backuped Worlds");
-			backupnamesw.add(timestamp);
-			numberofbackupsw++;
 			
-			
-			//now do plugins backup
+			//start plugins backup
 			if (config.lfsbackuppluginsfolder) {
-				
-				//remove oldest plugins backup
-				if (!(config.lfsMaxNumberOfPluginsBackups == 0) && (numberofbackupspl >= config.lfsMaxNumberOfPluginsBackups)) {
-					plugin.debug("Deleting oldest plugins backup");
-					bo.deleteOldestPluginsBackup(new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(backupnamespl.get(0)));
-					backupnamespl.remove(0);
-					numberofbackupspl--;
-				}	
-				
-				//do plugins backup
-				plugin.debug("Backuping plugins");
-				bo.backupPlugins();
-				plugin.debug("Backuped plugins");
-				backupnamespl.add(timestamp);
-				numberofbackupspl++;
-				
+				bo.startPluginsBackup(backupService, config.lfsMaxNumberOfPluginsBackups, backuptimestamp );
 			}
-			
-			//save info about backups
-			saveConfigBackupExt(extpath);
+
+			//wait for executor to finish (let's hope that the backup will finish in max 2 days)
+			backupService.shutdown();
+			try {
+				backupService.awaitTermination(48, TimeUnit.HOURS);
+			} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 	

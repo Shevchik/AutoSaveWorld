@@ -20,6 +20,7 @@ package autosaveworld.threads.backup.localfs;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import autosaveworld.threads.backup.ExcludeManager;
@@ -67,6 +68,43 @@ public class LFSFileUtils {
 	    {
 	    	file.delete();
 	    }
+	}
+	
+	
+	public String findOldestBackupName(String backupsfodler)
+	{
+		String[] timestamps = new File(backupsfodler).list();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		String oldestBackupName = timestamps[0];
+		long old = System.currentTimeMillis();
+		try {
+			if (oldestBackupName.endsWith(".zip"))
+			{
+				old = sdf.parse(oldestBackupName.substring(0, oldestBackupName.indexOf(".zip"))).getTime();
+			} else
+			{
+				old = sdf.parse(oldestBackupName).getTime();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for (String timestampString : timestamps)
+		{
+			try {
+				if (timestampString.endsWith(".zip"))
+				{
+					long cur = sdf.parse(timestampString.substring(0,timestampString.indexOf(".zip"))).getTime();
+					if (cur < old)
+					{
+						old = cur;
+						oldestBackupName = timestampString;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return oldestBackupName;
 	}
 	
 	

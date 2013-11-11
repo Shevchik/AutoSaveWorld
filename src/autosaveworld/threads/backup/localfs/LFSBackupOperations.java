@@ -19,14 +19,9 @@ package autosaveworld.threads.backup.localfs;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
@@ -38,97 +33,108 @@ public class LFSBackupOperations {
 	final boolean zip;
 	final String extpath;
 	final List<String> excludefolders;
-    private String datebackup;
-    private LFSFileUtils fu;
-	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders, long timestamp)
+	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders)
 	{
 		this.plugin = plugin;
 		this.zip = zip;
 		this.extpath = extpath;
 		this.excludefolders = excludefolders;
-		fu = new LFSFileUtils();
-		datebackup = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(timestamp);
 	}
 	
-	//worlds backup operations
-	
-	public void backupWorlds(List<String> worldNames)
-	{
-		//create executor
-		int maxthreads = Runtime.getRuntime().availableProcessors() - 1;
-		if (maxthreads == 0) {maxthreads = 1;}
-		ExecutorService worldsbackupService = new ThreadPoolExecutor(maxthreads, maxthreads, 1, TimeUnit.MILLISECONDS,
-		    new ArrayBlockingQueue<Runnable>(maxthreads, true),
-		    new ThreadPoolExecutor.CallerRunsPolicy()
-		);
-		
-		//now get list of worlds
-		List<World> worlds = Bukkit.getWorlds();
-		for (final World world : worlds) {
-			if (worldNames.contains(world.getWorldFolder().getName())) {
-				//create runnable for ThreadPoolExecutor
-				Runnable worldb = new Runnable()
-				{
-						public void run()
-						{
-							plugin.debug("Backuping world "+world.getWorldFolder().getName());
+    private LFSFileUtils fu = new LFSFileUtils();
 
-							world.setAutoSave(false);
-							try {
-								File worldfolder = world.getWorldFolder().getCanonicalFile();
-								String pathtoworldsb = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName()+File.separator+datebackup;
-								if (!zip) {
-									fu.copyDirectory((worldfolder), new File(pathtoworldsb),excludefolders);
-								} else { 
-									Zip zipfld = new Zip(excludefolders);
-									zipfld.ZipFolder((worldfolder), new File(pathtoworldsb+".zip"));
-								}
-							} catch (Exception e) {
-								plugin.debug("Failed to backup world "+world.getWorldFolder().getName());
-								e.printStackTrace();
-							} finally {
-								world.setAutoSave(true); 
-							}
-							plugin.debug("Backuped world "+world.getWorldFolder().getName());
-						}
-				};
-				//Add task to executor
-				worldsbackupService.submit(worldb);
+	public void startWorldBackup(ExecutorService backupService, final World world, final int maxBackupsCount, final String latestbackuptimestamp)
+	{
+		//create runnable
+		Runnable backupWorld = new Runnable() 
+		{
+			public void run()
+			{
+				plugin.debug("Starting backup for world "+world.getWorldFolder().getName());
+				final String worldbackupfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
+				//check oldest backup count
+				if (maxBackupsCount != 0 && new File(worldbackupfolder).exists() && new File(worldbackupfolder).list().length >= maxBackupsCount)
+				{
+					//remove oldest backup
+					plugin.debug("Deleting oldest backup for world "+world.getWorldFolder().getName());
+					//find oldest backup
+					String oldestBackupName = fu.findOldestBackupName(worldbackupfolder);
+					//delete oldest backup
+					File oldestBakup = new File(worldbackupfolder + File.separator + oldestBackupName);
+					if (oldestBackupName.contains(".zip")) {
+						oldestBakup.delete();
+					} else {
+						fu.deleteDirectory(oldestBakup); 
+					}
+				}
+				plugin.debug("Backuping world "+world.getWorldFolder().getName());
+				try {
+					world.setAutoSave(false);
+					File worldfolder = world.getWorldFolder().getCanonicalFile();
+					String worldBackup = worldbackupfolder+File.separator+latestbackuptimestamp;
+					if (!zip) {
+						fu.copyDirectory(worldfolder, new File(worldBackup),excludefolders);
+					} else { 
+						Zip zipfld = new Zip(excludefolders);
+						zipfld.ZipFolder(worldfolder, new File(worldBackup+".zip"));
+					}
+					plugin.debug("Backuped world "+world.getWorldFolder().getName());
+				} catch (Exception e) {
+					plugin.debug("Failed to backup world "+world.getWorldFolder().getName());
+					e.printStackTrace();
+				} finally {
+					world.setAutoSave(true); 
+				}
 			}
-		}
-		//wait for executor to finish (let's hope that the backup will finish in max 2 days)
-		worldsbackupService.shutdown();
-		try {
-			worldsbackupService.awaitTermination(48, TimeUnit.HOURS);
-		} catch (InterruptedException e) {e.printStackTrace();}
+		};
+		//add to executor
+		backupService.submit(backupWorld);
 	}
 	
-	public void deleteOldestWorldBackup(String oldestbackupdate)
+
+	public void startPluginsBackup(ExecutorService backupService,  final int maxBackupsCount, final String latestbackuptimestamp) 
 	{
-			String pathtoworldsfld = extpath+File.separator+"backups"+File.separator+"worlds";
-			//delete worlds oldest backup
-			for (String deldir : new File(pathtoworldsfld).list())
+		//create runnable
+		Runnable backupPlugins = new Runnable() 
+		{
+			public void run()
 			{
-				String dirtodelete = pathtoworldsfld+File.separator+deldir+File.separator+oldestbackupdate;
-				fu.deleteDirectory(new File(dirtodelete)); 
-				fu.deleteDirectory(new File(dirtodelete+".zip"));
+				plugin.debug("Starting plugins backup");
+				final String pluginsbackupfolder = extpath+File.separator+"backups"+File.separator+"plugins";
+				//check oldest backup count
+				if (maxBackupsCount != 0 && new File(pluginsbackupfolder).exists() && new File(pluginsbackupfolder).list().length >= maxBackupsCount)
+				{
+					//remove oldest backup
+					plugin.debug("Deleting oldest plugins backup");
+					//find oldest backup
+					String oldestBackupName = fu.findOldestBackupName(pluginsbackupfolder);
+					//delete oldest backup
+					File oldestBakup = new File(pluginsbackupfolder + File.separator + oldestBackupName);
+					if (oldestBackupName.contains(".zip")) {
+						oldestBakup.delete();
+					} else {
+						fu.deleteDirectory(oldestBakup); 
+					}
+				}
+				plugin.debug("Backuping plugins");
+				try {
+					File pluginsfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
+					String pluginsBackup = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+latestbackuptimestamp;
+					if (!zip) {
+						fu.copyDirectory(pluginsfolder,new File(pluginsBackup),excludefolders);
+					} else  {
+						Zip zipfld = new Zip(excludefolders);
+						zipfld.ZipFolder(pluginsfolder,new File(pluginsBackup+".zip"));
+					}
+					plugin.debug("Backuped plugins");
+				} catch (IOException e) {
+					plugin.debug("Failed to backup plugins");					
+					e.printStackTrace();
+				}
 			}
-	}	
-	
-	
-	//plugins backup operations
-	
-	public void backupPlugins() 
-	{
-		try {
-			String foldercopyto = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+datebackup;
-			if (!zip) {
-				fu.copyDirectory(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto),excludefolders);
-			} else  {
-				Zip zipfld = new Zip(excludefolders);
-				zipfld.ZipFolder(new File((new File(".").getCanonicalPath())+File.separator+"plugins"),new File(foldercopyto+".zip"));
-			}
-		} catch (IOException e) {e.printStackTrace();}
+		};
+		//add to executor
+		backupService.submit(backupPlugins);
 	}
 	
 	public void deleteOldestPluginsBackup(String oldestbackupdate)
