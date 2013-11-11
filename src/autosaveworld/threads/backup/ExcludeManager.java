@@ -25,44 +25,51 @@ import org.bukkit.World;
 
 public class ExcludeManager {
 
-	
-	public static boolean isFolderExcluded(List<String> excludelist, String folder)
+	public static boolean isFolderExcluded(List<String> excludelist, String folderPath)
 	{
+		File folder = new File(folderPath);
+		
+		if (!folder.isDirectory()) 
+		{
+			return false;
+		}
+		
 		//ignore configured folders
-		for (String ef : excludelist) {
-			if (ef.contains("*") && ef.indexOf("*") == ef.length()-1) {
+		for (String excludedFolderPath : excludelist) 
+		{
+			if (excludedFolderPath.contains("*")) 
+			{
 				//resolve wildcard
 				//check parents folders equality
-				if (new File(folder).getAbsoluteFile().getParentFile().equals(new File(ef).getAbsoluteFile().getParentFile()))
+				if (folder.getAbsoluteFile().getParentFile().equals(new File(excludedFolderPath).getAbsoluteFile().getParentFile()))
 				{
 					//check name equality
-					String efname = new File(ef).getName();
-					if (new File(folder).getName().contains(efname.substring(0,efname.indexOf("*"))))
+					String excludeFolderName = new File(excludedFolderPath).getName();
+					if (folder.getName().contains(excludeFolderName.substring(0,excludeFolderName.indexOf("*"))))
 					{
 						return true;
 					}
 				}
-			} else {
+			} else 
+			{
 				//plain folders equality check
-				if (new File(folder).getAbsoluteFile().equals(new File(ef).getAbsoluteFile())) {
+				if (folder.getAbsoluteFile().equals(new File(excludedFolderPath).getAbsoluteFile())) 
+				{
 					return true;
 				}
 			}
 		}
-		
-		
+	
 		//ignore others worlds folders (for mcpc+)
-    	for (World w : Bukkit.getWorlds()) {
-    		if (new File(folder).isDirectory() && new File(folder).getName().equals(w.getWorldFolder().getName())) {
+    	for (World w : Bukkit.getWorlds()) 
+    	{
+    		if (folder.getName().equals(w.getWorldFolder().getName())) 
+    		{
     			return true;
     		}
     	}
-    	
+
     	return false;
-    	
 	}
-	
-	
-	
 	
 }
