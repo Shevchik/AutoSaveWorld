@@ -18,6 +18,7 @@
 package autosaveworld.threads.backup.ftp;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -48,8 +49,7 @@ public class FTPFileUtils {
 	    	if (!src.getName().endsWith(".lck"))
 	    	{
 	    		try {
-	    			InputStream is = null;
-	    			is = src.toURI().toURL().openStream();
+	    			InputStream is = new FileInputStream(src);
 	    			ftp.storeFile(src.getName(), is);
 	    			is.close();
 	    		} catch (Exception e) {}
