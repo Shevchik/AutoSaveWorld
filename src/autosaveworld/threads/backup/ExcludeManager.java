@@ -29,11 +29,6 @@ public class ExcludeManager {
 	{
 		File folder = new File(folderPath);
 		
-		if (!folder.isDirectory()) 
-		{
-			return false;
-		}
-		
 		//ignore configured folders
 		for (String excludedFolderPath : excludelist) 
 		{
