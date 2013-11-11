@@ -27,7 +27,7 @@ import autosaveworld.threads.backup.ExcludeManager;
 
 public class LFSFileUtils {
 
-	public void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders) throws IOException 
+	public void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders) 
 	{
 		if (sourceLocation.isDirectory()) 
 		{
@@ -46,8 +46,12 @@ public class LFSFileUtils {
 		{
 			//ignore lock files
 			if (!sourceLocation.getName().endsWith(".lck"))
-			{
-				Files.copy(sourceLocation.toPath(), targetLocation.toPath());
+			{	
+				try {
+					Files.copy(sourceLocation.toPath(), targetLocation.toPath());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				Thread.yield();
 			}
 		}
