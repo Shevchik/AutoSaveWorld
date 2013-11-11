@@ -55,14 +55,19 @@ public class ExcludeManager {
 			}
 		}
 	
-		//ignore others worlds folders (for mcpc+)
-    	for (World w : Bukkit.getWorlds()) 
-    	{
-    		if (folder.getName().equals(w.getWorldFolder().getName())) 
-    		{
-    			return true;
-    		}
-    	}
+		//ignore others worlds folders inside main world folder (for mcpc+)
+		//check if we trying to backup folder inside main world folder
+		if (Bukkit.getWorlds().get(0).getWorldFolder().getAbsoluteFile().equals(folder.getParentFile()))
+		{
+			//if this folder name is equal to one of the world names we should ignore it
+			for (World w : Bukkit.getWorlds()) 
+			{
+				if (folder.getName().equals(w.getWorldFolder().getName())) 
+				{
+					return true;
+				}
+			}
+		}
 
     	return false;
 	}
