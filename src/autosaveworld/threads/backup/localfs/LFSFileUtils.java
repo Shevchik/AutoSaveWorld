@@ -34,10 +34,10 @@ public class LFSFileUtils {
 			{
 				targetLocation.mkdirs();
 			}
-			String[] filenames = sourceLocation.list();
-			for (String filename : filenames) 
+			for (String filename : sourceLocation.list()) 
 			{
-				if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) {
+				if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) 
+				{
 					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders); 
 				}
 			}
