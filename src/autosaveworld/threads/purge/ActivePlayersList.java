@@ -17,7 +17,6 @@
 
 package autosaveworld.threads.purge;
 
-import java.io.File;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
@@ -31,31 +30,15 @@ public class ActivePlayersList {
 
 	public void gatherActivePlayersList(long awaytime)
 	{
-		//due to some strange bug getOfflinePlayers don't get all the players from their .dat files, some are missing
-		HashSet<String> foundplayers = new HashSet<String>();
 		//fill lists
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			plactivecs.add(player.getName());
 			plactivencs.add(player.getName().toLowerCase());
-			foundplayers.add(player.getName());
 		}
 		for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 			if (System.currentTimeMillis() - player.getLastPlayed() < awaytime) {
 				plactivecs.add(player.getName());
 				plactivencs.add(player.getName().toLowerCase());
-				foundplayers.add(player.getName());
-			}
-		}
-		//add players that wasn't in getOfflinePlayers array but has their dat files
-		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
-		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-		for (String playerfile : playersdatfolder.list()) 
-		{
-			String playername = playerfile.substring(0, playerfile.indexOf("."));
-			if (!foundplayers.contains(playername))
-			{
-				plactivecs.add(playername);
-				plactivencs.add(playername.toLowerCase());
 			}
 		}
 	}
