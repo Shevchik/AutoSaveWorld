@@ -168,10 +168,10 @@ public class AutoPurgeThread extends Thread {
 					plugin.debug("Vault found, purging economy");
 					vp.doEconomyPurgeTask(aplist);
 				}
-				if (config.purgeperms) {
+				/*if (config.purgeperms) {
 					plugin.debug("Vault found, purging permissions");
 					vp.doPermissionsPurgeTask(aplist);
-				}
+				}*/
 			}
 			
 			
