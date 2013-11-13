@@ -20,15 +20,18 @@ package autosaveworld.pluginmanager;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URLClassLoader;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
@@ -39,7 +42,7 @@ import org.bukkit.plugin.java.PluginClassLoader;
 public class InternalUtils {
 
 	@SuppressWarnings("unchecked")
-	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException
+	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, NoSuchMethodException, InvocationTargetException
 	{
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
@@ -50,30 +53,26 @@ public class InternalUtils {
 		pluginsField.setAccessible(true);
 		List<Plugin> plugins = (List<Plugin>) pluginsField.get(pluginmanager);
 		plugins.remove(plugin);
-		//remove from lookupnames
+		//remove from lookupnames field
 		Field lookupNamesField = managerclass.getDeclaredField("lookupNames");
 		lookupNamesField.setAccessible(true);
 		Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
 		lookupNames.remove(plugin.getName());
-		//remove from command fields
+		//remove from commands field
 		Field commandMapField = managerclass.getDeclaredField("commandMap");
 		commandMapField.setAccessible(true);
 		CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
-		Field knownCommandsField = null;
-		Map<String, Command> knownCommands = null;
-		knownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
-		knownCommandsField.setAccessible(true);
-		knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
-		for (String plugincommandName : new HashSet<String>(knownCommands.keySet()))
+		Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
+		getCommandsMethod.setAccessible(true);
+		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
+		Set<String> plugincommandsnames = plugin.getDescription().getCommands().keySet();
+		Iterator<Command> commandsit = commands.iterator();
+		while (commandsit.hasNext())
 		{
-			if (knownCommands.get(plugincommandName) instanceof PluginCommand)
+			String commandname = commandsit.next().getName();
+			if (plugincommandsnames.contains(commandname))
 			{
-				PluginCommand plugincommand = (PluginCommand) knownCommands.get(plugincommandName);
-				if (plugincommand.getPlugin().getName().equals(plugin.getName()))
-				{
-					plugincommand.unregister(commandMap);
-					knownCommands.remove(plugincommandName);
-				}
+				commandsit.remove();
 			}
 		}
 		//close file in url classloader
