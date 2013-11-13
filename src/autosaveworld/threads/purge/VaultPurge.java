@@ -63,7 +63,7 @@ public class VaultPurge {
 		//flush the rest of the batch
 		flushPermsBatch(permission);
 
-		plugin.debug("Player permissions purge finished, deleted "+deleted+" player permissions");
+		plugin.debug("Player permissions purge finished, deleted "+deleted+" players permissions");
 	}
 	private void flushPermsBatch(final Permission permission)
 	{
@@ -117,7 +117,7 @@ public class VaultPurge {
 		//flush the rest of the batch
 		flushEconomyBatch(economy);
 
-		plugin.debug("Player economy purge finished, deleted "+deleted+" player economy account");
+		plugin.debug("Player economy purge finished, deleted "+deleted+" players economy accounts");
 	}
 	private void flushEconomyBatch(final Economy economy)
 	{
