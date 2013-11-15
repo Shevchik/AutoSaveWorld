@@ -130,9 +130,12 @@ public class AutoSaveWorld extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		debug("Saving");
-		// Perform a Save NOW!
-		performSaveForce();
+		if (config.saveOnASWDisable)
+		{
+			// Perform a Save NOW!
+			debug("Saving");
+			performSaveForce();
+		}
 		// Save config
 		debug("Saving config");
 		config.save();
