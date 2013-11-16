@@ -35,6 +35,7 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.PluginClassLoader;
@@ -59,20 +60,26 @@ public class InternalUtils {
 		Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
 		lookupNames.remove(plugin.getName());
 		//remove from commands field
-		Field commandMapField = managerclass.getDeclaredField("commandMap");
-		commandMapField.setAccessible(true);
-		CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
-		Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
-		getCommandsMethod.setAccessible(true);
-		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
-		Set<String> plugincommandsnames = plugin.getDescription().getCommands().keySet();
-		Iterator<Command> commandsit = commands.iterator();
-		while (commandsit.hasNext())
+		PluginDescriptionFile plugindesc = plugin.getDescription();
+		if (plugindesc.getCommands() != null)
 		{
-			String commandname = commandsit.next().getName();
-			if (plugincommandsnames.contains(commandname))
+			Field commandMapField = managerclass.getDeclaredField("commandMap");
+			commandMapField.setAccessible(true);
+			CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
+			Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
+			getCommandsMethod.setAccessible(true);
+			Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
+			Set<String> plugincommandsnames = plugin.getDescription().getCommands().keySet();
+			Iterator<Command> commandsit = commands.iterator();
+			while (commandsit.hasNext())
 			{
-				commandsit.remove();
+				Command cmd = commandsit.next();
+				String commandname = cmd.getName();
+				if (plugincommandsnames.contains(commandname))
+				{
+					cmd.unregister(commandMap);
+					commandsit.remove();
+				}
 			}
 		}
 		//close file in url classloader
