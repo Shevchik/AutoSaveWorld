@@ -168,7 +168,7 @@ public class ASWPluginManager {
 				}
 			} catch (Exception e) {}
 		}
-		return new File(plugin.getDataFolder().getParent()+File.separator+pluginname+".jar");
+		return new File(plugin.getDataFolder().getParent(), pluginname+".jar");
 	}
 	
 	private boolean isPluginAlreadyLoaded(String pluginname)
