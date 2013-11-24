@@ -36,9 +36,9 @@ public class VaultPurge {
 		this.plugin = plugin;
 	}
 	
-	private ArrayList<String> playerstopurge = new ArrayList<String>(70);
 
 
+	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
 	public void doPermissionsPurgeTask(ActivePlayersList pacheck)
 	{
 		Permission permission = Bukkit.getServicesManager().getRegistration(Permission.class).getProvider();
@@ -51,9 +51,9 @@ public class VaultPurge {
 			if (!pacheck.isActiveCS(playername)) 
 			{
 				//add player to delete batch
-				playerstopurge.add(playername);
+				playerstopurgeperms.add(playername);
 				//delete permissions if maximum batch size reached
-				if (playerstopurge.size() == 40)
+				if (playerstopurgeperms.size() == 40)
 				{
 					flushPermsBatch(permission);
 				}
@@ -72,7 +72,7 @@ public class VaultPurge {
 		{
 			public void run()
 			{
-				for (String playername : playerstopurge)
+				for (String playername : playerstopurgeperms)
 				{
 					plugin.debug(playername + " is inactive. Removing permissions");
 					//remove all player groups
@@ -81,7 +81,7 @@ public class VaultPurge {
 						permission.playerRemoveGroup((World) null, playername, group);
 					}
 				}
-				playerstopurge.clear();
+				playerstopurgeperms.clear();
 			}
 		};
 		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteperms);
@@ -93,6 +93,7 @@ public class VaultPurge {
 		}
 	}
 
+	private ArrayList<String> playerstopurgeecon = new ArrayList<String>(70);
 	public void doEconomyPurgeTask(ActivePlayersList pacheck)
 	{
 		Economy economy = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
@@ -105,9 +106,9 @@ public class VaultPurge {
 			if (!pacheck.isActiveCS(playername)) 
 			{
 				//add player to delete batch
-				playerstopurge.add(playername);
+				playerstopurgeecon.add(playername);
 				//delete economy if maximum batch size reached
-				if (playerstopurge.size() == 40)
+				if (playerstopurgeecon.size() == 40)
 				{
 					flushEconomyBatch(economy);
 				}
@@ -126,13 +127,13 @@ public class VaultPurge {
 		{
 			public void run()
 			{
-				for (String playername : playerstopurge)
+				for (String playername : playerstopurgeecon)
 				{
 					plugin.debug(playername + " is inactive. Removing economy account");
 					//remove all player groups
 					economy.withdrawPlayer(playername, economy.getBalance(playername));
 				}
-				playerstopurge.clear();
+				playerstopurgeecon.clear();
 			}
 		};
 		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteeconomy);
