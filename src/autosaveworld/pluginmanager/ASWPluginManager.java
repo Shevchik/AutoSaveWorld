@@ -149,25 +149,28 @@ public class ASWPluginManager {
 	private File findPluginFile(String pluginname)
 	{
 		File pmpluginfile = new File(plugin.getDataFolder().getParent()+File.separator+pluginname+".jar");
-		try {
 			File pluginsfolder = plugin.getDataFolder().getParentFile();
 			for (File pluginfile : pluginsfolder.listFiles())
 			{
-				final JarFile jarFile = new JarFile(pluginfile);
-				JarEntry je = jarFile.getJarEntry("plugin.yml");
-				if (je != null)
-				{
-					FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
-					String jarpluginName = plugininfo.getString("name");
-					if (pluginname.equalsIgnoreCase(jarpluginName))
+				try {
+					if (pluginfile.getName().endsWith(".jar"))
 					{
+						final JarFile jarFile = new JarFile(pluginfile);
+						JarEntry je = jarFile.getJarEntry("plugin.yml");
+						if (je != null)
+						{
+							FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
+							String jarpluginName = plugininfo.getString("name");
+							if (pluginname.equalsIgnoreCase(jarpluginName))
+							{
+								jarFile.close();
+								return pluginfile;
+							}
+						}
 						jarFile.close();
-						return pluginfile;
 					}
-				}
-				jarFile.close();
+				} catch (Exception e) {}
 			}
-		} catch (Exception e) {}
 		return pmpluginfile;
 	}
 	
