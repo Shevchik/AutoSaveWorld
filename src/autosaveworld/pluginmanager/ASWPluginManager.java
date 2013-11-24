@@ -135,7 +135,6 @@ public class ASWPluginManager {
 	
 	private Plugin findPlugin(String pluginname)
 	{
-		Plugin pmplugin = Bukkit.getPluginManager().getPlugin(pluginname);
 		for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
 		{
 			if (plugin.getName().equalsIgnoreCase(pluginname))
@@ -143,35 +142,33 @@ public class ASWPluginManager {
 				return plugin;
 			}
 		}
-		return pmplugin;
+		return Bukkit.getPluginManager().getPlugin(pluginname);
 	}
 	
 	private File findPluginFile(String pluginname)
 	{
-		File pmpluginfile = new File(plugin.getDataFolder().getParent()+File.separator+pluginname+".jar");
-			File pluginsfolder = plugin.getDataFolder().getParentFile();
-			for (File pluginfile : pluginsfolder.listFiles())
-			{
-				try {
-					if (pluginfile.getName().endsWith(".jar"))
+		for (File pluginfile : plugin.getDataFolder().getParentFile().listFiles())
+		{
+			try {
+				if (pluginfile.getName().endsWith(".jar"))
+				{
+					final JarFile jarFile = new JarFile(pluginfile);
+					JarEntry je = jarFile.getJarEntry("plugin.yml");
+					if (je != null)
 					{
-						final JarFile jarFile = new JarFile(pluginfile);
-						JarEntry je = jarFile.getJarEntry("plugin.yml");
-						if (je != null)
+						FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
+						String jarpluginName = plugininfo.getString("name");
+						if (pluginname.equalsIgnoreCase(jarpluginName))
 						{
-							FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
-							String jarpluginName = plugininfo.getString("name");
-							if (pluginname.equalsIgnoreCase(jarpluginName))
-							{
-								jarFile.close();
-								return pluginfile;
-							}
+							jarFile.close();
+							return pluginfile;
 						}
-						jarFile.close();
 					}
-				} catch (Exception e) {}
-			}
-		return pmpluginfile;
+					jarFile.close();
+				}
+			} catch (Exception e) {}
+		}
+		return new File(plugin.getDataFolder().getParent()+File.separator+pluginname+".jar");
 	}
 	
 	private boolean isPluginAlreadyLoaded(String pluginname)
