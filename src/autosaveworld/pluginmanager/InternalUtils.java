@@ -91,6 +91,7 @@ public class InternalUtils {
 		}
 		//force gc
 		System.gc();
+		System.gc();
 	}
 	
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException
