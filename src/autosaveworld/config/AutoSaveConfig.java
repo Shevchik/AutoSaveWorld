@@ -37,9 +37,9 @@ public class AutoSaveConfig {
 
 	
 	
-	// Variables
-	//debug
+	// some global variables
 	public boolean varDebug = false;
+	public boolean commandonlyfromconsole = false;
 	//save
 	public int saveInterval = 900;
 	public boolean saveBroadcast = true;
@@ -123,6 +123,7 @@ public class AutoSaveConfig {
 		
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
+		commandonlyfromconsole = config.getBoolean("var.commandsonlyfromconsole",commandonlyfromconsole);
 		
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
@@ -256,6 +257,7 @@ public class AutoSaveConfig {
 				
 		// Variables
 		config.set("var.debug", varDebug);
+		config.set("var.commandsonlyfromconsole",commandonlyfromconsole);
 		
 		//save variables
 		config.set("save.enabled",saveEnabled);

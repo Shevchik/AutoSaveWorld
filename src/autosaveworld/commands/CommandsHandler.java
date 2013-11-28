@@ -54,7 +54,7 @@ public class CommandsHandler implements CommandExecutor {
 		String commandName = command.getName().toLowerCase();
 
 		//check permissions
-		if (!permCheck.isAllowed(sender, commandName, args)) {
+		if (!permCheck.isAllowed(sender, commandName, args, config.commandonlyfromconsole)) {
 			plugin.sendMessage(sender, configmsg.messageInsufficientPermissions);
 			return true;
 		}

@@ -24,11 +24,9 @@ import org.bukkit.entity.Player;
 
 public class PermissionCheck {
 
-	public boolean isAllowed(CommandSender sender,final String commandName, String[] args)
-	{
-		boolean allowed = false;
-		
-		if ((sender instanceof Player)) {
+	public boolean isAllowed(CommandSender sender,final String commandName, String[] args, boolean onlyfromconsole)
+	{	
+		if ((sender instanceof Player) && !onlyfromconsole) {
 			Player player = (Player) sender;
 			// construct permissions name
 			String perm = null;
@@ -47,14 +45,14 @@ public class PermissionCheck {
 			}
 			// Check Permissions
 			if (player.isOp() || player.hasPermission(perm)) {
-				allowed = true;
+				return true;
 			}
 		} else if (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
 			// Success, this was from the Console or Remote Console
-			allowed = true;
+			return true;
 		}
-		
-		return allowed;
+
+		return false;
 	}
 	
 }
