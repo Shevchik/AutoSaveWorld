@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.purge;
 
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveConfig;
@@ -108,7 +109,16 @@ public class AutoPurgeThread extends Thread {
 			
 			plugin.debug("Gathering active players list");
 			ActivePlayersList aplist = new ActivePlayersList();
-			aplist.gatherActivePlayersList(awaytime);
+			try {
+				aplist.gatherActivePlayersList(awaytime);
+				plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
+			} catch (Exception e) {
+				e.printStackTrace();
+				plugin.debug("Failed to gather active players list, autopurge cancelled");
+				plugin.broadcast(ChatColor.RED+"Failed to gather active players list, autopurge cancelled", config.purgeBroadcast);
+				plugin.purgeInProgress = false;
+				return;
+			}
 			
 			PluginManager pm = plugin.getServer().getPluginManager();
 			
