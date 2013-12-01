@@ -25,7 +25,6 @@ import java.util.HashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
-import org.bukkit.entity.Player;
 
 public class ActivePlayersList {
 
