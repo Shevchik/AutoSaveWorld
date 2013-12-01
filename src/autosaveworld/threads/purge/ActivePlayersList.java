@@ -35,11 +35,6 @@ public class ActivePlayersList {
 	public void gatherActivePlayersList(long awaytime) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
 		//fill lists
-		for (Player player : Bukkit.getOnlinePlayers()) 
-		{
-			plactivecs.add(player.getName());
-			plactivencs.add(player.getName().toLowerCase());
-		}
 		//due to bukkit fucks up itself when we have two player files with different case (test.dat and Test.dat), i had to write this...
 		Server server = Bukkit.getServer();
 		Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
