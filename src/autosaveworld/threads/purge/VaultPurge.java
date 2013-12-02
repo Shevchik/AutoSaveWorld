@@ -19,7 +19,6 @@ package autosaveworld.threads.purge;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -47,17 +46,20 @@ public class VaultPurge {
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
 		for (String playerfile : playersdatfolder.list()) 
 		{
-			String playername = playerfile.substring(0, playerfile.indexOf("."));
-			if (!pacheck.isActiveCS(playername)) 
+			if (playerfile.endsWith(".dat"))
 			{
-				//add player to delete batch
-				playerstopurgeperms.add(playername);
-				//delete permissions if maximum batch size reached
-				if (playerstopurgeperms.size() == 40)
+				String playername = playerfile.substring(0, playerfile.length() - 4);
+				if (!pacheck.isActiveCS(playername)) 
 				{
-					flushPermsBatch(permission);
+					//add player to delete batch
+					playerstopurgeperms.add(playername);
+					//delete permissions if maximum batch size reached
+					if (playerstopurgeperms.size() == 40)
+					{
+						flushPermsBatch(permission);
+					}
+					deleted += 1;
 				}
-				deleted += 1;
 			}
 		}
 		//flush the rest of the batch
@@ -76,9 +78,13 @@ public class VaultPurge {
 				{
 					plugin.debug(playername + " is inactive. Removing permissions");
 					//remove all player groups
-					for (String group : new ArrayList<String>(Arrays.asList(permission.getPlayerGroups((World)null, playername))))
+					for (String group : permission.getGroups())
 					{
-						permission.playerRemoveGroup((World) null, playername, group);
+						permission.playerRemoveGroup((String)null, playername, group);
+						for (World world : Bukkit.getWorlds())
+						{
+							permission.playerRemoveGroup(world, playername, group);
+						}
 					}
 				}
 				playerstopurgeperms.clear();
@@ -102,17 +108,20 @@ public class VaultPurge {
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
 		for (String playerfile : playersdatfolder.list()) 
 		{
-			String playername = playerfile.substring(0, playerfile.indexOf("."));
-			if (!pacheck.isActiveCS(playername)) 
+			if (playerfile.endsWith(".dat"))
 			{
-				//add player to delete batch
-				playerstopurgeecon.add(playername);
-				//delete economy if maximum batch size reached
-				if (playerstopurgeecon.size() == 40)
+				String playername = playerfile.substring(0, playerfile.length() - 4);
+				if (!pacheck.isActiveCS(playername)) 
 				{
-					flushEconomyBatch(economy);
+					//add player to delete batch
+					playerstopurgeecon.add(playername);
+					//delete economy if maximum batch size reached
+					if (playerstopurgeecon.size() == 40)
+					{
+						flushEconomyBatch(economy);
+					}
+					deleted += 1;
 				}
-				deleted += 1;
 			}
 		}
 		//flush the rest of the batch
@@ -132,6 +141,7 @@ public class VaultPurge {
 					plugin.debug(playername + " is inactive. Removing economy account");
 					//remove all player groups
 					economy.withdrawPlayer(playername, economy.getBalance(playername));
+					economy.deleteBank(playername);
 				}
 				playerstopurgeecon.clear();
 			}

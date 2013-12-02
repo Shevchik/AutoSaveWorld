@@ -37,12 +37,15 @@ public class DatfilePurge {
 			File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
 			for (File playerfile : playersdatfolder.listFiles()) 
 			{
-				String playername = playerfile.getName().substring(0, playerfile.getName().indexOf("."));
-				if (!pacheck.isActiveCS(playername)) 
+				if (playerfile.getName().endsWith(".dat"))
 				{
-					plugin.debug(playername + " is inactive. Removing dat file");
-					playerfile.delete();
-					deleted += 1;
+					String playername = playerfile.getName().substring(0, playerfile.getName().length() - 4);
+					if (!pacheck.isActiveCS(playername)) 
+					{
+						plugin.debug(playername + " is inactive. Removing dat file");
+						playerfile.delete();
+						deleted += 1;
+					}
 				}
 			}
 		} catch (Exception e) {}
