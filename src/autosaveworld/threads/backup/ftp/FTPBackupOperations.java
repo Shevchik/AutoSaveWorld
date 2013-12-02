@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.bukkit.Bukkit;
+
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
@@ -49,35 +49,29 @@ public class FTPBackupOperations {
 	}
 	
 	private String localtempfolder;
-	public void backupWorlds(List<String> worldNames)
+	public void backupWorld(World world)
 	{
-		List<World> worlds = Bukkit.getWorlds();
-		for (final World world : worlds) {
-			if (worldNames.contains(world.getWorldFolder().getName())) {
-				plugin.debug("Backuping world "+world.getWorldFolder().getName());
-				
-				world.setAutoSave(false);
-				try {
-					File worldfolder = world.getWorldFolder().getCanonicalFile();
-					if (!zip) {
-						fu.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
-					} else {
-						File tempzip = new File(localtempfolder,worldfolder.getName()+".zip");
-						Zip zipfld = new Zip(excludefolders);
-						zipfld.ZipFolder(worldfolder, tempzip);
-						fu.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
-						tempzip.delete();
-						new File(localtempfolder).delete();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					world.setAutoSave(true);
-				}
-				
-				plugin.debug("Backuped world "+world.getWorldFolder().getName());
+		plugin.debug("Backuping world "+world.getWorldFolder().getName());
+		world.setAutoSave(false);
+		try {
+			File worldfolder = world.getWorldFolder().getCanonicalFile();
+			if (!zip) {
+				fu.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
+			} else {
+				File tempzip = new File(localtempfolder,worldfolder.getName()+".zip");
+				Zip zipfld = new Zip(excludefolders);
+				zipfld.ZipFolder(worldfolder, tempzip);
+				fu.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
+				tempzip.delete();
+				new File(localtempfolder).delete();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			world.setAutoSave(true);
 		}
+		
+		plugin.debug("Backuped world "+world.getWorldFolder().getName());
 	}
 	
 	

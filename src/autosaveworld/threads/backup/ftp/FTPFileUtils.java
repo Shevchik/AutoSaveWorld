@@ -36,8 +36,10 @@ public class FTPFileUtils {
     	{
            ftp.makeDirectory(src.getName());
            ftp.changeWorkingDirectory(src.getName());
-           for (File file : src.listFiles()) {
-        	   	if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
+           for (File file : src.listFiles()) 
+           {
+        	   	if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) 
+        	   	{
         	   		uploadDirectoryToFTP(ftp, file, excludefolders);
         	   	}
            }

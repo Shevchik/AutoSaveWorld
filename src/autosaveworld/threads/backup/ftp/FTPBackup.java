@@ -18,8 +18,6 @@
 package autosaveworld.threads.backup.ftp;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -69,16 +67,13 @@ public class FTPBackup {
 			FTPBackupOperations bo = new FTPBackupOperations(plugin, ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
 			//do worlds backup
 			plugin.debug("Backuping Worlds");
-			//create list of worlds that we need to backup
-			List<String> worldstobackup = new ArrayList<String>();
-			if ((config.ftpbackupWorlds).contains("*")) {
-				for (World w : Bukkit.getWorlds()) {
-					worldstobackup.add(w.getWorldFolder().getName());
+			for (World w : Bukkit.getWorlds()) 
+			{
+				if (config.ftpbackupWorlds.contains("*") || config.ftpbackupWorlds.contains(w.getWorldFolder().getName()))
+				{
+					bo.backupWorld(w);
 				}
-			} else {
-				worldstobackup = config.ftpbackupWorlds;
 			}
-			bo.backupWorlds(worldstobackup);
 			plugin.debug("Backuped Worlds");
 			//do plugins backup
 			if (config.ftpbackuppluginsfolder)
