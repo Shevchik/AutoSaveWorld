@@ -69,6 +69,7 @@ public class AutoSaveConfig {
 		public List<String> ftpbackupWorlds = null;
 		public boolean ftpbackuppluginsfolder = false;
 		public List<String> ftpbackupexcludefolders;
+		public int ftpbackupmaxnumberofbackups = 4;
 		public boolean ftpbackupzip = false;
 		//script
 		public boolean scriptbackupenabled = false;
@@ -164,6 +165,7 @@ public class AutoSaveConfig {
 			ftpbackupWorlds = config.getStringList("backup.ftp.worlds");
 			ftpbackuppluginsfolder = config.getBoolean("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
 			ftpbackupexcludefolders = config.getStringList("backup.ftp.excludefolders");
+			ftpbackupmaxnumberofbackups = config.getInt("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
 			ftpbackupzip = config.getBoolean("backup.ftp.zip",ftpbackupzip);
 			if (ftpbackupWorlds.size() == 0) {
 				ftpbackupWorlds.add("*");
@@ -289,6 +291,7 @@ public class AutoSaveConfig {
 			config.set("backup.ftp.worlds",ftpbackupWorlds);
 			config.set("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
 			config.set("backup.ftp.excludefolders",ftpbackupexcludefolders);
+			config.set("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
 			config.set("backup.ftp.zip",ftpbackupzip);
 			//script
 			config.set("backup.script.enabled",scriptbackupenabled);

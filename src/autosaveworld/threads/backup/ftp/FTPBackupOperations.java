@@ -33,7 +33,7 @@ import autosaveworld.threads.backup.ftp.FTPFileUtils;
 public class FTPBackupOperations {
 
 	
-	AutoSaveWorld plugin;
+	private AutoSaveWorld plugin;
 	final boolean zip;
 	final List<String> excludefolders;
     private FTPFileUtils fu;
@@ -78,7 +78,7 @@ public class FTPBackupOperations {
 	public void backupPlugins()
 	{
 		try {
-			File plfolder = new File("plugins").getCanonicalFile();
+			File plfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
 			if (!zip) {
 				fu.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
 			} else  {
@@ -92,7 +92,9 @@ public class FTPBackupOperations {
 				tempzip.delete();
 				new File(localtempfolder).delete();
 			}
-		} catch (IOException e) {e.printStackTrace();}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

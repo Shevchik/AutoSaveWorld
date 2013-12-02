@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.backup.ftp;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -59,6 +60,15 @@ public class FTPBackup {
 	    	ftpclient.changeWorkingDirectory(config.ftppath);
 	    	ftpclient.makeDirectory("backups");
 	    	ftpclient.changeWorkingDirectory("backups");
+	    	//delete oldest backup
+	    	String[] listnames = ftpclient.listNames();
+	    	if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups)
+	    	{
+	    		//find oldest backup
+	    		String oldestBackup = findOldestBackupName(listnames);
+	    		//delete oldest backup
+	    		deleteDirectoryFromFTP(ftpclient, oldestBackup);
+	    	}
 	    	String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 	    	ftpclient.makeDirectory(datedir);
 	    	ftpclient.changeWorkingDirectory(datedir);
@@ -88,6 +98,47 @@ public class FTPBackup {
 		} 
     	
     }
+    
+	private String findOldestBackupName(String[] timestamps) throws IOException
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		String oldestBackupName = timestamps[0];
+		try {
+			long old = sdf.parse(oldestBackupName).getTime();
+			for (String timestampString : timestamps)
+			{
+				long cur = sdf.parse(timestampString).getTime();
+				if (cur < old)
+				{
+					old = cur;
+					oldestBackupName = timestampString;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return oldestBackupName;
+	}
 
+
+	private void deleteDirectoryFromFTP(FTPClient ftp, String directory) throws IOException
+	{
+		if (ftp.changeWorkingDirectory(directory))
+		{
+			String[] files = ftp.listNames();
+			if (files != null)
+			{
+				for (String name : files)
+				{
+					deleteDirectoryFromFTP(ftp, name);
+				}
+			}
+			ftp.changeToParentDirectory();
+			ftp.removeDirectory(directory);
+		} else
+		{
+			ftp.deleteFile(directory);
+		}
+	}
         
 }

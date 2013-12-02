@@ -30,9 +30,9 @@ import autosaveworld.threads.backup.ExcludeManager;
 public class FTPFileUtils {
 
 	
-    public void uploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) throws IOException 
-    {
-    	if (src.isDirectory()) 
+	public void uploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) throws IOException 
+	{
+		if (src.isDirectory()) 
     	{
            ftp.makeDirectory(src.getName());
            ftp.changeWorkingDirectory(src.getName());
@@ -47,17 +47,19 @@ public class FTPFileUtils {
     	}
     	else 
     	{
-	    	//ignore lock files
-	    	if (!src.getName().endsWith(".lck"))
-	    	{
-	    		try {
-	    			InputStream is = new FileInputStream(src);
-	    			ftp.storeFile(src.getName(), is);
+    		//ignore lock files
+    		if (!src.getName().endsWith(".lck"))
+    		{
+    			try {
+    				InputStream is = new FileInputStream(src);
+    				ftp.storeFile(src.getName(), is);
 	    			is.close();
-	    		} catch (Exception e) {}
-	       		Thread.yield();
-	    	}
-       }
-   }
-	
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    			Thread.yield();
+    		}
+    	}
+	}
+
 }
