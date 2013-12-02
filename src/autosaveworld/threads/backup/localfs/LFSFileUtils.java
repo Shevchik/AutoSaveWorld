@@ -94,14 +94,18 @@ public class LFSFileUtils {
 		for (String timestampString : timestamps)
 		{
 			try {
+				long cur = System.currentTimeMillis();
 				if (timestampString.endsWith(".zip"))
 				{
-					long cur = sdf.parse(timestampString.substring(0,timestampString.indexOf(".zip"))).getTime();
-					if (cur < old)
-					{
-						old = cur;
-						oldestBackupName = timestampString;
-					}
+					cur = sdf.parse(timestampString.substring(0,timestampString.indexOf(".zip"))).getTime();
+				} else
+				{
+					cur = sdf.parse(timestampString).getTime();
+				}
+				if (cur < old)
+				{
+					old = cur;
+					oldestBackupName = timestampString;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
