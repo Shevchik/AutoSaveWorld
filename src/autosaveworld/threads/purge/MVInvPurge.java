@@ -18,8 +18,11 @@
 package autosaveworld.threads.purge;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.World;
 
 import com.onarandombox.multiverseinventories.MultiverseInventories;
@@ -43,6 +46,10 @@ public class MVInvPurge {
 		try {
 			MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
 			File mcinvpfld = new File("plugins/Multiverse-Inventories/players/");
+			Server server = Bukkit.getServer();
+			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
+			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
+			ctor.setAccessible(true);
 			//We will get all files from MVInv player directory, and get player names from there
 			for (String plfile : mcinvpfld.list())
 			{
@@ -54,7 +61,7 @@ public class MVInvPurge {
 					//remove files from MVInv world folders
 					for (World wname : Bukkit.getWorlds()) 
 					{
-						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData(Bukkit.getOfflinePlayer(plname));
+						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData((OfflinePlayer) ctor.newInstance(server,plname));
 					}
 					//remove files from MVInv player folder
 					new File(mcinvpfld,plfile).delete();
