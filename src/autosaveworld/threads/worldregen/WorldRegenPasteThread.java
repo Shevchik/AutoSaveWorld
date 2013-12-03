@@ -133,7 +133,6 @@ public class WorldRegenPasteThread extends Thread {
 	}
 	
 	private int pfstaskid;
-    private final SchematicFormat format = SchematicFormat.getFormats().iterator().next();
 	public void pasteFromSchematics(final String shematic, final World world)
 	{
 		Runnable copypaste = new Runnable() 
@@ -145,7 +144,7 @@ public class WorldRegenPasteThread extends Thread {
 					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 					es.setFastMode(true);
 					File f = new File(shematic);
-					CuboidClipboard cc = format.load(f);
+					CuboidClipboard cc = SchematicFormat.getFormats().iterator().next().load(f);
 					//paste clipboard at origin
 					cc.place(es, cc.getOrigin(), false);
 				} catch (Exception e) {
