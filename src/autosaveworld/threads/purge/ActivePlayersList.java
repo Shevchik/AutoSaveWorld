@@ -62,7 +62,7 @@ public class ActivePlayersList {
 	
 	public boolean isActiveNCS(String playername)
 	{
-		return plactivencs.contains(playername);
+		return plactivencs.contains(playername.toLowerCase());
 	}
 
 	public boolean isActiveCS(String playername)
