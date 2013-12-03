@@ -48,12 +48,10 @@ public class RestartJVMshutdownhook extends Thread {
 			else 
 			{
 				System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
-				//requred info for start script
 				String jarfilename = Bukkit.class.getResource("").getFile();
 				jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
 				jarfilename = new File(jarfilename).getName()+".jar";
 				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();			
-				//start script building
 				List<String> execsequence = new ArrayList<String>();
 				execsequence.add("java");
 				execsequence.addAll(arguments);
