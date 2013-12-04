@@ -144,7 +144,7 @@ public class WorldRegenPasteThread extends Thread {
 					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 					es.setFastMode(true);
 					File f = new File(shematic);
-					CuboidClipboard cc = SchematicFormat.getFormats().iterator().next().load(f);
+					CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
 					//paste clipboard at origin
 					cc.place(es, cc.getOrigin(), false);
 				} catch (Exception e) {
