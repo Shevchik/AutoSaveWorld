@@ -25,25 +25,32 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
+import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 	public class EventsListener implements Listener {
 
 		private AutoSaveWorld plugin = null;
-		public EventsListener(AutoSaveWorld plugin){
+		private AutoSaveConfig config;
+		public EventsListener(AutoSaveWorld plugin, AutoSaveConfig config){
 			this.plugin = plugin;
-
+			this.config = config;
 		};
 		
 		
 		//save when last player quits
 		@EventHandler
-		public void onPlayerQuit(PlayerQuitEvent event) {
-			plugin.debug("Check for last leave");
-			plugin.debug("Players online = "+(plugin.getServer().getOnlinePlayers().length-1));
-			if (plugin.getServer().getOnlinePlayers().length == 1) {
-				plugin.debug("Last player has quit, autosaving");
-				plugin.saveThread.startsave();
+		public void onPlayerQuit(PlayerQuitEvent event) 
+		{
+			if (config.saveOnLastQuit) 
+			{
+				plugin.debug("Check for last leave");
+				plugin.debug("Players online = "+(plugin.getServer().getOnlinePlayers().length-1));
+				if (plugin.getServer().getOnlinePlayers().length == 1) 
+				{
+					plugin.debug("Last player has quit, autosaving");
+					plugin.saveThread.startsave();
+				}
 			}
 		}
 		
@@ -51,7 +58,8 @@ import autosaveworld.core.AutoSaveWorld;
 		@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 		public void onConsoleStopCommand(ServerCommandEvent event)
 		{
-			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
+			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) 
+			{
 				plugin.crashrestartThread.stopThread();
 			}
 		}
@@ -60,7 +68,8 @@ import autosaveworld.core.AutoSaveWorld;
 		@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 		public void onRemoteConsoleStopCommand(RemoteServerCommandEvent event)
 		{
-			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) {
+			if (event.getCommand().equalsIgnoreCase("stop")||event.getCommand().equalsIgnoreCase("restart")||event.getCommand().equalsIgnoreCase("reload")) 
+			{
 				plugin.crashrestartThread.stopThread(); 
 			}
 		}

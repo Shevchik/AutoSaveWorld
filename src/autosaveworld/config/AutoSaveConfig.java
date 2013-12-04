@@ -44,7 +44,10 @@ public class AutoSaveConfig {
 	public int saveInterval = 900;
 	public boolean saveBroadcast = true;
 	public boolean saveEnabled = true;
+	public boolean saveOnlyChunks = false;
 	public boolean saveOnASWDisable = true;
+	public boolean saveOnLastQuit = true;
+	public boolean saveIgnoreIfNoPlayers = true;
 	//backup
 	public boolean backupEnabled = false;
 	public int backupInterval =  60*60*6;
@@ -128,9 +131,13 @@ public class AutoSaveConfig {
 		
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
+		saveOnlyChunks = config.getBoolean("save.onlychunks", saveOnlyChunks);
+		saveIgnoreIfNoPlayers = config.getBoolean("save.donotsaveifempty", saveIgnoreIfNoPlayers);
 		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
 		saveInterval = config.getInt("save.interval", saveInterval);
-		saveOnASWDisable = config.getBoolean("save.onaswdisable",saveOnASWDisable);
+		saveOnASWDisable = config.getBoolean("save.onaswdisable", saveOnASWDisable);
+		saveOnLastQuit = config.getBoolean("save.onlastplayerquit", saveOnLastQuit);
+
 
 		//backup variables
 		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
@@ -266,6 +273,9 @@ public class AutoSaveConfig {
 		config.set("save.interval", saveInterval);
 		config.set("save.broadcast", saveBroadcast);
 		config.set("save.onaswdisable",saveOnASWDisable);
+		config.set("save.onlastplayerquit", saveOnLastQuit);
+		config.set("save.onlychunks", saveOnlyChunks);
+		config.set("save.donotsaveifempty", saveIgnoreIfNoPlayers);
 
 		//backup variables
 		config.set("backup.enabled", backupEnabled);
