@@ -64,6 +64,7 @@ public class FTPBackup {
 	    	String[] listnames = ftpclient.listNames();
 	    	if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups)
 	    	{
+	    		plugin.debug("Deleting oldest backup");
 	    		//find oldest backup
 	    		String oldestBackup = findOldestBackupName(listnames);
 	    		//delete oldest backup
