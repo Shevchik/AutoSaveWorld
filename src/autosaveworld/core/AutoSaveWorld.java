@@ -95,7 +95,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		configmsg = new AutoSaveConfigMSG(this);
 		configmsg.loadmsg();
 		localeChanger = new LocaleChanger(this, configmsg);
-		eh = new EventsListener(this);
+		eh = new EventsListener(this,config);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		//load plugin manager
 		pmanager = new ASWPluginManager(this);
