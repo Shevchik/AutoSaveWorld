@@ -19,7 +19,6 @@ package autosaveworld.core;
 
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -364,7 +363,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		getServer().savePlayers();
 		debug("Saved Players");
 		debug("Saving worlds");
-		for (World w : Bukkit.getWorlds())
+		for (World w : getServer().getWorlds())
 		{
 			debug(String.format("Saving world: %s", w.getName()));
 			w.save();

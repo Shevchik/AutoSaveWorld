@@ -20,7 +20,6 @@ package autosaveworld.threads.backup;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -125,17 +124,7 @@ public class AutoBackupThread extends Thread {
 		
 		if (config.backupsaveBefore)
 		{
-			int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-			{
-				public void run()
-				{
-					plugin.saveThread.performSave();
-				}
-			});
-			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-			{
-				try {Thread.sleep(100);} catch (InterruptedException e) {}
-			}
+			plugin.saveThread.performSave();
 		}
 
 		// Lock
