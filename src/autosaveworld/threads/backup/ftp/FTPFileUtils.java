@@ -29,7 +29,8 @@ import autosaveworld.threads.backup.ExcludeManager;
 
 public class FTPFileUtils {
 
-	
+	private ExcludeManager eManager = new ExcludeManager();
+
 	public void uploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) throws IOException 
 	{
 		if (src.isDirectory()) 
@@ -38,7 +39,7 @@ public class FTPFileUtils {
            ftp.changeWorkingDirectory(src.getName());
            for (File file : src.listFiles()) 
            {
-        	   	if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) 
+        	   	if (!eManager.isFolderExcluded(excludefolders, file.getPath())) 
         	   	{
         	   		uploadDirectoryToFTP(ftp, file, excludefolders);
         	   	}

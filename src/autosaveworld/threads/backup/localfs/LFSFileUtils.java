@@ -26,6 +26,8 @@ import autosaveworld.threads.backup.ExcludeManager;
 
 public class LFSFileUtils {
 
+	private ExcludeManager eManager = new ExcludeManager();
+	
 	public void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders) 
 	{
 		if (sourceLocation.isDirectory()) 
@@ -36,7 +38,7 @@ public class LFSFileUtils {
 			}
 			for (String filename : sourceLocation.list()) 
 			{
-				if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) 
+				if (!eManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) 
 				{
 					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders); 
 				}

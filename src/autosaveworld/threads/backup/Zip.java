@@ -36,7 +36,7 @@ public class Zip {
 		this.excludefolders = excludefolders;
 	}
 
-	private ZipOutputStream zipOutStream;
+	private ExcludeManager eManager = new ExcludeManager();
 
 	public void ZipFolder(final File srcDir, final File destFile) throws FileNotFoundException, IOException 
 	{
@@ -44,9 +44,9 @@ public class Zip {
 		
 		BufferedOutputStream bufOutStream = new BufferedOutputStream(new FileOutputStream(destFile));
 		try {
-			zipOutStream = new ZipOutputStream(bufOutStream);
+			ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream);
 			try {
-				zipDir(srcDir, "");
+				zipDir(zipOutStream, srcDir, "");
 			} finally {
 				zipOutStream.close();
 			}
@@ -55,7 +55,7 @@ public class Zip {
 		}
 	}
 
-	private void zipDir(final File srcDir, String currentDir) throws IOException 
+	private void zipDir(ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException 
 	{
 		final File zipDir = new File(srcDir, currentDir);
 
@@ -65,19 +65,19 @@ public class Zip {
 
 			if (srcFile.isDirectory()) 
 			{
-				if (!ExcludeManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) 
+				if (!eManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) 
 				{
-					zipDir(srcDir, currentDir + child + File.separator);
+					zipDir(zipOutStream, srcDir, currentDir + child + File.separator);
 				}
 			}
 			else
 			{
-				zipFile(srcFile, srcDir.getName() + File.separator + currentDir + child);
+				zipFile(zipOutStream, srcFile, srcDir.getName() + File.separator + currentDir + child);
 			}
 		}
 	}
 
-	private void zipFile(final File srcFile, final String entry) throws IOException 
+	private void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException 
 	{
 		if (!srcFile.getName().endsWith(".lck"))
 		{

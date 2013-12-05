@@ -25,7 +25,7 @@ import org.bukkit.World;
 
 public class ExcludeManager {
 
-	public static boolean isFolderExcluded(List<String> excludelist, String folderPath)
+	public boolean isFolderExcluded(List<String> excludelist, String folderPath)
 	{
 		File folder = new File(folderPath);
 		
