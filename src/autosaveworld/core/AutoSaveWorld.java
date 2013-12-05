@@ -134,7 +134,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		{
 			// Perform a Save NOW!
 			debug("Saving");
-			performSaveForce();
+			performSaveOnDisable();
 		}
 		// Save config
 		debug("Saving config");
@@ -357,7 +357,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		log.warning(formattingCodesParser.stripFormattingCodes(message));
 	}
 	
-	public void performSaveForce()
+	private void performSaveOnDisable()
 	{
 		broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 		debug("Saving players");

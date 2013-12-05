@@ -88,8 +88,8 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
-
-	private void performSave() 
+	
+	public void performSave() 
 	{
 		if (config.saveIgnoreIfNoPlayers && plugin.getServer().getOnlinePlayers().length == 0 && !command) {
 			// No players online, don't bother saving.
