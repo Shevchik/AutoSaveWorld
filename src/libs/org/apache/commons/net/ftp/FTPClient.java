@@ -270,7 +270,6 @@ import libs.org.apache.commons.net.io.Util;
  * @see libs.org.apache.commons.net.MalformedServerReplyException
  */
 public class FTPClient extends FTP
-implements Configurable
 {
     /**
      * The system property ({@value}) which can be used to override the system type.<br/>
@@ -2878,18 +2877,6 @@ implements Configurable
      */
     public int getReceiveDataSocketBufferSize() {
         return __receiveDataSocketBufferSize;
-    }
-
-    /**
-     * Implementation of the {@link Configurable Configurable} interface.
-     * In the case of this class, configuring merely makes the config object available for the
-     * factory methods that construct parsers.
-     * @param config {@link FTPClientConfig FTPClientConfig} object used to
-     * provide non-standard configurations to the parser.
-     * @since 1.4
-     */
-//    @Override
-    public void configure(FTPClientConfig config) {
     }
 
     /**
