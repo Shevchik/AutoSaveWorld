@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.net.ftp.FTPClient;
+import libs.org.apache.commons.net.ftp.FTPClient;
 
 import org.bukkit.World;
 

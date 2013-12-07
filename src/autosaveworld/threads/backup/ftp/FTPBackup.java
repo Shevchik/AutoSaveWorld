@@ -20,8 +20,9 @@ package autosaveworld.threads.backup.ftp;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
+import libs.org.apache.commons.net.ftp.FTPClient;
+import libs.org.apache.commons.net.ftp.FTPReply;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
