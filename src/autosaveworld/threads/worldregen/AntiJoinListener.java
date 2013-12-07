@@ -20,7 +20,7 @@ package autosaveworld.threads.worldregen;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
+import org.bukkit.event.player.PlayerLoginEvent;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 
@@ -40,4 +40,11 @@ public class AntiJoinListener implements Listener {
 	{
 		plugin.kickPlayer(e.getPlayer(),configmsg.messageWorldRegenKick);
 	}
+	
+	@EventHandler
+	public void onPlayerLogin(PlayerLoginEvent e)
+	{
+		plugin.disallow(e, configmsg.messageWorldRegenKick);
+	}
+
 }

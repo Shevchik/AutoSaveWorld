@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
@@ -341,6 +343,10 @@ public class AutoSaveWorld extends JavaPlugin {
 	
 	public void kickPlayer(Player player, String message) {
 		player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
+	}
+	
+	public void disallow(PlayerLoginEvent e, String message) {
+		e.disallow(Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
 	}
 
 	public void debug(String message) {
