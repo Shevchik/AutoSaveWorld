@@ -105,7 +105,7 @@ public class AutoBackupThread extends Thread {
 	}
 
 
-	private void performBackup()
+	public void performBackup()
 	{
 		command = false;
 		
