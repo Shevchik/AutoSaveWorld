@@ -124,7 +124,7 @@ public class AutoBackupThread extends Thread {
 		
 		if (config.backupsaveBefore)
 		{
-			plugin.saveThread.performSave();
+			plugin.saveThread.performSave(true);
 		}
 
 		// Lock

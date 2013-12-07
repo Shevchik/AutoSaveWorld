@@ -81,7 +81,7 @@ public class AutoSaveThread extends Thread {
 
 			//save
 			if (run&&(config.saveEnabled||command)) {
-				performSave();
+				performSave(false);
 			}
 		}
 		
@@ -89,9 +89,9 @@ public class AutoSaveThread extends Thread {
 
 	}
 	
-	public void performSave() 
+	public void performSave(boolean force) 
 	{
-		if (config.saveIgnoreIfNoPlayers && plugin.getServer().getOnlinePlayers().length == 0 && !command) {
+		if (config.saveIgnoreIfNoPlayers && plugin.getServer().getOnlinePlayers().length == 0 && !command && !force) {
 			// No players online, don't bother saving.
 			plugin.debug("Skipping save, no players online.");
 			return;
