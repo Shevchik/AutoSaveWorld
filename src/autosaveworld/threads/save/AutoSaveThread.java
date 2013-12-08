@@ -17,7 +17,6 @@
 
 package autosaveworld.threads.save;
 
-import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -155,17 +154,7 @@ public class AutoSaveThread extends Thread {
 					public void run()
 					{
 						plugin.debug(String.format("Saving world: %s", world.getName()));
-						if (config.saveOnlyChunks)
-						{
-							for (Chunk c : world.getLoadedChunks())
-							{
-								c.unload(true);
-								c.load(false);
-							}
-						} else 
-						{
-							world.save();
-						}
+						world.save();
 					}
 				});
 				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
