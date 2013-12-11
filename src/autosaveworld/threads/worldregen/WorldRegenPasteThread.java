@@ -126,7 +126,10 @@ public class WorldRegenPasteThread extends Thread {
 			new File(plugin.constants.getWorldRegenTempFolder()).delete();
 			
 			plugin.debug("Restore finished");
-
+			// save server, just in case
+			plugin.debug("Saving server");
+			plugin.saveThread.performSave(true);
+			
 			// restart
 			plugin.debug("Restarting server");
 			plugin.autorestartThread.startrestart(true);
