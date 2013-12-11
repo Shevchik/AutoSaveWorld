@@ -151,8 +151,16 @@ public class WorldRegenPasteThread extends Thread {
 						success = true;
 					} catch (Exception e) {
 						e.printStackTrace();
+						plugin.debug("Schematic paste failed, trying again");
 					}
 					tries++;
+				}
+				if (success)
+				{
+					plugin.debug("Pasted schematic in "+tries+" tries");
+				} else
+				{
+					plugin.debug("Schematic paste failed 3 times, giving up");
 				}
 			}
 		};
