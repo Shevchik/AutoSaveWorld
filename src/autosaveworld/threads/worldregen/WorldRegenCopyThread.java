@@ -169,6 +169,7 @@ public class WorldRegenCopyThread extends Thread {
 				try {
 					//copy to clipboard
 					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
+					es.setFastMode(true);
 					CuboidClipboard clipboard = new CuboidClipboard(
 							bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
 							bvmin, bvmin.subtract(bvmax)
