@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -26,7 +27,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
 import autosaveworld.config.AutoSaveConfig;
@@ -138,17 +141,18 @@ public class WorldRegenPasteThread extends Thread {
 		Runnable copypaste = new Runnable() 
 		{
 			public void run() 
-			{
-				try {
-					//load from schematic to clipboard
-					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
-					es.setFastMode(true);
-					File f = new File(shematic);
-					CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
-					//paste clipboard at origin
-					cc.place(es, cc.getOrigin(), false);
-				} catch (Exception e) {
-					e.printStackTrace();
+			{	
+				int tries = 0;
+				boolean success = false;
+				while (tries < 3 && !success)
+				{
+					try {
+						tryPaste(shematic,world);	
+						success = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					tries++;
 				}
 			}
 		};
@@ -156,6 +160,16 @@ public class WorldRegenPasteThread extends Thread {
 		while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
 			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
 		}
+	}
+	private void tryPaste(final String shematic, final World world) throws IOException, DataException, MaxChangedBlocksException 
+	{
+		//load from schematic to clipboard
+		EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
+		es.setFastMode(true);
+		File f = new File(shematic);
+		CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
+		//paste clipboard at origin
+		cc.place(es, cc.getOrigin(), false);
 	}
 	
 	private void deleteDirectory(File file)
