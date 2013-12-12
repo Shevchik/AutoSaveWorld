@@ -109,10 +109,11 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.pmanager.handlePluginManagerCommand(sender, args[1], sb.toString());
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcegc")) {
-				plugin.sendMessage(sender, "&2Forcing GC");
+				plugin.sendMessage(sender, "&9Forcing GC");
 				System.gc();
 				System.gc();
-				plugin.sendMessage(sender, "&2GC probably finished");
+				plugin.sendMessage(sender, "&9GC probably finished");
+				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("serverstatus")) {
 				DecimalFormat df = new DecimalFormat("0.00");
 				//processor (if available)
