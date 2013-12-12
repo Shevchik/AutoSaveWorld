@@ -75,6 +75,7 @@ public class CrashRestartThread extends Thread{
 					}
 					
 					plugin.getServer().shutdown();
+					System.exit(0);
 					
 				}
 				
