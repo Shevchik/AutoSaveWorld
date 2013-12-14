@@ -97,7 +97,7 @@ public class GPCopy {
 			);
 			//save
 			plugin.debug("Saving GP Region "+claim.getID()+" to schematic");
-			wrthread.saveToSchematic(plugin.constants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
+			wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
 	        plugin.debug("GP Region "+claim.getID()+" saved");
 		}
 	}

@@ -86,7 +86,7 @@ public class FactionsCopy {
 				   	);
 				    //save
 					plugin.debug("Saving "+f.getName()+" chunk to schematic");
-					wrthread.saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+					wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
 			        plugin.debug(f.getName()+" chunk saved");
 				}
 		        plugin.debug("faction land "+f.getName()+" saved");

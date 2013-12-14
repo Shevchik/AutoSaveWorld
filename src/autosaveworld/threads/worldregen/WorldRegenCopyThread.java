@@ -18,20 +18,12 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.data.DataException;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
@@ -159,57 +151,16 @@ public class WorldRegenCopyThread extends Thread {
 		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(plugin.JVMsh, wtoregen.getWorldFolder().getCanonicalPath(), plugin.constants.getShouldpasteFile());
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		plugin.getServer().shutdown();
-	}
-
-	private int ststaskid;
-	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax)
-	{
-		Runnable copypaste = new Runnable() 
-		{
-			public void run()
-			{
-				int tries = 0;
-				boolean success = false;
-				while (tries < 3 && !success)
-				{
-					try {
-						tryCopy(schematic, world, bvmin, bvmax);
-						success = true;
-					} catch (Exception e) {
-						e.printStackTrace();
-						plugin.debug("Schematic copy failed, trying again");
-					}
-					tries++;
-				}
-				if (success)
-				{
-					plugin.debug("Copied schematic in "+tries+" tries");
-				} else
-				{
-					plugin.debug("Schematic copy failed 3 times, giving up");
-				}
-			}
-		};
-		ststaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-		while (Bukkit.getScheduler().isCurrentlyRunning(ststaskid) || Bukkit.getScheduler().isQueued(ststaskid))
-		{
-			try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-		}
-	}
-	private void tryCopy(final String schematic, final World world, final Vector bvmin, final Vector bvmax) throws IOException, DataException
-	{
-		//copy to clipboard
-		EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
-		es.setFastMode(true);
-		CuboidClipboard clipboard = new CuboidClipboard(
-				bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-				bvmin, bvmin.subtract(bvmax)
-		);
-		clipboard.copy(es);
-		//save to schematic
-		File f= new File(schematic);
-		SchematicFormat.getFormats().iterator().next().save(clipboard, f);
-	}
+	}	
 	
+	private SchematicOperations schemops = null;
+	public SchematicOperations getSchematicOperations()
+	{
+		if (schemops == null)
+		{
+			schemops = new SchematicOperations(plugin);
+		}
+		return schemops;
+	}
 	
 }

@@ -18,19 +18,10 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.data.DataException;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
@@ -137,50 +128,15 @@ public class WorldRegenPasteThread extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
-	private int pfstaskid;
-	public void pasteFromSchematics(final String shematic, final World world)
+
+	private SchematicOperations schemops = null;
+	public SchematicOperations getSchematicOperations()
 	{
-		Runnable copypaste = new Runnable() 
+		if (schemops == null)
 		{
-			public void run() 
-			{	
-				int tries = 0;
-				boolean success = false;
-				while (tries < 3 && !success)
-				{
-					try {
-						tryPaste(shematic,world);	
-						success = true;
-					} catch (Exception e) {
-						e.printStackTrace();
-						plugin.debug("Schematic paste failed, trying again");
-					}
-					tries++;
-				}
-				if (success)
-				{
-					plugin.debug("Pasted schematic in "+tries+" tries");
-				} else
-				{
-					plugin.debug("Schematic paste failed 3 times, giving up");
-				}
-			}
-		};
-		pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-		while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
+			schemops = new SchematicOperations(plugin);
 		}
-	}
-	private void tryPaste(final String shematic, final World world) throws IOException, DataException, MaxChangedBlocksException 
-	{
-		//load from schematic to clipboard
-		EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
-		es.setFastMode(true);
-		File f = new File(shematic);
-		CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
-		//paste clipboard at origin
-		cc.place(es, cc.getOrigin(), false);
+		return schemops;
 	}
 	
 	private void deleteDirectory(File file)
