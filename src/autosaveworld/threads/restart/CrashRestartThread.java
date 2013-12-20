@@ -17,6 +17,12 @@
 
 package autosaveworld.threads.restart;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MonitorInfo;
+import java.lang.management.ThreadInfo;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
 
@@ -73,7 +79,12 @@ public class CrashRestartThread extends Thread{
 						plugin.JVMsh.setPath(config.crashrestartscriptpath);
 						Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
 					}
-					
+					Logger log = plugin.getLogger();
+					ThreadInfo[] threads = ManagementFactory.getThreadMXBean().dumpAllThreads(true, true);
+					for (ThreadInfo thread : threads)
+					{
+						dumpThread(thread, log);
+					}
 					plugin.getServer().shutdown();
 					System.exit(0);
 					
@@ -86,6 +97,32 @@ public class CrashRestartThread extends Thread{
 		
 		plugin.debug("Graceful quit of CrashRestartThread");
 		
+	}
+	
+	
+	private void dumpThread(ThreadInfo thread, Logger log)
+	{
+		if ( thread.getThreadState() != State.WAITING )
+		{
+			log.log(Level.SEVERE, "------------------------------" );
+			log.log( Level.SEVERE, "Current Thread: " + thread.getThreadName() );
+			log.log( Level.SEVERE, "\tPID: " + thread.getThreadId()+ " | Suspended: " + thread.isSuspended() + " | Native: " + thread.isInNative() + " | State: " + thread.getThreadState() );
+			if (thread.getLockedMonitors().length != 0)
+			{
+				log.log(Level.SEVERE, "\tThread is waiting on monitor(s):");
+				for (MonitorInfo monitor : thread.getLockedMonitors())
+				{
+					log.log(Level.SEVERE, "\t\tLocked on:" + monitor.getLockedStackFrame());
+				}
+			}
+			log.log( Level.SEVERE, "\tStack:" );
+			StackTraceElement[] stack = thread.getStackTrace();
+			for (int line = 0; line < stack.length; line++)
+			{
+				log.log(Level.SEVERE, "\t\t" + stack[line].toString());
+			}
+			log.log( Level.SEVERE, "------------------------------" );
+		}
 	}
 	
 }
