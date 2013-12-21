@@ -43,7 +43,7 @@ public class RestartJVMshutdownhook extends Thread {
 			{
 				System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
 				restartscript.setExecutable(true);
-				pb.command(restartscript.getPath());
+				pb.command(restartscript.getAbsolutePath());
 			}
 			else 
 			{
