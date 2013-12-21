@@ -137,7 +137,7 @@ public class CommandsHandler implements CommandExecutor {
 				long freespacegb = file.getFreeSpace()/1024/1024/1024;
 				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.RED+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+(maxspacegb-freespacegb)+"/"+maxspacegb+" GB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
 				return true;
-			}	else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
 				//save
 				plugin.saveThread.startsave();
 				return true;
