@@ -23,6 +23,8 @@ import java.lang.management.ThreadInfo;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
 
@@ -73,7 +75,7 @@ public class CrashRestartThread extends Thread{
 				{
 					plugin.debug("Server has stopped responding. Probably this is a crash.");
 					plugin.debug("Dumping threads info");
-					Logger log = plugin.getLogger();
+					Logger log = Bukkit.getLogger();
 					ThreadInfo[] threads = ManagementFactory.getThreadMXBean().dumpAllThreads(true, true);
 					for (ThreadInfo thread : threads)
 					{
@@ -88,8 +90,7 @@ public class CrashRestartThread extends Thread{
 					}
 					
 					plugin.getServer().shutdown();
-					System.exit(0);
-					
+
 				}
 				
 			}
