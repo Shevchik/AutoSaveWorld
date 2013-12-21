@@ -77,6 +77,8 @@ public class CommandsHandler implements CommandExecutor {
 			if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 				// help
 				plugin.sendMessage(sender, "&f/asw help&7 - &3Shows this help");
+				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu,memory,HDD usage");
+				plugin.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
 				plugin.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
 				plugin.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
 				plugin.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
