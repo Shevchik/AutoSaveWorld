@@ -105,27 +105,23 @@ public class CrashRestartThread extends Thread{
 	
 	private void dumpThread(ThreadInfo thread, Logger log)
 	{
-		if ( thread.getThreadState() != State.WAITING )
+		log.log(Level.SEVERE, "------------------------------" );
+		log.log( Level.SEVERE, "Current Thread: " + thread.getThreadName() );
+		log.log( Level.SEVERE, "\tPID: " + thread.getThreadId()+ " | Suspended: " + thread.isSuspended() + " | Native: " + thread.isInNative() + " | State: " + thread.getThreadState() );
+		if (thread.getLockedMonitors().length != 0)
 		{
-			log.log(Level.SEVERE, "------------------------------" );
-			log.log( Level.SEVERE, "Current Thread: " + thread.getThreadName() );
-			log.log( Level.SEVERE, "\tPID: " + thread.getThreadId()+ " | Suspended: " + thread.isSuspended() + " | Native: " + thread.isInNative() + " | State: " + thread.getThreadState() );
-			if (thread.getLockedMonitors().length != 0)
+			log.log(Level.SEVERE, "\tThread is waiting on monitor(s):");
+			for (MonitorInfo monitor : thread.getLockedMonitors())
 			{
-				log.log(Level.SEVERE, "\tThread is waiting on monitor(s):");
-				for (MonitorInfo monitor : thread.getLockedMonitors())
-				{
-					log.log(Level.SEVERE, "\t\tLocked on:" + monitor.getLockedStackFrame());
-				}
+				log.log(Level.SEVERE, "\t\tLocked on:" + monitor.getLockedStackFrame());
 			}
-			log.log( Level.SEVERE, "\tStack:" );
-			StackTraceElement[] stack = thread.getStackTrace();
-			for (int line = 0; line < stack.length; line++)
-			{
-				log.log(Level.SEVERE, "\t\t" + stack[line].toString());
-			}
-			log.log( Level.SEVERE, "------------------------------" );
 		}
+		log.log( Level.SEVERE, "\tStack:" );
+		for ( StackTraceElement stack : thread.getStackTrace() )
+		{
+			log.log( Level.SEVERE, "\t\t" + stack );
+		}
+		log.log( Level.SEVERE, "------------------------------" );
 	}
 	
 }
