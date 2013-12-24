@@ -149,9 +149,7 @@ public class AutoSaveConfig {
 			lfsextfolders = config.getStringList("backup.localfs.destinationfolders");
 			if (lfsextfolders.isEmpty())
 			{
-				try {
-				lfsextfolders.add(new File(".").getCanonicalPath());
-				} catch (Exception e) {}
+				lfsextfolders.add(new File(".").getAbsolutePath());
 			}
 			lfsbackuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
 			lfsbackupexcludefolders = config.getStringList("backup.localfs.excludefolders");
