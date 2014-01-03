@@ -124,7 +124,7 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Saving players");
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
 		int taskid;
-		if (plugin.isEnabled())
+		if (run)
 		{
 			taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
 			{
@@ -147,7 +147,7 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Saving worlds");
 		for (final World world : plugin.getServer().getWorlds()) 
 		{
-			if (plugin.isEnabled())
+			if (run)
 			{
 				taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
 				{
