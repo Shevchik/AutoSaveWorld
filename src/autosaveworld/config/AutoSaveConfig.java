@@ -44,6 +44,7 @@ public class AutoSaveConfig {
 	public int saveInterval = 900;
 	public boolean saveBroadcast = true;
 	public boolean saveEnabled = true;
+	public boolean donotsavestructures = false;
 	public boolean saveOnASWDisable = true;
 	public boolean saveOnLastQuit = true;
 	public boolean saveIgnoreIfNoPlayers = true;
@@ -130,6 +131,7 @@ public class AutoSaveConfig {
 		
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
+		donotsavestructures = config.getBoolean("save.disablestructuresaving",donotsavestructures);
 		saveIgnoreIfNoPlayers = config.getBoolean("save.donotsaveifempty", saveIgnoreIfNoPlayers);
 		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
 		saveInterval = config.getInt("save.interval", saveInterval);
@@ -268,7 +270,8 @@ public class AutoSaveConfig {
 		config.set("save.enabled",saveEnabled);
 		config.set("save.interval", saveInterval);
 		config.set("save.broadcast", saveBroadcast);
-		config.set("save.onaswdisable",saveOnASWDisable);
+		config.set("save.disablestructuresaving", donotsavestructures);
+		config.set("save.onaswdisable", saveOnASWDisable);
 		config.set("save.onlastplayerquit", saveOnLastQuit);
 		config.set("save.donotsaveifempty", saveIgnoreIfNoPlayers);
 
