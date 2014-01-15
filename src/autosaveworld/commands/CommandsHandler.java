@@ -48,6 +48,7 @@ public class CommandsHandler implements CommandExecutor {
 	
 	private PermissionCheck permCheck = new PermissionCheck();
 	
+	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		
 		String commandName = command.getName().toLowerCase();
