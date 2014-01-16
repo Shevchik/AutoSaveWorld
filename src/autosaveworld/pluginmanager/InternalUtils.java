@@ -37,7 +37,6 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
-import org.bukkit.plugin.java.PluginClassLoader;
 
 public class InternalUtils {
 
@@ -88,9 +87,9 @@ public class InternalUtils {
 		}
 		//close file in url classloader
 		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
-		if (pluginClassLoader instanceof PluginClassLoader && pluginClassLoader instanceof URLClassLoader)
+		if (pluginClassLoader instanceof URLClassLoader)
 		{
-			URLClassLoader urlloader= (URLClassLoader.class.cast(PluginClassLoader.class.cast(pluginClassLoader)));
+			URLClassLoader urlloader= (URLClassLoader) pluginClassLoader;
 			urlloader.close();
 		}
 		//force gc
