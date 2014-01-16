@@ -1,6 +1,6 @@
 name: AutoSaveWorld
 main: autosaveworld.core.AutoSaveWorld
-version: 4.13.dev
+version: 4.13
 author: _Shevchik_
 load: STARTUP 
 description: >
