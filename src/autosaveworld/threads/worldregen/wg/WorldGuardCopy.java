@@ -56,7 +56,7 @@ public class WorldGuardCopy {
 			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 			//save
 			plugin.debug("Saving WG Region "+rg.getId()+" to schematic");
-			wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getWGTempFolder()+rg.getId(), wtoregen, rg.getMinimumPoint().toBlockPoint(), rg.getMaximumPoint().toBlockPoint());
+			wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getWGTempFolder()+rg.getId(), wtoregen, rg.getMinimumPoint(), rg.getMaximumPoint());
 			plugin.debug("WG Region "+rg.getId()+" saved");
 		}
 	}

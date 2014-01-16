@@ -65,7 +65,8 @@ public class Constants {
 	private String shouldpastefile = "shouldpaste";
 	private String wgtempfolder = "WG"+File.separator;
 	private String factionstempfolder = "Factions"+File.separator;	
-	private String griefpreventionfolder = "GP"+File.separator;
+	private String griefpreventiontempfolder = "GP"+File.separator;
+	private String townytempfolder = "Towny"+File.separator;
 	public String getWorldRegenTempFolder()
 	{
 		return getPluginFolder()+worldregentempfolder;
@@ -86,10 +87,13 @@ public class Constants {
 	{
 		return getWorldRegenTempFolder()+factionstempfolder;
 	}
-	
 	public String getGPTempFolder()
 	{
-		return getWorldRegenTempFolder()+griefpreventionfolder;
+		return getWorldRegenTempFolder()+griefpreventiontempfolder;
+	}
+	public String getTownyTempFolder()
+	{
+		return getWorldRegenTempFolder()+townytempfolder;
 	}
 	
 }
