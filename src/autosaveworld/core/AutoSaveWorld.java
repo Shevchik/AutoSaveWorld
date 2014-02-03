@@ -44,9 +44,9 @@ import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 public class AutoSaveWorld extends JavaPlugin {
-	
+
 	private Logger log;
-	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser(); 
+	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
 
 	//constatns
 	public Constants constants = null;
@@ -84,7 +84,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public String LastSave = "No save was since the server start";
 	public String LastBackup = "No backup was since the server start";
 
-	
+
 	@Override
 	public void onEnable() {
 		// Load Configuration
@@ -126,8 +126,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Start WorldRegenPasteThread
 		startThread(ThreadType.WORLDREGENPASTE);
 	}
-	
-	
+
+
 	@Override
 	public void onDisable() {
 		if (config.saveOnASWDisable)
@@ -155,15 +155,15 @@ public class AutoSaveWorld extends JavaPlugin {
 		pmanager = null;
 		//null values
 		configmsg = null;
-		config = null; 
+		config = null;
 		localeChanger = null;
 		eh = null;
 		ch = null;
 		formattingCodesParser = null;
 		constants = null;
-	}	
-	
-	
+	}
+
+
 
 	protected boolean startThread(ThreadType type) {
 		switch (type) {
@@ -222,8 +222,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		}
 	}
 
-	
-	
+
+
 	protected boolean stopThread(ThreadType type) {
 		switch (type) {
 		case SAVE:
@@ -340,11 +340,11 @@ public class AutoSaveWorld extends JavaPlugin {
 			getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
 		}
 	}
-	
+
 	public void kickPlayer(Player player, String message) {
 		player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
 	}
-	
+
 	public void disallow(PlayerLoginEvent e, String message) {
 		e.disallow(Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
 	}
@@ -358,7 +358,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void warn(String message) {
 		log.warning(formattingCodesParser.stripFormattingCodes(message));
 	}
-	
+
 	private void performSaveOnDisable()
 	{
 		broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);

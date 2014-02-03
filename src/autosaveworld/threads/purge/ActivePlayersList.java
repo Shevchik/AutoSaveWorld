@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.purge;
@@ -40,13 +40,13 @@ public class ActivePlayersList {
 		Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
 		ctor.setAccessible(true);
 		File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(),"players");
-        for (String file : playersdir.list()) 
+        for (String file : playersdir.list())
         {
-        	if (file.endsWith(".dat")) 
+        	if (file.endsWith(".dat"))
         	{
         		String nickname = file.substring(0, file.length() - 4);
         		OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
-    			if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime) 
+    			if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime)
     			{
     				plactivecs.add(offplayer.getName());
     				plactivencs.add(offplayer.getName().toLowerCase());
@@ -55,11 +55,11 @@ public class ActivePlayersList {
         }
 	}
 
-	public int getActivePlayersCount() 
+	public int getActivePlayersCount()
 	{
 		return plactivecs.size();
 	}
-	
+
 	public boolean isActiveNCS(String playername)
 	{
 		return plactivencs.contains(playername.toLowerCase());
@@ -69,6 +69,6 @@ public class ActivePlayersList {
 	{
 		return plactivecs.contains(playername);
 	}
-	
-	
+
+
 }

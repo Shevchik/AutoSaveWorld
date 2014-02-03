@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.backup.ftp;
@@ -30,22 +30,22 @@ public class FTPFileUtils {
 
 	private ExcludeManager eManager = new ExcludeManager();
 
-	public void uploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) throws IOException 
+	public void uploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) throws IOException
 	{
-		if (src.isDirectory()) 
+		if (src.isDirectory())
     	{
            ftp.makeDirectory(src.getName());
            ftp.changeWorkingDirectory(src.getName());
-           for (File file : src.listFiles()) 
+           for (File file : src.listFiles())
            {
-        	   	if (!eManager.isFolderExcluded(excludefolders, file.getPath())) 
+        	   	if (!eManager.isFolderExcluded(excludefolders, file.getPath()))
         	   	{
         	   		uploadDirectoryToFTP(ftp, file, excludefolders);
         	   	}
            }
            ftp.changeToParentDirectory();
     	}
-    	else 
+    	else
     	{
     		//ignore lock files
     		if (!src.getName().endsWith(".lck"))

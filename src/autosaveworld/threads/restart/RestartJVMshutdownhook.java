@@ -25,33 +25,33 @@ import java.util.List;
 import org.bukkit.Bukkit;
 
 public class RestartJVMshutdownhook extends Thread {
-	
-	private String crashrestartscriptpath = ""; 
+
+	private String crashrestartscriptpath = "";
 
 	public void setPath(String path)
 	{
 		this.crashrestartscriptpath = path;
 	}
-	
-	
+
+
 	public void restart()
 	{
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
 			File restartscript = new File(crashrestartscriptpath);
-			if (!crashrestartscriptpath.isEmpty() && restartscript.exists()) 
+			if (!crashrestartscriptpath.isEmpty() && restartscript.exists())
 			{
-				System.out.println("[AutoSaveWorld] Startup script found. Restarting");	
+				System.out.println("[AutoSaveWorld] Startup script found. Restarting");
 				restartscript.setExecutable(true);
 				pb.command(restartscript.getAbsolutePath());
 			}
-			else 
+			else
 			{
 				System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
 				String jarfilename = Bukkit.class.getResource("").getFile();
 				jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
 				jarfilename = new File(jarfilename).getName()+".jar";
-				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();			
+				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
 				List<String> execsequence = new ArrayList<String>();
 				execsequence.add("java");
 				execsequence.addAll(arguments);
@@ -69,11 +69,12 @@ public class RestartJVMshutdownhook extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
+	@Override
 	public void run()
 	{
 		restart();
 	}
-		
+
 }

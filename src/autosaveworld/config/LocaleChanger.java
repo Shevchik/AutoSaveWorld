@@ -14,7 +14,7 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class LocaleChanger {
 
-	
+
 	private AutoSaveWorld plugin;
 	private AutoSaveConfigMSG configmsg;
 	public LocaleChanger(AutoSaveWorld plugin, AutoSaveConfigMSG configmsg) {
@@ -46,10 +46,10 @@ public class LocaleChanger {
     			}
 			}
 			zipFile.close();
-		} catch (Exception e) {}	
+		} catch (Exception e) {}
    		return locales;
 	}
-	
+
 	public void loadLocale(String locale)
 	{
 		//load messages file from package
@@ -57,9 +57,9 @@ public class LocaleChanger {
 		loadLocaleFile(locale);
 		//now load it
 		plugin.debug("loading configs");
-		configmsg.loadmsg();	
+		configmsg.loadmsg();
 	}
-	
+
 	//load needed locale file
 	private void loadLocaleFile(String locale)
 	{
@@ -74,10 +74,10 @@ public class LocaleChanger {
 			}
 			in.close();
 			out.close();
-		} catch (Exception e) 
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+
 }

@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.purge;
@@ -38,8 +38,8 @@ public class MVInvPurge {
 	{
 		this.plugin = plugin;
 	}
-	
-	
+
+
 	public void doMVInvPurgeTask(ActivePlayersList pacheck)
 	{
 		int deleted = 0;
@@ -54,12 +54,12 @@ public class MVInvPurge {
 			for (String plfile : mcinvpfld.list())
 			{
 				String plname = plfile.substring(0, plfile.indexOf("."));
-				
-				if (!pacheck.isActiveCS(plname)) 
+
+				if (!pacheck.isActiveCS(plname))
 				{
 					plugin.debug("Removing "+plname+" MVInv files");
 					//remove files from MVInv world folders
-					for (World wname : Bukkit.getWorlds()) 
+					for (World wname : Bukkit.getWorlds())
 					{
 						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData((OfflinePlayer) ctor.newInstance(server,plname));
 					}
@@ -76,8 +76,8 @@ public class MVInvPurge {
 				}
 			}
 		} catch (Exception e) {}
-		
+
 		plugin.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
 	}
-	
+
 }

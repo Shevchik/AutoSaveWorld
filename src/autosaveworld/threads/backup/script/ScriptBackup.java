@@ -30,8 +30,8 @@ public class ScriptBackup {
     	this.plugin = plugin;
     	this.config = config;
     }
-    
-    
+
+
     public void performBackup()
     {
     	String scriptpath = config.scriptbackupscriptpath;
@@ -52,6 +52,6 @@ public class ScriptBackup {
     		plugin.debug("Scriptpath is invalid");
     	}
     }
-	
-	
+
+
 }

@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.config;
@@ -28,15 +28,15 @@ import autosaveworld.core.AutoSaveWorld;
 
 
 public class AutoSaveConfig {
-		
+
 	private FileConfiguration config;
 	private AutoSaveWorld plugin;
 	public AutoSaveConfig(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
-	
-	
+
+
 	// some global variables
 	public boolean varDebug = false;
 	public boolean commandonlyfromconsole = false;
@@ -118,17 +118,17 @@ public class AutoSaveConfig {
 	public boolean worldregensavewg = true;
 	public boolean worldregensavefactions = true;
 	public boolean worldregensavegp = true;
-	
+
 
 	//config load/save functions
 	public void load() {
-		
+
 		config = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigPath()));
-		
+
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
 		commandonlyfromconsole = config.getBoolean("var.commandsonlyfromconsole",commandonlyfromconsole);
-		
+
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
 		donotsavestructures = config.getBoolean("save.disablestructuresaving",donotsavestructures);
@@ -145,7 +145,7 @@ public class AutoSaveConfig {
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
 		backupsaveBefore = config.getBoolean("backup.savebefore",backupsaveBefore);
 			//localfs
-			localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);	
+			localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);
 			lfsMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
 			lfsMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
 			lfsextfolders = config.getStringList("backup.localfs.destinationfolders");
@@ -180,7 +180,7 @@ public class AutoSaveConfig {
 			scriptbackupscriptpath = config.getString("backup.script.scriptpath",scriptbackupscriptpath);
 
 
-		
+
 		//purge variables
 		purgeInterval = config.getInt("purge.interval", purgeInterval);
 		purgeAwayTime = config.getLong("purge.awaytime", purgeAwayTime);
@@ -199,14 +199,14 @@ public class AutoSaveConfig {
 		purgeeconomy = config.getBoolean("purge.economy.enabled", purgeeconomy);
 		purgeperms = config.getBoolean("purge.permissions.enabled", purgeperms);
 		purgedat = config.getBoolean("purge.dat.enabled", purgedat);
-		
+
 		//crashrestart variables
 		crashrestartenabled = config.getBoolean("crashrestart.enabled",crashrestartenabled);
 		crdelay = config.getInt("crashrestart.startdelay",crdelay);
 		crashrestartscriptpath = config.getString("crashrestart.scriptpath",crashrestartscriptpath);
 		crtimeout = config.getLong("crashrestart.timeout",crtimeout);
 		crstop = config.getBoolean("crashrestart.juststop", crstop);
-		
+
 		//autorestart variables
 		autorestart = config.getBoolean("autorestart.enabled", autorestart);
 		autorestartBroadcast = config.getBoolean("autorestart.broadcast", autorestartBroadcast);
@@ -225,7 +225,7 @@ public class AutoSaveConfig {
 			}
 		}
 		Collections.sort(autorestartbroadcastonseconds, Collections.reverseOrder());
-		
+
 		//autoconsolecommand variables
 		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
 		cctimescommands.clear();
@@ -254,18 +254,18 @@ public class AutoSaveConfig {
 		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
 		worldregensavefactions = config.getBoolean("worldregen.savefactions",worldregensavefactions);
 		worldregensavegp = config.getBoolean("worldregen.savegp",worldregensavegp);
-		
+
 		save();
 	}
 
 	public void save() {
 		config = new YamlConfiguration();
-		
-				
+
+
 		// Variables
 		config.set("var.debug", varDebug);
 		config.set("var.commandsonlyfromconsole",commandonlyfromconsole);
-		
+
 		//save variables
 		config.set("save.enabled",saveEnabled);
 		config.set("save.interval", saveInterval);
@@ -281,7 +281,7 @@ public class AutoSaveConfig {
 		config.set("backup.savebefore",backupsaveBefore);
 		config.set("backup.broadcast", backupBroadcast);
 			//localfs
-			config.set("backup.localfs.enabled",localfsbackupenabled);	
+			config.set("backup.localfs.enabled",localfsbackupenabled);
 			config.set("backup.localfs.worlds", lfsbackupWorldsList);
 			config.set("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
 			config.set("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
@@ -304,8 +304,8 @@ public class AutoSaveConfig {
 			//script
 			config.set("backup.script.enabled",scriptbackupenabled);
 			config.set("backup.script.scriptpath",scriptbackupscriptpath);
-			
-			
+
+
 		//purge variables
 		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.interval", purgeInterval);
@@ -324,14 +324,14 @@ public class AutoSaveConfig {
 		config.set("purge.economy.enabled", purgeeconomy);
 		config.set("purge.permissions.enabled", purgeperms);
 		config.set("purge.dat.enabled", purgedat);
-		
+
 		//crashrestart variables
 		config.set("crashrestart.enabled",crashrestartenabled);
 		config.set("crashrestart.startdelay",crdelay);
 		config.set("crashrestart.scriptpath",crashrestartscriptpath);
 		config.set("crashrestart.timeout",crtimeout);
 		config.set("crashrestart.juststop", crstop);
-		
+
 		//autorestart variables
 		config.set("autorestart.enabled", autorestart);
 		config.set("autorestart.broadcast", autorestartBroadcast);
@@ -340,8 +340,8 @@ public class AutoSaveConfig {
 		config.set("autorestart.countdown.broadcastonsecond",autorestartbroadcastonseconds);
 		config.set("autorestart.scriptpath",autorestartscriptpath);
 		config.set("autorestart.juststop", astop);
-		
-		
+
+
 		//autoconsolecommand variables
 		config.set("consolecommand.timemode.enabled", cctimeenabled);
 		if (cctimescommands.isEmpty())
@@ -361,13 +361,13 @@ public class AutoSaveConfig {
 		{
 			config.set("consolecommand.intervalmode.intervals."+inttime, ccintervalscommands.get(inttime));
 		}
-		
+
 		//worldregen variables
 		config.set("worldregen.savewg",worldregensavewg);
 		config.set("worldregen.savefactions",worldregensavefactions);
 		config.set("worldregen.savegp",worldregensavegp);
 
-		try {config.save(new File(plugin.constants.getConfigPath()));} catch (IOException ex) {}		
+		try {config.save(new File(plugin.constants.getConfigPath()));} catch (IOException ex) {}
 	}
-	
+
 }

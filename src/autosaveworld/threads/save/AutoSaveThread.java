@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.save;
@@ -42,12 +42,12 @@ public class AutoSaveThread extends Thread {
 	}
 
 
-	public void stopThread() 
+	public void stopThread()
 	{
 		this.run = false;
 	}
 
-	public void startsave() 
+	public void startsave()
 	{
 		if (plugin.saveInProgress)
 		{
@@ -56,16 +56,17 @@ public class AutoSaveThread extends Thread {
 		}
 		command = true;
 	}
-	
+
 	// The code to run...weee
 	private volatile boolean run = true;
 	private boolean command = false;
-	public void run() 
+	@Override
+	public void run()
 	{
 
 		plugin.debug("AutoSaveThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
-		
+
 		while (run) {
 			// Prevent AutoSave from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving
@@ -73,7 +74,7 @@ public class AutoSaveThread extends Thread {
 				try {Thread.sleep(5000);} catch(InterruptedException e) {}
 				continue;
 			}
-			
+
 			//sleep
 			for (int i = 0; i < config.saveInterval; i++) {
 				if (!run || command) {break;}
@@ -85,26 +86,26 @@ public class AutoSaveThread extends Thread {
 				performSave(false);
 			}
 		}
-		
+
 		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
-	
-	public void performSave(boolean force) 
+
+	public void performSave(boolean force)
 	{
 		if (config.saveIgnoreIfNoPlayers && plugin.getServer().getOnlinePlayers().length == 0 && !command && !force) {
 			// No players online, don't bother saving.
 			plugin.debug("Skipping save, no players online.");
 			return;
 		}
-		
+
 		command = false;
 
 		if (plugin.backupInProgress) {
 			plugin.warn("AutoBackup is in process. AutoSave cancelled");
 			return;
 		}
-		
+
 		// Lock
 		plugin.saveInProgress = true;
 
@@ -119,7 +120,7 @@ public class AutoSaveThread extends Thread {
 		// Release
 		plugin.saveInProgress = false;
 	}
-	
+
 	private void save()
 	{
 		// Save the players
@@ -130,6 +131,7 @@ public class AutoSaveThread extends Thread {
 		{
 			taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					for (Player player : plugin.getServer().getOnlinePlayers())
@@ -147,12 +149,13 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Saved Players");
 		// Save the worlds
 		plugin.debug("Saving worlds");
-		for (final World world : plugin.getServer().getWorlds()) 
+		for (final World world : plugin.getServer().getWorlds())
 		{
 			if (run)
 			{
 				taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
 				{
+					@Override
 					public void run()
 					{
 						plugin.debug(String.format("Saving world: %s", world.getName()));
@@ -173,19 +176,19 @@ public class AutoSaveThread extends Thread {
 		}
 		plugin.debug("Saved Worlds");
 	}
-	
+
 	private void saveWorldNormal(World world)
 	{
 		world.save();
 	}
-	
+
 	private void saveWorldDoNoSaveStructureInfo(World world)
 	{
 		//structures are saved only for main world so we use this workaround only for main world
 		if (Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName()))
 		{
 			//omg...
-			try 
+			try
 			{
 				//save saveenbled state
 				boolean saveenabled = world.isAutoSave();
@@ -197,7 +200,7 @@ public class AutoSaveThread extends Thread {
 				Object worldserver = worldField.get(world);
 				Field dataManagerField = worldserver.getClass().getSuperclass().getDeclaredField("dataManager");
 				dataManagerField.setAccessible(true);
-				Object dataManager = dataManagerField.get(worldserver);			
+				Object dataManager = dataManagerField.get(worldserver);
 				//invoke check session
 				Method checkSessionMethod = dataManager.getClass().getSuperclass().getDeclaredMethod("checkSession");
 				checkSessionMethod.setAccessible(true);

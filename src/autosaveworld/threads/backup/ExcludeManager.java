@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.backup;
@@ -28,11 +28,11 @@ public class ExcludeManager {
 	public boolean isFolderExcluded(List<String> excludelist, String folderPath)
 	{
 		File folder = new File(folderPath);
-		
+
 		//ignore configured folders
-		for (String excludedFolderPath : excludelist) 
+		for (String excludedFolderPath : excludelist)
 		{
-			if (excludedFolderPath.contains("*")) 
+			if (excludedFolderPath.contains("*"))
 			{
 				//resolve wildcard
 				//check parents folders equality
@@ -45,24 +45,24 @@ public class ExcludeManager {
 						return true;
 					}
 				}
-			} else 
+			} else
 			{
 				//plain folders equality check
-				if (folder.getAbsoluteFile().equals(new File(excludedFolderPath).getAbsoluteFile())) 
+				if (folder.getAbsoluteFile().equals(new File(excludedFolderPath).getAbsoluteFile()))
 				{
 					return true;
 				}
 			}
 		}
-	
+
 		//ignore others worlds folders inside main world folder (for mcpc+)
 		//check if we trying to backup folder inside main world folder
 		if (Bukkit.getWorlds().get(0).getWorldFolder().getAbsoluteFile().equals(folder.getParentFile()))
 		{
 			//if this folder name is equal to one of the world names we should ignore it
-			for (World w : Bukkit.getWorlds()) 
+			for (World w : Bukkit.getWorlds())
 			{
-				if (folder.getName().equals(w.getWorldFolder().getName())) 
+				if (folder.getName().equals(w.getWorldFolder().getName()))
 				{
 					return true;
 				}
@@ -71,5 +71,5 @@ public class ExcludeManager {
 
     	return false;
 	}
-	
+
 }

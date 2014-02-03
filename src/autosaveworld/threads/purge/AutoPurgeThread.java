@@ -52,12 +52,13 @@ public class AutoPurgeThread extends Thread {
 	// The code to run...weee
 	private volatile boolean run = true;
 	private boolean command = false;
+	@Override
 	public void run() {
 
 		plugin.debug("AutoPurgeThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoPurgeThread");
 
-		
+
 		while (run) {
 			// Prevent AutoPurge from never sleeping
 			// If interval is 0, sleep for 10 seconds and skip purging
@@ -78,16 +79,16 @@ public class AutoPurgeThread extends Thread {
 			if (run&&(config.purgeEnabled || command)) {performPurge();}
 
 		}
-		
+
 		plugin.debug("Graceful quit of AutoPurgeThread");
-		
+
 	}
 
 
 
 
 	public void performPurge() {
-		
+
 		command = false;
 
 		if (plugin.backupInProgress) {
@@ -98,15 +99,15 @@ public class AutoPurgeThread extends Thread {
 			plugin.warn("WorldRegen is in progress. Purge cancelled.");
 			return;
 		}
-			
+
 			plugin.purgeInProgress = true;
-			
+
 			plugin.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
-			
+
 			long awaytime = config.purgeAwayTime * 1000;
-			
+
 			plugin.debug("Purge started");
-			
+
 			plugin.debug("Gathering active players list");
 			ActivePlayersList aplist = new ActivePlayersList();
 			try {
@@ -119,9 +120,9 @@ public class AutoPurgeThread extends Thread {
 				plugin.purgeInProgress = false;
 				return;
 			}
-			
+
 			PluginManager pm = plugin.getServer().getPluginManager();
-			
+
 			if ((pm.getPlugin("WorldGuard") != null)
 					&& config.purgewg) {
 				plugin.debug("WG found, purging");
@@ -131,7 +132,7 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-			
+
 			if ((pm.getPlugin("LWC") != null)
 					&& config.purgelwc) {
 				plugin.debug("LWC found, purging");
@@ -141,8 +142,8 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-			
-			if ((pm.getPlugin("Multiverse-Inventories") !=null) 
+
+			if ((pm.getPlugin("Multiverse-Inventories") !=null)
 					&& config.purgemvinv ) {
 				plugin.debug("Multiverse-Inventories found, purging");
 				try {
@@ -151,8 +152,8 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-			
-			if ((pm.getPlugin("PlotMe") !=null) 
+
+			if ((pm.getPlugin("PlotMe") !=null)
 					&& config.purgepm) {
 				plugin.debug("PlotMe found, purging");
 				try {
@@ -161,8 +162,8 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-			
-			if ((pm.getPlugin("Residence") !=null) 
+
+			if ((pm.getPlugin("Residence") !=null)
 					&& config.purgeresidence) {
 				plugin.debug("Residence found, purging");
 				try {
@@ -171,7 +172,7 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-			
+
 			if (pm.getPlugin("Vault") != null) {
 				VaultPurge vp = new VaultPurge(plugin);
 				if (config.purgeeconomy) {
@@ -183,8 +184,8 @@ public class AutoPurgeThread extends Thread {
 					vp.doPermissionsPurgeTask(aplist);
 				}
 			}
-			
-			
+
+
 			plugin.debug("Purging player .dat files");
 			if (config.purgedat) {
 				try {
@@ -193,16 +194,16 @@ public class AutoPurgeThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-			
 
-			
+
+
 			plugin.debug("Purge finished");
-			
+
 
 			plugin.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
-			
+
 			plugin.purgeInProgress = false;
-			
+
 	}
 
 

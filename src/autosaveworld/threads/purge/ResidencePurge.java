@@ -20,27 +20,27 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 public class ResidencePurge {
 
 	private AutoSaveWorld plugin;
-	
+
 	public ResidencePurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
-	
+
 	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres)
 	{
 		plugin.debug("Residence purge started");
-		
+
 		int deletedres = 0;
-		
+
 		List<String> reslist = new ArrayList<String>(Arrays.asList(Residence.getResidenceManager().getResidenceList()));
 		boolean wepresent = (Bukkit.getPluginManager().getPlugin("WorldEdit") != null);
-		
+
 		//search for residences with inactive players
 		for (final String res : reslist)
 		{
 			plugin.debug("Checking residence " + res);
 			final ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
-			if (!pacheck.isActiveCS(cres.getOwner())) 
+			if (!pacheck.isActiveCS(cres.getOwner()))
 			{
 				plugin.debug("Owner of residence "+res+" is inactive. Purgin residence");
 
@@ -54,6 +54,7 @@ public class ResidencePurge {
 							Vector minpoint = BukkitUtil.toVector(ca.getLowLoc());
 							Vector maxpoint = BukkitUtil.toVector(ca.getHighLoc());
 							BukkitWorld lw = new BukkitWorld(Bukkit.getWorld(cres.getWorld()));
+							@Override
 							public void run()
 							{
 								try {
@@ -66,7 +67,7 @@ public class ResidencePurge {
 							}
 						};
 						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, caregen);
-						
+
 						//Wait until previous residence regeneration is finished to avoid full main thread freezing
 						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 						{
@@ -77,6 +78,7 @@ public class ResidencePurge {
 					plugin.debug("Deleting residence "+res);
 					Runnable delres = new Runnable()
 					{
+						@Override
 						public void run()
 						{
 							cres.remove();
@@ -84,12 +86,12 @@ public class ResidencePurge {
 						}
 					};
 					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delres);
-					
+
 					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 					{
 						try {Thread.sleep(100);} catch (InterruptedException e) {}
 					}
-					
+
 					deletedres += 1;
 				}
 			}

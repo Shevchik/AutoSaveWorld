@@ -37,19 +37,20 @@ public class CrashRestartThread extends Thread{
 		this.plugin = plugin;
 		this.config = config;
 	}
-	
+
 	public void stopThread()
 	{
 		this.run = false;
 	}
-	
+
 	private long syncticktime = 0;
 	private boolean run = true;
+	@Override
 	public void run()
 	{
 		plugin.debug("CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
-		
+
 		plugin.debug("Delaying crashrestart checker start for "+config.crdelay+" seconds");
 		//wait for configurable delay
 		try {Thread.sleep(config.crdelay*1000);} catch (InterruptedException e) {}
@@ -59,19 +60,20 @@ public class CrashRestartThread extends Thread{
 		plugin.debug("Running crashrestart checker");
 		//schedule sync task in, this will provide us info about when the last server tick occured
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+			@Override
 			public void run() {
 				syncticktime = System.currentTimeMillis();
-			}	
+			}
 		}, 0, 20);
-		
+
 		while (run)
 		{
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) 
+			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L)))
 			{
 				run = false;
 
-				if (config.crashrestartenabled) 
+				if (config.crashrestartenabled)
 				{
 					plugin.debug("Server has stopped responding. Probably this is a crash.");
 					plugin.debug("Dumping threads info");
@@ -82,27 +84,27 @@ public class CrashRestartThread extends Thread{
 						dumpThread(thread, log);
 					}
 					plugin.debug("Restarting Server");
-					
-					if (!config.crstop) 
+
+					if (!config.crstop)
 					{
 						plugin.JVMsh.setPath(config.crashrestartscriptpath);
-						Runtime.getRuntime().addShutdownHook(plugin.JVMsh); 
+						Runtime.getRuntime().addShutdownHook(plugin.JVMsh);
 					}
-					
+
 					plugin.getServer().shutdown();
 
 				}
-				
+
 			}
-			
+
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
-		
+
 		plugin.debug("Graceful quit of CrashRestartThread");
-		
+
 	}
-	
-	
+
+
 	private void dumpThread(ThreadInfo thread, Logger log)
 	{
 		log.log(Level.SEVERE, "------------------------------" );
@@ -123,6 +125,6 @@ public class CrashRestartThread extends Thread{
 		}
 		log.log( Level.SEVERE, "------------------------------" );
 	}
-	
+
 }
 

@@ -38,10 +38,10 @@ public class Zip {
 
 	private ExcludeManager eManager = new ExcludeManager();
 
-	public void ZipFolder(final File srcDir, final File destFile) throws FileNotFoundException, IOException 
+	public void ZipFolder(final File srcDir, final File destFile) throws FileNotFoundException, IOException
 	{
 		destFile.getParentFile().mkdirs();
-		
+
 		BufferedOutputStream bufOutStream = new BufferedOutputStream(new FileOutputStream(destFile));
 		try {
 			ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream);
@@ -55,17 +55,17 @@ public class Zip {
 		}
 	}
 
-	private void zipDir(ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException 
+	private void zipDir(ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException
 	{
 		final File zipDir = new File(srcDir, currentDir);
 
-		for (final String child : zipDir.list()) 
+		for (final String child : zipDir.list())
 		{
 			final File srcFile = new File(zipDir, child);
 
-			if (srcFile.isDirectory()) 
+			if (srcFile.isDirectory())
 			{
-				if (!eManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) 
+				if (!eManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child))
 				{
 					zipDir(zipOutStream, srcDir, currentDir + child + File.separator);
 				}
@@ -77,7 +77,7 @@ public class Zip {
 		}
 	}
 
-	private void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException 
+	private void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException
 	{
 		if (!srcFile.getName().endsWith(".lck"))
 		{
@@ -87,9 +87,9 @@ public class Zip {
 				final ZipEntry zipEntry = new ZipEntry(entry);
 				zipEntry.setTime(srcFile.lastModified());
 				zipOutStream.putNextEntry(zipEntry);
-				
+
 				final byte[] buf = new byte[4096];
-				
+
 				try {
 					int len;
 					while ((len = inStream.read(buf)) > 0)
@@ -99,7 +99,7 @@ public class Zip {
 				} finally {
 					zipOutStream.closeEntry();
 				}
-				
+
 			} finally {
 				inStream.close();
 			}

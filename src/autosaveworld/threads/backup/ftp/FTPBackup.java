@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.backup.ftp;
@@ -26,12 +26,13 @@ import org.bukkit.World;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.backup.ftp.FTPBackupOperations;
+import autosaveworldsrclibs.org.apache.commons.net.ftp.FTP;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPReply;
 
 public class FTPBackup {
-    
-	
+
+
     private AutoSaveWorld plugin;
     private AutoSaveConfig config;
     public FTPBackup(AutoSaveWorld plugin, AutoSaveConfig config)
@@ -39,11 +40,11 @@ public class FTPBackup {
     	this.plugin = plugin;
     	this.config = config;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     public void performBackup()
     {
     	FTPClient ftpclient = new FTPClient();
@@ -73,12 +74,12 @@ public class FTPBackup {
 	    	String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 	    	ftpclient.makeDirectory(datedir);
 	    	ftpclient.changeWorkingDirectory(datedir);
-	        ftpclient.setFileType(FTPClient.BINARY_FILE_TYPE);
+	        ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
 	        //load BackupOperations class
 			FTPBackupOperations bo = new FTPBackupOperations(plugin, ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
 			//do worlds backup
 			plugin.debug("Backuping Worlds");
-			for (World w : Bukkit.getWorlds()) 
+			for (World w : Bukkit.getWorlds())
 			{
 				if (config.ftpbackupWorlds.contains("*") || config.ftpbackupWorlds.contains(w.getWorldFolder().getName()))
 				{
@@ -93,13 +94,13 @@ public class FTPBackup {
 				bo.backupPlugins();
 				plugin.debug("Backuped plugins");
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
-    	
+		}
+
     }
-    
+
 	private String findOldestBackupName(String[] timestamps) throws IOException
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
@@ -141,5 +142,5 @@ public class FTPBackup {
 			ftp.deleteFile(directory);
 		}
 	}
-        
+
 }

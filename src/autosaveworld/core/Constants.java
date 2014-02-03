@@ -25,14 +25,14 @@ public class Constants {
 	{
 		pluginfolder = plugin.getDataFolder().getPath()+File.separator;
 	}
-	
+
 	//main
 	private String pluginfolder;
 	public String getPluginFolder()
 	{
 		return pluginfolder;
 	}
-	
+
 	//config
 	private String configfile = "config.yml";
 	public String getConfigPath()
@@ -51,7 +51,7 @@ public class Constants {
 	{
 		return getPluginFolder()+backuppreserverfile;
 	}
-	
+
 	//backup
 	private String backuptempfolder = "BackupTemp"+File.separator;
 	public String getBackupTempFolder()
@@ -64,7 +64,7 @@ public class Constants {
 	private String worldnamefile = "wname.yml";
 	private String shouldpastefile = "shouldpaste";
 	private String wgtempfolder = "WG"+File.separator;
-	private String factionstempfolder = "Factions"+File.separator;	
+	private String factionstempfolder = "Factions"+File.separator;
 	private String griefpreventiontempfolder = "GP"+File.separator;
 	private String townytempfolder = "Towny"+File.separator;
 	public String getWorldRegenTempFolder()
@@ -95,5 +95,5 @@ public class Constants {
 	{
 		return getWorldRegenTempFolder()+townytempfolder;
 	}
-	
+
 }

@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.backup.localfs;
@@ -41,7 +41,7 @@ public class LocalFSBackup {
 
 	public void performBackup() {
 
-		//backup	
+		//backup
 		for (String extpath : config.lfsextfolders)
 		{
 			//init backup operations class
@@ -57,7 +57,7 @@ public class LocalFSBackup {
 
 			//create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-		
+
 			//start world backup
 			for (World world : Bukkit.getWorlds())
 			{
@@ -68,7 +68,7 @@ public class LocalFSBackup {
 					bo.startWorldBackup(backupService, world, config.lfsMaxNumberOfWorldsBackups, backuptimestamp);
 				}
 			}
-			
+
 			//start plugins backup
 			if (config.lfsbackuppluginsfolder) {
 				bo.startPluginsBackup(backupService, config.lfsMaxNumberOfPluginsBackups, backuptimestamp );
@@ -81,6 +81,6 @@ public class LocalFSBackup {
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
-	
-	
+
+
 }

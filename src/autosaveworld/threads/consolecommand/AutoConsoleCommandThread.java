@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.consolecommand;
@@ -35,25 +35,27 @@ public class AutoConsoleCommandThread extends Thread {
 		this.plugin = plugin;
 		this.config = config;
 	}
-	
+
 	public void stopThread()
 	{
 		this.run = false;
 	}
-	
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 	private SimpleDateFormat msdf = new SimpleDateFormat("mm");
 	private long loaded = 0;
-	
+
 	private volatile boolean run = true;
+	@Override
 	public void run() {
 
 		plugin.debug("AutoConsoleCommandThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
-		
+
 		//wait for server to start
 		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				loaded = System.currentTimeMillis();
@@ -63,12 +65,12 @@ public class AutoConsoleCommandThread extends Thread {
 			try{Thread.sleep(1000);} catch (Exception e) {}
 		}
 		Bukkit.getScheduler().cancelTask(ltask);
-		
-		
+
+
 		while (run) {
-			
+
 			//handle times mode
-			if (config.cctimeenabled) 
+			if (config.cctimeenabled)
 			{
 				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 				String ctime = getCurTime();
@@ -79,26 +81,26 @@ public class AutoConsoleCommandThread extends Thread {
 					executeCommands(config.cctimescommands.get(ctime));
 				}
 			}
-			
+
 			//handle interval mode
 			if (config.ccintervalenabled)
 			{
-				for (int interval : getIntervalsToExecute()) 
+				for (int interval : getIntervalsToExecute())
 				{
 					plugin.debug("Executing console commands (intervalmode)");
 					executeCommands(config.ccintervalscommands.get(interval));
 				}
 				intervalcounter++;
 			}
-			
+
 			//sleep for a second
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
-		
+
 		plugin.debug("Graceful quit of AutoConsoleCommandThread");
 
 	}
-	
+
 
 	private void executeCommands(final List<String> commands)
 	{
@@ -106,6 +108,7 @@ public class AutoConsoleCommandThread extends Thread {
 		{
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					ConsoleCommandSender csender = Bukkit.getConsoleSender();
@@ -117,15 +120,15 @@ public class AutoConsoleCommandThread extends Thread {
 			});
 		}
 	}
-	
-	
+
+
 	//timesmode checks
 	private int minute = -1;
 	private String getCurTime()
 	{
 		return sdf.format(System.currentTimeMillis());
 	}
-	
+
 	//intervalmode checks
 	private long intervalcounter = 0;
 	private List<Integer> getIntervalsToExecute()
@@ -140,6 +143,6 @@ public class AutoConsoleCommandThread extends Thread {
 		}
 		return inttoexecute;
 	}
-	
-	
+
+
 }

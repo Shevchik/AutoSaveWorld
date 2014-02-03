@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.purge;
@@ -28,13 +28,13 @@ import net.milkbowl.vault.permission.Permission;
 import autosaveworld.core.AutoSaveWorld;
 
 public class VaultPurge {
-	
+
 	private AutoSaveWorld plugin;
 	public VaultPurge(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
-	
+
 
 
 	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
@@ -44,12 +44,12 @@ public class VaultPurge {
 		int deleted = 0;
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-		for (String playerfile : playersdatfolder.list()) 
+		for (String playerfile : playersdatfolder.list())
 		{
 			if (playerfile.endsWith(".dat"))
 			{
 				String playername = playerfile.substring(0, playerfile.length() - 4);
-				if (!pacheck.isActiveCS(playername)) 
+				if (!pacheck.isActiveCS(playername))
 				{
 					//add player to delete batch
 					playerstopurgeperms.add(playername);
@@ -72,6 +72,7 @@ public class VaultPurge {
 		//detete permissions
 		Runnable deleteperms = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				for (String playername : playerstopurgeperms)
@@ -91,7 +92,7 @@ public class VaultPurge {
 			}
 		};
 		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteperms);
-		
+
 		//Wait until previous permissions delete is finished to avoid full main thread freezing
 		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 		{
@@ -106,12 +107,12 @@ public class VaultPurge {
 		int deleted = 0;
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-		for (String playerfile : playersdatfolder.list()) 
+		for (String playerfile : playersdatfolder.list())
 		{
 			if (playerfile.endsWith(".dat"))
 			{
 				String playername = playerfile.substring(0, playerfile.length() - 4);
-				if (!pacheck.isActiveCS(playername)) 
+				if (!pacheck.isActiveCS(playername))
 				{
 					//add player to delete batch
 					playerstopurgeecon.add(playername);
@@ -134,6 +135,7 @@ public class VaultPurge {
 		//detete permissions
 		Runnable deleteeconomy = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				for (String playername : playerstopurgeecon)
@@ -147,7 +149,7 @@ public class VaultPurge {
 			}
 		};
 		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteeconomy);
-		
+
 		//Wait until previous permissions delete is finished to avoid full main thread freezing
 		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 		{

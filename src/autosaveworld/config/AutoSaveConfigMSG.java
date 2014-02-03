@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.config;
@@ -26,9 +26,9 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class AutoSaveConfigMSG {
 
-	private AutoSaveWorld plugin;	
+	private AutoSaveWorld plugin;
 	public AutoSaveConfigMSG(AutoSaveWorld plugin) {
-		this.plugin = plugin;		
+		this.plugin = plugin;
 	}
 
 	// Messages
@@ -42,8 +42,8 @@ public class AutoSaveConfigMSG {
 	public String messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
 	public String messageWorldRegenKick = "&9Server is regenerating map, please come back later";
 	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
-	
-	public void loadmsg() 
+
+	public void loadmsg()
 	{
 		FileConfiguration configfile = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGPath()));
 		messageSaveBroadcastPre = configfile.getString("broadcast.pre", messageSaveBroadcastPre);
@@ -58,7 +58,7 @@ public class AutoSaveConfigMSG {
 		messageWorldRegenKick = configfile.getString("worldregen.kickmessage", messageWorldRegenKick);
 		savemsg();
 	}
-	
+
 	private void savemsg()
 	{
 		FileConfiguration configfile = new YamlConfiguration();

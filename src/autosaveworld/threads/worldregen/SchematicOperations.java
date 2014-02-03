@@ -23,12 +23,13 @@ public class SchematicOperations {
 	{
 		this.plugin = plugin;
 	}
-	
+
 	private int ststaskid;
 	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax)
 	{
-		Runnable copypaste = new Runnable() 
+		Runnable copypaste = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				int tries = 0;
@@ -73,24 +74,25 @@ public class SchematicOperations {
 		File f= new File(schematic);
 		SchematicFormat.getFormats().iterator().next().save(clipboard, f);
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	private int pfstaskid;
 	public void pasteFromSchematics(final String shematic, final World world)
 	{
-		Runnable copypaste = new Runnable() 
+		Runnable copypaste = new Runnable()
 		{
-			public void run() 
-			{	
+			@Override
+			public void run()
+			{
 				int tries = 0;
 				boolean success = false;
 				while (tries < 3 && !success)
 				{
 					try {
-						tryPaste(shematic,world);	
+						tryPaste(shematic,world);
 						success = true;
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -112,7 +114,7 @@ public class SchematicOperations {
 			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
 		}
 	}
-	private void tryPaste(final String shematic, final World world) throws IOException, DataException, MaxChangedBlocksException 
+	private void tryPaste(final String shematic, final World world) throws IOException, DataException, MaxChangedBlocksException
 	{
 		//load from schematic to clipboard
 		EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
@@ -122,6 +124,6 @@ public class SchematicOperations {
 		//paste clipboard at origin
 		cc.place(es, cc.getOrigin(), false);
 	}
-	
-	
+
+
 }

@@ -96,7 +96,7 @@ public class InternalUtils {
 		System.gc();
 		System.gc();
 	}
-	
+
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException
 	{
 		PluginManager pluginmanager = Bukkit.getPluginManager();
@@ -106,5 +106,5 @@ public class InternalUtils {
 		plugin.onLoad();
 		pluginmanager.enablePlugin(plugin);
 	}
-	
+
 }

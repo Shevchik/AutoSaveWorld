@@ -36,10 +36,10 @@ public class TownyCopy {
 
 		new File(plugin.constants.getTownyTempFolder()).mkdirs();
 
-		try 
+		try
 		{
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtoregen.getName()).getTowns();
-			for (Town town : towns) 
+			for (Town town : towns)
 			{
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0)
@@ -64,11 +64,11 @@ public class TownyCopy {
 					plugin.debug("Towny town "+town.getName()+" saved");
 				}
 			}
-		} 
-		catch (NotRegisteredException e) 
+		}
+		catch (NotRegisteredException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+
 }

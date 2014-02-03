@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.backup.localfs;
@@ -40,14 +40,15 @@ public class LFSBackupOperations {
 		this.extpath = extpath;
 		this.excludefolders = excludefolders;
 	}
-	
+
     private LFSFileUtils fu = new LFSFileUtils();
 
 	public void startWorldBackup(ExecutorService backupService, final World world, final int maxBackupsCount, final String latestbackuptimestamp)
 	{
 		//create runnable
-		Runnable backupWorld = new Runnable() 
+		Runnable backupWorld = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				plugin.debug("Starting backup for world "+world.getWorldFolder().getName());
@@ -64,7 +65,7 @@ public class LFSBackupOperations {
 					if (oldestBackupName.contains(".zip")) {
 						oldestBakup.delete();
 					} else {
-						fu.deleteDirectory(oldestBakup); 
+						fu.deleteDirectory(oldestBakup);
 					}
 				}
 				plugin.debug("Backuping world "+world.getWorldFolder().getName());
@@ -74,7 +75,7 @@ public class LFSBackupOperations {
 					String worldBackup = worldbackupfolder+File.separator+latestbackuptimestamp;
 					if (!zip) {
 						fu.copyDirectory(worldfolder, new File(worldBackup),excludefolders);
-					} else { 
+					} else {
 						Zip zipfld = new Zip(excludefolders);
 						zipfld.ZipFolder(worldfolder, new File(worldBackup+".zip"));
 					}
@@ -83,20 +84,21 @@ public class LFSBackupOperations {
 					plugin.debug("Failed to backup world "+world.getWorldFolder().getName());
 					e.printStackTrace();
 				} finally {
-					world.setAutoSave(true); 
+					world.setAutoSave(true);
 				}
 			}
 		};
 		//add to executor
 		backupService.submit(backupWorld);
 	}
-	
 
-	public void startPluginsBackup(ExecutorService backupService,  final int maxBackupsCount, final String latestbackuptimestamp) 
+
+	public void startPluginsBackup(ExecutorService backupService,  final int maxBackupsCount, final String latestbackuptimestamp)
 	{
 		//create runnable
-		Runnable backupPlugins = new Runnable() 
+		Runnable backupPlugins = new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				plugin.debug("Starting plugins backup");
@@ -113,7 +115,7 @@ public class LFSBackupOperations {
 					if (oldestBackupName.contains(".zip")) {
 						oldestBakup.delete();
 					} else {
-						fu.deleteDirectory(oldestBakup); 
+						fu.deleteDirectory(oldestBakup);
 					}
 				}
 				plugin.debug("Backuping plugins");
@@ -128,7 +130,7 @@ public class LFSBackupOperations {
 					}
 					plugin.debug("Backuped plugins");
 				} catch (IOException e) {
-					plugin.debug("Failed to backup plugins");					
+					plugin.debug("Failed to backup plugins");
 					e.printStackTrace();
 				}
 			}
@@ -136,12 +138,12 @@ public class LFSBackupOperations {
 		//add to executor
 		backupService.submit(backupPlugins);
 	}
-	
+
 	public void deleteOldestPluginsBackup(String oldestbackupdate)
 	{
 		String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+oldestbackupdate;
 		fu.deleteDirectory(new File(fldtodel));
 		fu.deleteDirectory(new File(fldtodel+".zip"));
 	}
-	
+
 }

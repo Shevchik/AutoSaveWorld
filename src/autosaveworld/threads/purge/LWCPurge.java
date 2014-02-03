@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.purge;
@@ -37,14 +37,14 @@ public class LWCPurge {
 	{
 		this.plugin = plugin;
 	}
-	
+
 	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks) {
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
-		
+
 		plugin.debug("LWC purge started");
-		
+
 		int deleted = 0;
-		
+
 		//we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
 		{
@@ -56,7 +56,8 @@ public class LWCPurge {
 					Runnable remchest = new Runnable()
 					{
 						Block block = pr.getBlock();
-						public void run() 
+						@Override
+						public void run()
 						{
 							BlockState bs = block.getState();
 							if (bs instanceof Chest)
@@ -68,10 +69,10 @@ public class LWCPurge {
 								((DoubleChest) bs).getInventory().clear();
 							}
 							block.setType(Material.AIR);
-						}				
+						}
 					};
 					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchest);
-				
+
 					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 					{
 						try {Thread.sleep(50);} catch (InterruptedException e) {}
@@ -84,8 +85,8 @@ public class LWCPurge {
 				deleted += 1;
 			}
 		}
-		
+
 		plugin.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
 	}
-	
+
 }

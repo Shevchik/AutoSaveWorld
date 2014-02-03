@@ -29,13 +29,13 @@ import org.bukkit.plugin.Plugin;
 import autosaveworld.core.AutoSaveWorld;
 
 public class ASWPluginManager {
-	
+
 	private AutoSaveWorld plugin;
 	public ASWPluginManager(AutoSaveWorld plugin)
 	{
 		this.plugin = plugin;
 	}
-	
+
 	private InternalUtils iutils = new InternalUtils();
 
 	public void handlePluginManagerCommand(CommandSender sender, String command, String pluginname)
@@ -57,7 +57,7 @@ public class ASWPluginManager {
 			sender.sendMessage("[AutoSaveWorld] Invalid plugin manager command");
 		}
 	}
-	
+
 	private void unloadPlugin(CommandSender sender, String pluginname)
 	{
 		//find plugin
@@ -77,11 +77,11 @@ public class ASWPluginManager {
 			sender.sendMessage("[AutoSaveWorld] Some error occured while loading plugin");
 		}
 	}
-	
+
 	private void loadPlugin(CommandSender sender, String pluginname)
 	{
 		//ignore if plugin is already loaded
-		if (isPluginAlreadyLoaded(pluginname)) 
+		if (isPluginAlreadyLoaded(pluginname))
 		{
 			sender.sendMessage("[AutoSaveWorld] Plugin is already loaded");
 			return;
@@ -103,7 +103,7 @@ public class ASWPluginManager {
 			sender.sendMessage("[AutoSaveWorld] Some error occured while unloading plugin");
 		}
 	}
-	
+
 	private void reloadPlugin(CommandSender sender, String pluginname)
 	{
 		//find plugin
@@ -132,7 +132,7 @@ public class ASWPluginManager {
 			sender.sendMessage("[AutoSaveWorld] Some error occured while reloading plugin");
 		}
 	}
-	
+
 	private Plugin findPlugin(String pluginname)
 	{
 		for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
@@ -144,7 +144,7 @@ public class ASWPluginManager {
 		}
 		return Bukkit.getPluginManager().getPlugin(pluginname);
 	}
-	
+
 	private File findPluginFile(String pluginname)
 	{
 		for (File pluginfile : plugin.getDataFolder().getParentFile().listFiles())
@@ -170,7 +170,7 @@ public class ASWPluginManager {
 		}
 		return new File(plugin.getDataFolder().getParent(), pluginname+".jar");
 	}
-	
+
 	private boolean isPluginAlreadyLoaded(String pluginname)
 	{
 		for (Plugin plugin : Bukkit.getPluginManager().getPlugins())

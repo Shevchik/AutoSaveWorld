@@ -3,16 +3,16 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  */
 
 package autosaveworld.threads.backup.localfs;
@@ -27,27 +27,27 @@ import autosaveworld.threads.backup.ExcludeManager;
 public class LFSFileUtils {
 
 	private ExcludeManager eManager = new ExcludeManager();
-	
-	public void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders) 
+
+	public void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders)
 	{
-		if (sourceLocation.isDirectory()) 
+		if (sourceLocation.isDirectory())
 		{
-			if (!targetLocation.exists()) 
+			if (!targetLocation.exists())
 			{
 				targetLocation.mkdirs();
 			}
-			for (String filename : sourceLocation.list()) 
+			for (String filename : sourceLocation.list())
 			{
-				if (!eManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) 
+				if (!eManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath()))
 				{
-					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders); 
+					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders);
 				}
 			}
-		} else 
+		} else
 		{
 			//ignore lock files
 			if (!sourceLocation.getName().endsWith(".lck"))
-			{	
+			{
 				try {
 					Files.copy(sourceLocation.toPath(), targetLocation.toPath());
 				} catch (Exception e) {
@@ -57,7 +57,7 @@ public class LFSFileUtils {
 			}
 		}
 	}
-			
+
 	public void deleteDirectory(File file)
 	{
 		if(!file.exists()) {return;}
@@ -74,8 +74,8 @@ public class LFSFileUtils {
 	    	file.delete();
 	    }
 	}
-	
-	
+
+
 	public String findOldestBackupName(String backupsfodler)
 	{
 		String[] timestamps = new File(backupsfodler).list();
@@ -111,6 +111,6 @@ public class LFSFileUtils {
 		}
 		return oldestBackupName;
 	}
-	
-	
+
+
 }
