@@ -12,6 +12,7 @@ import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
@@ -122,7 +123,30 @@ public class SchematicOperations {
 		File f = new File(shematic);
 		CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
 		//paste clipboard at origin
-		cc.place(es, cc.getOrigin(), false);
+		Vector size = cc.getSize();
+		Vector origin = cc.getOrigin();
+		for (int x = 0; x < size.getBlockX(); ++x) 
+		{
+			for (int y = 0; y < size.getBlockY(); ++y) 
+			{
+				for (int z = 0; z < size.getBlockZ(); ++z) 
+				{
+					Vector blockpos = new Vector(x, y, z);
+					final BaseBlock block = cc.getBlock(blockpos);
+
+					if (block == null) 
+					{
+						continue;
+					}
+
+					try {
+						es.setBlock(new Vector(x, y, z).add(origin), block);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 
