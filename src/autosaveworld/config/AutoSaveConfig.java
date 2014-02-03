@@ -53,30 +53,30 @@ public class AutoSaveConfig {
 	public int backupInterval =  60*60*6;
 	public boolean backupBroadcast = true;
 	public boolean backupsaveBefore = true;
-		//localfs backup
-		public boolean localfsbackupenabled = true;
-		public List<String> lfsbackupWorldsList = null;
-		public int lfsMaxNumberOfWorldsBackups = 15;
-		public boolean lfsbackuppluginsfolder = false;
-		public int lfsMaxNumberOfPluginsBackups = 15;
-		public List<String> lfsextfolders;
-		public List<String> lfsbackupexcludefolders;
-		public boolean lfsbackupzip = false;
-		//ftp backup
-		public boolean ftpbackupenabled = false;
-		public String ftphostname = "127.0.0.1";
-		public int ftpport = 21;
-		public String ftpusername = "user";
-		public String ftppassworld = "password";
-		public String ftppath = "/asw/";
-		public List<String> ftpbackupWorlds = null;
-		public boolean ftpbackuppluginsfolder = false;
-		public List<String> ftpbackupexcludefolders;
-		public int ftpbackupmaxnumberofbackups = 4;
-		public boolean ftpbackupzip = false;
-		//script
-		public boolean scriptbackupenabled = false;
-		public String scriptbackupscriptpath = "";
+	//localfs backup
+	public boolean localfsbackupenabled = true;
+	public List<String> lfsbackupWorldsList = null;
+	public int lfsMaxNumberOfWorldsBackups = 15;
+	public boolean lfsbackuppluginsfolder = false;
+	public int lfsMaxNumberOfPluginsBackups = 15;
+	public List<String> lfsextfolders;
+	public List<String> lfsbackupexcludefolders;
+	public boolean lfsbackupzip = false;
+	//ftp backup
+	public boolean ftpbackupenabled = false;
+	public String ftphostname = "127.0.0.1";
+	public int ftpport = 21;
+	public String ftpusername = "user";
+	public String ftppassworld = "password";
+	public String ftppath = "/asw/";
+	public List<String> ftpbackupWorlds = null;
+	public boolean ftpbackuppluginsfolder = false;
+	public List<String> ftpbackupexcludefolders;
+	public int ftpbackupmaxnumberofbackups = 4;
+	public boolean ftpbackupzip = false;
+	//script
+	public boolean scriptbackupenabled = false;
+	public String scriptbackupscriptpath = "";
 	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
@@ -144,40 +144,40 @@ public class AutoSaveConfig {
 		backupInterval = config.getInt("backup.interval", backupInterval);
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
 		backupsaveBefore = config.getBoolean("backup.savebefore",backupsaveBefore);
-			//localfs
-			localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);
-			lfsMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
-			lfsMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
-			lfsextfolders = config.getStringList("backup.localfs.destinationfolders");
-			if (lfsextfolders.isEmpty())
-			{
-				lfsextfolders.add(new File(".").getAbsolutePath());
-			}
-			lfsbackuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
-			lfsbackupexcludefolders = config.getStringList("backup.localfs.excludefolders");
-			lfsbackupzip = config.getBoolean("backup.localfs.zip", lfsbackupzip);
-			lfsbackupWorldsList = config.getStringList("backup.localfs.worlds");
-			if (lfsbackupWorldsList.size() == 0) {
-				lfsbackupWorldsList.add("*");
-			}
-			//ftp
-			ftpbackupenabled = config.getBoolean("backup.ftp.enabled",ftpbackupenabled);
-			ftphostname = config.getString("backup.ftp.hostname",ftphostname);
-			ftpport = config.getInt("backup.ftp.port",ftpport);
-			ftpusername = config.getString("backup.ftp.login",ftpusername);
-			ftppassworld = config.getString("backup.ftp.password",ftppassworld);
-			ftppath = config.getString("backup.ftp.path",ftppath);
-			ftpbackupWorlds = config.getStringList("backup.ftp.worlds");
-			ftpbackuppluginsfolder = config.getBoolean("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
-			ftpbackupexcludefolders = config.getStringList("backup.ftp.excludefolders");
-			ftpbackupmaxnumberofbackups = config.getInt("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
-			ftpbackupzip = config.getBoolean("backup.ftp.zip",ftpbackupzip);
-			if (ftpbackupWorlds.size() == 0) {
-				ftpbackupWorlds.add("*");
-			}
-			//script
-			scriptbackupenabled = config.getBoolean("backup.script.enabled",scriptbackupenabled);
-			scriptbackupscriptpath = config.getString("backup.script.scriptpath",scriptbackupscriptpath);
+		//localfs
+		localfsbackupenabled = config.getBoolean("backup.localfs.enabled",localfsbackupenabled);
+		lfsMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
+		lfsMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
+		lfsextfolders = config.getStringList("backup.localfs.destinationfolders");
+		if (lfsextfolders.isEmpty())
+		{
+			lfsextfolders.add(new File(".").getAbsolutePath());
+		}
+		lfsbackuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
+		lfsbackupexcludefolders = config.getStringList("backup.localfs.excludefolders");
+		lfsbackupzip = config.getBoolean("backup.localfs.zip", lfsbackupzip);
+		lfsbackupWorldsList = config.getStringList("backup.localfs.worlds");
+		if (lfsbackupWorldsList.size() == 0) {
+			lfsbackupWorldsList.add("*");
+		}
+		//ftp
+		ftpbackupenabled = config.getBoolean("backup.ftp.enabled",ftpbackupenabled);
+		ftphostname = config.getString("backup.ftp.hostname",ftphostname);
+		ftpport = config.getInt("backup.ftp.port",ftpport);
+		ftpusername = config.getString("backup.ftp.login",ftpusername);
+		ftppassworld = config.getString("backup.ftp.password",ftppassworld);
+		ftppath = config.getString("backup.ftp.path",ftppath);
+		ftpbackupWorlds = config.getStringList("backup.ftp.worlds");
+		ftpbackuppluginsfolder = config.getBoolean("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
+		ftpbackupexcludefolders = config.getStringList("backup.ftp.excludefolders");
+		ftpbackupmaxnumberofbackups = config.getInt("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
+		ftpbackupzip = config.getBoolean("backup.ftp.zip",ftpbackupzip);
+		if (ftpbackupWorlds.size() == 0) {
+			ftpbackupWorlds.add("*");
+		}
+		//script
+		scriptbackupenabled = config.getBoolean("backup.script.enabled",scriptbackupenabled);
+		scriptbackupscriptpath = config.getString("backup.script.scriptpath",scriptbackupscriptpath);
 
 
 
@@ -280,30 +280,30 @@ public class AutoSaveConfig {
 		config.set("backup.interval", backupInterval);
 		config.set("backup.savebefore",backupsaveBefore);
 		config.set("backup.broadcast", backupBroadcast);
-			//localfs
-			config.set("backup.localfs.enabled",localfsbackupenabled);
-			config.set("backup.localfs.worlds", lfsbackupWorldsList);
-			config.set("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
-			config.set("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
-			config.set("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
-			config.set("backup.localfs.excludefolders",lfsbackupexcludefolders);
-			config.set("backup.localfs.destinationfolders",lfsextfolders);
-			config.set("backup.localfs.zip",lfsbackupzip);
-			//ftp
-			config.set("backup.ftp.enabled",ftpbackupenabled);
-			config.set("backup.ftp.hostname",ftphostname);
-			config.set("backup.ftp.port",ftpport);
-			config.set("backup.ftp.login",ftpusername);
-			config.set("backup.ftp.password",ftppassworld);
-			config.set("backup.ftp.path",ftppath);
-			config.set("backup.ftp.worlds",ftpbackupWorlds);
-			config.set("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
-			config.set("backup.ftp.excludefolders",ftpbackupexcludefolders);
-			config.set("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
-			config.set("backup.ftp.zip",ftpbackupzip);
-			//script
-			config.set("backup.script.enabled",scriptbackupenabled);
-			config.set("backup.script.scriptpath",scriptbackupscriptpath);
+		//localfs
+		config.set("backup.localfs.enabled",localfsbackupenabled);
+		config.set("backup.localfs.worlds", lfsbackupWorldsList);
+		config.set("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
+		config.set("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
+		config.set("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
+		config.set("backup.localfs.excludefolders",lfsbackupexcludefolders);
+		config.set("backup.localfs.destinationfolders",lfsextfolders);
+		config.set("backup.localfs.zip",lfsbackupzip);
+		//ftp
+		config.set("backup.ftp.enabled",ftpbackupenabled);
+		config.set("backup.ftp.hostname",ftphostname);
+		config.set("backup.ftp.port",ftpport);
+		config.set("backup.ftp.login",ftpusername);
+		config.set("backup.ftp.password",ftppassworld);
+		config.set("backup.ftp.path",ftppath);
+		config.set("backup.ftp.worlds",ftpbackupWorlds);
+		config.set("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
+		config.set("backup.ftp.excludefolders",ftpbackupexcludefolders);
+		config.set("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
+		config.set("backup.ftp.zip",ftpbackupzip);
+		//script
+		config.set("backup.script.enabled",scriptbackupenabled);
+		config.set("backup.script.scriptpath",scriptbackupscriptpath);
 
 
 		//purge variables

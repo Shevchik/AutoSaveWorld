@@ -127,9 +127,9 @@ public class WGPurge {
 					{
 						plugin.debug("Regenerating region " + rg.getId());
 						lw.regenerate(
-							new CuboidRegion(lw,minpoint,maxpoint),
-							new EditSession(lw,Integer.MAX_VALUE)
-						);
+								new CuboidRegion(lw,minpoint,maxpoint),
+								new EditSession(lw,Integer.MAX_VALUE)
+								);
 					}
 					plugin.debug("Deleting region " + rg.getId());
 					m.removeRegion(rg.getId());

@@ -33,49 +33,49 @@ import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPReply;
 public class FTPBackup {
 
 
-    private AutoSaveWorld plugin;
-    private AutoSaveConfig config;
-    public FTPBackup(AutoSaveWorld plugin, AutoSaveConfig config)
-    {
-    	this.plugin = plugin;
-    	this.config = config;
-    }
+	private AutoSaveWorld plugin;
+	private AutoSaveConfig config;
+	public FTPBackup(AutoSaveWorld plugin, AutoSaveConfig config)
+	{
+		this.plugin = plugin;
+		this.config = config;
+	}
 
 
 
 
 
-    public void performBackup()
-    {
-    	FTPClient ftpclient = new FTPClient();
-    	try {
-    		//connect
+	public void performBackup()
+	{
+		FTPClient ftpclient = new FTPClient();
+		try {
+			//connect
 			ftpclient.connect(config.ftphostname, config.ftpport);
-		    if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
-		    	ftpclient.disconnect();
-		        Bukkit.getLogger().severe("[AutoSaveWorld] Failed to connect to ftp server. Backup to ftp server failed");
-		    }
-	    	ftpclient.login(config.ftpusername, config.ftppassworld);
-	    	//create dirs
-	    	ftpclient.makeDirectory(config.ftppath);
-	    	ftpclient.changeWorkingDirectory(config.ftppath);
-	    	ftpclient.makeDirectory("backups");
-	    	ftpclient.changeWorkingDirectory("backups");
-	    	//delete oldest backup
-	    	String[] listnames = ftpclient.listNames();
-	    	if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups)
-	    	{
-	    		plugin.debug("Deleting oldest backup");
-	    		//find oldest backup
-	    		String oldestBackup = findOldestBackupName(listnames);
-	    		//delete oldest backup
-	    		deleteDirectoryFromFTP(ftpclient, oldestBackup);
-	    	}
-	    	String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-	    	ftpclient.makeDirectory(datedir);
-	    	ftpclient.changeWorkingDirectory(datedir);
-	        ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
-	        //load BackupOperations class
+			if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
+				ftpclient.disconnect();
+				Bukkit.getLogger().severe("[AutoSaveWorld] Failed to connect to ftp server. Backup to ftp server failed");
+			}
+			ftpclient.login(config.ftpusername, config.ftppassworld);
+			//create dirs
+			ftpclient.makeDirectory(config.ftppath);
+			ftpclient.changeWorkingDirectory(config.ftppath);
+			ftpclient.makeDirectory("backups");
+			ftpclient.changeWorkingDirectory("backups");
+			//delete oldest backup
+			String[] listnames = ftpclient.listNames();
+			if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups)
+			{
+				plugin.debug("Deleting oldest backup");
+				//find oldest backup
+				String oldestBackup = findOldestBackupName(listnames);
+				//delete oldest backup
+				deleteDirectoryFromFTP(ftpclient, oldestBackup);
+			}
+			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
+			ftpclient.makeDirectory(datedir);
+			ftpclient.changeWorkingDirectory(datedir);
+			ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
+			//load BackupOperations class
 			FTPBackupOperations bo = new FTPBackupOperations(plugin, ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
 			//do worlds backup
 			plugin.debug("Backuping Worlds");
@@ -99,7 +99,7 @@ public class FTPBackup {
 			e.printStackTrace();
 		}
 
-    }
+	}
 
 	private String findOldestBackupName(String[] timestamps) throws IOException
 	{

@@ -72,7 +72,7 @@ public class WorldRegenCopyThread extends Thread {
 			if (doregen)
 			{
 				try {
-				doWorldRegen();
+					doWorldRegen();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -123,7 +123,7 @@ public class WorldRegenCopyThread extends Thread {
 		});
 		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 		{
-				Thread.sleep(1000);
+			Thread.sleep(1000);
 		}
 
 		plugin.debug("Saving buildings");
@@ -151,7 +151,7 @@ public class WorldRegenCopyThread extends Thread {
 		{
 			new TownyCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
-		*/
+		 */
 
 		plugin.debug("Saving finished");
 

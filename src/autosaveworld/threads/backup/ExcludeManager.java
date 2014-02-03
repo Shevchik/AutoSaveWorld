@@ -69,7 +69,7 @@ public class ExcludeManager {
 			}
 		}
 
-    	return false;
+		return false;
 	}
 
 }

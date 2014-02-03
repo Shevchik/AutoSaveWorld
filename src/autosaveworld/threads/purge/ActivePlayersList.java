@@ -40,19 +40,19 @@ public class ActivePlayersList {
 		Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
 		ctor.setAccessible(true);
 		File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(),"players");
-        for (String file : playersdir.list())
-        {
-        	if (file.endsWith(".dat"))
-        	{
-        		String nickname = file.substring(0, file.length() - 4);
-        		OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
-    			if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime)
-    			{
-    				plactivecs.add(offplayer.getName());
-    				plactivencs.add(offplayer.getName().toLowerCase());
-    			}
-        	}
-        }
+		for (String file : playersdir.list())
+		{
+			if (file.endsWith(".dat"))
+			{
+				String nickname = file.substring(0, file.length() - 4);
+				OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
+				if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime)
+				{
+					plactivecs.add(offplayer.getName());
+					plactivencs.add(offplayer.getName().toLowerCase());
+				}
+			}
+		}
 	}
 
 	public int getActivePlayersCount()

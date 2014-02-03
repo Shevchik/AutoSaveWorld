@@ -61,18 +61,18 @@ public class LFSFileUtils {
 	public void deleteDirectory(File file)
 	{
 		if(!file.exists()) {return;}
-	    if(file.isDirectory())
-	    {
-	    	for(File f : file.listFiles())
-	    	{
-	    		deleteDirectory(f);
-	    	}
-	    	file.delete();
-	    }
-	    else
-	    {
-	    	file.delete();
-	    }
+		if(file.isDirectory())
+		{
+			for(File f : file.listFiles())
+			{
+				deleteDirectory(f);
+			}
+			file.delete();
+		}
+		else
+		{
+			file.delete();
+		}
 	}
 
 

@@ -34,20 +34,20 @@ public class LocaleChanger {
 			while (entries.hasMoreElements())
 			{
 				ZipEntry ze = entries.nextElement();
-    			if (!ze.isDirectory())
-    			{
-    				if (ze.getName().contains("localefiles"))
-    				{
-    					String lname = new File(ze.getName()).getName();
-    					lname = lname.split("[_]")[1];
-    					lname = lname.split("[.]")[0];
-    					locales.add(lname);
-    				}
-    			}
+				if (!ze.isDirectory())
+				{
+					if (ze.getName().contains("localefiles"))
+					{
+						String lname = new File(ze.getName()).getName();
+						lname = lname.split("[_]")[1];
+						lname = lname.split("[.]")[0];
+						locales.add(lname);
+					}
+				}
 			}
 			zipFile.close();
 		} catch (Exception e) {}
-   		return locales;
+		return locales;
 	}
 
 	public void loadLocale(String locale)

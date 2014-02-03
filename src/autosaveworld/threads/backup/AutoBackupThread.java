@@ -65,8 +65,8 @@ public class AutoBackupThread extends Thread {
 
 	// The code to run...weee
 	private volatile boolean run = true;
-    private boolean command = false;
-    private int counter = 0;
+	private boolean command = false;
+	private int counter = 0;
 	@Override
 	public void run() {
 

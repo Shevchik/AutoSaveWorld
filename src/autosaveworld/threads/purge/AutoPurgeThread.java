@@ -100,109 +100,109 @@ public class AutoPurgeThread extends Thread {
 			return;
 		}
 
-			plugin.purgeInProgress = true;
+		plugin.purgeInProgress = true;
 
-			plugin.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
+		plugin.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
 
-			long awaytime = config.purgeAwayTime * 1000;
+		long awaytime = config.purgeAwayTime * 1000;
 
-			plugin.debug("Purge started");
+		plugin.debug("Purge started");
 
-			plugin.debug("Gathering active players list");
-			ActivePlayersList aplist = new ActivePlayersList();
+		plugin.debug("Gathering active players list");
+		ActivePlayersList aplist = new ActivePlayersList();
+		try {
+			aplist.gatherActivePlayersList(awaytime);
+			plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
+		} catch (Exception e) {
+			e.printStackTrace();
+			plugin.debug("Failed to gather active players list, autopurge cancelled");
+			plugin.broadcast(ChatColor.RED+"Failed to gather active players list, autopurge cancelled", config.purgeBroadcast);
+			plugin.purgeInProgress = false;
+			return;
+		}
+
+		PluginManager pm = plugin.getServer().getPluginManager();
+
+		if ((pm.getPlugin("WorldGuard") != null)
+				&& config.purgewg) {
+			plugin.debug("WG found, purging");
 			try {
-				aplist.gatherActivePlayersList(awaytime);
-				plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
+				new WGPurge(plugin).doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
 			} catch (Exception e) {
 				e.printStackTrace();
-				plugin.debug("Failed to gather active players list, autopurge cancelled");
-				plugin.broadcast(ChatColor.RED+"Failed to gather active players list, autopurge cancelled", config.purgeBroadcast);
-				plugin.purgeInProgress = false;
-				return;
 			}
+		}
 
-			PluginManager pm = plugin.getServer().getPluginManager();
-
-			if ((pm.getPlugin("WorldGuard") != null)
-					&& config.purgewg) {
-				plugin.debug("WG found, purging");
-				try {
-					new WGPurge(plugin).doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		if ((pm.getPlugin("LWC") != null)
+				&& config.purgelwc) {
+			plugin.debug("LWC found, purging");
+			try {
+				new LWCPurge(plugin).doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
 
-			if ((pm.getPlugin("LWC") != null)
-					&& config.purgelwc) {
-				plugin.debug("LWC found, purging");
-				try {
-					new LWCPurge(plugin).doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		if ((pm.getPlugin("Multiverse-Inventories") !=null)
+				&& config.purgemvinv ) {
+			plugin.debug("Multiverse-Inventories found, purging");
+			try {
+				new MVInvPurge(plugin).doMVInvPurgeTask(aplist);
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
 
-			if ((pm.getPlugin("Multiverse-Inventories") !=null)
-					&& config.purgemvinv ) {
-				plugin.debug("Multiverse-Inventories found, purging");
-				try {
-					new MVInvPurge(plugin).doMVInvPurgeTask(aplist);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
+		if ((pm.getPlugin("PlotMe") !=null)
+				&& config.purgepm) {
+			plugin.debug("PlotMe found, purging");
+			try {
+				new PlotMePurge(plugin).doPlotMePurgeTask(aplist, config.purgepmregen);
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
 
-			if ((pm.getPlugin("PlotMe") !=null)
-					&& config.purgepm) {
-				plugin.debug("PlotMe found, purging");
-				try {
-					new PlotMePurge(plugin).doPlotMePurgeTask(aplist, config.purgepmregen);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
+		if ((pm.getPlugin("Residence") !=null)
+				&& config.purgeresidence) {
+			plugin.debug("Residence found, purging");
+			try {
+				new ResidencePurge(plugin).doResidencePurgeTask(aplist, config.purgeresregenarena);
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
 
-			if ((pm.getPlugin("Residence") !=null)
-					&& config.purgeresidence) {
-				plugin.debug("Residence found, purging");
-				try {
-					new ResidencePurge(plugin).doResidencePurgeTask(aplist, config.purgeresregenarena);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
+		if (pm.getPlugin("Vault") != null) {
+			VaultPurge vp = new VaultPurge(plugin);
+			if (config.purgeeconomy) {
+				plugin.debug("Vault found, purging economy");
+				vp.doEconomyPurgeTask(aplist);
 			}
-
-			if (pm.getPlugin("Vault") != null) {
-				VaultPurge vp = new VaultPurge(plugin);
-				if (config.purgeeconomy) {
-					plugin.debug("Vault found, purging economy");
-					vp.doEconomyPurgeTask(aplist);
-				}
-				if (config.purgeperms) {
-					plugin.debug("Vault found, purging permissions");
-					vp.doPermissionsPurgeTask(aplist);
-				}
+			if (config.purgeperms) {
+				plugin.debug("Vault found, purging permissions");
+				vp.doPermissionsPurgeTask(aplist);
 			}
+		}
 
 
-			plugin.debug("Purging player .dat files");
-			if (config.purgedat) {
-				try {
-					new DatfilePurge(plugin).doDelPlayerDatFileTask(aplist);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		plugin.debug("Purging player .dat files");
+		if (config.purgedat) {
+			try {
+				new DatfilePurge(plugin).doDelPlayerDatFileTask(aplist);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
 
 
 
-			plugin.debug("Purge finished");
+		plugin.debug("Purge finished");
 
 
-			plugin.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
+		plugin.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
 
-			plugin.purgeInProgress = false;
+		plugin.purgeInProgress = false;
 
 	}
 

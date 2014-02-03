@@ -35,7 +35,7 @@ public class FTPBackupOperations {
 	private AutoSaveWorld plugin;
 	final boolean zip;
 	final List<String> excludefolders;
-    private FTPClient ftp;
+	private FTPClient ftp;
 	public FTPBackupOperations(AutoSaveWorld plugin, FTPClient ftp, boolean zip,  List<String> excludefolders)
 	{
 		this.plugin = plugin;
@@ -45,7 +45,7 @@ public class FTPBackupOperations {
 		localtempfolder = plugin.constants.getBackupTempFolder();
 	}
 
-    private FTPFileUtils fu = new FTPFileUtils();
+	private FTPFileUtils fu = new FTPFileUtils();
 	private String localtempfolder;
 	public void backupWorld(World world)
 	{

@@ -54,10 +54,10 @@ public class GPPaste {
 		//get database
 		ClaimArray ca = null;
 		try {
-            Field fld = DataStore.class.getDeclaredField("claims");
-            fld.setAccessible(true);
-            Object o = fld.get(gp.dataStore);
-            ca = (ClaimArray) o;
+			Field fld = DataStore.class.getDeclaredField("claims");
+			fld.setAccessible(true);
+			Object o = fld.get(gp.dataStore);
+			ca = (ClaimArray) o;
 		}
 		catch (Exception e)
 		{

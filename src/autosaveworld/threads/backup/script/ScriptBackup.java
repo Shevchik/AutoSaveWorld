@@ -24,34 +24,34 @@ import autosaveworld.core.AutoSaveWorld;
 public class ScriptBackup {
 
 	private AutoSaveWorld plugin;
-    private AutoSaveConfig config;
-    public ScriptBackup(AutoSaveWorld plugin, AutoSaveConfig config)
-    {
-    	this.plugin = plugin;
-    	this.config = config;
-    }
+	private AutoSaveConfig config;
+	public ScriptBackup(AutoSaveWorld plugin, AutoSaveConfig config)
+	{
+		this.plugin = plugin;
+		this.config = config;
+	}
 
 
-    public void performBackup()
-    {
-    	String scriptpath = config.scriptbackupscriptpath;
-    	if (!scriptpath.isEmpty() && new File(scriptpath).exists())
-    	{
-    		final Process p;
-    		ProcessBuilder pb = new ProcessBuilder();
-    		pb.command(new File(config.scriptbackupscriptpath).getPath());
-    		pb.inheritIO();
-    		try {
-    			p = pb.start();
-    			p.waitFor();
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    	} else
-    	{
-    		plugin.debug("Scriptpath is invalid");
-    	}
-    }
+	public void performBackup()
+	{
+		String scriptpath = config.scriptbackupscriptpath;
+		if (!scriptpath.isEmpty() && new File(scriptpath).exists())
+		{
+			final Process p;
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command(new File(config.scriptbackupscriptpath).getPath());
+			pb.inheritIO();
+			try {
+				p = pb.start();
+				p.waitFor();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else
+		{
+			plugin.debug("Scriptpath is invalid");
+		}
+	}
 
 
 }

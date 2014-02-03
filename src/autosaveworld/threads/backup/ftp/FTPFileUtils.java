@@ -33,33 +33,33 @@ public class FTPFileUtils {
 	public void uploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) throws IOException
 	{
 		if (src.isDirectory())
-    	{
-           ftp.makeDirectory(src.getName());
-           ftp.changeWorkingDirectory(src.getName());
-           for (File file : src.listFiles())
-           {
-        	   	if (!eManager.isFolderExcluded(excludefolders, file.getPath()))
-        	   	{
-        	   		uploadDirectoryToFTP(ftp, file, excludefolders);
-        	   	}
-           }
-           ftp.changeToParentDirectory();
-    	}
-    	else
-    	{
-    		//ignore lock files
-    		if (!src.getName().endsWith(".lck"))
-    		{
-    			try {
-    				InputStream is = new FileInputStream(src);
-    				ftp.storeFile(src.getName(), is);
-	    			is.close();
-    			} catch (Exception e) {
-    				e.printStackTrace();
-    			}
-    			Thread.yield();
-    		}
-    	}
+		{
+			ftp.makeDirectory(src.getName());
+			ftp.changeWorkingDirectory(src.getName());
+			for (File file : src.listFiles())
+			{
+				if (!eManager.isFolderExcluded(excludefolders, file.getPath()))
+				{
+					uploadDirectoryToFTP(ftp, file, excludefolders);
+				}
+			}
+			ftp.changeToParentDirectory();
+		}
+		else
+		{
+			//ignore lock files
+			if (!src.getName().endsWith(".lck"))
+			{
+				try {
+					InputStream is = new FileInputStream(src);
+					ftp.storeFile(src.getName(), is);
+					is.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				Thread.yield();
+			}
+		}
 	}
 
 }

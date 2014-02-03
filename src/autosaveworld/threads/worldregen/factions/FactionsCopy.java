@@ -55,10 +55,10 @@ public class FactionsCopy {
 
 		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll())
 		{
-		  	Set<PS> chunks = BoardColls.get().getChunks(f);
-		  	//ignore factions with no claimed land
-		   	if (chunks.size() != 0)
-		   	{
+			Set<PS> chunks = BoardColls.get().getChunks(f);
+			//ignore factions with no claimed land
+			if (chunks.size() != 0)
+			{
 				plugin.debug("Saving faction land "+f.getName()+" to schematic");
 				//save all chunks one by one
 				for (PS ps : chunks)
@@ -67,30 +67,30 @@ public class FactionsCopy {
 					new File(plugin.constants.getFactionsTempFolder()+f.getName()).mkdirs();
 					//get coords
 					final int xcoord = ps.getChunkX();
-				 	final int zcoord = ps.getChunkZ();
-				    final Vector bvmin = BukkitUtil.toVector(
-				    		new Location(
-				    				wtoregen,
-				    				xcoord*16,
-				    				0,
-				    				zcoord*16
-				    		)
-				    );
-				    final Vector bvmax = BukkitUtil.toVector(
-				    		new Location(
-				   					wtoregen,
-				   					xcoord*16+15,
-				   					wtoregen.getMaxHeight(),
-				    				zcoord*16+15
-				   			)
-				   	);
-				    //save
+					final int zcoord = ps.getChunkZ();
+					final Vector bvmin = BukkitUtil.toVector(
+							new Location(
+									wtoregen,
+									xcoord*16,
+									0,
+									zcoord*16
+									)
+							);
+					final Vector bvmax = BukkitUtil.toVector(
+							new Location(
+									wtoregen,
+									xcoord*16+15,
+									wtoregen.getMaxHeight(),
+									zcoord*16+15
+									)
+							);
+					//save
 					plugin.debug("Saving "+f.getName()+" chunk to schematic");
 					wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
-			        plugin.debug(f.getName()+" chunk saved");
+					plugin.debug(f.getName()+" chunk saved");
 				}
-		        plugin.debug("faction land "+f.getName()+" saved");
-		    }
+				plugin.debug("faction land "+f.getName()+" saved");
+			}
 		}
 	}
 

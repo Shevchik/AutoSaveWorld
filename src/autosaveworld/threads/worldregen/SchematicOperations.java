@@ -69,7 +69,7 @@ public class SchematicOperations {
 		CuboidClipboard clipboard = new CuboidClipboard(
 				bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
 				bvmin, bvmin.subtract(bvmax)
-		);
+				);
 		clipboard.copy(es);
 		//save to schematic
 		File f= new File(schematic);
@@ -125,16 +125,16 @@ public class SchematicOperations {
 		//paste clipboard at origin
 		Vector size = cc.getSize();
 		Vector origin = cc.getOrigin();
-		for (int x = 0; x < size.getBlockX(); ++x) 
+		for (int x = 0; x < size.getBlockX(); ++x)
 		{
-			for (int y = 0; y < size.getBlockY(); ++y) 
+			for (int y = 0; y < size.getBlockY(); ++y)
 			{
-				for (int z = 0; z < size.getBlockZ(); ++z) 
+				for (int z = 0; z < size.getBlockZ(); ++z)
 				{
 					Vector blockpos = new Vector(x, y, z);
 					final BaseBlock block = cc.getBlock(blockpos);
 
-					if (block == null) 
+					if (block == null)
 					{
 						continue;
 					}

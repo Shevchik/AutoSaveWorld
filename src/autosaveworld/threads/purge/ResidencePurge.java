@@ -59,10 +59,10 @@ public class ResidencePurge {
 							{
 								try {
 									plugin.debug("Regenerating residence "+res+" cuboid area");
-										lw.regenerate(
-												new CuboidRegion(lw,minpoint,maxpoint),
-												new EditSession(lw,Integer.MAX_VALUE)
-												);
+									lw.regenerate(
+											new CuboidRegion(lw,minpoint,maxpoint),
+											new EditSession(lw,Integer.MAX_VALUE)
+											);
 								} catch (Exception e) {}
 							}
 						};

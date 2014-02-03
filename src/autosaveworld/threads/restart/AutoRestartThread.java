@@ -60,8 +60,8 @@ public class AutoRestartThread  extends Thread{
 
 		while (run)
 		{
-			 if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command)
-			 {
+			if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command)
+			{
 				run = false;
 				command = false;
 
@@ -89,8 +89,8 @@ public class AutoRestartThread  extends Thread{
 
 				plugin.getServer().shutdown();
 
-			 }
-			 try {Thread.sleep(1000);} catch (InterruptedException e) {}
+			}
+			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 
 		plugin.debug("Graceful quit of AutoRestartThread");

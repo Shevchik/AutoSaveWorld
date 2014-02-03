@@ -58,10 +58,10 @@ public class GPCopy {
 		//get database
 		ClaimArray ca = null;
 		try {
-            Field fld = DataStore.class.getDeclaredField("claims");
-            fld.setAccessible(true);
-            Object o = fld.get(gp.dataStore);
-            ca = (ClaimArray) o;
+			Field fld = DataStore.class.getDeclaredField("claims");
+			fld.setAccessible(true);
+			Object o = fld.get(gp.dataStore);
+			ca = (ClaimArray) o;
 		}
 		catch (Exception e)
 		{
@@ -85,20 +85,20 @@ public class GPCopy {
 							xmin,
 							0,
 							zmin
-					)
-			);
+							)
+					);
 			Vector bvmax = BukkitUtil.toVector(
 					new Location(
 							wtoregen,
 							xmax,
 							wtoregen.getMaxHeight(),
 							zmax
-					)
-			);
+							)
+					);
 			//save
 			plugin.debug("Saving GP Region "+claim.getID()+" to schematic");
 			wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
-	        plugin.debug("GP Region "+claim.getID()+" saved");
+			plugin.debug("GP Region "+claim.getID()+" saved");
 		}
 	}
 
