@@ -55,11 +55,9 @@ public class AutoSaveThread extends Thread {
 			return;
 		}
 		command = true;
-		i = config.saveInterval;
 	}
 	
 	// The code to run...weee
-	private int i;
 	private volatile boolean run = true;
 	private boolean command = false;
 	public void run() 
@@ -77,13 +75,13 @@ public class AutoSaveThread extends Thread {
 			}
 			
 			//sleep
-			for (i = 0; i < config.saveInterval; i++) {
-				if (!run) {break;}
+			for (int i = 0; i < config.saveInterval; i++) {
+				if (!run || command) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
 			//save
-			if (run&&(config.saveEnabled||command)) {
+			if (run && (config.saveEnabled||command)) {
 				performSave(false);
 			}
 		}
