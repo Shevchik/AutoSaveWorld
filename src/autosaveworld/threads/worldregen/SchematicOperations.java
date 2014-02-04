@@ -122,9 +122,18 @@ public class SchematicOperations {
 		es.setFastMode(true);
 		File f = new File(shematic);
 		CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
-		//paste clipboard at origin
+		//get schematic coords
 		Vector size = cc.getSize();
 		Vector origin = cc.getOrigin();
+		//generate chunks at schematic position and 3 chunk radius nearby
+		for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16)
+		{
+			for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16)
+			{
+				world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z).load();
+			}
+		}
+		//paste schematic
 		for (int x = 0; x < size.getBlockX(); ++x)
 		{
 			for (int y = 0; y < size.getBlockY(); ++y)
