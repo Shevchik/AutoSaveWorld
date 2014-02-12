@@ -51,10 +51,13 @@ public class TownyCopy {
 					int zmax = tblocks.get(0).getZ();
 					for (TownBlock tb : tblocks)
 					{
-						xmax = Math.max(xmax, tb.getX());
-						xmin = Math.min(xmin, tb.getX());
-						zmax = Math.max(zmax, tb.getZ());
-						zmin = Math.min(zmin, tb.getZ());
+						if (tb.getWorld().getName().equals(wtoregen.getName()))
+						{
+							xmax = Math.max(xmax, tb.getX());
+							xmin = Math.min(xmin, tb.getX());
+							zmax = Math.max(zmax, tb.getZ());
+							zmin = Math.min(zmin, tb.getZ());
+						}
 					}
 					Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xmin, 0, zmin));
 					Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, xmax, wtoregen.getMaxHeight(), xmax));
