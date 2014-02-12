@@ -69,8 +69,8 @@ public class MVInvPurge {
 					//remove files from MVInv groups folder
 					for (WorldGroupProfile gname: mvpl.getGroupManager().getGroups())
 					{
-						File mcinvgfld = new File("plugins/Multiverse-Inventories/groups/");
-						new File(mcinvgfld,gname.getName()+File.separator+plfile).delete();
+						File mcinvgfld = new File("plugins" + File.separator + "Multiverse-Inventories" +File.separator+ "groups" + File.separator);
+						new File(mcinvgfld, gname.getName()+File.separator+plfile).delete();
 					}
 					//count deleted player file
 					deleted += 1;
