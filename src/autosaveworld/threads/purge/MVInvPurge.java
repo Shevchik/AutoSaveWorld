@@ -19,7 +19,6 @@ package autosaveworld.threads.purge;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -54,7 +53,7 @@ public class MVInvPurge {
 			//We will get all files from MVInv player directory, and get player names from there
 			for (String plfile : mcinvpfld.list())
 			{
-				String plname = getNameFromFile(plfile);
+				String plname = plfile.substring(0, plfile.lastIndexOf("."));
 
 				if (!pacheck.isActiveCS(plname))
 				{
@@ -79,18 +78,6 @@ public class MVInvPurge {
 		} catch (Exception e) {}
 
 		plugin.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
-	}
-	
-	private String getNameFromFile(String filename) 
-	{
-		String[] split = filename.split("[.]");
-		split = Arrays.copyOfRange(split, 0, split.length - 1);
-		StringBuilder sb = new StringBuilder();
-		for (String part : split)
-		{
-			sb.append(part);
-		}
-		return sb.toString();
 	}
 
 }
