@@ -76,7 +76,7 @@ public class AutoSaveConfig {
 	public boolean ftpbackupzip = false;
 	//script
 	public boolean scriptbackupenabled = false;
-	public String scriptbackupscriptpath = "";
+	public List<String> scriptbackupscriptpaths = new ArrayList<String>();
 	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
@@ -177,7 +177,7 @@ public class AutoSaveConfig {
 		}
 		//script
 		scriptbackupenabled = config.getBoolean("backup.script.enabled",scriptbackupenabled);
-		scriptbackupscriptpath = config.getString("backup.script.scriptpath",scriptbackupscriptpath);
+		scriptbackupscriptpaths = config.getStringList("backup.script.scriptpaths");
 
 
 
@@ -303,7 +303,7 @@ public class AutoSaveConfig {
 		config.set("backup.ftp.zip",ftpbackupzip);
 		//script
 		config.set("backup.script.enabled",scriptbackupenabled);
-		config.set("backup.script.scriptpath",scriptbackupscriptpath);
+		config.set("backup.script.scriptpaths",scriptbackupscriptpaths);
 
 
 		//purge variables

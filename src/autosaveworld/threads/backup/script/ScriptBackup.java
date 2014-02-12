@@ -34,22 +34,26 @@ public class ScriptBackup {
 
 	public void performBackup()
 	{
-		String scriptpath = config.scriptbackupscriptpath;
-		if (!scriptpath.isEmpty() && new File(scriptpath).exists())
+		for (String scriptpath : config.scriptbackupscriptpaths)
 		{
-			final Process p;
-			ProcessBuilder pb = new ProcessBuilder();
-			pb.command(new File(config.scriptbackupscriptpath).getPath());
-			pb.inheritIO();
-			try {
-				p = pb.start();
-				p.waitFor();
-			} catch (Exception e) {
-				e.printStackTrace();
+			File scriptfile = new File(scriptpath);
+			if (!scriptpath.isEmpty() && scriptfile.exists())
+			{
+				plugin.debug("Executing script "+ scriptfile.getAbsolutePath());
+				final Process p;
+				ProcessBuilder pb = new ProcessBuilder();
+				pb.command(scriptfile.getAbsolutePath());
+				pb.inheritIO();
+				try {
+					p = pb.start();
+					p.waitFor();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else
+			{
+				plugin.debug("Scriptpath is invalid");
 			}
-		} else
-		{
-			plugin.debug("Scriptpath is invalid");
 		}
 	}
 
