@@ -46,7 +46,7 @@ public class MVInvPurge {
 		int deleted = 0;
 		try {
 			MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
-			File mcinvpfld = new File("plugins/Multiverse-Inventories/players/");
+			File mcinvpfld = new File("plugins" + File.separator + "Multiverse-Inventories" +File.separator+ "players" + File.separator);
 			Server server = Bukkit.getServer();
 			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
 			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
