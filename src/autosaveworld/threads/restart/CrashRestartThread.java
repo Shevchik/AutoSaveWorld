@@ -32,10 +32,12 @@ public class CrashRestartThread extends Thread{
 
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
-	public CrashRestartThread(AutoSaveWorld plugin,AutoSaveConfig config)
+	private RestartJVMshutdownhook jvmsh;
+	public CrashRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, RestartJVMshutdownhook jvmsh)
 	{
 		this.plugin = plugin;
 		this.config = config;
+		this.jvmsh = jvmsh;
 	}
 
 	public void stopThread()
@@ -87,8 +89,8 @@ public class CrashRestartThread extends Thread{
 
 					if (!config.crstop)
 					{
-						plugin.JVMsh.setPath(config.crashrestartscriptpath);
-						Runtime.getRuntime().addShutdownHook(plugin.JVMsh);
+						jvmsh.setPath(config.crashrestartscriptpath);
+						Runtime.getRuntime().addShutdownHook(jvmsh);
 					}
 
 					plugin.getServer().shutdown();

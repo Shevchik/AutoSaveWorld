@@ -27,12 +27,14 @@ public class AutoRestartThread  extends Thread{
 
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
-	AutoSaveConfigMSG configmsg;
-	public AutoRestartThread(AutoSaveWorld plugin,AutoSaveConfig config,AutoSaveConfigMSG configmsg)
+	private AutoSaveConfigMSG configmsg;
+	private RestartJVMshutdownhook jvmsh;
+	public AutoRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh)
 	{
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
+		this.jvmsh = jvmsh;
 	}
 
 	public void stopThread()
@@ -83,8 +85,8 @@ public class AutoRestartThread  extends Thread{
 
 				if (!config.astop)
 				{
-					plugin.JVMsh.setPath(config.autorestartscriptpath);
-					Runtime.getRuntime().addShutdownHook(plugin.JVMsh);
+					jvmsh.setPath(config.autorestartscriptpath);
+					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 
 				plugin.getServer().shutdown();

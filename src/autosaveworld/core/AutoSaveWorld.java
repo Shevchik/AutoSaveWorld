@@ -59,7 +59,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	//restart
 	public CrashRestartThread crashrestartThread = null;
 	public AutoRestartThread autorestartThread = null;
-	public RestartJVMshutdownhook JVMsh = null;
+	private RestartJVMshutdownhook JVMsh = null;
 	//autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread = null;
 	//worldregen
@@ -187,14 +187,13 @@ public class AutoSaveWorld extends JavaPlugin {
 			return true;
 		case CRASHRESTART:
 			if (crashrestartThread == null || !crashrestartThread.isAlive()) {
-				crashrestartThread = new CrashRestartThread(this, config);
+				crashrestartThread = new CrashRestartThread(this, config, JVMsh);
 				crashrestartThread.start();
 			}
 			return true;
 		case AUTORESTART:
 			if (autorestartThread == null || !autorestartThread.isAlive()) {
-				autorestartThread = new AutoRestartThread(this, config,
-						configmsg);
+				autorestartThread = new AutoRestartThread(this, config, configmsg, JVMsh);
 				autorestartThread.start();
 			}
 			return true;
@@ -206,13 +205,13 @@ public class AutoSaveWorld extends JavaPlugin {
 			return true;
 		case WORLDREGENCOPY:
 			if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
-				worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg);
+				worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg, JVMsh);
 				worldregencopyThread.start();
 			}
 			return true;
 		case WORLDREGENPASTE:
 			if (worldregenpasteThread == null || !worldregenpasteThread.isAlive()) {
-				worldregenpasteThread = new WorldRegenPasteThread(this,config, configmsg);
+				worldregenpasteThread = new WorldRegenPasteThread(this, config, configmsg);
 				worldregenpasteThread.checkIfShouldPaste();
 				worldregenpasteThread.start();
 			}
