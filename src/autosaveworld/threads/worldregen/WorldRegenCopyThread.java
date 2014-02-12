@@ -74,6 +74,14 @@ public class WorldRegenCopyThread extends Thread {
 		{
 			if (doregen)
 			{
+				if (plugin.backupInProgress) {
+					plugin.warn("AutoBackup is in process. WorldRegen cancelled.");
+					return;
+				}
+				if (plugin.purgeInProgress) {
+					plugin.warn("AutoPurge is in process. WorldRegen cancelled.");
+					return;
+				}
 				try {
 					doWorldRegen();
 				} catch (Exception e) {
@@ -95,15 +103,6 @@ public class WorldRegenCopyThread extends Thread {
 
 	private void doWorldRegen() throws Exception
 	{
-		if (plugin.backupInProgress) {
-			plugin.warn("AutoBackup is in process. WorldRegen cancelled.");
-			return;
-		}
-		if (plugin.purgeInProgress) {
-			plugin.warn("AutoPurge is in process. WorldRegen cancelled.");
-			return;
-		}
-
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
 
 		FileConfiguration cfg = new YamlConfiguration();
