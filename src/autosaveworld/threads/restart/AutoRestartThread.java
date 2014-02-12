@@ -18,6 +18,9 @@
 package autosaveworld.threads.restart;
 
 import java.text.SimpleDateFormat;
+
+import org.bukkit.Bukkit;
+
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
@@ -88,7 +91,28 @@ public class AutoRestartThread  extends Thread{
 					jvmsh.setPath(config.autorestartscriptpath);
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
-
+				
+				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+				{
+					public void run() 
+					{
+						for (String command : config.autorestartcommmands)
+						{
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+						}
+					}
+				});
+				int curwait = 0;
+				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+				{
+					try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+					curwait++;
+					if (curwait > 10)
+					{
+						break;
+					}
+				}
+				
 				plugin.getServer().shutdown();
 
 			}
