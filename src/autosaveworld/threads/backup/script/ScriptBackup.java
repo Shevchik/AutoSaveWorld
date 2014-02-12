@@ -52,7 +52,7 @@ public class ScriptBackup {
 				}
 			} else
 			{
-				plugin.debug("Scriptpath is invalid");
+				plugin.debug("Script path is invalid");
 			}
 		}
 	}
