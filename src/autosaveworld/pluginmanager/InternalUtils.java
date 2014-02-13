@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -65,23 +65,34 @@ public class InternalUtils {
 		Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
 		getCommandsMethod.setAccessible(true);
 		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
-		Iterator<Command> commandsit = commands.iterator();
-		while (commandsit.hasNext())
+		for (Command cmd : new ArrayList<Command>(commands))
 		{
-			Command cmd = commandsit.next();
+			//if you ask why i'm doing this shit, the answer is stupid mcore
 			if (cmd instanceof PluginCommand)
 			{
 				if (((PluginCommand) cmd).getPlugin().getName().equalsIgnoreCase(plugin.getName()))
 				{
 					cmd.unregister(commandMap);
-					commandsit.remove();
+					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection"))
+					{
+						removeFromUnmodifiableCollection(commands, cmd);
+					} else
+					{
+						commands.remove(cmd);
+					}
 				}
 			} else
 			{
 				if (plugincmds != null && plugincmds.keySet().contains(cmd.getName()))
 				{
 					cmd.unregister(commandMap);
-					commandsit.remove();
+					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection"))
+					{
+						removeFromUnmodifiableCollection(commands, cmd);
+					} else
+					{
+						commands.remove(cmd);
+					}
 				}
 			}
 		}
@@ -95,6 +106,16 @@ public class InternalUtils {
 		//force gc
 		System.gc();
 		System.gc();
+	}
+	
+	private void removeFromUnmodifiableCollection(Collection<?> collection, Object toremove) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		//reflection can do anything :)
+		Field originalField = collection.getClass().getDeclaredField("c");
+		originalField.setAccessible(true);
+		@SuppressWarnings("unchecked")
+		Collection<Command> original = (Collection<Command>) originalField.get(collection);
+		original.remove(toremove);
 	}
 
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException
