@@ -31,7 +31,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
@@ -68,9 +68,10 @@ public class InternalUtils {
 		for (Command cmd : new ArrayList<Command>(commands))
 		{
 			//if you ask why i'm doing this shit, the answer is stupid mcore
-			if (cmd instanceof PluginCommand)
+			if (cmd instanceof PluginIdentifiableCommand)
 			{
-				if (((PluginCommand) cmd).getPlugin().getName().equalsIgnoreCase(plugin.getName()))
+				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
+				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName()))
 				{
 					cmd.unregister(commandMap);
 					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection"))
