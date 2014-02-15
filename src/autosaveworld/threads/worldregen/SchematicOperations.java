@@ -67,12 +67,12 @@ public class SchematicOperations {
 		EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 		es.setFastMode(true);
 		CuboidClipboard clipboard = new CuboidClipboard(
-				bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-				bvmin, bvmin.subtract(bvmax)
-				);
+			bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
+			bvmin, bvmin.subtract(bvmax)
+		);
 		clipboard.copy(es);
 		//save to schematic
-		File f= new File(schematic);
+		File f = new File(schematic);
 		SchematicFormat.getFormats().iterator().next().save(clipboard, f);
 	}
 
@@ -156,6 +156,7 @@ public class SchematicOperations {
 				}
 			}
 		}
+		es.flushQueue();
 	}
 
 
