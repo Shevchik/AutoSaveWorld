@@ -23,13 +23,13 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenPasteThread;
+
 import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColls;
 import com.massivecraft.mcore.ps.PS;
-
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class FactionsPaste {
 

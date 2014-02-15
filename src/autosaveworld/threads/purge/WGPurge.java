@@ -24,12 +24,12 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import autosaveworld.core.AutoSaveWorld;
+
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
-import autosaveworld.core.AutoSaveWorld;
 
 public class WGPurge {
 
@@ -39,7 +39,7 @@ public class WGPurge {
 	{
 		this.plugin = plugin;
 	}
-	
+
 	private WorldEditRegeneration weregen = new WorldEditRegeneration();
 
 	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap)

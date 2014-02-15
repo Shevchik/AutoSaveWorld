@@ -29,11 +29,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.bukkit.BukkitUtil;
-
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
+
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class GPCopy {
 

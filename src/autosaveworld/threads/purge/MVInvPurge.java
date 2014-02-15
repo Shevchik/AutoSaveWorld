@@ -25,10 +25,10 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 
+import autosaveworld.core.AutoSaveWorld;
+
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import com.onarandombox.multiverseinventories.api.profile.WorldGroupProfile;
-
-import autosaveworld.core.AutoSaveWorld;
 
 public class MVInvPurge {
 

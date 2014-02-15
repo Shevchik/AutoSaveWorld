@@ -21,7 +21,7 @@ public class ResidencePurge {
 	{
 		this.plugin = plugin;
 	}
-	
+
 	private WorldEditRegeneration weregen = new WorldEditRegeneration();
 
 	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres)

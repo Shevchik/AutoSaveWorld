@@ -108,7 +108,7 @@ public class InternalUtils {
 		System.gc();
 		System.gc();
 	}
-	
+
 	private void removeFromUnmodifiableCollection(Collection<?> collection, Object toremove) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
 		//reflection can do anything :)

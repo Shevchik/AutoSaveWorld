@@ -26,6 +26,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+
 import autosaveworld.core.AutoSaveWorld;
 
 public class ASWPluginManager {
@@ -48,14 +49,14 @@ public class ASWPluginManager {
 			{
 				unloadPlugin(sender,pluginname);
 			} else
-			if (command.equalsIgnoreCase("reload"))
-			{
-				reloadPlugin(sender,pluginname);
-			}
-			else
-			{
-				sender.sendMessage("[AutoSaveWorld] Invalid plugin manager command");
-			}
+				if (command.equalsIgnoreCase("reload"))
+				{
+					reloadPlugin(sender,pluginname);
+				}
+				else
+				{
+					sender.sendMessage("[AutoSaveWorld] Invalid plugin manager command");
+				}
 	}
 
 	private void unloadPlugin(CommandSender sender, String pluginname)

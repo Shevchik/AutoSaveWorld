@@ -24,16 +24,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.WorldRegenCopyThread;
+
 import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColls;
 import com.massivecraft.mcore.ps.PS;
-
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
-
-import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 public class FactionsCopy {
 

@@ -91,10 +91,11 @@ public class AutoRestartThread  extends Thread{
 					jvmsh.setPath(config.autorestartscriptpath);
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
-				
+
 				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
-					public void run() 
+					@Override
+					public void run()
 					{
 						for (String command : config.autorestartcommmands)
 						{
@@ -112,7 +113,7 @@ public class AutoRestartThread  extends Thread{
 						break;
 					}
 				}
-				
+
 				plugin.getServer().shutdown();
 
 			}

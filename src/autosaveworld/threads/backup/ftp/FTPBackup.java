@@ -25,7 +25,6 @@ import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.backup.ftp.FTPBackupOperations;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTP;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPReply;

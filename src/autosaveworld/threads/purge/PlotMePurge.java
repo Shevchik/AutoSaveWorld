@@ -22,11 +22,11 @@ import java.util.HashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import autosaveworld.core.AutoSaveWorld;
+
 import com.worldcretornica.plotme.Plot;
 import com.worldcretornica.plotme.PlotManager;
 import com.worldcretornica.plotme.SqlManager;
-
-import autosaveworld.core.AutoSaveWorld;
 
 public class PlotMePurge {
 

@@ -27,7 +27,7 @@ public class WorldEditRegeneration {
 		EditSession es = new EditSession(lw, Integer.MAX_VALUE);
 		Region region = new CuboidRegion(lw, minpoint, maxpoint);
 		BaseBlock[] history = new BaseBlock[16 * 16 * (lw.getMaxY() + 1)];
-		for (Vector2D chunk : region.getChunks()) 
+		for (Vector2D chunk : region.getChunks())
 		{
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			//first save all the blocks inside
@@ -43,16 +43,16 @@ public class WorldEditRegeneration {
 					}
 				}
 			}
-			
+
 			//regenerate chunk
 			try {
 				world.regenerateChunk(chunk.getBlockX(), chunk.getBlockZ());
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
-			
+
 			//then restore
-			for (int x = 0; x < 16; ++x) 
+			for (int x = 0; x < 16; ++x)
 			{
 				for (int y = 0; y < (lw.getMaxY() + 1); ++y)
 				{

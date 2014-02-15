@@ -31,7 +31,6 @@ import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.restart.RestartJVMshutdownhook;
 import autosaveworld.threads.worldregen.factions.FactionsCopy;
 import autosaveworld.threads.worldregen.griefprevention.GPCopy;
-import autosaveworld.threads.worldregen.towny.TownyCopy;
 import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
 
 public class WorldRegenCopyThread extends Thread {

@@ -20,11 +20,12 @@ package autosaveworld.threads.purge;
 import java.io.File;
 import java.util.ArrayList;
 
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 import autosaveworld.core.AutoSaveWorld;
 
 public class VaultPurge {

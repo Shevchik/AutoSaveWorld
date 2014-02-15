@@ -119,7 +119,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.purgeInProgress = false;
 			return;
 		}
-		
+
 		PluginManager pm = plugin.getServer().getPluginManager();
 
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgewg) {
@@ -199,8 +199,8 @@ public class AutoPurgeThread extends Thread {
 		plugin.purgeInProgress = false;
 
 	}
-	
-	
+
+
 
 
 }
