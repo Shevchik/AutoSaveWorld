@@ -74,7 +74,7 @@ public class ASWPluginManager {
 			sender.sendMessage("[AutoSaveWorld] Plugin unloaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			sender.sendMessage("[AutoSaveWorld] Some error occured while loading plugin");
+			sender.sendMessage("[AutoSaveWorld] Some error occured while unloading plugin");
 		}
 	}
 
@@ -100,7 +100,7 @@ public class ASWPluginManager {
 			sender.sendMessage("[AutoSaveWorld] Plugin loaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			sender.sendMessage("[AutoSaveWorld] Some error occured while unloading plugin");
+			sender.sendMessage("[AutoSaveWorld] Some error occured while loading plugin");
 		}
 	}
 
