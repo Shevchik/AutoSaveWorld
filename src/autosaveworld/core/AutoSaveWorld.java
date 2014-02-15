@@ -49,7 +49,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
 
 	//constatns
-	public Constants constants = null;
+	public GlobalConstants constants = null;
 	//save
 	public AutoSaveThread saveThread = null;
 	//backup
@@ -89,7 +89,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void onEnable() {
 		// Load Configuration
 		log = getLogger();
-		constants = new Constants(this);
+		constants = new GlobalConstants(this);
 		config = new AutoSaveConfig(this);
 		config.load();
 		configmsg = new AutoSaveConfigMSG(this);

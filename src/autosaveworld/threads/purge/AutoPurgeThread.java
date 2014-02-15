@@ -29,8 +29,7 @@ public class AutoPurgeThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config,
-			AutoSaveConfigMSG configmsg) {
+	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
@@ -120,11 +119,10 @@ public class AutoPurgeThread extends Thread {
 			plugin.purgeInProgress = false;
 			return;
 		}
-
+		
 		PluginManager pm = plugin.getServer().getPluginManager();
 
-		if ((pm.getPlugin("WorldGuard") != null)
-				&& config.purgewg) {
+		if ((pm.getPlugin("WorldGuard") != null) && config.purgewg) {
 			plugin.debug("WG found, purging");
 			try {
 				new WGPurge(plugin).doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
@@ -133,8 +131,7 @@ public class AutoPurgeThread extends Thread {
 			}
 		}
 
-		if ((pm.getPlugin("LWC") != null)
-				&& config.purgelwc) {
+		if ((pm.getPlugin("LWC") != null) && config.purgelwc) {
 			plugin.debug("LWC found, purging");
 			try {
 				new LWCPurge(plugin).doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
@@ -143,8 +140,7 @@ public class AutoPurgeThread extends Thread {
 			}
 		}
 
-		if ((pm.getPlugin("Multiverse-Inventories") !=null)
-				&& config.purgemvinv ) {
+		if ((pm.getPlugin("Multiverse-Inventories") !=null) && config.purgemvinv ) {
 			plugin.debug("Multiverse-Inventories found, purging");
 			try {
 				new MVInvPurge(plugin).doMVInvPurgeTask(aplist);
@@ -153,8 +149,7 @@ public class AutoPurgeThread extends Thread {
 			}
 		}
 
-		if ((pm.getPlugin("PlotMe") !=null)
-				&& config.purgepm) {
+		if ((pm.getPlugin("PlotMe") !=null) && config.purgepm) {
 			plugin.debug("PlotMe found, purging");
 			try {
 				new PlotMePurge(plugin).doPlotMePurgeTask(aplist, config.purgepmregen);
@@ -163,8 +158,7 @@ public class AutoPurgeThread extends Thread {
 			}
 		}
 
-		if ((pm.getPlugin("Residence") !=null)
-				&& config.purgeresidence) {
+		if ((pm.getPlugin("Residence") !=null) && config.purgeresidence) {
 			plugin.debug("Residence found, purging");
 			try {
 				new ResidencePurge(plugin).doResidencePurgeTask(aplist, config.purgeresregenarena);
@@ -205,6 +199,8 @@ public class AutoPurgeThread extends Thread {
 		plugin.purgeInProgress = false;
 
 	}
+	
+	
 
 
 }

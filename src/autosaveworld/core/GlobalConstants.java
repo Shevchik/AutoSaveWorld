@@ -19,9 +19,9 @@ package autosaveworld.core;
 
 import java.io.File;
 
-public class Constants {
+public class GlobalConstants {
 
-	public Constants(AutoSaveWorld plugin)
+	public GlobalConstants(AutoSaveWorld plugin)
 	{
 		pluginfolder = plugin.getDataFolder().getPath()+File.separator;
 	}

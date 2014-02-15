@@ -54,7 +54,7 @@ public class WorldGuardPaste {
 			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 			//paste
 			plugin.debug("Pasting WG region "+rg.getId()+" from schematic");
-			wrthread.getSchematicOperations().pasteFromSchematics(schemfolder+rg.getId(), wtopaste);
+			wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+rg.getId(), wtopaste);
 			plugin.debug("Pasted WG region "+rg.getId()+" from schematic");
 		}
 	}

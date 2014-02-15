@@ -81,7 +81,7 @@ public class SchematicOperations {
 
 
 	private int pfstaskid;
-	public void pasteFromSchematics(final String shematic, final World world)
+	public void pasteFromSchematic(final String shematic, final World world)
 	{
 		Runnable copypaste = new Runnable()
 		{

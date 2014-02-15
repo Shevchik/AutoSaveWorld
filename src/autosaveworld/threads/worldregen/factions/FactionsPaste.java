@@ -62,7 +62,7 @@ public class FactionsPaste {
 					final int zcoord = ps.getChunkZ();
 					//paste
 					plugin.debug("Pasting "+f.getName()+" chunk from schematic");
-					wrthread.getSchematicOperations().pasteFromSchematics(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+					wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
 					plugin.debug("Pasted "+f.getName()+" chunk from schematic");
 				}
 			}

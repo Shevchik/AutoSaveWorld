@@ -72,7 +72,7 @@ public class GPPaste {
 			Claim claim = ca.get(i);
 			//paste
 			plugin.debug("Pasting GP region "+claim.getID()+" from schematics");
-			wrthread.getSchematicOperations().pasteFromSchematics(schemfolder+claim.getID(), wtopaste);
+			wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+claim.getID(), wtopaste);
 			plugin.debug("Pasted GP region "+claim.getID()+" from schematics");
 		}
 	}

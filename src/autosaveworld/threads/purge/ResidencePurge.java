@@ -5,17 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.util.Vector;
 
 import autosaveworld.core.AutoSaveWorld;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class ResidencePurge {
 
@@ -25,6 +21,8 @@ public class ResidencePurge {
 	{
 		this.plugin = plugin;
 	}
+	
+	private WorldEditRegeneration weregen = new WorldEditRegeneration();
 
 	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres)
 	{
@@ -51,18 +49,14 @@ public class ResidencePurge {
 					{
 						Runnable caregen =  new Runnable()
 						{
-							Vector minpoint = BukkitUtil.toVector(ca.getLowLoc());
-							Vector maxpoint = BukkitUtil.toVector(ca.getHighLoc());
-							BukkitWorld lw = new BukkitWorld(Bukkit.getWorld(cres.getWorld()));
+							Vector minpoint = ca.getLowLoc().toVector();
+							Vector maxpoint = ca.getHighLoc().toVector();
 							@Override
 							public void run()
 							{
 								try {
 									plugin.debug("Regenerating residence "+res+" cuboid area");
-									lw.regenerate(
-											new CuboidRegion(lw,minpoint,maxpoint),
-											new EditSession(lw,Integer.MAX_VALUE)
-											);
+									weregen.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint);
 								} catch (Exception e) {}
 							}
 						};

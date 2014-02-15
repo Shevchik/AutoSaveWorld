@@ -25,9 +25,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -42,6 +39,8 @@ public class WGPurge {
 	{
 		this.plugin = plugin;
 	}
+	
+	private WorldEditRegeneration weregen = new WorldEditRegeneration();
 
 	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap)
 	{
@@ -118,7 +117,6 @@ public class WGPurge {
 		{
 			BlockVector minpoint = rg.getMinimumPoint();
 			BlockVector maxpoint = rg.getMaximumPoint();
-			BukkitWorld lw = new BukkitWorld(w);
 			@Override
 			public void run()
 			{
@@ -126,10 +124,7 @@ public class WGPurge {
 					if (!donotregen)
 					{
 						plugin.debug("Regenerating region " + rg.getId());
-						lw.regenerate(
-								new CuboidRegion(lw,minpoint,maxpoint),
-								new EditSession(lw,Integer.MAX_VALUE)
-								);
+						weregen.regenerateRegion(w, minpoint, maxpoint);
 					}
 					plugin.debug("Deleting region " + rg.getId());
 					m.removeRegion(rg.getId());
