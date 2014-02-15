@@ -64,10 +64,10 @@ public class LWCPurge {
 							{
 								((Chest) bs).getBlockInventory().clear();
 							} else
-								if (bs instanceof DoubleChest)
-								{
-									((DoubleChest) bs).getInventory().clear();
-								}
+							if (bs instanceof DoubleChest)
+							{
+								((DoubleChest) bs).getInventory().clear();
+							}
 							block.setType(Material.AIR);
 						}
 					};
