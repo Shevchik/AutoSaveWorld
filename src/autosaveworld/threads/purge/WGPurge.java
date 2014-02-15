@@ -110,9 +110,8 @@ public class WGPurge {
 		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
 	}
 
-	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, boolean noregenoverlap)
+	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, final boolean noregenoverlap)
 	{
-		final boolean donotregen = noregenoverlap && m.getApplicableRegions(rg).size() > 0;
 		Runnable rgregen =  new Runnable()
 		{
 			BlockVector minpoint = rg.getMinimumPoint();
@@ -121,7 +120,7 @@ public class WGPurge {
 			public void run()
 			{
 				try {
-					if (!donotregen)
+					if (!(noregenoverlap && m.getApplicableRegions(rg).size() > 1))
 					{
 						plugin.debug("Regenerating region " + rg.getId());
 						weregen.regenerateRegion(w, minpoint, maxpoint);
