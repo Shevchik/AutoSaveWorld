@@ -68,27 +68,27 @@ public class FactionsCopy {
 					final int xcoord = ps.getChunkX();
 					final int zcoord = ps.getChunkZ();
 					final Vector bvmin = BukkitUtil.toVector(
-							new Location(
-									wtoregen,
-									xcoord*16,
-									0,
-									zcoord*16
-									)
-							);
+						new Location(
+							wtoregen,
+							xcoord*16,
+							0,
+							zcoord*16
+						)
+					);
 					final Vector bvmax = BukkitUtil.toVector(
-							new Location(
-									wtoregen,
-									xcoord*16+15,
-									wtoregen.getMaxHeight(),
-									zcoord*16+15
-									)
-							);
+						new Location(
+							wtoregen,
+							xcoord*16+15,
+							wtoregen.getMaxHeight(),
+							zcoord*16+15
+						)
+					);
 					//save
 					plugin.debug("Saving "+f.getName()+" chunk to schematic");
 					wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
 					plugin.debug(f.getName()+" chunk saved");
 				}
-				plugin.debug("faction land "+f.getName()+" saved");
+				plugin.debug("Faction land "+f.getName()+" saved");
 			}
 		}
 	}

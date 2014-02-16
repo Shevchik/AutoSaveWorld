@@ -80,21 +80,21 @@ public class GPCopy {
 			double xmax = claim.getGreaterBoundaryCorner().getX();
 			double zmax = claim.getGreaterBoundaryCorner().getZ();
 			Vector bvmin = BukkitUtil.toVector(
-					new Location(
-							wtoregen,
-							xmin,
-							0,
-							zmin
-							)
-					);
+				new Location(
+					wtoregen,
+					xmin,
+					0,
+					zmin
+				)
+			);
 			Vector bvmax = BukkitUtil.toVector(
-					new Location(
-							wtoregen,
-							xmax,
-							wtoregen.getMaxHeight(),
-							zmax
-							)
-					);
+				new Location(
+					wtoregen,
+					xmax,
+					wtoregen.getMaxHeight(),
+					zmax
+				)
+			);
 			//save
 			plugin.debug("Saving GP Region "+claim.getID()+" to schematic");
 			wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);

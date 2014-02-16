@@ -31,6 +31,7 @@ import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.restart.RestartJVMshutdownhook;
 import autosaveworld.threads.worldregen.factions.FactionsCopy;
 import autosaveworld.threads.worldregen.griefprevention.GPCopy;
+import autosaveworld.threads.worldregen.towny.TownyCopy;
 import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
 
 public class WorldRegenCopyThread extends Thread {
@@ -146,13 +147,12 @@ public class WorldRegenCopyThread extends Thread {
 		{
 			new GPCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
-		/*
+
 		//save Towny towns
 		if (Bukkit.getPluginManager().getPlugin("Towny") != null)
 		{
 			new TownyCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
-		 */
 
 		plugin.debug("Saving finished");
 

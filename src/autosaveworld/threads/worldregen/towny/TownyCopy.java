@@ -43,27 +43,39 @@ public class TownyCopy {
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0)
 				{
-					//find min and max coords
-					int xmin = tblocks.get(0).getX();
-					int xmax = tblocks.get(0).getX();
-					int zmin = tblocks.get(0).getZ();
-					int zmax = tblocks.get(0).getZ();
+					plugin.debug("Saving town claim "+town.getName()+" to schematic");
 					for (TownBlock tb : tblocks)
 					{
 						if (tb.getWorld().getName().equals(wtoregen.getName()))
 						{
-							xmax = Math.max(xmax, tb.getX());
-							xmin = Math.min(xmin, tb.getX());
-							zmax = Math.max(zmax, tb.getZ());
-							zmin = Math.min(zmin, tb.getZ());
+							//create temp folder for town
+							new File(plugin.constants.getTownyTempFolder()+town.getName()).mkdirs();
+							//get coords
+							final int xcoord = tb.getX();
+							final int zcoord = tb.getZ();
+							final Vector bvmin = BukkitUtil.toVector(
+								new Location(
+									wtoregen,
+									xcoord*16,
+									0,
+									zcoord*16
+								)
+							);
+							final Vector bvmax = BukkitUtil.toVector(
+								new Location(
+									wtoregen,
+									xcoord*16+15,
+									wtoregen.getMaxHeight(),
+									zcoord*16+15
+								)
+							);
+							//save
+							plugin.debug("Saving Towny town "+town.getName()+" townblock to schematic");
+							wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+							plugin.debug(town.getName()+" townblock saved");
 						}
 					}
-					Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xmin, 0, zmin));
-					Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, xmax, wtoregen.getMaxHeight(), xmax));
-					//save
-					plugin.debug("Saving Towny town "+town.getName()+" to schematic");
-					wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getWGTempFolder()+town.getName(), wtoregen, bvmin, bvmax);
-					plugin.debug("Towny town "+town.getName()+" saved");
+					plugin.debug("Towmy claim "+town.getName()+" saved");
 				}
 			}
 		}
