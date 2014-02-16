@@ -190,13 +190,13 @@ public class AutoSaveThread extends Thread {
 
 	private void saveWorldDoNoSaveStructureInfo(World world)
 	{
-		//omg...
+		//save saveenabled state
+		boolean saveenabled = world.isAutoSave();
+		//set saveenabled state
+		world.setAutoSave(true);
+		//now lets save everything besides structures
 		try
 		{
-			//save saveenabled state
-			boolean saveenabled = world.isAutoSave();
-			//set saveenabled state
-			world.setAutoSave(true);
 			//get worldserver and dataManager
 			Field worldField = world.getClass().getDeclaredField("world");
 			worldField.setAccessible(true);
@@ -242,15 +242,15 @@ public class AutoSaveThread extends Thread {
 					break;
 				}
 			}
-			//reset saveenabled state
-			world.setAutoSave(saveenabled);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-			//failed to workaround
+			//failed to save using reflections, save world normal
 			plugin.debug("failed to workaround stucture saving, saving world using normal methods");
 			saveWorldNormal(world);
 		}
+		//reset saveenabled state
+		world.setAutoSave(saveenabled);
 	}
 
 }
