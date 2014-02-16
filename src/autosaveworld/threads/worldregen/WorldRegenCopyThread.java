@@ -149,7 +149,7 @@ public class WorldRegenCopyThread extends Thread {
 		}
 
 		//save Towny towns
-		if (Bukkit.getPluginManager().getPlugin("Towny") != null)
+		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny)
 		{
 			new TownyCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}

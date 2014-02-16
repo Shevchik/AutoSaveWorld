@@ -28,6 +28,7 @@ import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.griefprevention.GPPaste;
+import autosaveworld.threads.worldregen.towny.TownyPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
 
 public class WorldRegenPasteThread extends Thread {
@@ -107,6 +108,12 @@ public class WorldRegenPasteThread extends Thread {
 			{
 				new GPPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
+			
+			//paste Towny towns
+			if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny)
+			{
+				new TownyPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+			}
 
 			//clear temp folder
 			plugin.debug("Cleaning temp folders");
@@ -114,9 +121,11 @@ public class WorldRegenPasteThread extends Thread {
 			deleteDirectory(new File(plugin.constants.getWGTempFolder()));
 			deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
 			deleteDirectory(new File(plugin.constants.getGPTempFolder()));
+			deleteDirectory(new File(plugin.constants.getTownyTempFolder()));
 			new File(plugin.constants.getShouldpasteFile()).delete();
 			new File(plugin.constants.getWorldnameFile()).delete();
 			new File(plugin.constants.getWorldRegenTempFolder()).delete();
+			new File(plugin.constants.getTownyTempFolder()).delete();
 
 			plugin.debug("Restore finished");
 			// save server, just in case

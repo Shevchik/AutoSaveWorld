@@ -123,6 +123,7 @@ public class AutoSaveConfig {
 	public boolean worldregensavewg = true;
 	public boolean worldregensavefactions = true;
 	public boolean worldregensavegp = true;
+	public boolean worldregensavetowny = true;
 
 
 	//config load/save functions

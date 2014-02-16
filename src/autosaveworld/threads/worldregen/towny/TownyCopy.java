@@ -31,12 +31,12 @@ public class TownyCopy {
 
 	public void copyAllToSchematics()
 	{
-		plugin.debug("Saving Towny towns to schematics");
-
-		new File(plugin.constants.getTownyTempFolder()).mkdirs();
-
 		try
 		{
+			plugin.debug("Saving Towny towns to schematics");
+
+			new File(plugin.constants.getTownyTempFolder()).mkdirs();
+			
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtoregen.getName()).getTowns();
 			for (Town town : towns)
 			{
