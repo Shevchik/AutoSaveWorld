@@ -136,11 +136,11 @@ public class AutoSaveConfig {
 
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
-		donotsavestructures = config.getBoolean("save.disablestructuresaving",donotsavestructures);
-		saveIgnoreIfNoPlayers = config.getBoolean("save.donotsaveifempty", saveIgnoreIfNoPlayers);
+		donotsavestructures = config.getBoolean("save.disablestructuresaving", donotsavestructures);
 		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
 		saveInterval = config.getInt("save.interval", saveInterval);
-		saveOnASWDisable = config.getBoolean("save.onaswdisable", saveOnASWDisable);
+		saveOnASWDisable = config.getBoolean("save.onplugindisable", saveOnASWDisable);
+		saveIgnoreIfNoPlayers = config.getBoolean("save.donotsaveifempty", saveIgnoreIfNoPlayers);
 		saveOnLastQuit = config.getBoolean("save.onlastplayerquit", saveOnLastQuit);
 
 
@@ -273,10 +273,10 @@ public class AutoSaveConfig {
 
 		//save variables
 		config.set("save.enabled",saveEnabled);
+		config.set("save.disablestructuresaving", donotsavestructures);
 		config.set("save.interval", saveInterval);
 		config.set("save.broadcast", saveBroadcast);
-		config.set("save.disablestructuresaving", donotsavestructures);
-		config.set("save.onaswdisable", saveOnASWDisable);
+		config.set("save.onplugindisable", saveOnASWDisable);
 		config.set("save.onlastplayerquit", saveOnLastQuit);
 		config.set("save.donotsaveifempty", saveIgnoreIfNoPlayers);
 
