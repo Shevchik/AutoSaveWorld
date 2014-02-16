@@ -260,6 +260,7 @@ public class AutoSaveConfig {
 		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
 		worldregensavefactions = config.getBoolean("worldregen.savefactions",worldregensavefactions);
 		worldregensavegp = config.getBoolean("worldregen.savegp",worldregensavegp);
+		worldregensavetowny = config.getBoolean("worldregen.savetowny",worldregensavetowny);
 
 		save();
 	}
@@ -373,6 +374,7 @@ public class AutoSaveConfig {
 		config.set("worldregen.savewg",worldregensavewg);
 		config.set("worldregen.savefactions",worldregensavefactions);
 		config.set("worldregen.savegp",worldregensavegp);
+		config.set("worldregen.savetowny",worldregensavetowny);
 
 		try {config.save(new File(plugin.constants.getConfigPath()));} catch (IOException ex) {}
 	}
