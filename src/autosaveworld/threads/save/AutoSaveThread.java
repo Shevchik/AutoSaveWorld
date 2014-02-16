@@ -193,7 +193,7 @@ public class AutoSaveThread extends Thread {
 		//omg...
 		try
 		{
-			//save saveenbled state
+			//save saveenabled state
 			boolean saveenabled = world.isAutoSave();
 			//set saveenabled state
 			world.setAutoSave(true);
