@@ -26,13 +26,15 @@ public class WorldRegenJVMshutdownhook extends Thread {
 
 	private String shouldpastefile;
 	private String fldtodelete;
+	private boolean dorestart = true;
 	private RestartJVMshutdownhook jvmsh;
 
-	public WorldRegenJVMshutdownhook(RestartJVMshutdownhook jvmsh, String fldtodelete, String shouldpastefile)
+	public WorldRegenJVMshutdownhook(RestartJVMshutdownhook jvmsh, boolean dorestart, String fldtodelete, String shouldpastefile)
 	{
 		this.fldtodelete = fldtodelete;
 		this.shouldpastefile = shouldpastefile;
 		this.jvmsh = jvmsh;
+		this.dorestart = dorestart;
 	}
 
 	@Override
@@ -48,7 +50,10 @@ public class WorldRegenJVMshutdownhook extends Thread {
 			e.printStackTrace();
 		}
 		//restart
-		jvmsh.restart();
+		if (dorestart)
+		{
+			jvmsh.restart();
+		}
 	}
 
 
