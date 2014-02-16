@@ -92,6 +92,7 @@ public class AutoRestartThread  extends Thread{
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 
+				
 				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
 					@Override
@@ -104,14 +105,10 @@ public class AutoRestartThread  extends Thread{
 					}
 				});
 				int curwait = 0;
-				while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+				while ((Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) && curwait < 10)
 				{
 					try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 					curwait++;
-					if (curwait > 10)
-					{
-						break;
-					}
 				}
 
 				plugin.getServer().shutdown();
