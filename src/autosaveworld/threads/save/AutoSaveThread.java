@@ -159,13 +159,7 @@ public class AutoSaveThread extends Thread {
 					public void run()
 					{
 						plugin.debug(String.format("Saving world: %s", world.getName()));
-						if (config.donotsavestructures)
-						{
-							saveWorldDoNoSaveStructureInfo(world);
-						} else
-						{
-							saveWorldNormal(world);
-						}
+						saveWorld(world);
 					}
 				});
 				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
@@ -177,6 +171,18 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Saved Worlds");
 	}
 
+	private void saveWorld(World world)
+	{
+		//structures are saved only for main world so we use this workaround only for main world
+		if (config.donotsavestructures && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName()))
+		{
+			saveWorldDoNoSaveStructureInfo(world);
+		} else
+		{
+			saveWorldNormal(world);
+		}
+	}
+	
 	private void saveWorldNormal(World world)
 	{
 		world.save();
@@ -184,72 +190,65 @@ public class AutoSaveThread extends Thread {
 
 	private void saveWorldDoNoSaveStructureInfo(World world)
 	{
-		//structures are saved only for main world so we use this workaround only for main world
-		if (Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName()))
+		//omg...
+		try
 		{
-			//omg...
-			try
+			//save saveenbled state
+			boolean saveenabled = world.isAutoSave();
+			//set saveenabled state
+			world.setAutoSave(true);
+			//get worldserver and dataManager
+			Field worldField = world.getClass().getDeclaredField("world");
+			worldField.setAccessible(true);
+			Object worldserver = worldField.get(world);
+			Field dataManagerField = worldserver.getClass().getSuperclass().getDeclaredField("dataManager");
+			dataManagerField.setAccessible(true);
+			Object dataManager = dataManagerField.get(worldserver);
+			//invoke check session
+			Method checkSessionMethod = dataManager.getClass().getSuperclass().getDeclaredMethod("checkSession");
+			checkSessionMethod.setAccessible(true);
+			checkSessionMethod.invoke(dataManager);
+			//invoke saveWorldData
+			Field worldDataField = worldserver.getClass().getSuperclass().getDeclaredField("worldData");
+			worldDataField.setAccessible(true);
+			Object worldData = worldDataField.get(worldserver);
+			Field serverField = worldserver.getClass().getDeclaredField("server");
+			serverField.setAccessible(true);
+			Object server = serverField.get(worldserver);
+			Method getPlayerListMethod = server.getClass().getDeclaredMethod("getPlayerList");
+			getPlayerListMethod.setAccessible(true);
+			Object playerList = getPlayerListMethod.invoke(server);
+			Method qMethod = playerList.getClass().getSuperclass().getDeclaredMethod("q");
+			qMethod.setAccessible(true);
+			Object NBTTagCompound = qMethod.invoke(playerList);
+			for (Method method : dataManager.getClass().getSuperclass().getDeclaredMethods())
 			{
-				//save saveenbled state
-				boolean saveenabled = world.isAutoSave();
-				//set saveenabled state
-				world.setAutoSave(true);
-				//get worldserver and dataManager
-				Field worldField = world.getClass().getDeclaredField("world");
-				worldField.setAccessible(true);
-				Object worldserver = worldField.get(world);
-				Field dataManagerField = worldserver.getClass().getSuperclass().getDeclaredField("dataManager");
-				dataManagerField.setAccessible(true);
-				Object dataManager = dataManagerField.get(worldserver);
-				//invoke check session
-				Method checkSessionMethod = dataManager.getClass().getSuperclass().getDeclaredMethod("checkSession");
-				checkSessionMethod.setAccessible(true);
-				checkSessionMethod.invoke(dataManager);
-				//invoke saveWorldData
-				Field worldDataField = worldserver.getClass().getSuperclass().getDeclaredField("worldData");
-				worldDataField.setAccessible(true);
-				Object worldData = worldDataField.get(worldserver);
-				Field serverField = worldserver.getClass().getDeclaredField("server");
-				serverField.setAccessible(true);
-				Object server = serverField.get(worldserver);
-				Method getPlayerListMethod = server.getClass().getDeclaredMethod("getPlayerList");
-				getPlayerListMethod.setAccessible(true);
-				Object playerList = getPlayerListMethod.invoke(server);
-				Method qMethod = playerList.getClass().getSuperclass().getDeclaredMethod("q");
-				qMethod.setAccessible(true);
-				Object NBTTagCompound = qMethod.invoke(playerList);
-				for (Method method : dataManager.getClass().getSuperclass().getDeclaredMethods())
+				if (method.getName().equals("saveWorldData")  && method.getParameterTypes().length == 2)
 				{
-					if (method.getName().equals("saveWorldData")  && method.getParameterTypes().length == 2)
-					{
-						method.setAccessible(true);
-						method.invoke(dataManager, worldData, NBTTagCompound);
-					}
+					method.setAccessible(true);
+					method.invoke(dataManager, worldData, NBTTagCompound);
 				}
-				//invoke saveChunks
-				Field chunkProviderField = worldserver.getClass().getSuperclass().getDeclaredField("chunkProvider");
-				chunkProviderField.setAccessible(true);
-				Object chunkProvider = chunkProviderField.get(worldserver);
-				for (Method method : chunkProvider.getClass().getDeclaredMethods())
-				{
-					if (method.getName().equals("saveChunks") && method.getParameterTypes().length == 2)
-					{
-						method.setAccessible(true);
-						method.invoke(chunkProvider, true, null);
-						break;
-					}
-				}
-				//reset saveenabled state
-				world.setAutoSave(saveenabled);
-			} catch (Exception e)
-			{
-				e.printStackTrace();
-				//failed to workaround
-				plugin.debug("failed to workaround stucture saving, saving world using normal methods");
-				saveWorldNormal(world);
 			}
-		} else
+			//invoke saveChunks
+			Field chunkProviderField = worldserver.getClass().getSuperclass().getDeclaredField("chunkProvider");
+			chunkProviderField.setAccessible(true);
+			Object chunkProvider = chunkProviderField.get(worldserver);
+			for (Method method : chunkProvider.getClass().getDeclaredMethods())
+			{
+				if (method.getName().equals("saveChunks") && method.getParameterTypes().length == 2)
+				{
+					method.setAccessible(true);
+					method.invoke(chunkProvider, true, null);
+					break;
+				}
+			}
+			//reset saveenabled state
+			world.setAutoSave(saveenabled);
+		} catch (Exception e)
 		{
+			e.printStackTrace();
+			//failed to workaround
+			plugin.debug("failed to workaround stucture saving, saving world using normal methods");
 			saveWorldNormal(world);
 		}
 	}
