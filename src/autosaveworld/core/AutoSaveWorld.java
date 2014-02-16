@@ -167,66 +167,66 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	protected boolean startThread(ThreadType type) {
 		switch (type) {
-		case SAVE: {
-			if (saveThread == null || !saveThread.isAlive()) {
-				saveThread = new AutoSaveThread(this, config, configmsg);
-				saveThread.start();
+			case SAVE: {
+				if (saveThread == null || !saveThread.isAlive()) {
+					saveThread = new AutoSaveThread(this, config, configmsg);
+					saveThread.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		case BACKUP: {
-			if (backupThread6 == null || !backupThread6.isAlive()) {
-				backupThread6 = new AutoBackupThread(this, config, configmsg);
-				backupThread6.start();
+			case BACKUP: {
+				if (backupThread6 == null || !backupThread6.isAlive()) {
+					backupThread6 = new AutoBackupThread(this, config, configmsg);
+					backupThread6.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		case PURGE: {
-			if (purgeThread == null || !purgeThread.isAlive()) {
-				purgeThread = new AutoPurgeThread(this, config, configmsg);
-				purgeThread.start();
+			case PURGE: {
+				if (purgeThread == null || !purgeThread.isAlive()) {
+					purgeThread = new AutoPurgeThread(this, config, configmsg);
+					purgeThread.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		case CRASHRESTART: {
-			if (crashrestartThread == null || !crashrestartThread.isAlive()) {
-				crashrestartThread = new CrashRestartThread(this, config, JVMsh);
-				crashrestartThread.start();
+			case CRASHRESTART: {
+				if (crashrestartThread == null || !crashrestartThread.isAlive()) {
+					crashrestartThread = new CrashRestartThread(this, config, JVMsh);
+					crashrestartThread.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		case AUTORESTART: {
-			if (autorestartThread == null || !autorestartThread.isAlive()) {
-				autorestartThread = new AutoRestartThread(this, config, configmsg, JVMsh);
-				autorestartThread.start();
+			case AUTORESTART: {
+				if (autorestartThread == null || !autorestartThread.isAlive()) {
+					autorestartThread = new AutoRestartThread(this, config, configmsg, JVMsh);
+					autorestartThread.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		case CONSOLECOMMAND: {
-			if (consolecommandThread == null || !consolecommandThread.isAlive()) {
-				consolecommandThread = new AutoConsoleCommandThread(this, config);
-				consolecommandThread.start();
+			case CONSOLECOMMAND: {
+				if (consolecommandThread == null || !consolecommandThread.isAlive()) {
+					consolecommandThread = new AutoConsoleCommandThread(this, config);
+					consolecommandThread.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		case WORLDREGENCOPY: {
-			if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
-				worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg, JVMsh);
-				worldregencopyThread.start();
+			case WORLDREGENCOPY: {
+				if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
+					worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg, JVMsh);
+					worldregencopyThread.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		case WORLDREGENPASTE: {
-			if (worldregenpasteThread == null || !worldregenpasteThread.isAlive()) {
-				worldregenpasteThread = new WorldRegenPasteThread(this, config, configmsg);
-				worldregenpasteThread.checkIfShouldPaste();
-				worldregenpasteThread.start();
+			case WORLDREGENPASTE: {
+				if (worldregenpasteThread == null || !worldregenpasteThread.isAlive()) {
+					worldregenpasteThread = new WorldRegenPasteThread(this, config, configmsg);
+					worldregenpasteThread.checkIfShouldPaste();
+					worldregenpasteThread.start();
+				}
+				return true;
 			}
-			return true;
-		}
-		default: {
-			return false;
-		}
+			default: {
+				return false;
+			}
 		}
 	}
 
@@ -234,114 +234,114 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	protected boolean stopThread(ThreadType type) {
 		switch (type) {
-		case SAVE: {
-			if (saveThread == null) {
-				return true;
-			} else {
-				saveThread.stopThread();
-				try {
-					saveThread.join(2000);
-					saveThread = null;
+			case SAVE: {
+				if (saveThread == null) {
 					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop AutoSaveThread");
-					return false;
+				} else {
+					saveThread.stopThread();
+					try {
+						saveThread.join(2000);
+						saveThread = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop AutoSaveThread");
+						return false;
+					}
 				}
 			}
-		}
-		case BACKUP: {
-			if (backupThread6 == null) {
-				return true;
-			} else {
-				backupThread6.stopThread();
-				try {
-					backupThread6.join(2000);
-					backupThread6 = null;
+			case BACKUP: {
+				if (backupThread6 == null) {
 					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop AutoBackupThread");
-					return false;
+				} else {
+					backupThread6.stopThread();
+					try {
+						backupThread6.join(2000);
+						backupThread6 = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop AutoBackupThread");
+						return false;
+					}
 				}
 			}
-		}
-		case PURGE: {
-			if (purgeThread == null) {
-				return true;
-			} else {
-				purgeThread.stopThread();
-				try {
-					purgeThread.join(2000);
-					purgeThread = null;
+			case PURGE: {
+				if (purgeThread == null) {
 					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop AutoPurgeThread");
-					return false;
+				} else {
+					purgeThread.stopThread();
+					try {
+						purgeThread.join(2000);
+						purgeThread = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop AutoPurgeThread");
+						return false;
+					}
 				}
 			}
-		}
-		case CRASHRESTART: {
-			if (crashrestartThread == null) {
-				return true;
-			} else {
-				crashrestartThread.stopThread();
-				try {
-					crashrestartThread.join(2000);
-					crashrestartThread = null;
+			case CRASHRESTART: {
+				if (crashrestartThread == null) {
 					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop CrashRestartThread");
-					return false;
+				} else {
+					crashrestartThread.stopThread();
+					try {
+						crashrestartThread.join(2000);
+						crashrestartThread = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop CrashRestartThread");
+						return false;
+					}
 				}
 			}
-		}
-		case AUTORESTART: {
-			if (autorestartThread == null) {
-				return true;
-			} else {
-				autorestartThread.stopThread();
-				try {
-					autorestartThread.join(2000);
-					autorestartThread = null;
+			case AUTORESTART: {
+				if (autorestartThread == null) {
 					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop AutoRestartThread");
-					return false;
+				} else {
+					autorestartThread.stopThread();
+					try {
+						autorestartThread.join(2000);
+						autorestartThread = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop AutoRestartThread");
+						return false;
+					}
 				}
 			}
-		}
-		case CONSOLECOMMAND: {
-			if (consolecommandThread == null) {
-				return true;
-			} else {
-				consolecommandThread.stopThread();
-				try {
-					consolecommandThread.join(2000);
-					consolecommandThread = null;
+			case CONSOLECOMMAND: {
+				if (consolecommandThread == null) {
 					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop ConsoleCommandThread");
-					return false;
+				} else {
+					consolecommandThread.stopThread();
+					try {
+						consolecommandThread.join(2000);
+						consolecommandThread = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop ConsoleCommandThread");
+						return false;
+					}
 				}
 			}
-		}
-		case WORLDREGENCOPY: {
-			if (worldregencopyThread == null) {
-				return true;
-			} else {
-				worldregencopyThread.stopThread();
-				try {
-					worldregencopyThread.join(2000);
-					worldregencopyThread = null;
+			case WORLDREGENCOPY: {
+				if (worldregencopyThread == null) {
 					return true;
-				} catch (InterruptedException e) {
-					warn("Could not stop WorldRegenThread");
-					return false;
+				} else {
+					worldregencopyThread.stopThread();
+					try {
+						worldregencopyThread.join(2000);
+						worldregencopyThread = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop WorldRegenThread");
+						return false;
+					}
 				}
 			}
-		}
-		default: {
-			return false;
-		}
+			default: {
+				return false;
+			}
 		}
 	}
 
