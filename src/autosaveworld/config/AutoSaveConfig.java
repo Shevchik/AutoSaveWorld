@@ -120,6 +120,7 @@ public class AutoSaveConfig {
 	public boolean ccintervalenabled = false;
 	public HashMap<Integer, List<String>> ccintervalscommands = new HashMap<Integer, List<String>>();
 	//worldregen
+	public boolean worldregenremoveseeddata = false;
 	public boolean worldregensavewg = true;
 	public boolean worldregensavefactions = true;
 	public boolean worldregensavegp = true;
@@ -257,6 +258,7 @@ public class AutoSaveConfig {
 		}
 
 		//worldregen variables
+		worldregenremoveseeddata = config.getBoolean("worldregen.newseed",worldregenremoveseeddata);
 		worldregensavewg = config.getBoolean("worldregen.savewg",worldregensavewg);
 		worldregensavefactions = config.getBoolean("worldregen.savefactions",worldregensavefactions);
 		worldregensavegp = config.getBoolean("worldregen.savegp",worldregensavegp);
@@ -371,6 +373,7 @@ public class AutoSaveConfig {
 		}
 
 		//worldregen variables
+		config.set("worldregen.newseed",worldregenremoveseeddata);
 		config.set("worldregen.savewg",worldregensavewg);
 		config.set("worldregen.savefactions",worldregensavefactions);
 		config.set("worldregen.savegp",worldregensavegp);

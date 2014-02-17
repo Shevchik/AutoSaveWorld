@@ -155,6 +155,15 @@ public class WorldRegenCopyThread extends Thread {
 		}
 
 		plugin.debug("Saving finished");
+		
+		if (config.worldregenremoveseeddata)
+		{
+			plugin.debug("Removing seed data");
+			new File(wtoregen.getWorldFolder(),"level.dat").delete();
+			new File(wtoregen.getWorldFolder(),"level.dat_old").delete();
+			new File(wtoregen.getWorldFolder(),"uid.dat").delete();
+			plugin.debug("Removing finished");
+		}
 
 		//Shutdown server and delegate world removal to JVMShutdownHook
 		plugin.debug("Deleting map and restarting server");
