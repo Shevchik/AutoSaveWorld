@@ -113,7 +113,7 @@ public class AutoSaveConfig {
 	public boolean autorestartcountdown = true;
 	public List<Integer> autorestartbroadcastonseconds = new ArrayList<Integer>();
 	public List<String> autorestartcommmands = new ArrayList<String>();
-	public boolean astop = false;
+	public boolean autorestartjuststop = false;
 	//consolecmmand
 	public boolean cctimeenabled = false;
 	public HashMap<String, List<String>> cctimescommands = new HashMap<String, List<String>>();
@@ -221,7 +221,7 @@ public class AutoSaveConfig {
 		autorestartbroadcastonseconds = config.getIntegerList("autorestart.countdown.broadcastonsecond");
 		autorestartcommmands = config.getStringList("autorestart.commands");
 		autorestartscriptpath = config.getString("autorestart.scriptpath",autorestartscriptpath);
-		astop = config.getBoolean("autorestart.juststop", astop);
+		autorestartjuststop = config.getBoolean("autorestart.juststop", autorestartjuststop);
 		if (autorestartbroadcastonseconds.size() == 0)
 		{
 			autorestartbroadcastonseconds.add(60);
@@ -347,7 +347,7 @@ public class AutoSaveConfig {
 		config.set("autorestart.countdown.broadcastonsecond",autorestartbroadcastonseconds);
 		config.set("autorestart.commands", autorestartcommmands);
 		config.set("autorestart.scriptpath",autorestartscriptpath);
-		config.set("autorestart.juststop", astop);
+		config.set("autorestart.juststop", autorestartjuststop);
 
 
 		//autoconsolecommand variables

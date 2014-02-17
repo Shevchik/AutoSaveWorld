@@ -86,7 +86,7 @@ public class AutoRestartThread  extends Thread{
 
 				plugin.debug("AutoRestarting server");
 
-				if (!config.astop)
+				if (!config.autorestartjuststop)
 				{
 					jvmsh.setPath(config.autorestartscriptpath);
 					Runtime.getRuntime().addShutdownHook(jvmsh);
