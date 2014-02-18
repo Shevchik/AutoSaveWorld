@@ -58,7 +58,6 @@ public class InternalUtils {
 		Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
 		lookupNames.remove(plugin.getName());
 		//remove from commands field
-		Map<String, Map<String, Object>> plugincmds = plugin.getDescription().getCommands();
 		Field commandMapField = managerclass.getDeclaredField("commandMap");
 		commandMapField.setAccessible(true);
 		CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
@@ -72,19 +71,6 @@ public class InternalUtils {
 			{
 				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
 				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName()))
-				{
-					cmd.unregister(commandMap);
-					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection"))
-					{
-						removeFromUnmodifiableCollection(commands, cmd);
-					} else
-					{
-						commands.remove(cmd);
-					}
-				}
-			} else
-			{
-				if (plugincmds != null && plugincmds.keySet().contains(cmd.getName()))
 				{
 					cmd.unregister(commandMap);
 					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection"))
@@ -111,7 +97,6 @@ public class InternalUtils {
 
 	private void removeFromUnmodifiableCollection(Collection<?> collection, Object toremove) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
-		//reflection can do anything :)
 		Field originalField = collection.getClass().getDeclaredField("c");
 		originalField.setAccessible(true);
 		@SuppressWarnings("unchecked")
