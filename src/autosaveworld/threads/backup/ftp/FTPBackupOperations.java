@@ -79,7 +79,7 @@ public class FTPBackupOperations {
 				BackupFileUtils.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
 			} else  {
 				File tempzip = new File(localtempfolder,plfolder.getName()+".zip");
-				List<String> excludefolderslist = new ArrayList<String>(excludefolders.size()+1);
+				List<String> excludefolderslist = new ArrayList<String>();
 				excludefolderslist.addAll(excludefolders);
 				excludefolderslist.add(localtempfolder);
 				ZipUtils.zipFolder(plfolder, tempzip, excludefolderslist);
