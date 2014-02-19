@@ -72,17 +72,17 @@ public class LWCPurge {
 	}
 
 	private ArrayList<Protection> prtodel = new ArrayList<Protection>(100);
-	public void flushBatch(LWCPlugin lwc, boolean delblocks)
+	public void flushBatch(final LWCPlugin lwc, final boolean delblocks)
 	{
-		//delete block
-		if (delblocks)
+		Runnable rempr = new Runnable()
 		{
-			Runnable remchests = new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
+				for (Protection pr : prtodel)
 				{
-					for (Protection pr : prtodel)
+					//delete block
+					if (delblocks)
 					{
 						plugin.debug("Removing protected block for inactive player "+pr.getOwner());
 						Block block = pr.getBlock();
@@ -97,22 +97,19 @@ public class LWCPurge {
 						}
 						block.setType(Material.AIR);
 					}
+					//delete protection
+					plugin.debug("Removing protection for inactive player "+pr.getOwner());
+					lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
 				}
-			};
-			int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, remchests);
-
-			while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-			{
-				try {Thread.sleep(50);} catch (InterruptedException e) {}
+				prtodel.clear();
 			}
-		}
-		for (Protection pr : prtodel)
+		};
+		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rempr);
+
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
 		{
-			plugin.debug("Removing protection for inactive player "+pr.getOwner());
-			//delete protections
-			lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
+			try {Thread.sleep(50);} catch (InterruptedException e) {}
 		}
-		prtodel.clear();
 	}
 
 }
