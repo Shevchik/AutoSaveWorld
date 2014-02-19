@@ -42,10 +42,8 @@ public class FTPBackupOperations {
 		this.zip = zip;
 		this.excludefolders = excludefolders;
 		this.ftp = ftp;
-		localtempfolder = plugin.constants.getBackupTempFolder();
 	}
 
-	private String localtempfolder;
 	public void backupWorld(World world)
 	{
 		plugin.debug("Backuping world "+world.getWorldFolder().getName());
@@ -55,11 +53,11 @@ public class FTPBackupOperations {
 			if (!zip) {
 				BackupFileUtils.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
 			} else {
-				File tempzip = new File(localtempfolder,worldfolder.getName()+".zip");
+				File tempzip = new File(plugin.constants.getBackupTempFolder(),worldfolder.getName()+".zip");
 				ZipUtils.zipFolder(worldfolder, tempzip, excludefolders);
 				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
 				tempzip.delete();
-				new File(localtempfolder).delete();
+				new File(plugin.constants.getBackupTempFolder()).delete();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -78,14 +76,14 @@ public class FTPBackupOperations {
 			if (!zip) {
 				BackupFileUtils.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
 			} else  {
-				File tempzip = new File(localtempfolder,plfolder.getName()+".zip");
+				File tempzip = new File(plugin.constants.getBackupTempFolder(), plfolder.getName()+".zip");
 				List<String> excludefolderslist = new ArrayList<String>();
 				excludefolderslist.addAll(excludefolders);
-				excludefolderslist.add(localtempfolder);
+				excludefolderslist.add(plugin.constants.getBackupTempFolder());
 				ZipUtils.zipFolder(plfolder, tempzip, excludefolderslist);
 				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
 				tempzip.delete();
-				new File(localtempfolder).delete();
+				new File(plugin.constants.getBackupTempFolder()).delete();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
