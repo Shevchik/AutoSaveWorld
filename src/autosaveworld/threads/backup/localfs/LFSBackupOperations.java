@@ -25,14 +25,15 @@ import java.util.concurrent.ExecutorService;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.backup.BackupFileUtils;
 import autosaveworld.threads.backup.Zip;
 
 public class LFSBackupOperations {
 
-	AutoSaveWorld plugin;
-	final boolean zip;
-	final String extpath;
-	final List<String> excludefolders;
+	private AutoSaveWorld plugin;
+	private final boolean zip;
+	private final String extpath;
+	private final List<String> excludefolders;
 	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders)
 	{
 		this.plugin = plugin;
@@ -40,8 +41,6 @@ public class LFSBackupOperations {
 		this.extpath = extpath;
 		this.excludefolders = excludefolders;
 	}
-
-	private LFSFileUtils fu = new LFSFileUtils();
 
 	public void startWorldBackup(ExecutorService backupService, final World world, final int maxBackupsCount, final String latestbackuptimestamp)
 	{
@@ -59,14 +58,14 @@ public class LFSBackupOperations {
 					//remove oldest backup
 					plugin.debug("Deleting oldest backup for world "+world.getWorldFolder().getName());
 					//find oldest backup
-					String oldestBackupName = fu.findOldestBackupName(worldbackupfolder);
+					String oldestBackupName = BackupFileUtils.findOldestBackupNameLFS(worldbackupfolder);
 					if (oldestBackupName != null) {
 						//delete oldest backup
 						File oldestBakup = new File(worldbackupfolder + File.separator + oldestBackupName);
 						if (oldestBackupName.contains(".zip")) {
 							oldestBakup.delete();
 						} else {
-							fu.deleteDirectory(oldestBakup);
+							BackupFileUtils.deleteDirectory(oldestBakup);
 						}
 					}
 				}
@@ -76,7 +75,7 @@ public class LFSBackupOperations {
 					File worldfolder = world.getWorldFolder().getCanonicalFile();
 					String worldBackup = worldbackupfolder+File.separator+latestbackuptimestamp;
 					if (!zip) {
-						fu.copyDirectory(worldfolder, new File(worldBackup),excludefolders);
+						BackupFileUtils.copyDirectory(worldfolder, new File(worldBackup),excludefolders);
 					} else {
 						Zip zipfld = new Zip(excludefolders);
 						zipfld.ZipFolder(worldfolder, new File(worldBackup+".zip"));
@@ -111,14 +110,14 @@ public class LFSBackupOperations {
 					//remove oldest backup
 					plugin.debug("Deleting oldest plugins backup");
 					//find oldest backup
-					String oldestBackupName = fu.findOldestBackupName(pluginsbackupfolder);
+					String oldestBackupName = BackupFileUtils.findOldestBackupNameLFS(pluginsbackupfolder);
 					//delete oldest backup
 					if (oldestBackupName != null) {
 						File oldestBakup = new File(pluginsbackupfolder + File.separator + oldestBackupName);
 						if (oldestBackupName.contains(".zip")) {
 							oldestBakup.delete();
 						} else {
-							fu.deleteDirectory(oldestBakup);
+							BackupFileUtils.deleteDirectory(oldestBakup);
 						}
 					}
 				}
@@ -127,7 +126,7 @@ public class LFSBackupOperations {
 					File pluginsfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
 					String pluginsBackup = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+latestbackuptimestamp;
 					if (!zip) {
-						fu.copyDirectory(pluginsfolder,new File(pluginsBackup),excludefolders);
+						BackupFileUtils.copyDirectory(pluginsfolder,new File(pluginsBackup),excludefolders);
 					} else  {
 						Zip zipfld = new Zip(excludefolders);
 						zipfld.ZipFolder(pluginsfolder,new File(pluginsBackup+".zip"));
@@ -146,8 +145,8 @@ public class LFSBackupOperations {
 	public void deleteOldestPluginsBackup(String oldestbackupdate)
 	{
 		String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+oldestbackupdate;
-		fu.deleteDirectory(new File(fldtodel));
-		fu.deleteDirectory(new File(fldtodel+".zip"));
+		BackupFileUtils.deleteDirectory(new File(fldtodel));
+		BackupFileUtils.deleteDirectory(new File(fldtodel+".zip"));
 	}
 
 }

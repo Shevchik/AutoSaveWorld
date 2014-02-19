@@ -17,7 +17,6 @@
 
 package autosaveworld.threads.backup.ftp;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import org.bukkit.Bukkit;
@@ -25,6 +24,7 @@ import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.backup.BackupFileUtils;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTP;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPReply;
@@ -66,9 +66,9 @@ public class FTPBackup {
 			{
 				plugin.debug("Deleting oldest backup");
 				//find oldest backup
-				String oldestBackup = findOldestBackupName(listnames);
+				String oldestBackup = BackupFileUtils.findOldestBackupNameFTP(listnames);
 				//delete oldest backup
-				deleteDirectoryFromFTP(ftpclient, oldestBackup);
+				BackupFileUtils.deleteDirectoryFromFTP(ftpclient, oldestBackup);
 			}
 			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 			ftpclient.makeDirectory(datedir);
@@ -98,48 +98,6 @@ public class FTPBackup {
 			e.printStackTrace();
 		}
 
-	}
-
-	private String findOldestBackupName(String[] timestamps) throws IOException
-	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		String oldestBackupName = timestamps[0];
-		try {
-			long old = sdf.parse(oldestBackupName).getTime();
-			for (String timestampString : timestamps)
-			{
-				long cur = sdf.parse(timestampString).getTime();
-				if (cur < old)
-				{
-					old = cur;
-					oldestBackupName = timestampString;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return oldestBackupName;
-	}
-
-
-	private void deleteDirectoryFromFTP(FTPClient ftp, String directory) throws IOException
-	{
-		if (ftp.changeWorkingDirectory(directory))
-		{
-			String[] files = ftp.listNames();
-			if (files != null)
-			{
-				for (String name : files)
-				{
-					deleteDirectoryFromFTP(ftp, name);
-				}
-			}
-			ftp.changeToParentDirectory();
-			ftp.removeDirectory(directory);
-		} else
-		{
-			ftp.deleteFile(directory);
-		}
 	}
 
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.backup.BackupFileUtils;
 import autosaveworld.threads.backup.Zip;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 
@@ -44,7 +45,6 @@ public class FTPBackupOperations {
 		localtempfolder = plugin.constants.getBackupTempFolder();
 	}
 
-	private FTPFileUtils fu = new FTPFileUtils();
 	private String localtempfolder;
 	public void backupWorld(World world)
 	{
@@ -53,12 +53,12 @@ public class FTPBackupOperations {
 		try {
 			File worldfolder = world.getWorldFolder().getCanonicalFile();
 			if (!zip) {
-				fu.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
+				BackupFileUtils.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
 			} else {
 				File tempzip = new File(localtempfolder,worldfolder.getName()+".zip");
 				Zip zipfld = new Zip(excludefolders);
 				zipfld.ZipFolder(worldfolder, tempzip);
-				fu.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
+				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
 				tempzip.delete();
 				new File(localtempfolder).delete();
 			}
@@ -77,7 +77,7 @@ public class FTPBackupOperations {
 		try {
 			File plfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
 			if (!zip) {
-				fu.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
+				BackupFileUtils.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
 			} else  {
 				File tempzip = new File(localtempfolder,plfolder.getName()+".zip");
 				List<String> excludefolderslist = new ArrayList<String>(excludefolders.size()+1);
@@ -85,7 +85,7 @@ public class FTPBackupOperations {
 				excludefolderslist.add(localtempfolder);
 				Zip zipfld = new Zip(excludefolderslist);
 				zipfld.ZipFolder(plfolder, tempzip);
-				fu.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
+				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
 				tempzip.delete();
 				new File(localtempfolder).delete();
 			}
