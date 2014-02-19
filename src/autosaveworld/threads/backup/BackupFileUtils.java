@@ -12,8 +12,6 @@ import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 
 public class BackupFileUtils {
 
-	private static ExcludeManager eManager = new ExcludeManager();
-
 	public static void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders)
 	{
 		if (sourceLocation.isDirectory())
@@ -24,7 +22,7 @@ public class BackupFileUtils {
 			}
 			for (String filename : sourceLocation.list())
 			{
-				if (!eManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath()))
+				if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath()))
 				{
 					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders);
 				}
@@ -99,7 +97,7 @@ public class BackupFileUtils {
 			ftp.changeWorkingDirectory(src.getName());
 			for (File file : src.listFiles())
 			{
-				if (!eManager.isFolderExcluded(excludefolders, file.getPath()))
+				if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath()))
 				{
 					uploadDirectoryToFTP(ftp, file, excludefolders);
 				}

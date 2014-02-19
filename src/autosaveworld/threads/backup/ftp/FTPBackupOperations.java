@@ -26,7 +26,7 @@ import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.backup.BackupFileUtils;
-import autosaveworld.threads.backup.Zip;
+import autosaveworld.threads.backup.ZipUtils;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPBackupOperations {
@@ -56,8 +56,7 @@ public class FTPBackupOperations {
 				BackupFileUtils.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
 			} else {
 				File tempzip = new File(localtempfolder,worldfolder.getName()+".zip");
-				Zip zipfld = new Zip(excludefolders);
-				zipfld.ZipFolder(worldfolder, tempzip);
+				ZipUtils.zipFolder(worldfolder, tempzip, excludefolders);
 				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
 				tempzip.delete();
 				new File(localtempfolder).delete();
@@ -83,8 +82,7 @@ public class FTPBackupOperations {
 				List<String> excludefolderslist = new ArrayList<String>(excludefolders.size()+1);
 				excludefolderslist.addAll(excludefolders);
 				excludefolderslist.add(localtempfolder);
-				Zip zipfld = new Zip(excludefolderslist);
-				zipfld.ZipFolder(plfolder, tempzip);
+				ZipUtils.zipFolder(plfolder, tempzip, excludefolderslist);
 				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
 				tempzip.delete();
 				new File(localtempfolder).delete();

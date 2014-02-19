@@ -28,17 +28,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class Zip {
+public class ZipUtils {
 
-	private List<String> excludefolders;
-
-	public Zip(List<String> excludefolders) {
-		this.excludefolders = excludefolders;
-	}
-
-	private ExcludeManager eManager = new ExcludeManager();
-
-	public void ZipFolder(final File srcDir, final File destFile) throws FileNotFoundException, IOException
+	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException
 	{
 		destFile.getParentFile().mkdirs();
 
@@ -46,7 +38,7 @@ public class Zip {
 		try {
 			ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream);
 			try {
-				zipDir(zipOutStream, srcDir, "");
+				zipDir(excludefolders, zipOutStream, srcDir, "");
 			} finally {
 				zipOutStream.close();
 			}
@@ -55,7 +47,7 @@ public class Zip {
 		}
 	}
 
-	private void zipDir(ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException
+	private static void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException
 	{
 		final File zipDir = new File(srcDir, currentDir);
 
@@ -65,9 +57,9 @@ public class Zip {
 
 			if (srcFile.isDirectory())
 			{
-				if (!eManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child))
+				if (!ExcludeManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child))
 				{
-					zipDir(zipOutStream, srcDir, currentDir + child + File.separator);
+					zipDir(excludefolders, zipOutStream, srcDir, currentDir + child + File.separator);
 				}
 			}
 			else
@@ -77,7 +69,7 @@ public class Zip {
 		}
 	}
 
-	private void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException
+	private static void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException
 	{
 		if (!srcFile.getName().endsWith(".lck"))
 		{

@@ -26,7 +26,7 @@ import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.backup.BackupFileUtils;
-import autosaveworld.threads.backup.Zip;
+import autosaveworld.threads.backup.ZipUtils;
 
 public class LFSBackupOperations {
 
@@ -77,8 +77,7 @@ public class LFSBackupOperations {
 					if (!zip) {
 						BackupFileUtils.copyDirectory(worldfolder, new File(worldBackup),excludefolders);
 					} else {
-						Zip zipfld = new Zip(excludefolders);
-						zipfld.ZipFolder(worldfolder, new File(worldBackup+".zip"));
+						ZipUtils.zipFolder(worldfolder, new File(worldBackup+".zip"), excludefolders);
 					}
 					plugin.debug("Backuped world "+world.getWorldFolder().getName());
 				} catch (Exception e) {
@@ -128,8 +127,7 @@ public class LFSBackupOperations {
 					if (!zip) {
 						BackupFileUtils.copyDirectory(pluginsfolder,new File(pluginsBackup),excludefolders);
 					} else  {
-						Zip zipfld = new Zip(excludefolders);
-						zipfld.ZipFolder(pluginsfolder,new File(pluginsBackup+".zip"));
+						ZipUtils.zipFolder(pluginsfolder, new File(pluginsBackup+".zip"), excludefolders);
 					}
 					plugin.debug("Backuped plugins");
 				} catch (IOException e) {
