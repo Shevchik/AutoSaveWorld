@@ -60,12 +60,14 @@ public class LFSBackupOperations {
 					plugin.debug("Deleting oldest backup for world "+world.getWorldFolder().getName());
 					//find oldest backup
 					String oldestBackupName = fu.findOldestBackupName(worldbackupfolder);
-					//delete oldest backup
-					File oldestBakup = new File(worldbackupfolder + File.separator + oldestBackupName);
-					if (oldestBackupName.contains(".zip")) {
-						oldestBakup.delete();
-					} else {
-						fu.deleteDirectory(oldestBakup);
+					if (oldestBackupName != null) {
+						//delete oldest backup
+						File oldestBakup = new File(worldbackupfolder + File.separator + oldestBackupName);
+						if (oldestBackupName.contains(".zip")) {
+							oldestBakup.delete();
+						} else {
+							fu.deleteDirectory(oldestBakup);
+						}
 					}
 				}
 				plugin.debug("Backuping world "+world.getWorldFolder().getName());
@@ -111,11 +113,13 @@ public class LFSBackupOperations {
 					//find oldest backup
 					String oldestBackupName = fu.findOldestBackupName(pluginsbackupfolder);
 					//delete oldest backup
-					File oldestBakup = new File(pluginsbackupfolder + File.separator + oldestBackupName);
-					if (oldestBackupName.contains(".zip")) {
-						oldestBakup.delete();
-					} else {
-						fu.deleteDirectory(oldestBakup);
+					if (oldestBackupName != null) {
+						File oldestBakup = new File(pluginsbackupfolder + File.separator + oldestBackupName);
+						if (oldestBackupName.contains(".zip")) {
+							oldestBakup.delete();
+						} else {
+							fu.deleteDirectory(oldestBakup);
+						}
 					}
 				}
 				plugin.debug("Backuping plugins");

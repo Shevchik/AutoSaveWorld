@@ -80,18 +80,11 @@ public class LFSFileUtils {
 	{
 		String[] timestamps = new File(backupsfodler).list();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		String oldestBackupName = timestamps[0];
+		String oldestBackupName = null;
 		long old = System.currentTimeMillis();
-		try {
-			if (oldestBackupName.endsWith(".zip"))
-			{
-				old = sdf.parse(oldestBackupName.substring(0, oldestBackupName.indexOf(".zip"))).getTime();
-			} else
-			{
-				old = sdf.parse(oldestBackupName).getTime();
-			}
-			for (String timestampString : timestamps)
-			{
+		for (String timestampString : timestamps)
+		{
+			try {
 				long cur = System.currentTimeMillis();
 				if (timestampString.endsWith(".zip"))
 				{
@@ -105,9 +98,9 @@ public class LFSFileUtils {
 					old = cur;
 					oldestBackupName = timestampString;
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return oldestBackupName;
 	}
