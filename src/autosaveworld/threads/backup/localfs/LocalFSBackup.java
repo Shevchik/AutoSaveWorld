@@ -50,10 +50,11 @@ public class LocalFSBackup {
 			//create executor
 			int maxthreads = Runtime.getRuntime().availableProcessors() - 1;
 			if (maxthreads == 0) {maxthreads = 1;}
-			ExecutorService backupService = new ThreadPoolExecutor(maxthreads, maxthreads, 1, TimeUnit.MILLISECONDS,
-					new ArrayBlockingQueue<Runnable>(maxthreads, true),
-					new ThreadPoolExecutor.CallerRunsPolicy()
-					);
+			ExecutorService backupService = new ThreadPoolExecutor(
+				maxthreads, maxthreads, 1, TimeUnit.MILLISECONDS,
+				new ArrayBlockingQueue<Runnable>(maxthreads, true),
+				new ThreadPoolExecutor.CallerRunsPolicy()
+			);
 
 			//create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
@@ -76,9 +77,7 @@ public class LocalFSBackup {
 
 			//wait for executor to finish (let's hope that the backup will finish in max 2 days)
 			backupService.shutdown();
-			try {
-				backupService.awaitTermination(48, TimeUnit.HOURS);
-			} catch (InterruptedException e) {e.printStackTrace();}
+			try {backupService.awaitTermination(48, TimeUnit.HOURS);} catch (InterruptedException e) {}
 		}
 	}
 
