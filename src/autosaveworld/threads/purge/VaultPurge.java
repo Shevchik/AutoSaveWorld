@@ -144,7 +144,6 @@ public class VaultPurge {
 					plugin.debug(playername + " is inactive. Removing economy account");
 					//remove all player groups
 					economy.withdrawPlayer(playername, economy.getBalance(playername));
-					economy.deleteBank(playername);
 				}
 				playerstopurgeecon.clear();
 			}
