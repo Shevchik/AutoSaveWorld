@@ -33,7 +33,8 @@ public class DatfilePurge {
 		this.plugin = plugin;
 	}
 
-	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) {
+	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) 
+	{
 		int deleted = 0;
 		try {
 			String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
