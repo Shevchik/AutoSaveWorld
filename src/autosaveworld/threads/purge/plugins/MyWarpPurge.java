@@ -37,7 +37,7 @@ public class MyWarpPurge {
 		this.plugin = plugin;
 	}
 
-	private void doMyWarpPurgeTask(ActivePlayersList pacheck) 
+	public void doMyWarpPurgeTask(ActivePlayersList pacheck) 
 	{
 		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
 		

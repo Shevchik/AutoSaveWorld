@@ -98,6 +98,7 @@ public class AutoSaveConfig {
 	public boolean purgeresregenarena = false;
 	public boolean purgeeconomy = true;
 	public boolean purgeperms = true;
+	public boolean purgemywarp = true;
 	public boolean purgedat = true;
 	//crashrestart
 	public boolean crashrestartenabled = false;
@@ -205,6 +206,7 @@ public class AutoSaveConfig {
 		purgeresregenarena = config.getBoolean("purge.residence.regenpurgedresidence",purgeresregenarena);
 		purgeeconomy = config.getBoolean("purge.economy.enabled", purgeeconomy);
 		purgeperms = config.getBoolean("purge.permissions.enabled", purgeperms);
+		purgemywarp = config.getBoolean("purge.mywarp.enabled", purgemywarp);
 		purgedat = config.getBoolean("purge.dat.enabled", purgedat);
 
 		//crashrestart variables
@@ -332,6 +334,7 @@ public class AutoSaveConfig {
 		config.set("purge.residence.regenpurgedresidence",purgeresregenarena);
 		config.set("purge.economy.enabled", purgeeconomy);
 		config.set("purge.permissions.enabled", purgeperms);
+		config.set("purge.mywarp.enabled", purgemywarp);
 		config.set("purge.dat.enabled", purgedat);
 
 		//crashrestart variables
