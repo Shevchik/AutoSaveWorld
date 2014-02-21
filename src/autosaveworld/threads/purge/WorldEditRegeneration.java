@@ -14,14 +14,14 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class WorldEditRegeneration {
 
-	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint)
+	public static void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint)
 	{
 		Vector minbpoint = BukkitUtil.toVector(minpoint);
 		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
 		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
-	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint)
+	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint)
 	{
 		LocalWorld lw = new BukkitWorld(world);
 		EditSession es = new EditSession(lw, Integer.MAX_VALUE);

@@ -42,8 +42,6 @@ public class WGPurge {
 		this.plugin = plugin;
 	}
 
-	private WorldEditRegeneration weregen = new WorldEditRegeneration();
-
 	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap)
 	{
 
@@ -125,7 +123,7 @@ public class WGPurge {
 					if (!(noregenoverlap && m.getApplicableRegions(rg).size() > 1))
 					{
 						plugin.debug("Regenerating region " + rg.getId());
-						weregen.regenerateRegion(w, minpoint, maxpoint);
+						WorldEditRegeneration.regenerateRegion(w, minpoint, maxpoint);
 					}
 					plugin.debug("Deleting region " + rg.getId());
 					m.removeRegion(rg.getId());

@@ -24,8 +24,6 @@ public class ResidencePurge {
 		this.plugin = plugin;
 	}
 
-	private WorldEditRegeneration weregen = new WorldEditRegeneration();
-
 	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres)
 	{
 		plugin.debug("Residence purge started");
@@ -42,7 +40,7 @@ public class ResidencePurge {
 			final ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
 			if (!pacheck.isActiveCS(cres.getOwner()))
 			{
-				plugin.debug("Owner of residence "+res+" is inactive. Purgin residence");
+				plugin.debug("Owner of residence "+res+" is inactive. Purging residence");
 
 				//regen residence areas if needed
 				if (regenres && wepresent)
@@ -58,7 +56,7 @@ public class ResidencePurge {
 							{
 								try {
 									plugin.debug("Regenerating residence "+res+" cuboid area");
-									weregen.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint);
+									WorldEditRegeneration.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint);
 								} catch (Exception e) {}
 							}
 						};
