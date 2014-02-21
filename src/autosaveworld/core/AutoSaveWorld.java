@@ -398,8 +398,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		debug("Saving worlds");
 		for (World w : getServer().getWorlds())
 		{
-			debug(String.format("Saving world: %s", w.getName()));
-			w.save();
+			saveThread.saveWorld(w);
 		}
 		debug("Saved Worlds");
 		broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
