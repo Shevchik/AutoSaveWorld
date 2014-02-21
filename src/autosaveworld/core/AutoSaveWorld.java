@@ -347,32 +347,46 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	public void sendMessage(CommandSender sender, String message) {
 		if (!message.equals("")) {
-			sender.sendMessage(formattingCodesParser.parseFormattingCodes(message));
+			if (formattingCodesParser != null) {
+				sender.sendMessage(formattingCodesParser.parseFormattingCodes(message));
+			}
 		}
 	}
 
 	public void broadcast(String message, boolean broadcast) {
 		if (!message.equals("") && broadcast) {
-			getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
+			if (formattingCodesParser != null) {
+				getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
+			}
 		}
 	}
 
 	public void kickPlayer(Player player, String message) {
-		player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
+		if (formattingCodesParser != null) {
+			player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
+		}
 	}
 
 	public void disallow(PlayerLoginEvent e, String message) {
-		e.disallow(Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
+		if (formattingCodesParser != null) {
+			e.disallow(Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
+		}
 	}
 
 	public void debug(String message) {
-		if (isEnabled() && config.varDebug) {
-			log.info(formattingCodesParser.stripFormattingCodes(message));
+		if (config != null && config.varDebug) {
+			if (formattingCodesParser != null) {
+				log.info(formattingCodesParser.stripFormattingCodes(message));
+			}
 		}
 	}
 
 	public void warn(String message) {
-		log.warning(formattingCodesParser.stripFormattingCodes(message));
+		if (log != null) {
+			if (formattingCodesParser != null) {
+				log.warning(formattingCodesParser.stripFormattingCodes(message));
+			}
+		}
 	}
 
 	private void performSaveOnDisable()
