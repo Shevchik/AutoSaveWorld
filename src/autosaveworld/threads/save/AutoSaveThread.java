@@ -115,8 +115,6 @@ public class AutoSaveThread extends Thread {
 
 		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 
-		plugin.LastSave =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-
 		// Release
 		plugin.saveInProgress = false;
 	}

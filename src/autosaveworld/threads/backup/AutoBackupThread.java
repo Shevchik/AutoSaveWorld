@@ -160,8 +160,6 @@ public class AutoBackupThread extends Thread {
 
 		plugin.broadcast(configmsg.messageBackupBroadcastPost, config.backupBroadcast);
 
-		plugin.LastBackup =new java.text.SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-
 		// Release
 		plugin.backupInProgress = false;
 	}
