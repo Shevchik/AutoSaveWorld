@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.threads.purge.plugins;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 public class VaultPurge {
 

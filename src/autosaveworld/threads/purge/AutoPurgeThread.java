@@ -23,6 +23,13 @@ import org.bukkit.plugin.PluginManager;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.purge.plugins.DatfilePurge;
+import autosaveworld.threads.purge.plugins.LWCPurge;
+import autosaveworld.threads.purge.plugins.MVInvPurge;
+import autosaveworld.threads.purge.plugins.PlotMePurge;
+import autosaveworld.threads.purge.plugins.ResidencePurge;
+import autosaveworld.threads.purge.plugins.VaultPurge;
+import autosaveworld.threads.purge.plugins.WGPurge;
 
 public class AutoPurgeThread extends Thread {
 

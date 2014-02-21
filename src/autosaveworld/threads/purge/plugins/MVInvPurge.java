@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.threads.purge.plugins;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -26,6 +26,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import com.onarandombox.multiverseinventories.api.profile.WorldGroupProfile;

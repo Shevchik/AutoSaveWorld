@@ -15,13 +15,14 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.threads.purge.plugins;
 
 import java.io.File;
 
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 public class DatfilePurge {
 

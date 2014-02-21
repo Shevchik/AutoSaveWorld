@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.threads.purge.plugins;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +25,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.WorldEditRegeneration;
 
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
