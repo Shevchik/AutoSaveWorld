@@ -194,18 +194,6 @@ public class CommandsHandler implements CommandExecutor {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("info")) {
 				//info
 				plugin.sendMessage(sender,"&9======AutoSaveWorld Info & Status======");
-				if (config.saveEnabled) {
-					plugin.sendMessage(sender, "&2AutoSave is active");
-					plugin.sendMessage(sender, "&2Last save time: " + plugin.LastSave);
-				} else {
-					plugin.sendMessage(sender, "&2AutoSave is inactive");
-				}
-				if (config.backupEnabled) {
-					plugin.sendMessage(sender, "&2AutoBackup is active");
-					plugin.sendMessage(sender, "&2Last backup time: " + plugin.LastBackup);
-				} else {
-					plugin.sendMessage(sender, "&2AutoBackup is inactive");
-				}
 				plugin.sendMessage(sender,"&9====================================");
 				return true;
 			} else if ((args.length >= 1 && args[0].equalsIgnoreCase("locale"))) {

@@ -80,10 +80,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	public volatile boolean backupInProgress = false;
 	public volatile boolean purgeInProgress = false;
 	public volatile boolean worldregenInProcess = false;
-	//info
-	public String LastSave = "No save was since the server start";
-	public String LastBackup = "No backup was since the server start";
-
 
 	@Override
 	public void onEnable() {
