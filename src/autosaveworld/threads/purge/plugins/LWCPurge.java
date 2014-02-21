@@ -73,7 +73,7 @@ public class LWCPurge {
 	}
 
 	private ArrayList<Protection> prtodel = new ArrayList<Protection>(100);
-	public void flushBatch(final LWCPlugin lwc, final boolean delblocks)
+	private void flushBatch(final LWCPlugin lwc, final boolean delblocks)
 	{
 		Runnable rempr = new Runnable()
 		{
