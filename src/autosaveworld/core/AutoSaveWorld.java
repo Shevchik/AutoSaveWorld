@@ -111,8 +111,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.BACKUP);
 		// Start AutoPurgeThread
 		startThread(ThreadType.PURGE);
-		// Start SelfRestartThread
-		startThread(ThreadType.SELFRESTART);
 		// Create JVMsh
 		JVMsh = new RestartJVMshutdownhook();
 		// Start CrashRestartThread
