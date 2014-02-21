@@ -17,6 +17,79 @@
 
 package autosaveworld.threads.purge.plugins;
 
+import java.util.ArrayList;
+import java.util.TreeSet;
+
+import me.taylorkelly.mywarp.MyWarp;
+import me.taylorkelly.mywarp.data.Warp;
+
+import org.bukkit.Bukkit;
+
+import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.purge.ActivePlayersList;
+
 public class MyWarpPurge {
+	
+	private AutoSaveWorld plugin;
+
+	public MyWarpPurge(AutoSaveWorld plugin)
+	{
+		this.plugin = plugin;
+	}
+
+	private void doMyWarpPurgeTask(ActivePlayersList pacheck) 
+	{
+		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
+		
+		plugin.debug("MyWarp purge started");
+		
+		int deleted = 0;
+		
+		TreeSet<Warp> warps = mywarp.getWarpManager().getWarps(null, null);
+		for (Warp warp : warps)
+		{
+			if (!pacheck.isActiveCS(warp.getCreator()))
+			{
+				//add warp to delete batch
+				warptodel.add(warp);
+				//delete warps if maximum batch size reached
+				if (warptodel.size() == 80)
+				{
+					flushBatch(mywarp);
+				}
+				//count deleted protections
+				deleted += 1;
+			}
+		}
+		//flush the rest of the batch
+		flushBatch(mywarp);
+		
+		plugin.debug("MyWarp purge finished, deleted "+ deleted+" inactive warps");
+	}
+	
+	private ArrayList<Warp> warptodel = new ArrayList<Warp>(100);
+	private void flushBatch(final MyWarp mywarp)
+	{
+		Runnable rempr = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				for (Warp warp : warptodel)
+				{
+					//delete warp
+					plugin.debug("Removing warp for inactive player "+warp.getCreator());
+					mywarp.getWarpManager().deleteWarp(warp);
+				}
+				warptodel.clear();
+			}
+		};
+		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rempr);
+
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
+		{
+			try {Thread.sleep(50);} catch (InterruptedException e) {}
+		}
+	}
 
 }
