@@ -130,7 +130,7 @@ public class WorldRegenPasteThread extends Thread {
 			plugin.debug("Restore finished");
 			// save server, just in case
 			plugin.debug("Saving server");
-			plugin.saveThread.performSave(true);
+			plugin.saveThread.performSave();
 
 			// restart
 			plugin.debug("Restarting server");

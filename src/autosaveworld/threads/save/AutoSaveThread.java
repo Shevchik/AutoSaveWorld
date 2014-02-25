@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import autosaveworld.config.AutoSaveConfig;
@@ -49,15 +48,11 @@ public class AutoSaveThread extends Thread {
 
 	public void startsave()
 	{
-		if (plugin.saveInProgress)
-		{
-			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
-			return;
+		if (canSave()) {
+			command = true;
 		}
-		command = true;
 	}
 
-	// The code to run...weee
 	private volatile boolean run = true;
 	private boolean command = false;
 	@Override
@@ -83,29 +78,31 @@ public class AutoSaveThread extends Thread {
 
 			//save
 			if (run && (config.saveEnabled||command)) {
-				performSave(false);
+				command = false;
+				if (canSave()) {
+					performSave();
+				}
 			}
 		}
 
 		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
-
-	public void performSave(boolean force)
-	{
-		if (config.saveIgnoreIfNoPlayers && plugin.getServer().getOnlinePlayers().length == 0 && !command && !force) {
-			// No players online, don't bother saving.
-			plugin.debug("Skipping save, no players online.");
-			return;
+	
+	private boolean canSave() {
+		if (plugin.saveInProgress) {
+			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
+			return true;
 		}
-
-		command = false;
-
 		if (plugin.backupInProgress) {
 			plugin.warn("AutoBackup is in process. AutoSave cancelled");
-			return;
+			return false;
 		}
+		return true;
+	}
 
+	public void performSave()
+	{
 		// Lock
 		plugin.saveInProgress = true;
 
@@ -118,6 +115,24 @@ public class AutoSaveThread extends Thread {
 		// Release
 		plugin.saveInProgress = false;
 	}
+	
+	public void performSaveNow() 
+	{
+		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
+
+		plugin.debug("Saving players");
+		plugin.getServer().savePlayers();
+		plugin.debug("Saved Players");
+		plugin.debug("Saving worlds");
+		for (World w : plugin.getServer().getWorlds())
+		{
+			saveWorld(w);
+		}
+		plugin.debug("Saved Worlds");
+
+		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
+	}
+
 
 	private void save()
 	{
@@ -132,11 +147,7 @@ public class AutoSaveThread extends Thread {
 				@Override
 				public void run()
 				{
-					for (Player player : plugin.getServer().getOnlinePlayers())
-					{
-						plugin.debug(String.format("Saving player: %s", player.getName()));
-						player.saveData();
-					}
+					plugin.getServer().savePlayers();
 				}
 			});
 			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
@@ -169,7 +180,7 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Saved Worlds");
 	}
 
-	public void saveWorld(World world)
+	private void saveWorld(World world)
 	{
 		//structures are saved only for main world so we use this workaround only for main world
 		if (config.donotsavestructures && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName()))
