@@ -30,24 +30,21 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class AutoSaveThread extends Thread {
 
-
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
+
 	public AutoSaveThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
 	}
 
-
-	public void stopThread()
-	{
+	public void stopThread() {
 		this.run = false;
 	}
 
-	public void startsave()
-	{
+	public void startsave() {
 		if (canSave()) {
 			command = true;
 		}
@@ -55,9 +52,9 @@ public class AutoSaveThread extends Thread {
 
 	private volatile boolean run = true;
 	private boolean command = false;
+
 	@Override
-	public void run()
-	{
+	public void run() {
 
 		plugin.debug("AutoSaveThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
@@ -65,19 +62,19 @@ public class AutoSaveThread extends Thread {
 		while (run) {
 			// Prevent AutoSave from never sleeping
 			// If interval is 0, sleep for 5 seconds and skip saving
-			if(config.saveInterval == 0) {
-				try {Thread.sleep(5000);} catch(InterruptedException e) {}
+			if (config.saveInterval == 0) {
+				try {Thread.sleep(5000);} catch (InterruptedException e) {}
 				continue;
 			}
 
-			//sleep
+			// sleep
 			for (int i = 0; i < config.saveInterval; i++) {
 				if (!run || command) {break;}
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
-			//save
-			if (run && (config.saveEnabled||command)) {
+			// save
+			if (run && (config.saveEnabled || command)) {
 				command = false;
 				if (canSave()) {
 					performSave();
@@ -88,7 +85,7 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
-	
+
 	private boolean canSave() {
 		if (plugin.saveInProgress) {
 			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
@@ -101,8 +98,7 @@ public class AutoSaveThread extends Thread {
 		return true;
 	}
 
-	public void performSave()
-	{
+	public void performSave() {
 		// Lock
 		plugin.saveInProgress = true;
 
@@ -115,17 +111,15 @@ public class AutoSaveThread extends Thread {
 		// Release
 		plugin.saveInProgress = false;
 	}
-	
-	public void performSaveNow() 
-	{
+
+	public void performSaveNow() {
 		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
 		plugin.debug("Saving players");
 		plugin.getServer().savePlayers();
 		plugin.debug("Saved Players");
 		plugin.debug("Saving worlds");
-		for (World w : plugin.getServer().getWorlds())
-		{
+		for (World w : plugin.getServer().getWorlds()) {
 			saveWorld(w);
 		}
 		plugin.debug("Saved Worlds");
@@ -133,46 +127,39 @@ public class AutoSaveThread extends Thread {
 		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 	}
 
-
-	private void save()
-	{
+	private void save() {
 		// Save the players
 		plugin.debug("Saving players");
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
 		int taskid;
-		if (run)
-		{
-			taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					plugin.getServer().savePlayers();
+		if (run) {
+			taskid = scheduler.scheduleSyncDelayedTask(plugin,
+				new Runnable() {
+					@Override
+					public void run() {
+						plugin.getServer().savePlayers();
+					}
 				}
-			});
-			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
-			{
+			);
+			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid)) {
 				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
 		}
 		plugin.debug("Saved Players");
 		// Save the worlds
 		plugin.debug("Saving worlds");
-		for (final World world : plugin.getServer().getWorlds())
-		{
-			if (run)
-			{
-				taskid = scheduler.scheduleSyncDelayedTask(plugin, new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						plugin.debug(String.format("Saving world: %s", world.getName()));
-						saveWorld(world);
+		for (final World world : plugin.getServer().getWorlds()) {
+			if (run) {
+				taskid = scheduler.scheduleSyncDelayedTask(plugin,
+					new Runnable() {
+						@Override
+						public void run() {
+							plugin.debug(String.format("Saving world: %s", world.getName()));
+							saveWorld(world);
+						}
 					}
-				});
-				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid))
-				{
+				);
+				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid)) {
 					try {Thread.sleep(100);} catch (InterruptedException e) {}
 				}
 			}
@@ -180,44 +167,39 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Saved Worlds");
 	}
 
-	private void saveWorld(World world)
-	{
-		//structures are saved only for main world so we use this workaround only for main world
-		if (config.donotsavestructures && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName()))
-		{
+	private void saveWorld(World world) {
+		// structures are saved only for main world so we use this workaround
+		// only for main world
+		if (config.donotsavestructures && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName())) {
 			saveWorldDoNoSaveStructureInfo(world);
-		} else
-		{
+		} else {
 			saveWorldNormal(world);
 		}
 	}
-	
-	private void saveWorldNormal(World world)
-	{
+
+	private void saveWorldNormal(World world) {
 		world.save();
 	}
 
-	private void saveWorldDoNoSaveStructureInfo(World world)
-	{
-		//save saveenabled state
+	private void saveWorldDoNoSaveStructureInfo(World world) {
+		// save saveenabled state
 		boolean saveenabled = world.isAutoSave();
-		//set saveenabled state
+		// set saveenabled state
 		world.setAutoSave(true);
-		//now lets save everything besides structures
-		try
-		{
-			//get worldserver and dataManager
+		// now lets save everything besides structures
+		try {
+			// get worldserver and dataManager
 			Field worldField = world.getClass().getDeclaredField("world");
 			worldField.setAccessible(true);
 			Object worldserver = worldField.get(world);
 			Field dataManagerField = worldserver.getClass().getSuperclass().getDeclaredField("dataManager");
 			dataManagerField.setAccessible(true);
 			Object dataManager = dataManagerField.get(worldserver);
-			//invoke check session
+			// invoke check session
 			Method checkSessionMethod = dataManager.getClass().getSuperclass().getDeclaredMethod("checkSession");
 			checkSessionMethod.setAccessible(true);
 			checkSessionMethod.invoke(dataManager);
-			//invoke saveWorldData
+			// invoke saveWorldData
 			Field worldDataField = worldserver.getClass().getSuperclass().getDeclaredField("worldData");
 			worldDataField.setAccessible(true);
 			Object worldData = worldDataField.get(worldserver);
@@ -232,27 +214,24 @@ public class AutoSaveThread extends Thread {
 			Object NBTTagCompound = qMethod.invoke(playerList);
 			Method saveWorldDataMethod = dataManager.getClass().getSuperclass().getDeclaredMethod("saveWorldData", worldDataField.getType(), qMethod.getReturnType());
 			saveWorldDataMethod.invoke(dataManager, worldData, NBTTagCompound);
-			//invoke saveChunks
+			// invoke saveChunks
 			Field chunkProviderField = worldserver.getClass().getSuperclass().getDeclaredField("chunkProvider");
 			chunkProviderField.setAccessible(true);
 			Object chunkProvider = chunkProviderField.get(worldserver);
-			for (Method method : chunkProvider.getClass().getDeclaredMethods())
-			{
-				if (method.getName().equals("saveChunks") && method.getParameterTypes().length == 2)
-				{
+			for (Method method : chunkProvider.getClass().getDeclaredMethods()) {
+				if (method.getName().equals("saveChunks") && method.getParameterTypes().length == 2) {
 					method.setAccessible(true);
 					method.invoke(chunkProvider, true, null);
 					break;
 				}
 			}
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
-			//failed to save using reflections, save world normal
+			// failed to save using reflections, save world normal
 			plugin.debug("failed to workaround stucture saving, saving world using normal methods");
 			saveWorldNormal(world);
 		}
-		//reset saveenabled state
+		// reset saveenabled state
 		world.setAutoSave(saveenabled);
 	}
 
