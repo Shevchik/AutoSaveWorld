@@ -136,7 +136,7 @@ public class ASWPluginManager {
 					if (je != null) {
 						FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
 						String jarpluginName = plugininfo.getString("name");
-						if (pluginname.equalsIgnoreCase(jarpluginName)) {
+						if (pluginname.equalsIgnoreCase(jarpluginName) || pluginname.equalsIgnoreCase(jarpluginName.replace(" ", "_"))) {
 							jarFile.close();
 							return pluginfile;
 						}
