@@ -19,6 +19,7 @@ package autosaveworld.threads.worldregen.towny;
 
 import java.io.File;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -43,13 +44,13 @@ public class TownyPaste {
 	}
 
 	public void pasteAllFromSchematics()
-	{		
-		try 
+	{
+		try
 		{
 			plugin.debug("Pasting Towny towns from schematics");
-			
+
 			String schemfolder = plugin.constants.getTownyTempFolder();
-			
+
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtopaste.getName()).getTowns();
 			for (Town town : towns)
 			{

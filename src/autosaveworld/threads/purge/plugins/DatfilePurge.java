@@ -33,7 +33,7 @@ public class DatfilePurge {
 		this.plugin = plugin;
 	}
 
-	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) 
+	public void doDelPlayerDatFileTask(ActivePlayersList pacheck)
 	{
 		int deleted = 0;
 		try {

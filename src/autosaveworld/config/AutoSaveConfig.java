@@ -152,8 +152,7 @@ public class AutoSaveConfig {
 		lfsMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
 		lfsMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
 		lfsextfolders = config.getStringList("backup.localfs.destinationfolders");
-		if (lfsextfolders.isEmpty())
-		{
+		if (lfsextfolders.isEmpty()) {
 			lfsextfolders.add(new File(".").getAbsolutePath());
 		}
 		lfsbackuppluginsfolder = config.getBoolean("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
@@ -220,12 +219,10 @@ public class AutoSaveConfig {
 		autorestartcommmands = config.getStringList("autorestart.commands");
 		autorestartscriptpath = config.getString("autorestart.scriptpath",autorestartscriptpath);
 		autorestartjuststop = config.getBoolean("autorestart.juststop", autorestartjuststop);
-		if (autorestartbroadcastonseconds.size() == 0)
-		{
+		if (autorestartbroadcastonseconds.size() == 0) {
 			autorestartbroadcastonseconds.add(60);
 			autorestartbroadcastonseconds.add(30);
-			for (int i = 1; i<=10; i++)
-			{
+			for (int i = 1; i<=10; i++) {
 				autorestartbroadcastonseconds.add(i);
 			}
 		}
@@ -234,23 +231,20 @@ public class AutoSaveConfig {
 		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
 		cctimescommands.clear();
 		ConfigurationSection cctimescs = config.getConfigurationSection("consolecommand.timemode.times");
-		if (cctimescs != null)
-		{
-			for (String time : cctimescs.getKeys(false))
-			{
+		if (cctimescs != null) {
+			for (String time : cctimescs.getKeys(false)) {
 				cctimescommands.put(time, cctimescs.getStringList(time));
 			}
 		}
 		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
 		ccintervalscommands.clear();
 		ConfigurationSection ccintervalscs = config.getConfigurationSection("consolecommand.intervalmode.intervals");
-		if (ccintervalscs != null)
-		{
-			for (String interval : ccintervalscs.getKeys(false))
-			{
+		if (ccintervalscs != null) {
+			for (String interval : ccintervalscs.getKeys(false)) {
 				try {
 					ccintervalscommands.put(Integer.valueOf(interval), ccintervalscs.getStringList(interval));
-				} catch (Exception e) {}
+				} catch (Exception e) {
+				}
 			}
 		}
 
@@ -350,21 +344,17 @@ public class AutoSaveConfig {
 
 		//autoconsolecommand variables
 		config.set("consolecommand.timemode.enabled", cctimeenabled);
-		if (cctimescommands.isEmpty())
-		{
+		if (cctimescommands.isEmpty()) {
 			config.createSection("consolecommand.timemode.times");
 		}
-		for (String cctime : cctimescommands.keySet())
-		{
+		for (String cctime : cctimescommands.keySet()) {
 			config.set("consolecommand.timemode.times."+cctime, cctimescommands.get(cctime));
 		}
 		config.set("consolecommand.intervalmode.enabled", ccintervalenabled);
-		if (ccintervalscommands.isEmpty())
-		{
+		if (ccintervalscommands.isEmpty()) {
 			config.createSection("consolecommand.intervalmode.intervals");
 		}
-		for (int inttime : ccintervalscommands.keySet())
-		{
+		for (int inttime : ccintervalscommands.keySet()) {
 			config.set("consolecommand.intervalmode.intervals."+inttime, ccintervalscommands.get(inttime));
 		}
 
@@ -375,7 +365,10 @@ public class AutoSaveConfig {
 		config.set("worldregen.savegp",worldregensavegp);
 		config.set("worldregen.savetowny",worldregensavetowny);
 
-		try {config.save(new File(plugin.constants.getConfigPath()));} catch (IOException ex) {}
+		try {
+			config.save(new File(plugin.constants.getConfigPath()));
+		} catch (IOException ex) {
+		}
 	}
 
 }

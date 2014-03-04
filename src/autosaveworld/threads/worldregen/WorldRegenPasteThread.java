@@ -108,7 +108,7 @@ public class WorldRegenPasteThread extends Thread {
 			{
 				new GPPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
-			
+
 			//paste Towny towns
 			if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny)
 			{

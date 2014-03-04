@@ -53,7 +53,7 @@ public class TownyCopy {
 			plugin.debug("Saving Towny towns to schematics");
 
 			new File(plugin.constants.getTownyTempFolder()).mkdirs();
-			
+
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtoregen.getName()).getTowns();
 			for (Town town : towns)
 			{

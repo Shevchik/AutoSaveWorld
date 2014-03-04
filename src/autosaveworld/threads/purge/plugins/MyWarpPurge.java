@@ -29,7 +29,7 @@ import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.purge.ActivePlayersList;
 
 public class MyWarpPurge {
-	
+
 	private AutoSaveWorld plugin;
 
 	public MyWarpPurge(AutoSaveWorld plugin)
@@ -37,14 +37,14 @@ public class MyWarpPurge {
 		this.plugin = plugin;
 	}
 
-	public void doMyWarpPurgeTask(ActivePlayersList pacheck) 
+	public void doMyWarpPurgeTask(ActivePlayersList pacheck)
 	{
 		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
-		
+
 		plugin.debug("MyWarp purge started");
-		
+
 		int deleted = 0;
-		
+
 		TreeSet<Warp> warps = mywarp.getWarpManager().getWarps(null, null);
 		for (Warp warp : warps)
 		{
@@ -63,10 +63,10 @@ public class MyWarpPurge {
 		}
 		//flush the rest of the batch
 		flushBatch(mywarp);
-		
+
 		plugin.debug("MyWarp purge finished, deleted "+ deleted+" inactive warps");
 	}
-	
+
 	private ArrayList<Warp> warptodel = new ArrayList<Warp>(100);
 	private void flushBatch(final MyWarp mywarp)
 	{

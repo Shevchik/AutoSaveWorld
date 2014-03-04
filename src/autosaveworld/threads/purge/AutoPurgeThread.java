@@ -186,7 +186,7 @@ public class AutoPurgeThread extends Thread {
 				vp.doPermissionsPurgeTask(aplist);
 			}
 		}
-		
+
 		if (pm.getPlugin("MyWarp") != null && config.purgemywarp) {
 			plugin.debug("MyWarp found, purging");
 			try {

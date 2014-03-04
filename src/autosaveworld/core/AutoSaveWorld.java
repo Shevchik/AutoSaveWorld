@@ -123,8 +123,7 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (config.saveOnASWDisable)
-		{
+		if (config.saveOnASWDisable) {
 			// Perform a Save NOW!
 			debug("Saving");
 			saveThread.performSaveNow();
@@ -349,7 +348,11 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void broadcast(String message, boolean broadcast) {
 		if (!message.equals("") && broadcast) {
 			if (formattingCodesParser != null) {
-				getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
+				try {
+					getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
+				} catch (Exception e) {
+					//dafuq bukkit?
+				}
 			}
 		}
 	}

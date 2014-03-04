@@ -22,7 +22,6 @@ public class LocaleChanger {
 		this.configmsg = configmsg;
 	}
 
-
 	//available locales
 	public List<String> getAvailableLocales()
 	{
@@ -31,13 +30,10 @@ public class LocaleChanger {
 			//add additional locales based on files in the jar.
 			final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while (entries.hasMoreElements())
-			{
+			while (entries.hasMoreElements()) {
 				ZipEntry ze = entries.nextElement();
-				if (!ze.isDirectory())
-				{
-					if (ze.getName().contains("localefiles"))
-					{
+				if (!ze.isDirectory()) {
+					if (ze.getName().contains("localefiles")) {
 						String lname = new File(ze.getName()).getName();
 						lname = lname.split("[_]")[1];
 						lname = lname.split("[.]")[0];
@@ -50,8 +46,7 @@ public class LocaleChanger {
 		return locales;
 	}
 
-	public void loadLocale(String locale)
-	{
+	public void loadLocale(String locale) {
 		//load messages file from package
 		plugin.debug("switching to "+locale);
 		loadLocaleFile(locale);
@@ -61,8 +56,7 @@ public class LocaleChanger {
 	}
 
 	//load needed locale file
-	private void loadLocaleFile(String locale)
-	{
+	private void loadLocaleFile(String locale) {
 		try {
 			InputStream in = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
 			OutputStream out = new FileOutputStream(new File(plugin.constants.getConfigMSGPath()));
@@ -74,8 +68,7 @@ public class LocaleChanger {
 			}
 			in.close();
 			out.close();
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

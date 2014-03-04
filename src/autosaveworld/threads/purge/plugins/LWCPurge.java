@@ -41,7 +41,7 @@ public class LWCPurge {
 		this.plugin = plugin;
 	}
 
-	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks) 
+	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks)
 	{
 
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");

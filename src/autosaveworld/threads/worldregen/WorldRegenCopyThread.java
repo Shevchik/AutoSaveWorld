@@ -155,7 +155,7 @@ public class WorldRegenCopyThread extends Thread {
 		}
 
 		plugin.debug("Saving finished");
-		
+
 		if (config.worldregenremoveseeddata)
 		{
 			plugin.debug("Removing seed data");

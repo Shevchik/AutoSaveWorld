@@ -41,8 +41,7 @@ import org.bukkit.plugin.UnknownDependencyException;
 public class InternalUtils {
 
 	@SuppressWarnings("unchecked")
-	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, NoSuchMethodException, InvocationTargetException
-	{
+	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, NoSuchMethodException, InvocationTargetException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
 		//disable plugin
@@ -64,20 +63,15 @@ public class InternalUtils {
 		Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
 		getCommandsMethod.setAccessible(true);
 		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
-		for (Command cmd : new ArrayList<Command>(commands))
-		{
+		for (Command cmd : new ArrayList<Command>(commands)) {
 			//if you ask why i'm doing this shit, the answer is stupid mcore
-			if (cmd instanceof PluginIdentifiableCommand)
-			{
+			if (cmd instanceof PluginIdentifiableCommand) {
 				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
-				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName()))
-				{
+				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName())) {
 					cmd.unregister(commandMap);
-					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection"))
-					{
+					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection")) {
 						removeFromUnmodifiableCollection(commands, cmd);
-					} else
-					{
+					} else {
 						commands.remove(cmd);
 					}
 				}
@@ -85,8 +79,7 @@ public class InternalUtils {
 		}
 		//close file in url classloader
 		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
-		if (pluginClassLoader instanceof URLClassLoader)
-		{
+		if (pluginClassLoader instanceof URLClassLoader) {
 			URLClassLoader urlloader= (URLClassLoader) pluginClassLoader;
 			urlloader.close();
 		}
@@ -95,8 +88,7 @@ public class InternalUtils {
 		System.gc();
 	}
 
-	private void removeFromUnmodifiableCollection(Collection<?> collection, Object toremove) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-	{
+	private void removeFromUnmodifiableCollection(Collection<?> collection, Object toremove) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Field originalField = collection.getClass().getDeclaredField("c");
 		originalField.setAccessible(true);
 		@SuppressWarnings("unchecked")
@@ -104,8 +96,7 @@ public class InternalUtils {
 		original.remove(toremove);
 	}
 
-	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException
-	{
+	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		//load plugin
 		Plugin plugin = pluginmanager.loadPlugin(pluginfile);

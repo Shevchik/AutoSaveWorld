@@ -132,7 +132,7 @@ public class SchematicOperations {
 			for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16)
 			{
 				Chunk chunk = world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
-				if (!chunk.isLoaded()) 
+				if (!chunk.isLoaded())
 				{
 					chunk.load();
 				}

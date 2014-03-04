@@ -70,4 +70,5 @@ public class FormattingCodesParser {
 		message = message.replaceAll("(?i)&k", "");
 		return message;
 	}
+
 }

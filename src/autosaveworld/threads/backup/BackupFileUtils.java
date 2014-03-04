@@ -105,7 +105,7 @@ public class BackupFileUtils {
 		}
 		return oldestBackupName;
 	}
-	
+
 	public static void uploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) throws IOException
 	{
 		if (src.isDirectory())
@@ -137,7 +137,7 @@ public class BackupFileUtils {
 			}
 		}
 	}
-	
+
 	public static void deleteDirectoryFromFTP(FTPClient ftp, String directory) throws IOException
 	{
 		if (ftp.changeWorkingDirectory(directory))
@@ -178,5 +178,5 @@ public class BackupFileUtils {
 		}
 		return oldestBackupName;
 	}
-	
+
 }

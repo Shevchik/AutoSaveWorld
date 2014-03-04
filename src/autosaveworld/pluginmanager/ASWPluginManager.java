@@ -32,152 +32,126 @@ import autosaveworld.core.AutoSaveWorld;
 public class ASWPluginManager {
 
 	private AutoSaveWorld plugin;
-	public ASWPluginManager(AutoSaveWorld plugin)
-	{
+	public ASWPluginManager(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
 	private InternalUtils iutils = new InternalUtils();
 
-	public void handlePluginManagerCommand(CommandSender sender, String command, String pluginname)
-	{
-		if (command.equalsIgnoreCase("load"))
-		{
+	public void handlePluginManagerCommand(CommandSender sender, String command, String pluginname) {
+		if (command.equalsIgnoreCase("load")) {
 			loadPlugin(sender,pluginname);
 		} else
-			if (command.equalsIgnoreCase("unload"))
-			{
+			if (command.equalsIgnoreCase("unload")) {
 				unloadPlugin(sender,pluginname);
-			} else
-				if (command.equalsIgnoreCase("reload"))
-				{
-					reloadPlugin(sender,pluginname);
-				}
-				else
-				{
-					sender.sendMessage("[AutoSaveWorld] Invalid plugin manager command");
-				}
+			} else if (command.equalsIgnoreCase("reload")) {
+				reloadPlugin(sender,pluginname);
+			} else {
+				plugin.sendMessage(sender, "Invalid plugin manager command");
+			}
 	}
 
-	private void unloadPlugin(CommandSender sender, String pluginname)
-	{
+	private void unloadPlugin(CommandSender sender, String pluginname) {
 		//find plugin
 		Plugin pmplugin = findPlugin(pluginname);
 		//ignore if plugin is not loaded
-		if (pmplugin == null)
-		{
-			sender.sendMessage("[AutoSaveWorld] Plugin with this name not found");
+		if (pmplugin == null) {
+			plugin.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
 		//now unload plugin
 		try {
 			iutils.unloadPlugin(pmplugin);
-			sender.sendMessage("[AutoSaveWorld] Plugin unloaded");
+			plugin.sendMessage(sender, "Plugin unloaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			sender.sendMessage("[AutoSaveWorld] Some error occured while unloading plugin");
+			plugin.sendMessage(sender, "Some error occured while unloading plugin");
 		}
 	}
 
-	private void loadPlugin(CommandSender sender, String pluginname)
-	{
+	private void loadPlugin(CommandSender sender, String pluginname) {
 		//ignore if plugin is already loaded
-		if (isPluginAlreadyLoaded(pluginname))
-		{
-			sender.sendMessage("[AutoSaveWorld] Plugin is already loaded");
+		if (isPluginAlreadyLoaded(pluginname)) {
+			plugin.sendMessage(sender, "Plugin is already loaded");
 			return;
 		}
 		//find plugin file
 		File pmpluginfile = findPluginFile(pluginname);
 		//ignore if we can't find plugin file
-		if (!pmpluginfile.exists())
-		{
-			sender.sendMessage("[AutoSaveWorld] File with this plugin name not found");
+		if (!pmpluginfile.exists()) {
+			plugin.sendMessage(sender, "File with this plugin name not found");
 			return;
 		}
 		//now load plugin
 		try {
 			iutils.loadPlugin(pmpluginfile);
-			sender.sendMessage("[AutoSaveWorld] Plugin loaded");
+			plugin.sendMessage(sender, "Plugin loaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			sender.sendMessage("[AutoSaveWorld] Some error occured while loading plugin");
+			plugin.sendMessage(sender, "Some error occured while loading plugin");
 		}
 	}
 
-	private void reloadPlugin(CommandSender sender, String pluginname)
-	{
+	private void reloadPlugin(CommandSender sender, String pluginname) {
 		//find plugin
 		Plugin pmplugin = findPlugin(pluginname);
 		//find plugin file
 		File pmpluginfile = findPluginFile(pluginname);
 		//ignore if plugin is not loaded
-		if (pmplugin == null)
-		{
-			sender.sendMessage("[AutoSaveWorld] Plugin with this name not found");
+		if (pmplugin == null) {
+			plugin.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
 		//ignore if we can't find plugin file
-		if (!pmpluginfile.exists())
-		{
-			sender.sendMessage("[AutoSaveWorld] File with this plugin name not found");
+		if (!pmpluginfile.exists()) {
+			plugin.sendMessage(sender, "File with this plugin name not found");
 			return;
 		}
 		//now reload plugin
 		try {
 			iutils.unloadPlugin(pmplugin);
 			iutils.loadPlugin(pmpluginfile);
-			sender.sendMessage("[AutoSaveWorld] Plugin reloaded");
+			plugin.sendMessage(sender, "Plugin reloaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			sender.sendMessage("[AutoSaveWorld] Some error occured while reloading plugin");
+			plugin.sendMessage(sender, "Some error occured while reloading plugin");
 		}
 	}
 
-	private Plugin findPlugin(String pluginname)
-	{
-		for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
-		{
-			if (plugin.getName().equalsIgnoreCase(pluginname))
-			{
+	private Plugin findPlugin(String pluginname) {
+		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+			if (plugin.getName().equalsIgnoreCase(pluginname)) {
 				return plugin;
 			}
 		}
 		return Bukkit.getPluginManager().getPlugin(pluginname);
 	}
 
-	private File findPluginFile(String pluginname)
-	{
-		for (File pluginfile : plugin.getDataFolder().getParentFile().listFiles())
-		{
+	private File findPluginFile(String pluginname) {
+		for (File pluginfile : plugin.getDataFolder().getParentFile().listFiles()) {
 			try {
-				if (pluginfile.getName().endsWith(".jar"))
-				{
+				if (pluginfile.getName().endsWith(".jar")) {
 					final JarFile jarFile = new JarFile(pluginfile);
 					JarEntry je = jarFile.getJarEntry("plugin.yml");
-					if (je != null)
-					{
+					if (je != null) {
 						FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
 						String jarpluginName = plugininfo.getString("name");
-						if (pluginname.equalsIgnoreCase(jarpluginName))
-						{
+						if (pluginname.equalsIgnoreCase(jarpluginName)) {
 							jarFile.close();
 							return pluginfile;
 						}
 					}
 					jarFile.close();
 				}
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
 		return new File(plugin.getDataFolder().getParent(), pluginname+".jar");
 	}
 
-	private boolean isPluginAlreadyLoaded(String pluginname)
-	{
-		for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
-		{
-			if (plugin.getName().equalsIgnoreCase(pluginname))
-			{
+	private boolean isPluginAlreadyLoaded(String pluginname) {
+		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+			if (plugin.getName().equalsIgnoreCase(pluginname)) {
 				return true;
 			}
 		}

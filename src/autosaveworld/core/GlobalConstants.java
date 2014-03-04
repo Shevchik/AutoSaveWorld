@@ -21,41 +21,35 @@ import java.io.File;
 
 public class GlobalConstants {
 
-	public GlobalConstants(AutoSaveWorld plugin)
-	{
+	public GlobalConstants(AutoSaveWorld plugin) {
 		pluginfolder = plugin.getDataFolder().getPath()+File.separator;
 	}
 
 	//main
 	private String pluginfolder;
-	public String getPluginFolder()
-	{
+	public String getPluginFolder() {
 		return pluginfolder;
 	}
 
 	//config
 	private String configfile = "config.yml";
-	public String getConfigPath()
-	{
+	public String getConfigPath() {
 		return getPluginFolder()+configfile;
 	}
 	private String configmsgfile = "configmsg.yml";
-	public String getConfigMSGPath()
-	{
+	public String getConfigMSGPath() {
 		return getPluginFolder()+configmsgfile;
 	}
 
 	//counter preserve files
 	private String backuppreserverfile = "backupintervalpreserve.yml";
-	public String getBackupIntervalPreservePath()
-	{
+	public String getBackupIntervalPreservePath() {
 		return getPluginFolder()+backuppreserverfile;
 	}
 
 	//backup
 	private String backuptempfolder = "BackupTemp"+File.separator;
-	public String getBackupTempFolder()
-	{
+	public String getBackupTempFolder() {
 		return getPluginFolder()+backuptempfolder;
 	}
 
@@ -67,32 +61,25 @@ public class GlobalConstants {
 	private String factionstempfolder = "Factions"+File.separator;
 	private String griefpreventiontempfolder = "GP"+File.separator;
 	private String townytempfolder = "Towny"+File.separator;
-	public String getWorldRegenTempFolder()
-	{
+	public String getWorldRegenTempFolder() {
 		return getPluginFolder()+worldregentempfolder;
 	}
-	public String getWorldnameFile()
-	{
+	public String getWorldnameFile() {
 		return getWorldRegenTempFolder()+worldnamefile;
 	}
-	public String getShouldpasteFile()
-	{
+	public String getShouldpasteFile() {
 		return getWorldRegenTempFolder()+shouldpastefile;
 	}
-	public String getWGTempFolder()
-	{
+	public String getWGTempFolder() {
 		return getWorldRegenTempFolder()+wgtempfolder;
 	}
-	public String getFactionsTempFolder()
-	{
+	public String getFactionsTempFolder() {
 		return getWorldRegenTempFolder()+factionstempfolder;
 	}
-	public String getGPTempFolder()
-	{
+	public String getGPTempFolder() {
 		return getWorldRegenTempFolder()+griefpreventiontempfolder;
 	}
-	public String getTownyTempFolder()
-	{
+	public String getTownyTempFolder() {
 		return getWorldRegenTempFolder()+townytempfolder;
 	}
 

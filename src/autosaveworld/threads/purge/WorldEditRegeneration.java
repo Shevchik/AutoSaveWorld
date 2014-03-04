@@ -80,7 +80,7 @@ public class WorldEditRegeneration {
 					{
 						Vector pt = min.add(x, y, z);
 						int index = y * 16 * 16 + z * 16 + x;
-						if (!region.contains(pt)) 
+						if (!region.contains(pt))
 						{
 							try {
 								es.smartSetBlock(pt, history[index]);

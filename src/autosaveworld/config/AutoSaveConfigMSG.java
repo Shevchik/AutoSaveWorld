@@ -44,8 +44,7 @@ public class AutoSaveConfigMSG {
 	public String messageWorldRegenKick = "&9Server is regenerating map, please come back later";
 	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
 
-	public void loadmsg()
-	{
+	public void loadmsg() {
 		FileConfiguration configfile = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGPath()));
 		messageSaveBroadcastPre = configfile.getString("broadcast.pre", messageSaveBroadcastPre);
 		messageSaveBroadcastPost = configfile.getString("broadcast.post", messageSaveBroadcastPost);
@@ -60,8 +59,7 @@ public class AutoSaveConfigMSG {
 		savemsg();
 	}
 
-	private void savemsg()
-	{
+	private void savemsg() {
 		FileConfiguration configfile = new YamlConfiguration();
 		configfile.set("broadcast.pre", messageSaveBroadcastPre);
 		configfile.set("broadcast.post", messageSaveBroadcastPost);
@@ -73,7 +71,10 @@ public class AutoSaveConfigMSG {
 		configfile.set("autorestart.restarting", messageAutoRestart);
 		configfile.set("autorestart.countdown", messageAutoRestartCountdown);
 		configfile.set("worldregen.kickmessage", messageWorldRegenKick);
-		try {configfile.save(new File(plugin.constants.getConfigMSGPath()));} catch (IOException e) {}
+		try {
+			configfile.save(new File(plugin.constants.getConfigMSGPath()));
+		} catch (IOException e) {
+		}
 	}
 
 }

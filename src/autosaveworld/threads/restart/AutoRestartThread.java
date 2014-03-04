@@ -92,7 +92,7 @@ public class AutoRestartThread  extends Thread{
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 
-				
+
 				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
 					@Override

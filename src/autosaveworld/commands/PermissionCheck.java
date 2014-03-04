@@ -24,8 +24,7 @@ import org.bukkit.entity.Player;
 
 public class PermissionCheck {
 
-	public boolean isAllowed(CommandSender sender,final String commandName, String[] args, boolean onlyfromconsole)
-	{
+	public boolean isAllowed(CommandSender sender,final String commandName, String[] args, boolean onlyfromconsole) {
 		if ((sender instanceof Player) && !onlyfromconsole) {
 			Player player = (Player) sender;
 			// construct permissions name
