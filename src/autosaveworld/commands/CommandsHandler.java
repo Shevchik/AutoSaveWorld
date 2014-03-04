@@ -38,8 +38,7 @@ public class CommandsHandler implements CommandExecutor {
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	private LocaleChanger localeChanger;
-	public CommandsHandler(AutoSaveWorld plugin, AutoSaveConfig config,
-			AutoSaveConfigMSG configmsg, LocaleChanger localeChanger) {
+	public CommandsHandler(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, LocaleChanger localeChanger) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
