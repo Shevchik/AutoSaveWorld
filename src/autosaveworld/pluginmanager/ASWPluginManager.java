@@ -41,14 +41,13 @@ public class ASWPluginManager {
 	public void handlePluginManagerCommand(CommandSender sender, String command, String pluginname) {
 		if (command.equalsIgnoreCase("load")) {
 			loadPlugin(sender,pluginname);
-		} else
-			if (command.equalsIgnoreCase("unload")) {
-				unloadPlugin(sender,pluginname);
-			} else if (command.equalsIgnoreCase("reload")) {
-				reloadPlugin(sender,pluginname);
-			} else {
-				plugin.sendMessage(sender, "Invalid plugin manager command");
-			}
+		} else if (command.equalsIgnoreCase("unload")) {
+			unloadPlugin(sender,pluginname);
+		} else if (command.equalsIgnoreCase("reload")) {
+			reloadPlugin(sender,pluginname);
+		} else {
+			plugin.sendMessage(sender, "Invalid plugin manager command");
+		}
 	}
 
 	private void unloadPlugin(CommandSender sender, String pluginname) {
