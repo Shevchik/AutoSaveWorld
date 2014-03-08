@@ -53,6 +53,8 @@ public class FTPBackup {
 				ftpclient.disconnect();
 				plugin.warn("Failed to connect to ftp server. Backup to ftp server failed");
 			}
+			//set file type
+			ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
 			//create dirs
 			ftpclient.makeDirectory(config.ftppath);
 			ftpclient.changeWorkingDirectory(config.ftppath);
@@ -70,7 +72,6 @@ public class FTPBackup {
 			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 			ftpclient.makeDirectory(datedir);
 			ftpclient.changeWorkingDirectory(datedir);
-			ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
 			//load BackupOperations class
 			FTPBackupOperations bo = new FTPBackupOperations(plugin, ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
 			//do worlds backup
