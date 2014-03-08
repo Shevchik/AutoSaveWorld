@@ -883,7 +883,9 @@ public class FTPClient extends FTP
         user(username);
 
         if (FTPReply.isPositiveCompletion(_replyCode)) {
-            return true;
+        	if (setFileType(FTP.BINARY_FILE_TYPE)) {
+        		return true;
+        	}
         }
 
         // If we get here, we either have an error code, or an intermmediate
