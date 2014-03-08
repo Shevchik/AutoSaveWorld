@@ -34,44 +34,36 @@ public class LFSBackupOperations {
 	private final boolean zip;
 	private final String extpath;
 	private final List<String> excludefolders;
-	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders)
-	{
+	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders) {
 		this.plugin = plugin;
 		this.zip = zip;
 		this.extpath = extpath;
 		this.excludefolders = excludefolders;
 	}
 
-	public void startWorldBackup(ExecutorService backupService, final World world, final int maxBackupsCount, final String latestbackuptimestamp)
-	{
+	public void startWorldBackup(ExecutorService backupService, final World world, final int maxBackupsCount, final String latestbackuptimestamp) {
 		//create runnable
-		Runnable backupWorld = new Runnable()
-		{
+		Runnable backupWorld = new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				plugin.debug("Starting backup for world "+world.getWorldFolder().getName());
 				final String worldbackupfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
 				//check oldest backup count
-				if (maxBackupsCount != 0 && new File(worldbackupfolder).exists() && new File(worldbackupfolder).list().length >= maxBackupsCount)
-				{
+				if (maxBackupsCount != 0 && new File(worldbackupfolder).exists() && new File(worldbackupfolder).list().length >= maxBackupsCount) {
 					//remove oldest backup
 					plugin.debug("Deleting oldest backup for world "+world.getWorldFolder().getName());
 					//find oldest backup
 					String oldestBackupName = BackupFileUtils.findOldestBackupNameLFS(worldbackupfolder);
+					//delete oldest backup
 					if (oldestBackupName != null) {
-						//delete oldest backup
 						File oldestBakup = new File(worldbackupfolder + File.separator + oldestBackupName);
-						if (oldestBackupName.contains(".zip")) {
-							oldestBakup.delete();
-						} else {
-							BackupFileUtils.deleteDirectory(oldestBakup);
-						}
+						BackupFileUtils.deleteDirectory(oldestBakup);
 					}
 				}
 				plugin.debug("Backuping world "+world.getWorldFolder().getName());
+				boolean savestatus = world.isAutoSave();
+				world.setAutoSave(false);
 				try {
-					world.setAutoSave(false);
 					File worldfolder = world.getWorldFolder().getCanonicalFile();
 					String worldBackup = worldbackupfolder+File.separator+latestbackuptimestamp;
 					if (!zip) {
@@ -84,7 +76,7 @@ public class LFSBackupOperations {
 					plugin.debug("Failed to backup world "+world.getWorldFolder().getName());
 					e.printStackTrace();
 				} finally {
-					world.setAutoSave(true);
+					world.setAutoSave(savestatus);
 				}
 			}
 		};
@@ -93,19 +85,15 @@ public class LFSBackupOperations {
 	}
 
 
-	public void startPluginsBackup(ExecutorService backupService,  final int maxBackupsCount, final String latestbackuptimestamp)
-	{
+	public void startPluginsBackup(ExecutorService backupService,  final int maxBackupsCount, final String latestbackuptimestamp) {
 		//create runnable
-		Runnable backupPlugins = new Runnable()
-		{
+		Runnable backupPlugins = new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				plugin.debug("Starting plugins backup");
 				final String pluginsbackupfolder = extpath+File.separator+"backups"+File.separator+"plugins";
 				//check oldest backup count
-				if (maxBackupsCount != 0 && new File(pluginsbackupfolder).exists() && new File(pluginsbackupfolder).list().length >= maxBackupsCount)
-				{
+				if (maxBackupsCount != 0 && new File(pluginsbackupfolder).exists() && new File(pluginsbackupfolder).list().length >= maxBackupsCount) {
 					//remove oldest backup
 					plugin.debug("Deleting oldest plugins backup");
 					//find oldest backup
@@ -113,11 +101,7 @@ public class LFSBackupOperations {
 					//delete oldest backup
 					if (oldestBackupName != null) {
 						File oldestBakup = new File(pluginsbackupfolder + File.separator + oldestBackupName);
-						if (oldestBackupName.contains(".zip")) {
-							oldestBakup.delete();
-						} else {
-							BackupFileUtils.deleteDirectory(oldestBakup);
-						}
+						BackupFileUtils.deleteDirectory(oldestBakup);
 					}
 				}
 				plugin.debug("Backuping plugins");
@@ -140,8 +124,7 @@ public class LFSBackupOperations {
 		backupService.submit(backupPlugins);
 	}
 
-	public void deleteOldestPluginsBackup(String oldestbackupdate)
-	{
+	public void deleteOldestPluginsBackup(String oldestbackupdate) {
 		String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+oldestbackupdate;
 		BackupFileUtils.deleteDirectory(new File(fldtodel));
 		BackupFileUtils.deleteDirectory(new File(fldtodel+".zip"));

@@ -33,17 +33,14 @@ public class LocalFSBackup {
 
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
-	public LocalFSBackup(AutoSaveWorld plugin, AutoSaveConfig config)
-	{
+	public LocalFSBackup(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}
 
 	public void performBackup() {
+		for (String extpath : config.lfsextfolders) {
 
-		//backup
-		for (String extpath : config.lfsextfolders)
-		{
 			//init backup operations class
 			LFSBackupOperations bo = new LFSBackupOperations(plugin, config.lfsbackupzip, extpath, config.lfsbackupexcludefolders);
 
@@ -60,11 +57,9 @@ public class LocalFSBackup {
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 
 			//start world backup
-			for (World world : Bukkit.getWorlds())
-			{
+			for (World world : Bukkit.getWorlds()) {
 				//check if we need to backup this world
-				if ((config.lfsbackupWorldsList).contains("*") || config.lfsbackupWorldsList.contains(world.getName()))
-				{
+				if ((config.lfsbackupWorldsList).contains("*") || config.lfsbackupWorldsList.contains(world.getName())) {
 					//backup world
 					bo.startWorldBackup(backupService, world, config.lfsMaxNumberOfWorldsBackups, backuptimestamp);
 				}
@@ -78,6 +73,7 @@ public class LocalFSBackup {
 			//wait for executor to finish (let's hope that the backup will finish in max 2 days)
 			backupService.shutdown();
 			try {backupService.awaitTermination(48, TimeUnit.HOURS);} catch (InterruptedException e) {}
+
 		}
 	}
 
