@@ -44,6 +44,7 @@ public class FTPBackupOperations {
 
 	public void backupWorld(World world) {
 		plugin.debug("Backuping world "+world.getWorldFolder().getName());
+		boolean savestaus = world.isAutoSave();
 		world.setAutoSave(false);
 		try {
 			File worldfolder = world.getWorldFolder().getCanonicalFile();
@@ -59,7 +60,7 @@ public class FTPBackupOperations {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			world.setAutoSave(true);
+			world.setAutoSave(savestaus);
 		}
 
 		plugin.debug("Backuped world "+world.getWorldFolder().getName());
