@@ -26,20 +26,16 @@ public class ScriptBackup {
 
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
-	public ScriptBackup(AutoSaveWorld plugin, AutoSaveConfig config)
-	{
+	public ScriptBackup(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}
 
 
-	public void performBackup()
-	{
-		for (String scriptpath : config.scriptbackupscriptpaths)
-		{
+	public void performBackup() {
+		for (String scriptpath : config.scriptbackupscriptpaths) {
 			File scriptfile = new File(scriptpath);
-			if (!scriptpath.isEmpty() && scriptfile.exists())
-			{
+			if (!scriptpath.isEmpty() && scriptfile.exists()) {
 				plugin.debug("Executing script "+ scriptfile.getAbsolutePath());
 				final Process p;
 				ProcessBuilder pb = new ProcessBuilder();
@@ -51,12 +47,10 @@ public class ScriptBackup {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			} else
-			{
+			} else {
 				plugin.debug("Script path is invalid");
 			}
 		}
 	}
-
 
 }
