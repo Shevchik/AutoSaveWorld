@@ -29,8 +29,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 	private boolean dorestart = true;
 	private RestartJVMshutdownhook jvmsh;
 
-	public WorldRegenJVMshutdownhook(RestartJVMshutdownhook jvmsh, boolean dorestart, String fldtodelete, String shouldpastefile)
-	{
+	public WorldRegenJVMshutdownhook(RestartJVMshutdownhook jvmsh, boolean dorestart, String fldtodelete, String shouldpastefile) {
 		this.fldtodelete = fldtodelete;
 		this.shouldpastefile = shouldpastefile;
 		this.jvmsh = jvmsh;
@@ -38,8 +37,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 	}
 
 	@Override
-	public void run()
-	{
+	public void run() {
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
 		//Delete region from world folder
 		deleteDirectory(new File(fldtodelete+File.separator+"region"));
@@ -50,30 +48,21 @@ public class WorldRegenJVMshutdownhook extends Thread {
 			e.printStackTrace();
 		}
 		//restart
-		if (dorestart)
-		{
+		if (dorestart) {
 			jvmsh.restart();
 		}
 	}
 
-
-
-	private void deleteDirectory(File file)
-	{
+	private void deleteDirectory(File file) {
 		if(!file.exists()) {return;}
-		if(file.isDirectory())
-		{
-			for(File f : file.listFiles())
-			{
+		if(file.isDirectory()) {
+			for(File f : file.listFiles()) {
 				deleteDirectory(f);
 			}
 			file.delete();
-		}
-		else
-		{
+		} else {
 			file.delete();
 		}
 	}
-
 
 }

@@ -43,8 +43,7 @@ public class WorldRegenPasteThread extends Thread {
 	};
 
 	private boolean paste = false;
-	public void checkIfShouldPaste()
-	{
+	public void checkIfShouldPaste() {
 		File check = new File(plugin.constants.getShouldpasteFile());
 		if (check.exists()) {
 			plugin.worldregenInProcess = true;
@@ -71,15 +70,12 @@ public class WorldRegenPasteThread extends Thread {
 			String worldtopasteto = cfg.getString("wname");
 
 			//wait for server to load
-			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-			{
+			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
-				public void run()
-				{
+				public void run() {
 				}
 			});
-			while (Bukkit.getScheduler().isCurrentlyRunning(ltask) || Bukkit.getScheduler().isQueued(ltask))
-			{
+			while (Bukkit.getScheduler().isCurrentlyRunning(ltask) || Bukkit.getScheduler().isQueued(ltask)) {
 				Thread.sleep(1000);
 			}
 
@@ -92,26 +88,22 @@ public class WorldRegenPasteThread extends Thread {
 			plugin.debug("Restoring buildings");
 
 			// paste WG buildings
-			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg)
-			{
+			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
 				new WorldGuardPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
 
 			//paste Factions buildings
-			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions)
-			{
+			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
 				new FactionsPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
 
 			//paste GriefPrevention claims
-			if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp)
-			{
+			if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
 				new GPPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
 
 			//paste Towny towns
-			if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny)
-			{
+			if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
 				new TownyPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
 			}
 
@@ -125,7 +117,6 @@ public class WorldRegenPasteThread extends Thread {
 			new File(plugin.constants.getShouldpasteFile()).delete();
 			new File(plugin.constants.getWorldnameFile()).delete();
 			new File(plugin.constants.getWorldRegenTempFolder()).delete();
-			new File(plugin.constants.getTownyTempFolder()).delete();
 
 			plugin.debug("Restore finished");
 			// save server, just in case
@@ -141,28 +132,21 @@ public class WorldRegenPasteThread extends Thread {
 	}
 
 	private SchematicOperations schemops = null;
-	public SchematicOperations getSchematicOperations()
-	{
-		if (schemops == null)
-		{
+	public SchematicOperations getSchematicOperations() {
+		if (schemops == null) {
 			schemops = new SchematicOperations(plugin);
 		}
 		return schemops;
 	}
 
-	private void deleteDirectory(File file)
-	{
+	private void deleteDirectory(File file) {
 		if(!file.exists())  {return;}
-		if(file.isDirectory())
-		{
-			for(File f : file.listFiles())
-			{
+		if(file.isDirectory()) {
+			for(File f : file.listFiles()) {
 				deleteDirectory(f);
 			}
 			file.delete();
-		}
-		else
-		{
+		} else {
 			file.delete();
 		}
 	}

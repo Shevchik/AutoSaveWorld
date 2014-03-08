@@ -32,16 +32,14 @@ public class WorldGuardPaste {
 	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public WorldGuardPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto)
-	{
+	public WorldGuardPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
 		this.plugin = plugin;
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
 
-	public void pasteAllFromSchematics()
-	{
+	public void pasteAllFromSchematics() {
 		plugin.debug("Pasting WG regions from schematics");
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");

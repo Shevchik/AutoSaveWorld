@@ -39,9 +39,9 @@ public class PlotMePurge {
 
 
 	public void doPlotMePurgeTask(ActivePlayersList pacheck, final boolean regenplot) {
-		
+
 		plugin.debug("PlotMe purge started");
-		
+
 		int delplots = 0;
 
 		for (final World w : Bukkit.getWorlds()) {

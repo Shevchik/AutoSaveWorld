@@ -36,28 +36,23 @@ public class FactionsPaste {
 	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public FactionsPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto)
-	{
+	public FactionsPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
 		this.plugin = plugin;
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
-	public void pasteAllFromSchematics()
-	{
+	public void pasteAllFromSchematics() {
 		plugin.debug("Pasting factions lands from schematics");
 
 		String schemfolder = plugin.constants.getFactionsTempFolder();
 
-		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll())
-		{
+		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll()) {
 			plugin.debug("Pasting faction land "+f.getName()+" from schematic");
 			Set<PS> chunks = BoardColls.get().getChunks(f);
-			if (chunks.size() != 0)
-			{
+			if (chunks.size() != 0) {
 				//paste all chunks
-				for (PS ps: chunks)
-				{
+				for (PS ps: chunks) {
 					final int xcoord = ps.getChunkX();
 					final int zcoord = ps.getChunkZ();
 					//paste

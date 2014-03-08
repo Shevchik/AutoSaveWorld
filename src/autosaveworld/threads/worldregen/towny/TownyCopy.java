@@ -39,32 +39,25 @@ public class TownyCopy {
 	private AutoSaveWorld plugin;
 	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public TownyCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen)
-	{
+	public TownyCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen) {
 		this.plugin = plugin;
 		this.wrthread = wrthread;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
-	public void copyAllToSchematics()
-	{
-		try
-		{
+	public void copyAllToSchematics() {
+		try {
 			plugin.debug("Saving Towny towns to schematics");
 
 			new File(plugin.constants.getTownyTempFolder()).mkdirs();
 
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtoregen.getName()).getTowns();
-			for (Town town : towns)
-			{
+			for (Town town : towns) {
 				List<TownBlock> tblocks = town.getTownBlocks();
-				if (tblocks.size() > 0)
-				{
+				if (tblocks.size() > 0) {
 					plugin.debug("Saving town claim "+town.getName()+" to schematic");
-					for (TownBlock tb : tblocks)
-					{
-						if (tb.getWorld().getName().equals(wtoregen.getName()))
-						{
+					for (TownBlock tb : tblocks) {
+						if (tb.getWorld().getName().equals(wtoregen.getName())) {
 							//create temp folder for town
 							new File(plugin.constants.getTownyTempFolder()+town.getName()).mkdirs();
 							//get coords
@@ -95,9 +88,7 @@ public class TownyCopy {
 					plugin.debug("Towmy claim "+town.getName()+" saved");
 				}
 			}
-		}
-		catch (NotRegisteredException e)
-		{
+		} catch (NotRegisteredException e) {
 			e.printStackTrace();
 		}
 	}

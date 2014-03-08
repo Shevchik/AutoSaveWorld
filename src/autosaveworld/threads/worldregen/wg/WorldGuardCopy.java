@@ -34,15 +34,13 @@ public class WorldGuardCopy {
 	private AutoSaveWorld plugin;
 	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public WorldGuardCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen)
-	{
+	public WorldGuardCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen) {
 		this.plugin = plugin;
 		this.wrthread = wrthread;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
-	public void copyAllToSchematics()
-	{
+	public void copyAllToSchematics() {
 		plugin.debug("Saving WG regions to schematics");
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
@@ -50,8 +48,7 @@ public class WorldGuardCopy {
 		new File(plugin.constants.getWGTempFolder()).mkdirs();
 
 		final RegionManager m = wg.getRegionManager(wtoregen);
-		for (final ProtectedRegion rg : m.getRegions().values())
-		{
+		for (final ProtectedRegion rg : m.getRegions().values()) {
 			//ignore global region
 			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 			//save

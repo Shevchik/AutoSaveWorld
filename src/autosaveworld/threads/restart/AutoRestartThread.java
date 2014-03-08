@@ -32,22 +32,20 @@ public class AutoRestartThread  extends Thread{
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	private RestartJVMshutdownhook jvmsh;
-	public AutoRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh)
-	{
+	public AutoRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
 		this.jvmsh = jvmsh;
 	}
 
-	public void stopThread()
-	{
+	public void stopThread() {
 		this.run = false;
 	}
 
-	public void startrestart(boolean skipcountdown)
-	{
+	public void startrestart(boolean skipcountdown) {
 		this.command = true;
+		this.skipcountdown = skipcountdown;
 	}
 
 

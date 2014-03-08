@@ -39,7 +39,7 @@ public class MyWarpPurge {
 	public void doMyWarpPurgeTask(ActivePlayersList pacheck) {
 
 		plugin.debug("MyWarp purge started");
-		
+
 		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
 
 		int deleted = 0;

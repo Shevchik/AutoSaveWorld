@@ -35,7 +35,7 @@ public class DatfilePurge {
 	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) {
 
 		plugin.debug("Playre .dat file purge started");
-		
+
 		int deleted = 0;
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);

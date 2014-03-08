@@ -30,21 +30,18 @@ public class AntiJoinListener implements Listener {
 	private AutoSaveWorld plugin;
 	private AutoSaveConfigMSG configmsg;
 
-	public AntiJoinListener(AutoSaveWorld plugin, AutoSaveConfigMSG configmsg)
-	{
+	public AntiJoinListener(AutoSaveWorld plugin, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.configmsg = configmsg;
 	}
 
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e)
-	{
-		plugin.kickPlayer(e.getPlayer(),configmsg.messageWorldRegenKick);
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		plugin.kickPlayer(e.getPlayer(), configmsg.messageWorldRegenKick);
 	}
 
 	@EventHandler
-	public void onPlayerLogin(PlayerLoginEvent e)
-	{
+	public void onPlayerLogin(PlayerLoginEvent e) {
 		plugin.disallow(e, configmsg.messageWorldRegenKick);
 	}
 

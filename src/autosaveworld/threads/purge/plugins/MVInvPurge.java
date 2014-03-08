@@ -43,7 +43,7 @@ public class MVInvPurge {
 	public void doMVInvPurgeTask(ActivePlayersList pacheck) {
 
 		plugin.debug("MVInv purge started");
-		
+
 		int deleted = 0;
 
 		try {

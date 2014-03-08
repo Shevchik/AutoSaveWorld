@@ -40,15 +40,13 @@ public class GPCopy {
 	private AutoSaveWorld plugin;
 	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public GPCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen)
-	{
+	public GPCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen) {
 		this.plugin = plugin;
 		this.wrthread = wrthread;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
-	public void copyAllToSchematics()
-	{
+	public void copyAllToSchematics() {
 		plugin.debug("Saving griefprevention regions to schematics");
 
 		new File(plugin.constants.getGPTempFolder()).mkdirs();
@@ -62,17 +60,14 @@ public class GPCopy {
 			fld.setAccessible(true);
 			Object o = fld.get(gp.dataStore);
 			ca = (ClaimArray) o;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
-			Bukkit.getLogger().severe("[AutoSaveWorld] Failed to access GriefPrevntion database. GP save cancelled");
+			plugin.warn("Failed to access GriefPrevntion database. GP save cancelled");
 			return;
 		}
 
 		//save all claims
-		for (int i = 0; i<ca.size(); i++)
-		{
+		for (int i = 0; i<ca.size(); i++) {
 			Claim claim = ca.get(i);
 			//get coords
 			double xmin = claim.getLesserBoundaryCorner().getX();

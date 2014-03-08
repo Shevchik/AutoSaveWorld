@@ -38,7 +38,7 @@ public class VaultPurge {
 
 	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
 	public void doPermissionsPurgeTask(ActivePlayersList pacheck) {
-		
+
 		plugin.debug("Player permissions purge started");
 
 		Permission permission = Bukkit.getServicesManager().getRegistration(Permission.class).getProvider();
@@ -96,7 +96,7 @@ public class VaultPurge {
 	public void doEconomyPurgeTask(ActivePlayersList pacheck) {
 
 		plugin.debug("Player economy purge started");
-		
+
 		Economy economy = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
 
 		int deleted = 0;

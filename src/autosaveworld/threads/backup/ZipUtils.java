@@ -32,7 +32,7 @@ public class ZipUtils {
 
 	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException {
 		destFile.getParentFile().mkdirs();
-		
+
 		try (BufferedOutputStream bufOutStream = new BufferedOutputStream(new FileOutputStream(destFile))) {
 			try (ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream)) {
 				zipDir(excludefolders, zipOutStream, srcDir, "");

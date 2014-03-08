@@ -21,23 +21,18 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 public class SchematicOperations {
 
 	private AutoSaveWorld plugin;
-	public SchematicOperations(AutoSaveWorld plugin)
-	{
+	public SchematicOperations(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
 	private int ststaskid;
-	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax)
-	{
-		Runnable copypaste = new Runnable()
-		{
+	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax) {
+		Runnable copypaste = new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				int tries = 0;
 				boolean success = false;
-				while (tries < 3 && !success)
-				{
+				while (tries < 3 && !success) {
 					try {
 						tryCopy(schematic, world, bvmin, bvmax);
 						success = true;
@@ -47,23 +42,19 @@ public class SchematicOperations {
 					}
 					tries++;
 				}
-				if (success)
-				{
+				if (success) {
 					plugin.debug("Copied schematic in "+tries+" tries");
-				} else
-				{
+				} else {
 					plugin.debug("Schematic copy failed 3 times, giving up");
 				}
 			}
 		};
 		ststaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-		while (Bukkit.getScheduler().isCurrentlyRunning(ststaskid) || Bukkit.getScheduler().isQueued(ststaskid))
-		{
+		while (Bukkit.getScheduler().isCurrentlyRunning(ststaskid) || Bukkit.getScheduler().isQueued(ststaskid)) {
 			try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
-	private void tryCopy(final String schematic, final World world, final Vector bvmin, final Vector bvmax) throws IOException, DataException
-	{
+	private void tryCopy(final String schematic, final World world, final Vector bvmin, final Vector bvmax) throws IOException, DataException {
 		//copy to clipboard
 		EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 		es.setFastMode(true);
@@ -78,21 +69,14 @@ public class SchematicOperations {
 	}
 
 
-
-
-
 	private int pfstaskid;
-	public void pasteFromSchematic(final String shematic, final World world)
-	{
-		Runnable copypaste = new Runnable()
-		{
+	public void pasteFromSchematic(final String shematic, final World world) {
+		Runnable copypaste = new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				int tries = 0;
 				boolean success = false;
-				while (tries < 3 && !success)
-				{
+				while (tries < 3 && !success) {
 					try {
 						tryPaste(shematic,world);
 						success = true;
@@ -102,11 +86,9 @@ public class SchematicOperations {
 					}
 					tries++;
 				}
-				if (success)
-				{
+				if (success) {
 					plugin.debug("Pasted schematic in "+tries+" tries");
-				} else
-				{
+				} else {
 					plugin.debug("Schematic paste failed 3 times, giving up");
 				}
 			}
@@ -116,8 +98,7 @@ public class SchematicOperations {
 			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
 		}
 	}
-	private void tryPaste(final String shematic, final World world) throws IOException, DataException, MaxChangedBlocksException
-	{
+	private void tryPaste(final String shematic, final World world) throws IOException, DataException, MaxChangedBlocksException {
 		//load from schematic to clipboard
 		EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 		es.setFastMode(true);
@@ -127,29 +108,22 @@ public class SchematicOperations {
 		Vector size = cc.getSize();
 		Vector origin = cc.getOrigin();
 		//generate chunks at schematic position and 3 chunk radius nearby
-		for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16)
-		{
-			for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16)
-			{
+		for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
+			for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
 				Chunk chunk = world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
-				if (!chunk.isLoaded())
-				{
+				if (!chunk.isLoaded()) {
 					chunk.load();
 				}
 			}
 		}
 		//paste schematic
-		for (int x = 0; x < size.getBlockX(); ++x)
-		{
-			for (int y = 0; y < size.getBlockY(); ++y)
-			{
-				for (int z = 0; z < size.getBlockZ(); ++z)
-				{
+		for (int x = 0; x < size.getBlockX(); ++x) {
+			for (int y = 0; y < size.getBlockY(); ++y) {
+				for (int z = 0; z < size.getBlockZ(); ++z) {
 					Vector blockpos = new Vector(x, y, z);
 					final BaseBlock block = cc.getBlock(blockpos);
 
-					if (block == null)
-					{
+					if (block == null) {
 						continue;
 					}
 
@@ -163,6 +137,5 @@ public class SchematicOperations {
 		}
 		es.flushQueue();
 	}
-
 
 }

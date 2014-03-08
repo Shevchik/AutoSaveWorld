@@ -36,32 +36,25 @@ public class TownyPaste {
 	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public TownyPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto)
-	{
+	public TownyPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
 		this.plugin = plugin;
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
-	public void pasteAllFromSchematics()
-	{
-		try
-		{
+	public void pasteAllFromSchematics() {
+		try {
 			plugin.debug("Pasting Towny towns from schematics");
 
 			String schemfolder = plugin.constants.getTownyTempFolder();
 
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtopaste.getName()).getTowns();
-			for (Town town : towns)
-			{
+			for (Town town : towns) {
 				List<TownBlock> tblocks = town.getTownBlocks();
-				if (tblocks.size() > 0)
-				{
+				if (tblocks.size() > 0) {
 					plugin.debug("Pasting town claim "+town.getName()+" from schematic");
-					for (TownBlock tb : tblocks)
-					{
-						if (tb.getWorld().getName().equals(wtopaste.getName()))
-						{
+					for (TownBlock tb : tblocks) {
+						if (tb.getWorld().getName().equals(wtopaste.getName())) {
 							final int xcoord = tb.getX();
 							final int zcoord = tb.getZ();
 							//paste
@@ -73,9 +66,7 @@ public class TownyPaste {
 					plugin.debug("Pasted town claim "+town.getName()+" from schematic");
 				}
 			}
-		}
-		catch (NotRegisteredException e)
-		{
+		} catch (NotRegisteredException e) {
 			e.printStackTrace();
 		}
 	}

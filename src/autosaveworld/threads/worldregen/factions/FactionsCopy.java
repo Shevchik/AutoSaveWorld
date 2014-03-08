@@ -39,29 +39,24 @@ public class FactionsCopy {
 	private AutoSaveWorld plugin;
 	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public FactionsCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen)
-	{
+	public FactionsCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen) {
 		this.plugin = plugin;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 		this.wrthread = wrthread;
 	}
 
-	public void copyAllToSchematics()
-	{
+	public void copyAllToSchematics() {
 		plugin.debug("Saving factions lands to schematics");
 
 		new File(plugin.constants.getFactionsTempFolder()).mkdirs();
 
-		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll())
-		{
+		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll()) {
 			Set<PS> chunks = BoardColls.get().getChunks(f);
 			//ignore factions with no claimed land
-			if (chunks.size() != 0)
-			{
+			if (chunks.size() != 0) {
 				plugin.debug("Saving faction land "+f.getName()+" to schematic");
 				//save all chunks one by one
-				for (PS ps : chunks)
-				{
+				for (PS ps : chunks) {
 					//create temp folder for faction
 					new File(plugin.constants.getFactionsTempFolder()+f.getName()).mkdirs();
 					//get coords

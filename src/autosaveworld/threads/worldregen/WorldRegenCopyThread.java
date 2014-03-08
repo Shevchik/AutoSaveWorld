@@ -40,8 +40,7 @@ public class WorldRegenCopyThread extends Thread {
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
 	private RestartJVMshutdownhook jvmsh;
-	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh)
-	{
+	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
@@ -54,6 +53,10 @@ public class WorldRegenCopyThread extends Thread {
 	}
 
 	public void startworldregen(String worldname) {
+		if (plugin.purgeInProgress) {
+			plugin.warn("AutoPurge is in process. WorldRegen cancelled.");
+			return;
+		}
 		this.worldtoregen = worldname;
 		plugin.worldregenInProcess = true;
 		doregen = true;
@@ -65,23 +68,12 @@ public class WorldRegenCopyThread extends Thread {
 	private volatile boolean run = true;
 	private boolean doregen = false;
 	@Override
-	public void run()
-	{
+	public void run() {
 		plugin.debug("WorldRegenThread Started");
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenCopyThread");
 
-		while (run)
-		{
-			if (doregen)
-			{
-				if (plugin.backupInProgress) {
-					plugin.warn("AutoBackup is in process. WorldRegen cancelled.");
-					return;
-				}
-				if (plugin.purgeInProgress) {
-					plugin.warn("AutoPurge is in process. WorldRegen cancelled.");
-					return;
-				}
+		while (run) {
+			if (doregen) {
 				try {
 					doWorldRegen();
 				} catch (Exception e) {
@@ -101,8 +93,7 @@ public class WorldRegenCopyThread extends Thread {
 	}
 
 
-	private void doWorldRegen() throws Exception
-	{
+	private void doWorldRegen() throws Exception {
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
 
 		FileConfiguration cfg = new YamlConfiguration();
@@ -112,52 +103,43 @@ public class WorldRegenCopyThread extends Thread {
 		//kick all player and deny them from join
 		AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
 		Bukkit.getPluginManager().registerEvents(ajl, plugin);
-		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-		{
+		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run()
-			{
-				for (Player p : Bukkit.getOnlinePlayers())
-				{
+			public void run() {
+				for (Player p : Bukkit.getOnlinePlayers()) {
 					plugin.kickPlayer(p,configmsg.messageWorldRegenKick);
 				}
 			}
 		});
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-		{
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
 			Thread.sleep(1000);
 		}
 
 		plugin.debug("Saving buildings");
 
 		//save WorldGuard buildings
-		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg)
-		{
+		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
 			new WorldGuardCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 
 		//save Factions homes
-		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions)
-		{
+		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
 			new FactionsCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 
 		//save GriefPrevention claims
-		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp)
-		{
+		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
 			new GPCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 
 		//save Towny towns
-		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny)
-		{
+		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
 			new TownyCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 
 		plugin.debug("Saving finished");
 
-		if (config.worldregenremoveseeddata)
-		{
+		if (config.worldregenremoveseeddata) {
 			plugin.debug("Removing seed data");
 			new File(wtoregen.getWorldFolder(),"level.dat").delete();
 			new File(wtoregen.getWorldFolder(),"level.dat_old").delete();
@@ -174,10 +156,8 @@ public class WorldRegenCopyThread extends Thread {
 	}
 
 	private SchematicOperations schemops = null;
-	public SchematicOperations getSchematicOperations()
-	{
-		if (schemops == null)
-		{
+	public SchematicOperations getSchematicOperations() {
+		if (schemops == null) {
 			schemops = new SchematicOperations(plugin);
 		}
 		return schemops;

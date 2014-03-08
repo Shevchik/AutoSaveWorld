@@ -33,23 +33,20 @@ public class CrashRestartThread extends Thread{
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
 	private RestartJVMshutdownhook jvmsh;
-	public CrashRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, RestartJVMshutdownhook jvmsh)
-	{
+	public CrashRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, RestartJVMshutdownhook jvmsh) {
 		this.plugin = plugin;
 		this.config = config;
 		this.jvmsh = jvmsh;
 	}
 
-	public void stopThread()
-	{
+	public void stopThread() {
 		this.run = false;
 	}
 
 	private long syncticktime = 0;
 	private boolean run = true;
 	@Override
-	public void run()
-	{
+	public void run() {
 		plugin.debug("CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 
@@ -68,27 +65,22 @@ public class CrashRestartThread extends Thread{
 			}
 		}, 0, 20);
 
-		while (run)
-		{
+		while (run) {
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L)))
-			{
+			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) {
 				run = false;
 
-				if (config.crashrestartenabled)
-				{
+				if (config.crashrestartenabled) {
 					plugin.debug("Server has stopped responding. Probably this is a crash.");
 					plugin.debug("Dumping threads info");
 					Logger log = Bukkit.getLogger();
 					ThreadInfo[] threads = ManagementFactory.getThreadMXBean().dumpAllThreads(true, true);
-					for (ThreadInfo thread : threads)
-					{
+					for (ThreadInfo thread : threads) {
 						dumpThread(thread, log);
 					}
 					plugin.debug("Restarting Server");
 
-					if (!config.crstop)
-					{
+					if (!config.crstop) {
 						jvmsh.setPath(config.crashrestartscriptpath);
 						Runtime.getRuntime().addShutdownHook(jvmsh);
 					}
@@ -107,22 +99,18 @@ public class CrashRestartThread extends Thread{
 	}
 
 
-	private void dumpThread(ThreadInfo thread, Logger log)
-	{
+	private void dumpThread(ThreadInfo thread, Logger log) {
 		log.log(Level.SEVERE, "------------------------------" );
 		log.log( Level.SEVERE, "Current Thread: " + thread.getThreadName() );
 		log.log( Level.SEVERE, "\tPID: " + thread.getThreadId()+ " | Suspended: " + thread.isSuspended() + " | Native: " + thread.isInNative() + " | State: " + thread.getThreadState() );
-		if (thread.getLockedMonitors().length != 0)
-		{
+		if (thread.getLockedMonitors().length != 0) {
 			log.log(Level.SEVERE, "\tThread is waiting on monitor(s):");
-			for (MonitorInfo monitor : thread.getLockedMonitors())
-			{
+			for (MonitorInfo monitor : thread.getLockedMonitors()) {
 				log.log(Level.SEVERE, "\t\tLocked on:" + monitor.getLockedStackFrame());
 			}
 		}
 		log.log( Level.SEVERE, "\tStack:" );
-		for ( StackTraceElement stack : thread.getStackTrace() )
-		{
+		for ( StackTraceElement stack : thread.getStackTrace() ) {
 			log.log( Level.SEVERE, "\t\t" + stack );
 		}
 		log.log( Level.SEVERE, "------------------------------" );

@@ -35,17 +35,14 @@ public class GPPaste {
 	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public GPPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto)
-	{
+	public GPPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
 		this.plugin = plugin;
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
 
-
-	public void pasteAllFromSchematics()
-	{
+	public void pasteAllFromSchematics() {
 		plugin.debug("Pasting GP regions from schematics");
 
 		final String schemfolder = plugin.constants.getGPTempFolder();
@@ -58,17 +55,14 @@ public class GPPaste {
 			fld.setAccessible(true);
 			Object o = fld.get(gp.dataStore);
 			ca = (ClaimArray) o;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
-			Bukkit.getLogger().severe("[AutoSaveWorld] Failed to access GriefPrevntion database. GP paste cancelled");
+			plugin.warn("Failed to access GriefPrevntion database. GP paste cancelled");
 			return;
 		}
 
 		//paste all claims
-		for (int i = 0; i<ca.size(); i++)
-		{
+		for (int i = 0; i<ca.size(); i++) {
 			Claim claim = ca.get(i);
 			//paste
 			plugin.debug("Pasting GP region "+claim.getID()+" from schematics");
