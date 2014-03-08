@@ -53,27 +53,21 @@ public class AutoRestartThread  extends Thread{
 	private boolean command = false;
 	private boolean skipcountdown = false;
 	@Override
-	public void run()
-	{
+	public void run() {
 		plugin.debug("AutoRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld AutoRestartThread");
 
 		//check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
 		if  (config.autorestarttime.contains(getCurTime()))	{try {Thread.sleep(61000);} catch (InterruptedException e) {}}
 
-		while (run)
-		{
-			if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command)
-			{
+		while (run) {
+			if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command) {
 				run = false;
 				command = false;
 
-				if (config.autorestartcountdown && !skipcountdown)
-				{
-					for (int i = config.autorestartbroadcastonseconds.get(0); i>0; i--)
-					{
-						if (config.autorestartbroadcastonseconds.contains(i))
-						{
+				if (config.autorestartcountdown && !skipcountdown) {
+					for (int i = config.autorestartbroadcastonseconds.get(0); i>0; i--) {
+						if (config.autorestartbroadcastonseconds.contains(i)) {
 							plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)), true);
 						}
 						try {Thread.sleep(1000);} catch (InterruptedException e) {}
@@ -84,27 +78,22 @@ public class AutoRestartThread  extends Thread{
 
 				plugin.debug("AutoRestarting server");
 
-				if (!config.autorestartjuststop)
-				{
+				if (!config.autorestartjuststop) {
 					jvmsh.setPath(config.autorestartscriptpath);
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 
 
-				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-				{
+				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					@Override
-					public void run()
-					{
-						for (String command : config.autorestartcommmands)
-						{
+					public void run() {
+						for (String command : config.autorestartcommmands) {
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 						}
 					}
 				});
 				int curwait = 0;
-				while ((Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) && curwait < 10)
-				{
+				while ((Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) && curwait < 10) {
 					try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 					curwait++;
 				}
@@ -120,8 +109,7 @@ public class AutoRestartThread  extends Thread{
 	}
 
 	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-	private String getCurTime()
-	{
+	private String getCurTime() {
 		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;
 	}
