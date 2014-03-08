@@ -48,10 +48,12 @@ public class FTPBackup {
 			if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
 				ftpclient.disconnect();
 				plugin.warn("Failed to connect to ftp server. Backup to ftp server failed");
+				return;
 			}
 			if (!ftpclient.login(config.ftpusername, config.ftppassworld)) {
 				ftpclient.disconnect();
 				plugin.warn("Failed to connect to ftp server. Backup to ftp server failed");
+				return;
 			}
 			//set file type
 			ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
