@@ -31,21 +31,18 @@ import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPBackupOperations {
 
-
 	private AutoSaveWorld plugin;
 	final boolean zip;
 	final List<String> excludefolders;
 	private FTPClient ftp;
-	public FTPBackupOperations(AutoSaveWorld plugin, FTPClient ftp, boolean zip,  List<String> excludefolders)
-	{
+	public FTPBackupOperations(AutoSaveWorld plugin, FTPClient ftp, boolean zip,  List<String> excludefolders) {
 		this.plugin = plugin;
 		this.zip = zip;
 		this.excludefolders = excludefolders;
 		this.ftp = ftp;
 	}
 
-	public void backupWorld(World world)
-	{
+	public void backupWorld(World world) {
 		plugin.debug("Backuping world "+world.getWorldFolder().getName());
 		world.setAutoSave(false);
 		try {
@@ -69,8 +66,7 @@ public class FTPBackupOperations {
 	}
 
 
-	public void backupPlugins()
-	{
+	public void backupPlugins() {
 		try {
 			File plfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
 			if (!zip) {
