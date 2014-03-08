@@ -89,7 +89,7 @@ public class AutoSaveThread extends Thread {
 	private boolean canSave() {
 		if (plugin.saveInProgress) {
 			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
-			return true;
+			return false;
 		}
 		if (plugin.backupInProgress) {
 			plugin.warn("AutoBackup is in process. AutoSave cancelled");
