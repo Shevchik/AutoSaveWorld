@@ -30,52 +30,35 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipUtils {
 
-	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException
-	{
+	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException {
 		destFile.getParentFile().mkdirs();
-
-		BufferedOutputStream bufOutStream = new BufferedOutputStream(new FileOutputStream(destFile));
-		try {
-			ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream);
-			try {
+		
+		try (BufferedOutputStream bufOutStream = new BufferedOutputStream(new FileOutputStream(destFile))) {
+			try (ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream)) {
 				zipDir(excludefolders, zipOutStream, srcDir, "");
-			} finally {
-				zipOutStream.close();
 			}
-		} finally {
-			bufOutStream.close();
 		}
 	}
 
-	private static void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException
-	{
+	private static void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException {
 		final File zipDir = new File(srcDir, currentDir);
 
-		for (final String child : zipDir.list())
-		{
+		for (final String child : zipDir.list()) {
 			final File srcFile = new File(zipDir, child);
 
-			if (srcFile.isDirectory())
-			{
-				if (!ExcludeManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child))
-				{
+			if (srcFile.isDirectory()) {
+				if (!ExcludeManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) {
 					zipDir(excludefolders, zipOutStream, srcDir, currentDir + child + File.separator);
 				}
-			}
-			else
-			{
+			} else {
 				zipFile(zipOutStream, srcFile, srcDir.getName() + File.separator + currentDir + child);
 			}
 		}
 	}
 
-	private static void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException
-	{
-		if (!srcFile.getName().endsWith(".lck"))
-		{
-			final InputStream inStream = new FileInputStream(srcFile);
-			try {
-
+	private static void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException {
+		if (!srcFile.getName().endsWith(".lck")) {
+			try (InputStream inStream = new FileInputStream(srcFile)) {
 				final ZipEntry zipEntry = new ZipEntry(entry);
 				zipEntry.setTime(srcFile.lastModified());
 				zipOutStream.putNextEntry(zipEntry);
@@ -84,16 +67,12 @@ public class ZipUtils {
 
 				try {
 					int len;
-					while ((len = inStream.read(buf)) > 0)
-					{
+					while ((len = inStream.read(buf)) > 0) {
 						zipOutStream.write(buf, 0, len);
 					}
 				} finally {
 					zipOutStream.closeEntry();
 				}
-
-			} finally {
-				inStream.close();
 			}
 			Thread.yield();
 		}

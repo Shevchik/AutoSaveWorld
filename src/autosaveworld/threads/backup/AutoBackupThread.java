@@ -44,8 +44,7 @@ public class AutoBackupThread extends Thread {
 
 	public void stopThread() {
 		//save counter on disable
-		if (config.backupEnabled)
-		{
+		if (config.backupEnabled) {
 			FileConfiguration config = new YamlConfiguration();
 			config.set("counter", counter);
 			try {config.save(new File(plugin.constants.getBackupIntervalPreservePath()));} catch (IOException e) {}
@@ -74,11 +73,10 @@ public class AutoBackupThread extends Thread {
 		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
 
 		//load counter on enable
-		if (config.backupEnabled)
-		{
+		if (config.backupEnabled){
 			File preservefile = new File(plugin.constants.getBackupIntervalPreservePath());
 			FileConfiguration config = YamlConfiguration.loadConfiguration(preservefile);
-			counter = config.getInt("counter",0);
+			counter = config.getInt("counter", 0);
 			preservefile.delete();
 		}
 
@@ -97,7 +95,9 @@ public class AutoBackupThread extends Thread {
 			}
 
 			counter = 0;
-			if (run&&(config.backupEnabled||command)) {performBackup();}
+			if (run && (config.backupEnabled || command)) {
+				performBackup();
+			}
 
 		}
 
@@ -106,8 +106,7 @@ public class AutoBackupThread extends Thread {
 	}
 
 
-	public void performBackup()
-	{
+	public void performBackup() {
 		command = false;
 
 		if (plugin.purgeInProgress) {
@@ -123,8 +122,7 @@ public class AutoBackupThread extends Thread {
 			return;
 		}
 
-		if (config.backupsaveBefore)
-		{
+		if (config.backupsaveBefore) {
 			plugin.saveThread.performSave();
 		}
 
@@ -135,22 +133,19 @@ public class AutoBackupThread extends Thread {
 
 		plugin.broadcast(configmsg.messageBackupBroadcastPre, config.backupBroadcast);
 
-		if (config.localfsbackupenabled)
-		{
+		if (config.localfsbackupenabled) {
 			plugin.debug("Starting LocalFS backup");
 			new LocalFSBackup(plugin, config).performBackup();
 			plugin.debug("LocalFS backup finished");
 		}
 
-		if (config.ftpbackupenabled)
-		{
+		if (config.ftpbackupenabled) {
 			plugin.debug("Starting FTP backup");
 			new FTPBackup(plugin, config).performBackup();
 			plugin.debug("FTP backup finished");
 		}
 
-		if (config.scriptbackupenabled)
-		{
+		if (config.scriptbackupenabled) {
 			plugin.debug("Starting Script Backup");
 			new ScriptBackup(plugin, config).performBackup();
 			plugin.debug("Script Backup Finished");
