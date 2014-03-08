@@ -44,8 +44,6 @@ import autosaveworldsrclibs.org.apache.commons.net.io.CRLFLineReader;
 import autosaveworldsrclibs.org.apache.commons.net.io.CopyStreamAdapter;
 import autosaveworldsrclibs.org.apache.commons.net.io.CopyStreamEvent;
 import autosaveworldsrclibs.org.apache.commons.net.io.CopyStreamListener;
-import autosaveworldsrclibs.org.apache.commons.net.io.FromNetASCIIInputStream;
-import autosaveworldsrclibs.org.apache.commons.net.io.ToNetASCIIOutputStream;
 import autosaveworldsrclibs.org.apache.commons.net.io.Util;
 
 /**
@@ -271,37 +269,6 @@ import autosaveworldsrclibs.org.apache.commons.net.io.Util;
  */
 public class FTPClient extends FTP
 {
-    /**
-     * The system property ({@value}) which can be used to override the system type.<br/>
-     * If defined, the value will be used to create any automatically created parsers.
-     *
-     * @since 3.0
-     */
-    public static final String FTP_SYSTEM_TYPE = "org.apache.commons.net.ftp.systemType";
-
-    /**
-     * The system property ({@value}) which can be used as the default system type.<br/>
-     * If defined, the value will be used if the SYST command fails.
-     *
-     * @since 3.1
-     */
-    public static final String FTP_SYSTEM_TYPE_DEFAULT = "org.apache.commons.net.ftp.systemType.default";
-
-    /**
-     * The name of an optional systemType properties file ({@value}), which is loaded
-     * using {@link Class#getResourceAsStream(String)}.<br/>
-     * The entries are the systemType (as determined by {@link FTPClient#getSystemType})
-     * and the values are the replacement type or parserClass, which is passed to
-     * {@link FTPFileEntryParserFactory#createFileEntryParser(String)}.<br/>
-     * For example:
-     * <pre>
-     * Plan 9=Unix
-     * OS410=org.apache.commons.net.ftp.parser.OS400FTPEntryParser
-     * </pre>
-     *
-     * @since 3.0
-     */
-    public static final String SYSTEM_TYPE_PROPERTIES = "/systemType.properties";
 
     /**
      * A constant indicating the FTP session is expecting all transfers
@@ -346,7 +313,6 @@ public class FTPClient extends FTP
     /** The address to bind to on passive connections, if necessary. */
     private InetAddress __passiveLocalHost;
 
-    private int __fileType;
     private boolean __remoteVerificationEnabled;
     private long __restartOffset;
     private int __bufferSize; // buffersize for buffered data streams
@@ -355,9 +321,6 @@ public class FTPClient extends FTP
     private boolean __listHiddenFiles;
     private boolean __useEPSVwithIPv4; // whether to attempt EPSV with an IPv4 connection
 
-    // __systemName is a cached value that should not be referenced directly
-    // except when assigned in getSystemName and __initDefaults.
-    private String __systemName;
 
     // Listener used by store/retrieve methods to handle keepalive
     private CopyStreamListener __copyStreamListener;
@@ -426,9 +389,7 @@ public class FTPClient extends FTP
         __reportActiveExternalHost = null;
         __activeMinPort = 0;
         __activeMaxPort = 0;
-        __fileType           = FTP.ASCII_FILE_TYPE;
         __restartOffset      = 0;
-        __systemName         = null;
         __featuresMap = null;
     }
 
@@ -582,10 +543,6 @@ public class FTPClient extends FTP
 
         OutputStream output = getBufferedOutputStream(socket.getOutputStream());
 
-        if (__fileType == ASCII_FILE_TYPE) {
-            output = new ToNetASCIIOutputStream(output);
-        }
-
         CSL csl = null;
         if (__controlKeepAliveTimeout > 0) {
             csl = new CSL(this, __controlKeepAliveTimeout, __controlKeepAliveReplyTimeout);
@@ -636,18 +593,7 @@ public class FTPClient extends FTP
         }
 
         OutputStream output = socket.getOutputStream();
-        if (__fileType == ASCII_FILE_TYPE) {
-            // We buffer ascii transfers because the buffering has to
-            // be interposed between ToNetASCIIOutputSream and the underlying
-            // socket output stream.  We don't buffer binary transfers
-            // because we don't want to impose a buffering policy on the
-            // programmer if possible.  Programmers can decide on their
-            // own if they want to wrap the SocketOutputStream we return
-            // for file types other than ASCII.
-            output = getBufferedOutputStream(output);
-            output = new ToNetASCIIOutputStream(output);
 
-        }
         return new autosaveworldsrclibs.org.apache.commons.net.io.SocketOutputStream(socket, output);
     }
 
@@ -946,7 +892,11 @@ public class FTPClient extends FTP
             return false;
         }
 
-        return FTPReply.isPositiveCompletion(pass(password));
+        if  (!FTPReply.isPositiveCompletion(pass(password))) {
+        	return false;
+        }
+
+        return setFileType(FTP.BINARY_FILE_TYPE);
     }
 
 
@@ -1421,7 +1371,6 @@ public class FTPClient extends FTP
     {
         if (FTPReply.isPositiveCompletion(type(fileType)))
         {
-            __fileType = fileType;
             return true;
         }
         return false;
@@ -1469,7 +1418,6 @@ public class FTPClient extends FTP
     {
         if (FTPReply.isPositiveCompletion(type(fileType, formatOrByteSize)))
         {
-            __fileType = fileType;
             return true;
         }
         return false;
@@ -1757,9 +1705,6 @@ public class FTPClient extends FTP
         }
 
         InputStream input = getBufferedInputStream(socket.getInputStream());
-        if (__fileType == ASCII_FILE_TYPE) {
-            input = new FromNetASCIIInputStream(input);
-        }
 
         CSL csl = null;
         if (__controlKeepAliveTimeout > 0) {
@@ -1830,17 +1775,7 @@ public class FTPClient extends FTP
         }
 
         InputStream input = socket.getInputStream();
-        if (__fileType == ASCII_FILE_TYPE) {
-            // We buffer ascii transfers because the buffering has to
-            // be interposed between FromNetASCIIOutputSream and the underlying
-            // socket input stream.  We don't buffer binary transfers
-            // because we don't want to impose a buffering policy on the
-            // programmer if possible.  Programmers can decide on their
-            // own if they want to wrap the SocketInputStream we return
-            // for file types other than ASCII.
-            input = getBufferedInputStream(input);
-            input = new FromNetASCIIInputStream(input);
-        }
+
         return new autosaveworldsrclibs.org.apache.commons.net.io.SocketInputStream(socket, input);
     }
 
@@ -2517,51 +2452,6 @@ public class FTPClient extends FTP
     public boolean sendSiteCommand(String arguments) throws IOException
     {
         return FTPReply.isPositiveCompletion(site(arguments));
-    }
-
-
-    /**
-     * Fetches the system type from the server and returns the string.
-     * This value is cached for the duration of the connection after the
-     * first call to this method.  In other words, only the first time
-     * that you invoke this method will it issue a SYST command to the
-     * FTP server.  FTPClient will remember the value and return the
-     * cached value until a call to disconnect.
-     * <p>
-     * If the SYST command fails, and the system property
-     * {@link #FTP_SYSTEM_TYPE_DEFAULT} is defined, then this is used instead.
-     * @return The system type obtained from the server. Never null.
-     * @exception FTPConnectionClosedException
-     *      If the FTP server prematurely closes the connection as a result
-     *      of the client being idle or some other reason causing the server
-     *      to send FTP reply code 421.  This exception may be caught either
-     *      as an IOException or independently as itself.
-     * @exception IOException  If an I/O error occurs while either sending a
-     *  command to the server or receiving a reply from the server (and the default
-     *  system type property is not defined)
-     *  @since 2.2
-     */
-    public String getSystemType() throws IOException
-    {
-        //if (syst() == FTPReply.NAME_SYSTEM_TYPE)
-        // Technically, we should expect a NAME_SYSTEM_TYPE response, but
-        // in practice FTP servers deviate, so we soften the condition to
-        // a positive completion.
-        if (__systemName == null){
-            if (FTPReply.isPositiveCompletion(syst())) {
-                // Assume that response is not empty here (cannot be null)
-                __systemName = _replyLines.get(_replyLines.size() - 1).substring(4);
-            } else {
-                // Check if the user has provided a default for when the SYST command fails
-                String systDefault = System.getProperty(FTP_SYSTEM_TYPE_DEFAULT);
-                if (systDefault != null) {
-                    __systemName = systDefault;
-                } else {
-                    throw new IOException("Unable to determine system type - response: " + getReplyString());
-                }
-            }
-        }
-        return __systemName;
     }
 
 

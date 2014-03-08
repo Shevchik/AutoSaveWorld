@@ -101,12 +101,6 @@ public class FTP extends SocketClient
     /*** The default FTP control port (21). ***/
     public static final int DEFAULT_PORT = 21;
 
-    /***
-     * A constant used to indicate the file(s) being transfered should
-     * be treated as ASCII.  This is the default file type.  All constants
-     * ending in <code>FILE_TYPE</code> are used to indicate file types.
-     ***/
-    public static final int ASCII_FILE_TYPE = 0;
 
     /***
      * A constant used to indicate the file(s) being transfered should

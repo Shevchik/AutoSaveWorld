@@ -31,30 +31,28 @@ import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPReply;
 
 public class FTPBackup {
 
-
 	private AutoSaveWorld plugin;
 	private AutoSaveConfig config;
-	public FTPBackup(AutoSaveWorld plugin, AutoSaveConfig config)
-	{
+	public FTPBackup(AutoSaveWorld plugin, AutoSaveConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}
 
 
-
-
-
-	public void performBackup()
-	{
-		FTPClient ftpclient = new FTPClient();
+	public void performBackup() {
 		try {
+			//init
+			FTPClient ftpclient = new FTPClient();
 			//connect
 			ftpclient.connect(config.ftphostname, config.ftpport);
 			if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
 				ftpclient.disconnect();
-				Bukkit.getLogger().severe("[AutoSaveWorld] Failed to connect to ftp server. Backup to ftp server failed");
+				plugin.warn("Failed to connect to ftp server. Backup to ftp server failed");
 			}
-			ftpclient.login(config.ftpusername, config.ftppassworld);
+			if (!ftpclient.login(config.ftpusername, config.ftppassworld)) {
+				ftpclient.disconnect();
+				plugin.warn("Failed to connect to ftp server. Backup to ftp server failed");
+			}
 			//create dirs
 			ftpclient.makeDirectory(config.ftppath);
 			ftpclient.changeWorkingDirectory(config.ftppath);
@@ -62,8 +60,7 @@ public class FTPBackup {
 			ftpclient.changeWorkingDirectory("backups");
 			//delete oldest backup
 			String[] listnames = ftpclient.listNames();
-			if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups)
-			{
+			if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups) {
 				plugin.debug("Deleting oldest backup");
 				//find oldest backup
 				String oldestBackup = BackupFileUtils.findOldestBackupNameFTP(listnames);
@@ -78,26 +75,21 @@ public class FTPBackup {
 			FTPBackupOperations bo = new FTPBackupOperations(plugin, ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
 			//do worlds backup
 			plugin.debug("Backuping Worlds");
-			for (World w : Bukkit.getWorlds())
-			{
-				if (config.ftpbackupWorlds.contains("*") || config.ftpbackupWorlds.contains(w.getWorldFolder().getName()))
-				{
+			for (World w : Bukkit.getWorlds()) {
+				if (config.ftpbackupWorlds.contains("*") || config.ftpbackupWorlds.contains(w.getWorldFolder().getName())) {
 					bo.backupWorld(w);
 				}
 			}
 			plugin.debug("Backuped Worlds");
 			//do plugins backup
-			if (config.ftpbackuppluginsfolder)
-			{
+			if (config.ftpbackuppluginsfolder) {
 				plugin.debug("Backuping plugins");
 				bo.backupPlugins();
 				plugin.debug("Backuped plugins");
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }
