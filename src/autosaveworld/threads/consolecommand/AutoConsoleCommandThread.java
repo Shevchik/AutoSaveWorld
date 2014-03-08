@@ -36,8 +36,7 @@ public class AutoConsoleCommandThread extends Thread {
 		this.config = config;
 	}
 
-	public void stopThread()
-	{
+	public void stopThread() {
 		this.run = false;
 	}
 
@@ -53,11 +52,9 @@ public class AutoConsoleCommandThread extends Thread {
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 
 		//wait for server to start
-		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-		{
+		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				loaded = System.currentTimeMillis();
 			}
 		});
@@ -70,12 +67,10 @@ public class AutoConsoleCommandThread extends Thread {
 		while (run) {
 
 			//handle times mode
-			if (config.cctimeenabled)
-			{
+			if (config.cctimeenabled) {
 				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 				String ctime = getCurTime();
-				if (cminute != minute && config.cctimescommands.containsKey(ctime))
-				{
+				if (cminute != minute && config.cctimescommands.containsKey(ctime)) {
 					plugin.debug("Executing console commands (timesmode)");
 					minute = cminute;
 					executeCommands(config.cctimescommands.get(ctime));
@@ -83,10 +78,8 @@ public class AutoConsoleCommandThread extends Thread {
 			}
 
 			//handle interval mode
-			if (config.ccintervalenabled)
-			{
-				for (int interval : getIntervalsToExecute())
-				{
+			if (config.ccintervalenabled) {
+				for (int interval : getIntervalsToExecute()) {
 					plugin.debug("Executing console commands (intervalmode)");
 					executeCommands(config.ccintervalscommands.get(interval));
 				}
@@ -102,18 +95,13 @@ public class AutoConsoleCommandThread extends Thread {
 	}
 
 
-	private void executeCommands(final List<String> commands)
-	{
-		if (plugin != null && plugin.isEnabled())
-		{
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-			{
+	private void executeCommands(final List<String> commands) {
+		if (plugin != null && plugin.isEnabled()) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
-				public void run()
-				{
+				public void run() {
 					ConsoleCommandSender csender = Bukkit.getConsoleSender();
-					for (String command : commands)
-					{
+					for (String command : commands) {
 						Bukkit.dispatchCommand(csender, command);
 					}
 				}
@@ -124,20 +112,16 @@ public class AutoConsoleCommandThread extends Thread {
 
 	//timesmode checks
 	private int minute = -1;
-	private String getCurTime()
-	{
+	private String getCurTime() {
 		return sdf.format(System.currentTimeMillis());
 	}
 
 	//intervalmode checks
 	private long intervalcounter = 0;
-	private List<Integer> getIntervalsToExecute()
-	{
+	private List<Integer> getIntervalsToExecute() {
 		List<Integer> inttoexecute = new ArrayList<Integer>();
-		for (int interval : config.ccintervalscommands.keySet())
-		{
-			if (intervalcounter != 0 && intervalcounter % interval == 0)
-			{
+		for (int interval : config.ccintervalscommands.keySet()) {
+			if (intervalcounter != 0 && intervalcounter % interval == 0) {
 				inttoexecute.add(interval);
 			}
 		}

@@ -152,7 +152,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Multiverse-Inventories found, purging");
 			try {
 				new MVInvPurge(plugin).doMVInvPurgeTask(aplist);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -161,7 +161,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("PlotMe found, purging");
 			try {
 				new PlotMePurge(plugin).doPlotMePurgeTask(aplist, config.purgepmregen);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -170,7 +170,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("Residence found, purging");
 			try {
 				new ResidencePurge(plugin).doResidencePurgeTask(aplist, config.purgeresregenarena);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -191,7 +191,7 @@ public class AutoPurgeThread extends Thread {
 			plugin.debug("MyWarp found, purging");
 			try {
 				new MyWarpPurge(plugin).doMyWarpPurgeTask(aplist);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

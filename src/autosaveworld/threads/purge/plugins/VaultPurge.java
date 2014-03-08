@@ -32,32 +32,29 @@ import autosaveworld.threads.purge.ActivePlayersList;
 public class VaultPurge {
 
 	private AutoSaveWorld plugin;
-	public VaultPurge(AutoSaveWorld plugin)
-	{
+	public VaultPurge(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
-
-
 	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
-	public void doPermissionsPurgeTask(ActivePlayersList pacheck)
-	{
+	public void doPermissionsPurgeTask(ActivePlayersList pacheck) {
+		
+		plugin.debug("Player permissions purge started");
+
 		Permission permission = Bukkit.getServicesManager().getRegistration(Permission.class).getProvider();
+
 		int deleted = 0;
+
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-		for (String playerfile : playersdatfolder.list())
-		{
-			if (playerfile.endsWith(".dat"))
-			{
+		for (String playerfile : playersdatfolder.list()) {
+			if (playerfile.endsWith(".dat")) {
 				String playername = playerfile.substring(0, playerfile.length() - 4);
-				if (!pacheck.isActiveCS(playername))
-				{
+				if (!pacheck.isActiveCS(playername)) {
 					//add player to delete batch
 					playerstopurgeperms.add(playername);
 					//delete permissions if maximum batch size reached
-					if (playerstopurgeperms.size() == 40)
-					{
+					if (playerstopurgeperms.size() == 40) {
 						flushPermsBatch(permission);
 					}
 					deleted += 1;
@@ -69,23 +66,17 @@ public class VaultPurge {
 
 		plugin.debug("Player permissions purge finished, deleted "+deleted+" players permissions");
 	}
-	private void flushPermsBatch(final Permission permission)
-	{
-		//detete permissions
-		Runnable deleteperms = new Runnable()
-		{
+	private void flushPermsBatch(final Permission permission) {
+		//delete permissions
+		Runnable deleteperms = new Runnable() {
 			@Override
-			public void run()
-			{
-				for (String playername : playerstopurgeperms)
-				{
+			public void run() {
+				for (String playername : playerstopurgeperms) {
 					plugin.debug(playername + " is inactive. Removing permissions");
 					//remove all player groups
-					for (String group : permission.getGroups())
-					{
+					for (String group : permission.getGroups()) {
 						permission.playerRemoveGroup((String)null, playername, group);
-						for (World world : Bukkit.getWorlds())
-						{
+						for (World world : Bukkit.getWorlds()) {
 							permission.playerRemoveGroup(world, playername, group);
 						}
 					}
@@ -96,31 +87,30 @@ public class VaultPurge {
 		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteperms);
 
 		//Wait until previous permissions delete is finished to avoid full main thread freezing
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-		{
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
 			try {Thread.sleep(100);} catch (InterruptedException e) {}
 		}
 	}
 
 	private ArrayList<String> playerstopurgeecon = new ArrayList<String>(70);
-	public void doEconomyPurgeTask(ActivePlayersList pacheck)
-	{
+	public void doEconomyPurgeTask(ActivePlayersList pacheck) {
+
+		plugin.debug("Player economy purge started");
+		
 		Economy economy = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
+
 		int deleted = 0;
+
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-		for (String playerfile : playersdatfolder.list())
-		{
-			if (playerfile.endsWith(".dat"))
-			{
+		for (String playerfile : playersdatfolder.list()) {
+			if (playerfile.endsWith(".dat")) {
 				String playername = playerfile.substring(0, playerfile.length() - 4);
-				if (!pacheck.isActiveCS(playername))
-				{
+				if (!pacheck.isActiveCS(playername)) {
 					//add player to delete batch
 					playerstopurgeecon.add(playername);
 					//delete economy if maximum batch size reached
-					if (playerstopurgeecon.size() == 40)
-					{
+					if (playerstopurgeecon.size() == 40) {
 						flushEconomyBatch(economy);
 					}
 					deleted += 1;
@@ -132,18 +122,14 @@ public class VaultPurge {
 
 		plugin.debug("Player economy purge finished, deleted "+deleted+" players economy accounts");
 	}
-	private void flushEconomyBatch(final Economy economy)
-	{
-		//detete permissions
-		Runnable deleteeconomy = new Runnable()
-		{
+	private void flushEconomyBatch(final Economy economy) {
+		//delete economy accounts
+		Runnable deleteeconomy = new Runnable() {
 			@Override
-			public void run()
-			{
-				for (String playername : playerstopurgeecon)
-				{
+			public void run() {
+				for (String playername : playerstopurgeecon) {
 					plugin.debug(playername + " is inactive. Removing economy account");
-					//remove all player groups
+					//set player balance to 0
 					economy.withdrawPlayer(playername, economy.getBalance(playername));
 				}
 				playerstopurgeecon.clear();
@@ -152,8 +138,7 @@ public class VaultPurge {
 		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteeconomy);
 
 		//Wait until previous permissions delete is finished to avoid full main thread freezing
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-		{
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
 			try {Thread.sleep(100);} catch (InterruptedException e) {}
 		}
 	}

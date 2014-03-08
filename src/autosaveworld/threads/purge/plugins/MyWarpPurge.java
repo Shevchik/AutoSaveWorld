@@ -32,16 +32,15 @@ public class MyWarpPurge {
 
 	private AutoSaveWorld plugin;
 
-	public MyWarpPurge(AutoSaveWorld plugin)
-	{
+	public MyWarpPurge(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
-	public void doMyWarpPurgeTask(ActivePlayersList pacheck)
-	{
-		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
+	public void doMyWarpPurgeTask(ActivePlayersList pacheck) {
 
 		plugin.debug("MyWarp purge started");
+		
+		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
 
 		int deleted = 0;
 

@@ -33,40 +33,34 @@ public class PlotMePurge {
 
 	private AutoSaveWorld plugin;
 
-	public PlotMePurge(AutoSaveWorld plugin)
-	{
+	public PlotMePurge(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
 
-	public void doPlotMePurgeTask(ActivePlayersList pacheck, final boolean regenplot)
-	{
+	public void doPlotMePurgeTask(ActivePlayersList pacheck, final boolean regenplot) {
+		
+		plugin.debug("PlotMe purge started");
+		
 		int delplots = 0;
 
-		for (final World w : Bukkit.getWorlds())
-		{
-			if (PlotManager.isPlotWorld(w))
-			{
+		for (final World w : Bukkit.getWorlds()) {
+			if (PlotManager.isPlotWorld(w)) {
 				plugin.debug("Checking plots in world "+w.getName().toLowerCase());
 
 				//search plot for inactive owners
 				HashSet<Plot> plots = new HashSet<Plot>(PlotManager.getPlots(w).values());
-				for (final Plot p : plots)
-				{
+				for (final Plot p : plots) {
 					final String PlotID = p.id;
 					plugin.debug("Checking plot " + PlotID);
 
-					if (!pacheck.isActiveCS(p.getOwner()))
-					{
+					if (!pacheck.isActiveCS(p.getOwner())) {
 						plugin.debug("Plot owner is inactive. Purging plot "+PlotID);
 
-						Runnable delPlot = new Runnable()
-						{
+						Runnable delPlot = new Runnable() {
 							@Override
-							public void run()
-							{
-								if (regenplot)
-								{
+							public void run() {
+								if (regenplot) {
 									plugin.debug("Regenerating plot "+PlotID);
 									PlotManager.clear(w, p);
 								}
@@ -82,8 +76,7 @@ public class PlotMePurge {
 						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delPlot);
 
 						//Wait until previous plot regeneration is finished to avoid full main thread freezing
-						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-						{
+						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
 							try {Thread.sleep(100);} catch (InterruptedException e) {}
 						}
 						delplots +=1;

@@ -28,31 +28,27 @@ public class DatfilePurge {
 
 	private AutoSaveWorld plugin;
 
-	public DatfilePurge(AutoSaveWorld plugin)
-	{
+	public DatfilePurge(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
-	public void doDelPlayerDatFileTask(ActivePlayersList pacheck)
-	{
+	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) {
+
+		plugin.debug("Playre .dat file purge started");
+		
 		int deleted = 0;
-		try {
-			String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getCanonicalPath();
-			File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-			for (File playerfile : playersdatfolder.listFiles())
-			{
-				if (playerfile.getName().endsWith(".dat"))
-				{
-					String playername = playerfile.getName().substring(0, playerfile.getName().length() - 4);
-					if (!pacheck.isActiveCS(playername))
-					{
-						plugin.debug(playername + " is inactive. Removing dat file");
-						playerfile.delete();
-						deleted += 1;
-					}
+		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
+		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
+		for (File playerfile : playersdatfolder.listFiles()) {
+			if (playerfile.getName().endsWith(".dat")) {
+				String playername = playerfile.getName().substring(0, playerfile.getName().length() - 4);
+				if (!pacheck.isActiveCS(playername)) {
+					plugin.debug(playername + " is inactive. Removing dat file");
+					playerfile.delete();
+					deleted += 1;
 				}
 			}
-		} catch (Exception e) {}
+		}
 
 		plugin.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
 	}

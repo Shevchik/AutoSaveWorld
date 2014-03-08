@@ -31,32 +31,25 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class WorldEditRegeneration {
 
-	public static void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint)
-	{
+	public static void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint) {
 		Vector minbpoint = BukkitUtil.toVector(minpoint);
 		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
 		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
-	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint)
-	{
+	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
 		LocalWorld lw = new BukkitWorld(world);
 		EditSession es = new EditSession(lw, Integer.MAX_VALUE);
 		Region region = new CuboidRegion(lw, minpoint, maxpoint);
 		BaseBlock[] history = new BaseBlock[16 * 16 * (lw.getMaxY() + 1)];
-		for (Vector2D chunk : region.getChunks())
-		{
+		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			//first save all the blocks inside
-			for (int x = 0; x < 16; ++x)
-			{
-				for (int y = 0; y < (lw.getMaxY() + 1); ++y)
-				{
-					for (int z = 0; z < 16; ++z)
-					{
+			for (int x = 0; x < 16; ++x) {
+				for (int y = 0; y < (lw.getMaxY() + 1); ++y) {
+					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
-						if (!region.contains(pt))
-						{
+						if (!region.contains(pt)) {
 							int index = y * 16 * 16 + z * 16 + x;
 							history[index] = es.getBlock(pt);
 						}
@@ -72,16 +65,12 @@ public class WorldEditRegeneration {
 			}
 
 			//then restore
-			for (int x = 0; x < 16; ++x)
-			{
-				for (int y = 0; y < (lw.getMaxY() + 1); ++y)
-				{
-					for (int z = 0; z < 16; ++z)
-					{
+			for (int x = 0; x < 16; ++x) {
+				for (int y = 0; y < (lw.getMaxY() + 1); ++y) {
+					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						int index = y * 16 * 16 + z * 16 + x;
-						if (!region.contains(pt))
-						{
+						if (!region.contains(pt)) {
 							try {
 								es.smartSetBlock(pt, history[index]);
 							} catch (Exception e) {

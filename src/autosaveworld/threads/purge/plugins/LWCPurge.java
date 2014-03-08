@@ -36,30 +36,25 @@ public class LWCPurge {
 
 	private AutoSaveWorld plugin;
 
-	public LWCPurge(AutoSaveWorld plugin)
-	{
+	public LWCPurge(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 
-	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks)
-	{
+	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks) {
+		
+		plugin.debug("LWC purge started");
 
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
-
-		plugin.debug("LWC purge started");
 
 		int deleted = 0;
 
 		//we will check LWC database and remove protections that belongs to away player
-		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections())
-		{
-			if (!pacheck.isActiveCS(pr.getOwner()))
-			{
+		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections()) {
+			if (!pacheck.isActiveCS(pr.getOwner())) {
 				//add protected to delete batch
 				prtodel.add(pr);
 				//delete protections if maximum batch size reached
-				if (prtodel.size() == 80)
-				{
+				if (prtodel.size() == 80) {
 					flushBatch(lwc, delblocks);
 				}
 				//count deleted protections
@@ -73,27 +68,20 @@ public class LWCPurge {
 	}
 
 	private ArrayList<Protection> prtodel = new ArrayList<Protection>(100);
-	private void flushBatch(final LWCPlugin lwc, final boolean delblocks)
-	{
-		Runnable rempr = new Runnable()
-		{
+	private void flushBatch(final LWCPlugin lwc, final boolean delblocks) {
+		Runnable rempr = new Runnable() {
 			@Override
-			public void run()
-			{
-				for (Protection pr : prtodel)
-				{
+			public void run() {
+				for (Protection pr : prtodel) {
 					//delete block
-					if (delblocks)
-					{
+					if (delblocks) {
 						plugin.debug("Removing protected block for inactive player "+pr.getOwner());
 						Block block = pr.getBlock();
 						BlockState bs = block.getState();
-						if (bs instanceof Chest)
-						{
+						if (bs instanceof Chest) {
 							((Chest) bs).getBlockInventory().clear();
 						} else
-						if (bs instanceof DoubleChest)
-						{
+						if (bs instanceof DoubleChest) {
 							((DoubleChest) bs).getInventory().clear();
 						}
 						block.setType(Material.AIR);
@@ -107,8 +95,7 @@ public class LWCPurge {
 		};
 		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rempr);
 
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-		{
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
 			try {Thread.sleep(50);} catch (InterruptedException e) {}
 		}
 	}

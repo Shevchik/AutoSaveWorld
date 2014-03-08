@@ -31,8 +31,7 @@ public class ActivePlayersList {
 	private HashSet<String> plactivencs = new HashSet<String>();
 	private HashSet<String> plactivecs = new HashSet<String>();
 
-	public void gatherActivePlayersList(long awaytime) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-	{
+	public void gatherActivePlayersList(long awaytime) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		//fill lists
 		//due to bukkit fucks up itself when we have two player files with different case (test.dat and Test.dat), i had to write this...
 		Server server = Bukkit.getServer();
@@ -40,14 +39,11 @@ public class ActivePlayersList {
 		Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
 		ctor.setAccessible(true);
 		File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(),"players");
-		for (String file : playersdir.list())
-		{
-			if (file.endsWith(".dat"))
-			{
+		for (String file : playersdir.list()) {
+			if (file.endsWith(".dat")) {
 				String nickname = file.substring(0, file.length() - 4);
 				OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
-				if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime)
-				{
+				if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime) {
 					plactivecs.add(offplayer.getName());
 					plactivencs.add(offplayer.getName().toLowerCase());
 				}
@@ -55,18 +51,15 @@ public class ActivePlayersList {
 		}
 	}
 
-	public int getActivePlayersCount()
-	{
+	public int getActivePlayersCount() {
 		return plactivecs.size();
 	}
 
-	public boolean isActiveNCS(String playername)
-	{
+	public boolean isActiveNCS(String playername) {
 		return plactivencs.contains(playername.toLowerCase());
 	}
 
-	public boolean isActiveCS(String playername)
-	{
+	public boolean isActiveCS(String playername) {
 		return plactivecs.contains(playername);
 	}
 
