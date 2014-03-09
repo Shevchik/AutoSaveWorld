@@ -92,10 +92,8 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 				plugin.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 				plugin.sendMessage(sender, "&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
-				plugin.sendMessage(sender, "&f/asw locale&7 - &3Show current messages locale");
 				plugin.sendMessage(sender, "&f/asw locale available&7 - &3Show available messages locales");
 				plugin.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
-				plugin.sendMessage(sender, "&f/asw info&7 - &3Shows some info");
 				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
