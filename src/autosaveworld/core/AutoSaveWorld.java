@@ -99,31 +99,23 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeChanger = new LocaleChanger(this, configmsg);
 		eh = new EventsListener(this,config);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
-		//load plugin manager
+		// Load plugin manager
 		pmanager = new ASWPluginManager(this);
-		// register events and commands
+		// Register events and commands
 		getCommand("autosaveworld").setExecutor(ch);
 		getCommand("autosave").setExecutor(ch);
 		getCommand("autobackup").setExecutor(ch);
 		getCommand("autopurge").setExecutor(ch);
 		getServer().getPluginManager().registerEvents(eh, this);
-		// Start AutoSave Thread
+		// Start Threads
 		startThread(ThreadType.SAVE);
-		// Start AutoBackupThread
 		startThread(ThreadType.BACKUP);
-		// Start AutoPurgeThread
 		startThread(ThreadType.PURGE);
-		// Create JVMsh
 		JVMsh = new RestartJVMshutdownhook();
-		// Start CrashRestartThread
 		startThread(ThreadType.CRASHRESTART);
-		// Start AutoRestartThread
 		startThread(ThreadType.AUTORESTART);
-		// Start ConsoleCommandThread
 		startThread(ThreadType.CONSOLECOMMAND);
-		// Start WorldRegenCopyThread
 		startThread(ThreadType.WORLDREGENCOPY);
-		// Start WorldRegenPasteThread
 		startThread(ThreadType.WORLDREGENPASTE);
 	}
 
@@ -148,8 +140,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
 		stopThread(ThreadType.WORLDREGENCOPY);
-		//worldregenpaste will stop itself at server start if it don't need to paste something, so we should not care about stopping this thread.
-		worldregenpasteThread = null;
+		stopThread(ThreadType.WORLDREGENPASTE);
 		//null plugin manager
 		pmanager = null;
 		//null values
@@ -331,6 +322,21 @@ public class AutoSaveWorld extends JavaPlugin {
 					try {
 						worldregencopyThread.join(2000);
 						worldregencopyThread = null;
+						return true;
+					} catch (InterruptedException e) {
+						warn("Could not stop WorldRegenThread");
+						return false;
+					}
+				}
+			}
+			case WORLDREGENPASTE: {
+				if (worldregenpasteThread == null) {
+					return true;
+				} else {
+					worldregenpasteThread.stopThread();
+					try {
+						worldregenpasteThread.join(2000);
+						worldregenpasteThread = null;
 						return true;
 					} catch (InterruptedException e) {
 						warn("Could not stop WorldRegenThread");

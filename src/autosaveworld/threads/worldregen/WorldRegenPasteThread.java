@@ -50,6 +50,9 @@ public class WorldRegenPasteThread extends Thread {
 		}
 	}
 
+	public void stopThread() {
+	}
+
 	@Override
 	public void run() {
 		
