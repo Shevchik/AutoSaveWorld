@@ -89,6 +89,8 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
 				plugin.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
 				plugin.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
+				plugin.sendMessage(sender, "&f/asw forcegc&7 - &3Forces GC");
+				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows some server resources usage info");
 				plugin.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 				plugin.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 				plugin.sendMessage(sender, "&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
@@ -99,8 +101,7 @@ public class CommandsHandler implements CommandExecutor {
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
 				StringBuilder sb = new StringBuilder(50);
-				for (String namearg : nameArray)
-				{
+				for (String namearg : nameArray) {
 					sb.append(namearg);
 					sb.append(" ");
 				}
@@ -155,15 +156,15 @@ public class CommandsHandler implements CommandExecutor {
 			} else if ((args.length == 2 && args[0].equalsIgnoreCase("regenworld"))) {
 				//regen world
 				if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
-					plugin.sendMessage(sender, "[AutoSaveWorld] You need WorldEdit installed to do that");
+					plugin.sendMessage(sender, "You need WorldEdit installed to do that");
 					return true;
 				}
 				if (Bukkit.getWorld(args[1]) == null) {
-					plugin.sendMessage(sender, "[AutoSaveWorld] This world doesn't exist");
+					plugin.sendMessage(sender, "This world doesn't exist");
 					return true;
 				}
 				if (plugin.worldregenInProcess) {
-					plugin.sendMessage(sender, "[AutoSaveWorld] Please wait before previous world regeneration is finished");
+					plugin.sendMessage(sender, "Please wait before previous world regeneration is finished");
 					return true;
 				}
 				plugin.worldregencopyThread.startworldregen(args[1]);
@@ -187,11 +188,6 @@ public class CommandsHandler implements CommandExecutor {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("version")) {
 				//version
 				plugin.sendMessage(sender, plugin.getDescription().getName()+ " " + plugin.getDescription().getVersion());
-				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("info")) {
-				//info
-				plugin.sendMessage(sender,"&9======AutoSaveWorld Info & Status======");
-				plugin.sendMessage(sender,"&9====================================");
 				return true;
 			} else if ((args.length >= 1 && args[0].equalsIgnoreCase("locale"))) {
 				//locale loader
