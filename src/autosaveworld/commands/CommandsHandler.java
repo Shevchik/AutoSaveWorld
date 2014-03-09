@@ -100,7 +100,7 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
-			} else if (args.length >= 2 && args[0].equalsIgnoreCase("exec")){
+			} else if (args.length >= 2 && args[0].equalsIgnoreCase("exec")) {
 				String[] cmds = Arrays.copyOfRange(args, 1, args.length);
 				try {
 					Runtime.getRuntime().exec(cmds);
@@ -183,17 +183,17 @@ public class CommandsHandler implements CommandExecutor {
 				//reload
 				config.load();
 				configmsg.loadmsg();
-				plugin.sendMessage(sender, "[AutoSaveWorld] All configurations reloaded");
+				plugin.sendMessage(sender, "All configurations reloaded");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reloadconfig")) {
 				//reload config
 				config.load();
-				plugin.sendMessage(sender,"[AutoSaveWorld] Main configuration reloaded");
+				plugin.sendMessage(sender,"Main configuration reloaded");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reloadmsg")) {
 				//reload messages
 				configmsg.loadmsg();
-				plugin.sendMessage(sender, "[AutoSaveWorld] Messages file reloaded");
+				plugin.sendMessage(sender, "Messages file reloaded");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("version")) {
 				//version
