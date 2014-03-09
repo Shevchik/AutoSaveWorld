@@ -18,31 +18,25 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.File;
-import java.io.IOException;
 
 import autosaveworld.threads.restart.RestartWaiter;
 
 public class WorldRegenJVMshutdownhook extends Thread {
 
-	private String shouldpastefile;
 	private String fldtodelete;
 
-	public WorldRegenJVMshutdownhook(String fldtodelete, String shouldpastefile) {
+	public WorldRegenJVMshutdownhook(String fldtodelete) {
 		this.fldtodelete = fldtodelete;
-		this.shouldpastefile = shouldpastefile;
 	}
 
 	@Override
 	public void run() {
+
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
+
 		//Delete region from world folder
 		deleteDirectory(new File(fldtodelete+File.separator+"region"));
-		try {
-			//create file that indicates that AutoSaveWorld should paste regions from schematics back to map
-			new File(shouldpastefile).createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//Signal that restarthook can restart
 		RestartWaiter.decrementWait();
 	}
 

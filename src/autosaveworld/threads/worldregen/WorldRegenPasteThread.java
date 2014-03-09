@@ -44,7 +44,7 @@ public class WorldRegenPasteThread extends Thread {
 
 	private boolean paste = false;
 	public void checkIfShouldPaste() {
-		File check = new File(plugin.constants.getShouldpasteFile());
+		File check = new File(plugin.constants.getWorldnameFile());
 		if (check.exists()) {
 			paste = true;
 		}
@@ -124,16 +124,16 @@ public class WorldRegenPasteThread extends Thread {
 		deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
 		deleteDirectory(new File(plugin.constants.getGPTempFolder()));
 		deleteDirectory(new File(plugin.constants.getTownyTempFolder()));
-		new File(plugin.constants.getShouldpasteFile()).delete();
 		new File(plugin.constants.getWorldnameFile()).delete();
 		new File(plugin.constants.getWorldRegenTempFolder()).delete();
 
 		plugin.debug("Restore finished");
-		// save server, just in case
+
+		//save server, just in case
 		plugin.debug("Saving server");
 		plugin.saveThread.performSave();
 
-		// restart
+		//restart
 		plugin.debug("Restarting server");
 		plugin.autorestartThread.startrestart(true);
 	}

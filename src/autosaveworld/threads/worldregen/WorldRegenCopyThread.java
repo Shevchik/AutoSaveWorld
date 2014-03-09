@@ -94,10 +94,6 @@ public class WorldRegenCopyThread extends Thread {
 
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
 
-		FileConfiguration cfg = new YamlConfiguration();
-		cfg.set("wname", worldtoregen);
-		cfg.save(new File(plugin.constants.getWorldnameFile()));
-
 		//kick all player and deny them from join
 		AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
 		Bukkit.getPluginManager().registerEvents(ajl, plugin);
@@ -144,10 +140,15 @@ public class WorldRegenCopyThread extends Thread {
 			new File(wtoregen.getWorldFolder(),"uid.dat").delete();
 			plugin.debug("Removing finished");
 		}
+		
+		//Save worldname file
+		FileConfiguration cfg = new YamlConfiguration();
+		cfg.set("wname", worldtoregen);
+		cfg.save(new File(plugin.constants.getWorldnameFile()));
 
-		//Shutdown server and delegate world removal to JVMShutdownHook
 		plugin.debug("Deleting map and restarting server");
-		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath(), plugin.constants.getShouldpasteFile());
+		//Add hook that will delete world folder, signal that restart should wait, and schedule restart restart
+		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath());
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		RestartWaiter.incrementWait();
 		plugin.autorestartThread.startrestart(true);

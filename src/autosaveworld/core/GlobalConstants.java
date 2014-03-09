@@ -56,7 +56,6 @@ public class GlobalConstants {
 	//worldregen
 	private String worldregentempfolder = "WorldRegenTemp"+File.separator;
 	private String worldnamefile = "wname.yml";
-	private String shouldpastefile = "shouldpaste";
 	private String wgtempfolder = "WG"+File.separator;
 	private String factionstempfolder = "Factions"+File.separator;
 	private String griefpreventiontempfolder = "GP"+File.separator;
@@ -66,9 +65,6 @@ public class GlobalConstants {
 	}
 	public String getWorldnameFile() {
 		return getWorldRegenTempFolder()+worldnamefile;
-	}
-	public String getShouldpasteFile() {
-		return getWorldRegenTempFolder()+shouldpastefile;
 	}
 	public String getWGTempFolder() {
 		return getWorldRegenTempFolder()+wgtempfolder;
