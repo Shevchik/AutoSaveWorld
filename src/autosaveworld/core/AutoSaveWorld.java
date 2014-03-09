@@ -75,10 +75,10 @@ public class AutoSaveWorld extends JavaPlugin {
 	//command executor
 	public CommandsHandler ch;
 	//locks
-	public volatile boolean saveInProgress = false;
-	public volatile boolean backupInProgress = false;
-	public volatile boolean purgeInProgress = false;
-	public volatile boolean worldregenInProcess = false;
+	private boolean operationInProgress = false;
+	public void setOperationInProgress(boolean inProgress) {
+		operationInProgress = inProgress;
+	}
 
 	@Override
 	public void onEnable() {
@@ -336,6 +336,14 @@ public class AutoSaveWorld extends JavaPlugin {
 			}
 		}
 	}
+	
+	public boolean canDoOperation() {
+		if (operationInProgress) {
+			warn("Other autosaveworld operation is in progress, current operation aborted");
+			return false;
+		}
+		return true;
+	}
 
 	public void sendMessage(CommandSender sender, String message) {
 		if (!message.equals("")) {
@@ -348,11 +356,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void broadcast(String message, boolean broadcast) {
 		if (!message.equals("") && broadcast) {
 			if (formattingCodesParser != null) {
-				try {
-					getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
-				} catch (Exception e) {
-					//dafuq bukkit?
-				}
+				getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
 			}
 		}
 	}

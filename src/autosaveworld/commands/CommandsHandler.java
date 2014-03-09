@@ -153,7 +153,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("backup")) {
 				//backup
-				plugin.backupThread6.startbackup();
+				plugin.backupThread6.start();
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("purge")) {
 				//purge
@@ -171,10 +171,6 @@ public class CommandsHandler implements CommandExecutor {
 				}
 				if (Bukkit.getWorld(args[1]) == null) {
 					plugin.sendMessage(sender, "This world doesn't exist");
-					return true;
-				}
-				if (plugin.worldregenInProcess) {
-					plugin.sendMessage(sender, "Please wait before previous world regeneration is finished");
 					return true;
 				}
 				plugin.worldregencopyThread.startworldregen(args[1]);
@@ -223,4 +219,5 @@ public class CommandsHandler implements CommandExecutor {
 		}
 		return false;
 	}
+	
 }

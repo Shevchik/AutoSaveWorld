@@ -54,10 +54,6 @@ public class AutoBackupThread extends Thread {
 	}
 
 	public void startbackup() {
-		if (plugin.backupInProgress) {
-			plugin.warn("Multiple concurrent backups attempted! Backup interval is likely too short!");
-			return;
-		}
 		command = true;
 	}
 
@@ -96,7 +92,15 @@ public class AutoBackupThread extends Thread {
 
 			counter = 0;
 			if (run && (config.backupEnabled || command)) {
-				performBackup();
+				if (plugin.canDoOperation()) {
+					plugin.setOperationInProgress(true);
+					try {
+						performBackup();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					plugin.setOperationInProgress(false);
+				}
 			}
 
 		}
@@ -107,27 +111,12 @@ public class AutoBackupThread extends Thread {
 
 
 	public void performBackup() {
-		command = false;
 
-		if (plugin.purgeInProgress) {
-			plugin.warn("AutoPurge is in progress. Backup cancelled.");
-			return;
-		}
-		if (plugin.saveInProgress) {
-			plugin.warn("AutoSave is in progress. Backup cancelled.");
-			return;
-		}
-		if (plugin.worldregenInProcess) {
-			plugin.warn("WorldRegen is in progress. Backup cancelled.");
-			return;
-		}
+		command = false;
 
 		if (config.backupsaveBefore) {
 			plugin.saveThread.performSave();
 		}
-
-		// Lock
-		plugin.backupInProgress = true;
 
 		long timestart = System.currentTimeMillis();
 
@@ -155,8 +144,6 @@ public class AutoBackupThread extends Thread {
 
 		plugin.broadcast(configmsg.messageBackupBroadcastPost, config.backupBroadcast);
 
-		// Release
-		plugin.backupInProgress = false;
 	}
 
 }

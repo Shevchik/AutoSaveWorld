@@ -51,13 +51,10 @@ public class WorldRegenCopyThread extends Thread {
 	}
 
 	public void startworldregen(String worldname) {
-		if (plugin.purgeInProgress) {
-			plugin.warn("AutoPurge is in process. WorldRegen cancelled.");
-			return;
+		if (plugin.canDoOperation()) {
+			this.worldtoregen = worldname;
+			doregen = true;
 		}
-		this.worldtoregen = worldname;
-		plugin.worldregenInProcess = true;
-		doregen = true;
 	}
 
 
@@ -72,11 +69,13 @@ public class WorldRegenCopyThread extends Thread {
 
 		while (run) {
 			if (doregen) {
+				plugin.setOperationInProgress(true);
 				try {
 					doWorldRegen();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				plugin.setOperationInProgress(false);
 				doregen = false;
 				run = false;
 			}
@@ -92,6 +91,7 @@ public class WorldRegenCopyThread extends Thread {
 
 
 	private void doWorldRegen() throws Exception {
+
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
 
 		FileConfiguration cfg = new YamlConfiguration();
@@ -151,6 +151,7 @@ public class WorldRegenCopyThread extends Thread {
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		RestartWaiter.incrementWait();
 		plugin.autorestartThread.startrestart(true);
+
 	}
 
 	private SchematicOperations schemops = null;

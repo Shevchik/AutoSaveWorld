@@ -45,9 +45,7 @@ public class AutoSaveThread extends Thread {
 	}
 
 	public void startsave() {
-		if (canSave()) {
-			command = true;
-		}
+		command = true;
 	}
 
 	private volatile boolean run = true;
@@ -76,8 +74,14 @@ public class AutoSaveThread extends Thread {
 			// save
 			if (run && (config.saveEnabled || command)) {
 				command = false;
-				if (canSave()) {
-					performSave();
+				if (plugin.canDoOperation()) {
+					plugin.setOperationInProgress(true);
+					try {
+						performSave();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					plugin.setOperationInProgress(false);
 				}
 			}
 		}
@@ -85,33 +89,7 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
-
-	private boolean canSave() {
-		if (plugin.saveInProgress) {
-			plugin.warn("Multiple concurrent saves attempted! Save interval is likely too short!");
-			return false;
-		}
-		if (plugin.backupInProgress) {
-			plugin.warn("AutoBackup is in process. AutoSave cancelled");
-			return false;
-		}
-		return true;
-	}
-
-	public void performSave() {
-		// Lock
-		plugin.saveInProgress = true;
-
-		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
-
-		save();
-
-		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
-
-		// Release
-		plugin.saveInProgress = false;
-	}
-
+	
 	public void performSaveNow() {
 		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
@@ -127,7 +105,8 @@ public class AutoSaveThread extends Thread {
 		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 	}
 
-	private void save() {
+	public void performSave() {
+		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 		// Save the players
 		plugin.debug("Saving players");
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
@@ -165,6 +144,7 @@ public class AutoSaveThread extends Thread {
 			}
 		}
 		plugin.debug("Saved Worlds");
+		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 	}
 
 	private void saveWorld(World world) {

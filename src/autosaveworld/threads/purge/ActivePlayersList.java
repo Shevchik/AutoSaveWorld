@@ -19,7 +19,6 @@ package autosaveworld.threads.purge;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
@@ -31,23 +30,27 @@ public class ActivePlayersList {
 	private HashSet<String> plactivencs = new HashSet<String>();
 	private HashSet<String> plactivecs = new HashSet<String>();
 
-	public void gatherActivePlayersList(long awaytime) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		//fill lists
-		//due to bukkit fucks up itself when we have two player files with different case (test.dat and Test.dat), i had to write this...
-		Server server = Bukkit.getServer();
-		Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
-		Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
-		ctor.setAccessible(true);
-		File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(),"players");
-		for (String file : playersdir.list()) {
-			if (file.endsWith(".dat")) {
-				String nickname = file.substring(0, file.length() - 4);
-				OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
-				if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime) {
-					plactivecs.add(offplayer.getName());
-					plactivencs.add(offplayer.getName().toLowerCase());
+	public void gatherActivePlayersList(long awaytime) {
+		try {
+			//fill lists
+			//due to bukkit fucks up itself when we have two player files with different case (test.dat and Test.dat), i had to write this...
+			Server server = Bukkit.getServer();
+			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
+			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
+			ctor.setAccessible(true);
+			File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(),"players");
+			for (String file : playersdir.list()) {
+				if (file.endsWith(".dat")) {
+					String nickname = file.substring(0, file.length() - 4);
+					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
+					if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime) {
+						plactivecs.add(offplayer.getName());
+						plactivencs.add(offplayer.getName().toLowerCase());
+					}
 				}
 			}
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to gather active players list");
 		}
 	}
 

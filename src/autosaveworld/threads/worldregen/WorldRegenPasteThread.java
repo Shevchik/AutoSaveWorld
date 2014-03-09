@@ -46,90 +46,95 @@ public class WorldRegenPasteThread extends Thread {
 	public void checkIfShouldPaste() {
 		File check = new File(plugin.constants.getShouldpasteFile());
 		if (check.exists()) {
-			plugin.worldregenInProcess = true;
 			paste = true;
 		}
 	}
 
 	@Override
 	public void run() {
+		
+		Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");
+		
+		//do not do anything if we are not regenerating world
+		if (!paste) {return;}
+
+		plugin.setOperationInProgress(true);
 		try {
-
-			//do not do anything if we are not regenerating world
-			if (!paste) {return;}
-
-
-			Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");
-
-			//deny players from join
-			AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
-			Bukkit.getPluginManager().registerEvents(ajl, plugin);
-
-			//load config
-			FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getWorldnameFile()));
-			String worldtopasteto = cfg.getString("wname");
-
-			//wait for server to load
-			int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-				}
-			});
-			while (Bukkit.getScheduler().isCurrentlyRunning(ltask) || Bukkit.getScheduler().isQueued(ltask)) {
-				Thread.sleep(1000);
-			}
-
-			//check for worldedit
-			if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
-				plugin.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server",true);
-				return;
-			}
-
-			plugin.debug("Restoring buildings");
-
-			// paste WG buildings
-			if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
-				new WorldGuardPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
-			}
-
-			//paste Factions buildings
-			if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
-				new FactionsPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
-			}
-
-			//paste GriefPrevention claims
-			if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
-				new GPPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
-			}
-
-			//paste Towny towns
-			if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
-				new TownyPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
-			}
-
-			//clear temp folder
-			plugin.debug("Cleaning temp folders");
-
-			deleteDirectory(new File(plugin.constants.getWGTempFolder()));
-			deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
-			deleteDirectory(new File(plugin.constants.getGPTempFolder()));
-			deleteDirectory(new File(plugin.constants.getTownyTempFolder()));
-			new File(plugin.constants.getShouldpasteFile()).delete();
-			new File(plugin.constants.getWorldnameFile()).delete();
-			new File(plugin.constants.getWorldRegenTempFolder()).delete();
-
-			plugin.debug("Restore finished");
-			// save server, just in case
-			plugin.debug("Saving server");
-			plugin.saveThread.performSave();
-
-			// restart
-			plugin.debug("Restarting server");
-			plugin.autorestartThread.startrestart(true);
+			doWorldPaste();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		plugin.setOperationInProgress(false);
 	}
+	
+	private void doWorldPaste() throws InterruptedException {
+		//deny players from join
+		AntiJoinListener ajl = new AntiJoinListener(plugin, configmsg);
+		Bukkit.getPluginManager().registerEvents(ajl, plugin);
+
+		//load config
+		FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getWorldnameFile()));
+		String worldtopasteto = cfg.getString("wname");
+
+		//wait for server to load
+		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+			}
+		});
+		while (Bukkit.getScheduler().isCurrentlyRunning(ltask) || Bukkit.getScheduler().isQueued(ltask)) {
+			Thread.sleep(1000);
+		}
+
+		//check for worldedit
+		if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
+			plugin.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server",true);
+			return;
+		}
+
+		plugin.debug("Restoring buildings");
+
+		// paste WG buildings
+		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
+			new WorldGuardPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+		}
+
+		//paste Factions buildings
+		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
+			new FactionsPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+		}
+
+		//paste GriefPrevention claims
+		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
+			new GPPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+		}
+
+		//paste Towny towns
+		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
+			new TownyPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+		}
+
+		//clear temp folder
+		plugin.debug("Cleaning temp folders");
+
+		deleteDirectory(new File(plugin.constants.getWGTempFolder()));
+		deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
+		deleteDirectory(new File(plugin.constants.getGPTempFolder()));
+		deleteDirectory(new File(plugin.constants.getTownyTempFolder()));
+		new File(plugin.constants.getShouldpasteFile()).delete();
+		new File(plugin.constants.getWorldnameFile()).delete();
+		new File(plugin.constants.getWorldRegenTempFolder()).delete();
+
+		plugin.debug("Restore finished");
+		// save server, just in case
+		plugin.debug("Saving server");
+		plugin.saveThread.performSave();
+
+		// restart
+		plugin.debug("Restarting server");
+		plugin.autorestartThread.startrestart(true);
+	}
+	
 
 	private SchematicOperations schemops = null;
 	public SchematicOperations getSchematicOperations() {

@@ -17,7 +17,6 @@
 
 package autosaveworld.threads.purge;
 
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveConfig;
@@ -49,10 +48,6 @@ public class AutoPurgeThread extends Thread {
 	}
 
 	public void startpurge() {
-		if (plugin.purgeInProgress) {
-			plugin.warn("Multiple concurrent purges attempted! Purge interval is likely too short!");
-			return;
-		}
 		command = true;
 	}
 
@@ -83,7 +78,17 @@ public class AutoPurgeThread extends Thread {
 				try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			}
 
-			if (run&&(config.purgeEnabled || command)) {performPurge();}
+			if (run && (config.purgeEnabled || command)) {
+				if (plugin.canDoOperation()) {
+					plugin.setOperationInProgress(true);
+					try {
+						performPurge();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					plugin.setOperationInProgress(false);
+				}
+			}
 
 		}
 
@@ -98,17 +103,6 @@ public class AutoPurgeThread extends Thread {
 
 		command = false;
 
-		if (plugin.backupInProgress) {
-			plugin.warn("AutoBackup is in progress. Purge cancelled.");
-			return;
-		}
-		if (plugin.worldregenInProcess) {
-			plugin.warn("WorldRegen is in progress. Purge cancelled.");
-			return;
-		}
-
-		plugin.purgeInProgress = true;
-
 		plugin.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
 
 		long awaytime = config.purgeAwayTime * 1000;
@@ -116,17 +110,9 @@ public class AutoPurgeThread extends Thread {
 		plugin.debug("Purge started");
 
 		plugin.debug("Gathering active players list");
-		ActivePlayersList aplist = new ActivePlayersList();
-		try {
-			aplist.gatherActivePlayersList(awaytime);
-			plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
-		} catch (Exception e) {
-			e.printStackTrace();
-			plugin.debug("Failed to gather active players list, autopurge cancelled");
-			plugin.broadcast(ChatColor.RED+"Failed to gather active players list, autopurge cancelled", config.purgeBroadcast);
-			plugin.purgeInProgress = false;
-			return;
-		}
+		ActivePlayersList aplist = new ActivePlayersList();		
+		aplist.gatherActivePlayersList(awaytime);
+		plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
 
 		PluginManager pm = plugin.getServer().getPluginManager();
 
@@ -148,7 +134,7 @@ public class AutoPurgeThread extends Thread {
 			}
 		}
 
-		if ((pm.getPlugin("Multiverse-Inventories") !=null) && config.purgemvinv ) {
+		if ((pm.getPlugin("Multiverse-Inventories") !=null) && config.purgemvinv) {
 			plugin.debug("Multiverse-Inventories found, purging");
 			try {
 				new MVInvPurge(plugin).doMVInvPurgeTask(aplist);
@@ -196,7 +182,6 @@ public class AutoPurgeThread extends Thread {
 			}
 		}
 
-
 		plugin.debug("Purging player .dat files");
 		if (config.purgedat) {
 			try {
@@ -206,18 +191,11 @@ public class AutoPurgeThread extends Thread {
 			}
 		}
 
-
-
 		plugin.debug("Purge finished");
 
 
 		plugin.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
 
-		plugin.purgeInProgress = false;
-
 	}
-
-
-
 
 }
