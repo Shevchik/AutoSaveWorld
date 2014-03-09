@@ -92,7 +92,7 @@ public class AutoBackupThread extends Thread {
 
 			counter = 0;
 			if (run && (config.backupEnabled || command)) {
-				if (plugin.canDoOperation()) {
+				if (plugin.checkCanDoOperation()) {
 					plugin.setOperationInProgress(true);
 					try {
 						performBackup();

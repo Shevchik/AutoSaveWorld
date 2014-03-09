@@ -74,10 +74,17 @@ public class AutoSaveWorld extends JavaPlugin {
 	public EventsListener eh;
 	//command executor
 	public CommandsHandler ch;
-	//locks
+	//operation lock
 	private boolean operationInProgress = false;
 	public void setOperationInProgress(boolean inProgress) {
 		operationInProgress = inProgress;
+	}
+	public boolean checkCanDoOperation() {
+		if (operationInProgress) {
+			warn("Other autosaveworld operation is in progress, current operation aborted");
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -335,14 +342,6 @@ public class AutoSaveWorld extends JavaPlugin {
 				return false;
 			}
 		}
-	}
-	
-	public boolean canDoOperation() {
-		if (operationInProgress) {
-			warn("Other autosaveworld operation is in progress, current operation aborted");
-			return false;
-		}
-		return true;
 	}
 
 	public void sendMessage(CommandSender sender, String message) {

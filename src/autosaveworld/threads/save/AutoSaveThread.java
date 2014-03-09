@@ -74,7 +74,7 @@ public class AutoSaveThread extends Thread {
 			// save
 			if (run && (config.saveEnabled || command)) {
 				command = false;
-				if (plugin.canDoOperation()) {
+				if (plugin.checkCanDoOperation()) {
 					plugin.setOperationInProgress(true);
 					try {
 						performSave();

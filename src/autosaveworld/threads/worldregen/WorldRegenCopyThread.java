@@ -51,7 +51,7 @@ public class WorldRegenCopyThread extends Thread {
 	}
 
 	public void startworldregen(String worldname) {
-		if (plugin.canDoOperation()) {
+		if (plugin.checkCanDoOperation()) {
 			this.worldtoregen = worldname;
 			doregen = true;
 		}
