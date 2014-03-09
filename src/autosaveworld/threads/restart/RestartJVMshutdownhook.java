@@ -34,6 +34,9 @@ public class RestartJVMshutdownhook extends Thread {
 
 
 	public void restart() {
+		while (RestartWaiter.shouldWait()) {
+			try {Thread.sleep(1000);} catch (InterruptedException e) {}
+		}
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
 			File restartscript = new File(crashrestartscriptpath);

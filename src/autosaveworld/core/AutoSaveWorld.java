@@ -203,7 +203,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			}
 			case WORLDREGENCOPY: {
 				if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
-					worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg, JVMsh);
+					worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg);
 					worldregencopyThread.start();
 				}
 				return true;

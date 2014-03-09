@@ -20,20 +20,16 @@ package autosaveworld.threads.worldregen;
 import java.io.File;
 import java.io.IOException;
 
-import autosaveworld.threads.restart.RestartJVMshutdownhook;
+import autosaveworld.threads.restart.RestartWaiter;
 
 public class WorldRegenJVMshutdownhook extends Thread {
 
 	private String shouldpastefile;
 	private String fldtodelete;
-	private boolean dorestart = true;
-	private RestartJVMshutdownhook jvmsh;
 
-	public WorldRegenJVMshutdownhook(RestartJVMshutdownhook jvmsh, boolean dorestart, String fldtodelete, String shouldpastefile) {
+	public WorldRegenJVMshutdownhook(String fldtodelete, String shouldpastefile) {
 		this.fldtodelete = fldtodelete;
 		this.shouldpastefile = shouldpastefile;
-		this.jvmsh = jvmsh;
-		this.dorestart = dorestart;
 	}
 
 	@Override
@@ -47,10 +43,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//restart
-		if (dorestart) {
-			jvmsh.restart();
-		}
+		RestartWaiter.decrementWait();
 	}
 
 	private void deleteDirectory(File file) {

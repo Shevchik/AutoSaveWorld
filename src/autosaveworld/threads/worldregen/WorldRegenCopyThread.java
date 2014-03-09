@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 import autosaveworld.config.AutoSaveConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.restart.RestartJVMshutdownhook;
+import autosaveworld.threads.restart.RestartWaiter;
 import autosaveworld.threads.worldregen.factions.FactionsCopy;
 import autosaveworld.threads.worldregen.griefprevention.GPCopy;
 import autosaveworld.threads.worldregen.towny.TownyCopy;
@@ -39,12 +39,10 @@ public class WorldRegenCopyThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveConfig config;
 	private AutoSaveConfigMSG configmsg;
-	private RestartJVMshutdownhook jvmsh;
-	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
+	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
-		this.jvmsh = jvmsh;
 	}
 
 	// Allows for the thread to naturally exit if value is false
@@ -149,10 +147,10 @@ public class WorldRegenCopyThread extends Thread {
 
 		//Shutdown server and delegate world removal to JVMShutdownHook
 		plugin.debug("Deleting map and restarting server");
-		jvmsh.setPath(config.autorestartscriptpath);
-		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(jvmsh, !config.autorestartjuststop, wtoregen.getWorldFolder().getCanonicalPath(), plugin.constants.getShouldpasteFile());
+		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath(), plugin.constants.getShouldpasteFile());
 		Runtime.getRuntime().addShutdownHook(wrsh);
-		plugin.getServer().shutdown();
+		RestartWaiter.incrementWait();
+		plugin.autorestartThread.startrestart(true);
 	}
 
 	private SchematicOperations schemops = null;
