@@ -89,7 +89,7 @@ public class AutoSaveThread extends Thread {
 		plugin.debug("Graceful quit of AutoSaveThread");
 
 	}
-	
+
 	public void performSaveNow() {
 		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 

@@ -55,9 +55,9 @@ public class WorldRegenPasteThread extends Thread {
 
 	@Override
 	public void run() {
-		
+
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");
-		
+
 		//do not do anything if we are not regenerating world
 		if (!paste) {return;}
 
@@ -69,7 +69,7 @@ public class WorldRegenPasteThread extends Thread {
 		}
 		plugin.setOperationInProgress(false);
 	}
-	
+
 	private void doWorldPaste() throws InterruptedException {
 		//deny players from join
 		AntiJoinListener ajl = new AntiJoinListener(plugin, configmsg);
@@ -137,7 +137,7 @@ public class WorldRegenPasteThread extends Thread {
 		plugin.debug("Restarting server");
 		plugin.autorestartThread.startrestart(true);
 	}
-	
+
 
 	private SchematicOperations schemops = null;
 	public SchematicOperations getSchematicOperations() {

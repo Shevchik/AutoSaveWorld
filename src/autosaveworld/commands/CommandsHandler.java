@@ -219,5 +219,5 @@ public class CommandsHandler implements CommandExecutor {
 		}
 		return false;
 	}
-	
+
 }
