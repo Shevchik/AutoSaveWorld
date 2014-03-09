@@ -18,6 +18,7 @@
 package autosaveworld.commands;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
@@ -90,6 +91,7 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
 				plugin.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
 				plugin.sendMessage(sender, "&f/asw forcegc&7 - &3Forces GC");
+				plugin.sendMessage(sender, "&f/asw exec {command}&7 - &3Executes command in operation system terminal");
 				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows some server resources usage info");
 				plugin.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 				plugin.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
@@ -98,6 +100,13 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
+			} else if (args.length >= 2 && args[0].equalsIgnoreCase("exec")){
+				String[] cmds = Arrays.copyOfRange(args, 1, args.length);
+				try {
+					Runtime.getRuntime().exec(cmds);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
 				StringBuilder sb = new StringBuilder(50);
