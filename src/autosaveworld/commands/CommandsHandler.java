@@ -107,6 +107,7 @@ public class CommandsHandler implements CommandExecutor {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
 				StringBuilder sb = new StringBuilder(50);
