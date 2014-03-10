@@ -34,9 +34,14 @@ public class RestartJVMshutdownhook extends Thread {
 
 
 	public void restart() {
+		//Wait if need
 		while (RestartWaiter.shouldWait()) {
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
+		//Force gc (attempt to ensure that the new instance of server will have enough mem)
+		System.gc();
+		System.gc();
+		//Start process
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
 			File restartscript = new File(crashrestartscriptpath);
@@ -57,9 +62,7 @@ public class RestartJVMshutdownhook extends Thread {
 				execsequence.add(jarfilename);
 				pb.command(execsequence);
 			}
-			//inheritIO
 			pb.inheritIO();
-			//start process
 			pb.start();
 		} catch (Exception e) {
 			System.out.println("[AutoSaveWorld] Restart failed");
