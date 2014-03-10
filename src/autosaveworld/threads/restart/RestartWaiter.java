@@ -5,7 +5,7 @@ public class RestartWaiter {
 	private static int waittorestart = 0;
 
 	public static boolean shouldWait() {
-		return waittorestart == 0;
+		return waittorestart != 0;
 	}
 
 	public static void incrementWait() {
