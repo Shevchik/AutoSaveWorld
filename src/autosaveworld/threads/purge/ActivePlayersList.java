@@ -25,7 +25,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 
+import autosaveworld.core.AutoSaveWorld;
+
 public class ActivePlayersList {
+	
+	private AutoSaveWorld plugin;
+	public ActivePlayersList(AutoSaveWorld plugin) {
+		this.plugin = plugin;
+	}
 
 	private HashSet<String> plactivencs = new HashSet<String>();
 	private HashSet<String> plactivecs = new HashSet<String>();
@@ -42,8 +49,10 @@ public class ActivePlayersList {
 			for (String file : playersdir.list()) {
 				if (file.endsWith(".dat")) {
 					String nickname = file.substring(0, file.length() - 4);
+					plugin.debug("Checking player "+nickname);
 					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
 					if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime) {
+						System.out.println("Adding player "+nickname+" to active list");
 						plactivecs.add(offplayer.getName());
 						plactivencs.add(offplayer.getName().toLowerCase());
 					}
