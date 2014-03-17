@@ -48,9 +48,10 @@ public class FactionsPaste {
 		String schemfolder = plugin.constants.getFactionsTempFolder();
 
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll()) {
-			plugin.debug("Pasting faction land "+f.getName()+" from schematic");
 			Set<PS> chunks = BoardColls.get().getChunks(f);
+			//ignore factions with no claimed land
 			if (chunks.size() != 0) {
+				plugin.debug("Pasting faction land "+f.getName()+" from schematic");
 				//paste all chunks
 				for (PS ps: chunks) {
 					final int xcoord = ps.getChunkX();
@@ -60,8 +61,8 @@ public class FactionsPaste {
 					wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
 					plugin.debug("Pasted "+f.getName()+" chunk from schematic");
 				}
+				plugin.debug("Pasted faction land "+f.getName()+" from schematic");
 			}
-			plugin.debug("Pasted faction land "+f.getName()+" from schematic");
 		}
 	}
 
