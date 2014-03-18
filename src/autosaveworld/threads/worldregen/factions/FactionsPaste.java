@@ -54,12 +54,14 @@ public class FactionsPaste {
 				plugin.debug("Pasting faction land "+f.getName()+" from schematic");
 				//paste all chunks
 				for (PS ps: chunks) {
-					final int xcoord = ps.getChunkX();
-					final int zcoord = ps.getChunkZ();
-					//paste
-					plugin.debug("Pasting "+f.getName()+" chunk from schematic");
-					wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
-					plugin.debug("Pasted "+f.getName()+" chunk from schematic");
+					if (ps.getWorld().equalsIgnoreCase(wtopaste.getName())) {
+						final int xcoord = ps.getChunkX();
+						final int zcoord = ps.getChunkZ();
+						//paste
+						plugin.debug("Pasting "+f.getName()+" chunk from schematic");
+						wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+						plugin.debug("Pasted "+f.getName()+" chunk from schematic");
+					}
 				}
 				plugin.debug("Pasted faction land "+f.getName()+" from schematic");
 			}
