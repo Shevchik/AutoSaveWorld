@@ -140,7 +140,7 @@ public class WorldRegenCopyThread extends Thread {
 			new File(wtoregen.getWorldFolder(),"uid.dat").delete();
 			plugin.debug("Removing finished");
 		}
-		
+
 		//Save worldname file
 		FileConfiguration cfg = new YamlConfiguration();
 		cfg.set("wname", worldtoregen);

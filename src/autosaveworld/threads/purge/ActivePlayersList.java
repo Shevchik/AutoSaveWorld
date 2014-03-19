@@ -28,7 +28,7 @@ import org.bukkit.Server;
 import autosaveworld.core.AutoSaveWorld;
 
 public class ActivePlayersList {
-	
+
 	private AutoSaveWorld plugin;
 	public ActivePlayersList(AutoSaveWorld plugin) {
 		this.plugin = plugin;

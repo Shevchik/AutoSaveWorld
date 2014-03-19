@@ -2931,12 +2931,14 @@ public class FTPClient extends FTP
         }
 
 //        @Override
-        public void bytesTransferred(CopyStreamEvent event) {
+        @Override
+		public void bytesTransferred(CopyStreamEvent event) {
             bytesTransferred(event.getTotalBytesTransferred(), event.getBytesTransferred(), event.getStreamSize());
         }
 
 //        @Override
-        public void bytesTransferred(long totalBytesTransferred,
+        @Override
+		public void bytesTransferred(long totalBytesTransferred,
                 int bytesTransferred, long streamSize) {
             long now = System.currentTimeMillis();
             if (now - time > idle) {

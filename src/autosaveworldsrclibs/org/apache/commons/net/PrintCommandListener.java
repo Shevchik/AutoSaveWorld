@@ -148,7 +148,8 @@ public class PrintCommandListener implements ProtocolCommandListener
     }
 
 //    @Override
-    public void protocolCommandSent(ProtocolCommandEvent event)
+    @Override
+	public void protocolCommandSent(ProtocolCommandEvent event)
     {
         if (__directionMarker) {
             __writer.print("> ");
@@ -190,7 +191,8 @@ public class PrintCommandListener implements ProtocolCommandListener
         return msg;
     }
 //    @Override
-    public void protocolReplyReceived(ProtocolCommandEvent event)
+    @Override
+	public void protocolReplyReceived(ProtocolCommandEvent event)
     {
         if (__directionMarker) {
             __writer.print("< ");
