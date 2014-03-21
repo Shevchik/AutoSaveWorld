@@ -69,7 +69,7 @@ public class SchematicOperations {
 					for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
 						for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
 							//getChunkAt automatically loads chunk
-							world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
+							world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z).load();
 						}
 					}
 				}
