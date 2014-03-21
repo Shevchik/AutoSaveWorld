@@ -53,53 +53,62 @@ public class SchematicOperations {
 
 	private int pfstaskid;
 	public void pasteFromSchematic(final String shematic, final World world) {
-		Runnable copypaste = new Runnable() {
-			@Override
-			public void run() {
-				try {
-				//load from schematic to clipboard
-				EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
-				es.setFastMode(true);
-				File f = new File(shematic);
-				CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
-				//get schematic coords
-				Vector size = cc.getSize();
-				Vector origin = cc.getOrigin();
-				//generate chunks at schematic position and 3 chunk radius nearby
-				for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
-					for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
-						//getChunkAt automatically loads chunk
-						world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
-					}
-				}
-				//paste schematic
-				for (int x = 0; x < size.getBlockX(); ++x) {
-					for (int y = 0; y < size.getBlockY(); ++y) {
-						for (int z = 0; z < size.getBlockZ(); ++z) {
-							Vector blockpos = new Vector(x, y, z);
-							final BaseBlock block = cc.getBlock(blockpos);
-
-							if (block == null) {
-								continue;
-							}
-
-							try {
-								es.setBlock(new Vector(x, y, z).add(origin), block);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+		try {
+			//load from schematic to clipboard
+			final EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
+			es.setFastMode(true);
+			File f = new File(shematic);
+			final CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
+			//get schematic coords
+			final Vector size = cc.getSize();
+			final Vector origin = cc.getOrigin();
+			Runnable genchunks = new Runnable() {
+				@Override
+				public void run() {
+					//generate chunks at schematic position and 3 chunk radius nearby
+					for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
+						for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
+							//getChunkAt automatically loads chunk
+							world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
 						}
 					}
 				}
-				es.flushQueue();
-				} catch (IOException | DataException e) {
-					e.printStackTrace();
-				}
+			};
+			pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, genchunks);
+			while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
+				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
-		};
-		pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-		while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e){e.printStackTrace();}
+			Runnable paste = new Runnable() {
+				@Override
+				public void run() {
+						//paste schematic
+						for (int x = 0; x < size.getBlockX(); ++x) {
+							for (int y = 0; y < size.getBlockY(); ++y) {
+								for (int z = 0; z < size.getBlockZ(); ++z) {
+									Vector blockpos = new Vector(x, y, z);
+									final BaseBlock block = cc.getBlock(blockpos);
+
+									if (block == null) {
+										continue;
+									}
+
+									try {
+										es.setBlock(new Vector(x, y, z).add(origin), block);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							}
+						}
+						es.flushQueue();
+				}
+			};
+			pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, paste);
+			while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
+				try {Thread.sleep(100);} catch (InterruptedException e) {}
+			}
+		} catch (IOException | DataException e) {
+			e.printStackTrace();
 		}
 	}
 
