@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
@@ -69,10 +68,8 @@ public class SchematicOperations {
 				//generate chunks at schematic position and 3 chunk radius nearby
 				for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
 					for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
-						Chunk chunk = world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
-						if (!chunk.isLoaded()) {
-							chunk.load();
-						}
+						//getChunkAt automatically loads chunk
+						world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
 					}
 				}
 				//paste schematic
