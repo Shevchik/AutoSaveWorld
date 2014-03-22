@@ -32,8 +32,9 @@ public class ActivePlayersList {
 
 	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
-	public ActivePlayersList(AutoSaveWorld plugin) {
+	public ActivePlayersList(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
+		this.config = config;
 	}
 
 	private HashSet<String> plactivencs = new HashSet<String>();
@@ -59,6 +60,10 @@ public class ActivePlayersList {
 						plactivencs.add(offplayer.getName().toLowerCase());
 					}
 				}
+			}
+			for (String ignorednick : config.purgeIgnoredNicks) {
+				plactivecs.add(ignorednick);
+				plactivencs.add(ignorednick.toLowerCase());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to gather active players list");

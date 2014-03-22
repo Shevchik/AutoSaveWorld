@@ -82,6 +82,7 @@ public class AutoSaveWorldConfig {
 	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
+	public List<String> purgeIgnoredNicks = new ArrayList<String>();
 	public boolean purgeEnabled = false;
 	public boolean purgeBroadcast = true;
 	public boolean purgewg = true;
@@ -187,6 +188,7 @@ public class AutoSaveWorldConfig {
 		purgeInterval = config.getInt("purge.interval", purgeInterval);
 		purgeAwayTime = config.getLong("purge.awaytime", purgeAwayTime);
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
+		purgeIgnoredNicks = config.getStringList("purge.ignorednicks");
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
 		purgewg = config.getBoolean("purge.wg.enabled", purgewg);
 		purgewgregenrg = config.getBoolean("purge.wg.regenpurgedregion", purgewgregenrg);
@@ -308,6 +310,7 @@ public class AutoSaveWorldConfig {
 		config.set("purge.enabled", purgeEnabled);
 		config.set("purge.interval", purgeInterval);
 		config.set("purge.awaytime", purgeAwayTime);
+		config.set("purge.ignorednicks", purgeIgnoredNicks);
 		config.set("purge.broadcast",purgeBroadcast);
 		config.set("purge.wg.enabled", purgewg);
 		config.set("purge.wg.regenpurgedregion", purgewgregenrg);

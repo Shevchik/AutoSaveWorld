@@ -110,7 +110,7 @@ public class AutoPurgeThread extends Thread {
 		plugin.debug("Purge started");
 
 		plugin.debug("Gathering active players list");
-		ActivePlayersList aplist = new ActivePlayersList(plugin);
+		ActivePlayersList aplist = new ActivePlayersList(plugin, config);
 		aplist.gatherActivePlayersList(awaytime);
 		plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
 
