@@ -23,7 +23,6 @@ public class SchematicOperations {
 		this.plugin = plugin;
 	}
 
-	private int ststaskid;
 	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax) {
 		Runnable copypaste = new Runnable() {
 			@Override
@@ -45,13 +44,12 @@ public class SchematicOperations {
 				}
 			}
 		};
-		ststaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
+		int ststaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
 		while (Bukkit.getScheduler().isCurrentlyRunning(ststaskid) || Bukkit.getScheduler().isQueued(ststaskid)) {
 			try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 
-	private int pfstaskid;
 	public void pasteFromSchematic(final String shematic, final World world) {
 		try {
 			//load from schematic to clipboard
@@ -74,7 +72,7 @@ public class SchematicOperations {
 					}
 				}
 			};
-			pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, genchunks);
+			int pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, genchunks);
 			while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
 				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
