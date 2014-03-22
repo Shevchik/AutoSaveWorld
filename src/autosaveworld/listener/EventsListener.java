@@ -24,13 +24,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class EventsListener implements Listener {
 
 	private AutoSaveWorld plugin = null;
-	public EventsListener(AutoSaveWorld plugin, AutoSaveConfig config) {
+	public EventsListener(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
 	};
 

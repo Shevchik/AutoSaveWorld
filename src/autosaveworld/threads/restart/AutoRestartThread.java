@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 
@@ -29,10 +29,10 @@ import autosaveworld.core.AutoSaveWorld;
 public class AutoRestartThread  extends Thread{
 
 	private AutoSaveWorld plugin;
-	private AutoSaveConfig config;
+	private AutoSaveWorldConfig config;
 	private AutoSaveConfigMSG configmsg;
 	private RestartJVMshutdownhook jvmsh;
-	public AutoRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
+	public AutoRestartThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

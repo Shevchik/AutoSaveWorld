@@ -26,14 +26,14 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class LocalFSBackup {
 
 	private AutoSaveWorld plugin;
-	private AutoSaveConfig config;
-	public LocalFSBackup(AutoSaveWorld plugin, AutoSaveConfig config) {
+	private AutoSaveWorldConfig config;
+	public LocalFSBackup(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}

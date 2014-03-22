@@ -24,14 +24,14 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class AutoConsoleCommandThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
-	private AutoSaveConfig config;
-	public AutoConsoleCommandThread(AutoSaveWorld plugin, AutoSaveConfig config) {
+	private AutoSaveWorldConfig config;
+	public AutoConsoleCommandThread(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}

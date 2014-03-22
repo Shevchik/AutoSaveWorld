@@ -19,14 +19,14 @@ package autosaveworld.threads.backup.script;
 
 import java.io.File;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class ScriptBackup {
 
 	private AutoSaveWorld plugin;
-	private AutoSaveConfig config;
-	public ScriptBackup(AutoSaveWorld plugin, AutoSaveConfig config) {
+	private AutoSaveWorldConfig config;
+	public ScriptBackup(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}

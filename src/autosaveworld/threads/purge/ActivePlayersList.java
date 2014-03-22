@@ -25,11 +25,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class ActivePlayersList {
 
 	private AutoSaveWorld plugin;
+	private AutoSaveWorldConfig config;
 	public ActivePlayersList(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}

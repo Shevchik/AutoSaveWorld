@@ -19,7 +19,7 @@ package autosaveworld.threads.purge;
 
 import org.bukkit.plugin.PluginManager;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.purge.plugins.DatfilePurge;
@@ -34,9 +34,9 @@ import autosaveworld.threads.purge.plugins.WGPurge;
 public class AutoPurgeThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
-	private AutoSaveConfig config;
+	private AutoSaveWorldConfig config;
 	private AutoSaveConfigMSG configmsg;
-	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveConfig config, AutoSaveConfigMSG configmsg) {
+	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

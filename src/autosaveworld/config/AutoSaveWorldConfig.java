@@ -31,11 +31,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.core.AutoSaveWorld;
 
 
-public class AutoSaveConfig {
+public class AutoSaveWorldConfig {
 
 	private FileConfiguration config;
 	private AutoSaveWorld plugin;
-	public AutoSaveConfig(AutoSaveWorld plugin) {
+	public AutoSaveWorldConfig(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 

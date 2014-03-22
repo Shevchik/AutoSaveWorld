@@ -25,15 +25,15 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class CrashRestartThread extends Thread{
 
 	private AutoSaveWorld plugin;
-	private AutoSaveConfig config;
+	private AutoSaveWorldConfig config;
 	private RestartJVMshutdownhook jvmsh;
-	public CrashRestartThread(AutoSaveWorld plugin, AutoSaveConfig config, RestartJVMshutdownhook jvmsh) {
+	public CrashRestartThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
 		this.plugin = plugin;
 		this.config = config;
 		this.jvmsh = jvmsh;

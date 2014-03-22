@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.config.AutoSaveConfig;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.backup.BackupFileUtils;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTP;
@@ -32,8 +32,8 @@ import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPReply;
 public class FTPBackup {
 
 	private AutoSaveWorld plugin;
-	private AutoSaveConfig config;
-	public FTPBackup(AutoSaveWorld plugin, AutoSaveConfig config) {
+	private AutoSaveWorldConfig config;
+	public FTPBackup(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}
