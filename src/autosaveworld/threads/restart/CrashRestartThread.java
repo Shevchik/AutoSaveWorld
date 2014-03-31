@@ -71,14 +71,14 @@ public class CrashRestartThread extends Thread{
 				run = false;
 
 				if (config.crashrestartenabled) {
-					plugin.debug("Server has stopped responding. Probably this is a crash.");
-					plugin.debug("Dumping threads info");
+					plugin.warn("Server has stopped responding.");
+					plugin.warn("Dumping threads info");
 					Logger log = Bukkit.getLogger();
 					ThreadInfo[] threads = ManagementFactory.getThreadMXBean().dumpAllThreads(true, true);
 					for (ThreadInfo thread : threads) {
 						dumpThread(thread, log);
 					}
-					plugin.debug("Restarting Server");
+					plugin.warn("Restarting Server");
 
 					if (!config.crstop) {
 						jvmsh.setPath(config.crashrestartscriptpath);
@@ -86,7 +86,6 @@ public class CrashRestartThread extends Thread{
 					}
 
 					plugin.getServer().shutdown();
-
 				}
 
 			}
