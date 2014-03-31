@@ -78,7 +78,7 @@ public class CrashRestartThread extends Thread{
 					for (ThreadInfo thread : threads) {
 						dumpThread(thread, log);
 					}
-					plugin.warn("Restarting Server");
+					log.log(Level.SEVERE, "Restarting Server");
 
 					if (!config.crstop) {
 						jvmsh.setPath(config.crashrestartscriptpath);
