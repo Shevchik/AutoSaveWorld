@@ -71,9 +71,9 @@ public class CrashRestartThread extends Thread{
 				run = false;
 
 				if (config.crashrestartenabled) {
-					plugin.warn("Server has stopped responding.");
-					plugin.warn("Dumping threads info");
 					Logger log = Bukkit.getLogger();
+					log.log(Level.SEVERE, "Server has stopped responding.");
+					log.log(Level.SEVERE, "Dumping threads info");
 					ThreadInfo[] threads = ManagementFactory.getThreadMXBean().dumpAllThreads(true, true);
 					for (ThreadInfo thread : threads) {
 						dumpThread(thread, log);
