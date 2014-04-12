@@ -22,6 +22,7 @@ import autosaveworld.config.AutoSaveConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.purge.UniquePlayerIdentifierDetector.UniquePlayerIdentifierType;
 import autosaveworld.threads.purge.bynames.PurgeByNames;
+import autosaveworld.threads.purge.byuuids.PurgeByUUIDs;
 
 public class AutoPurgeThread extends Thread {
 
@@ -106,6 +107,8 @@ public class AutoPurgeThread extends Thread {
 		
 		if (type == UniquePlayerIdentifierType.NAME) {
 			new PurgeByNames(plugin, config).startPurge(); 
+		} else if (type == UniquePlayerIdentifierType.UUID) {
+			new PurgeByUUIDs(plugin, config).startPurge();
 		}
 
 		plugin.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
