@@ -26,7 +26,7 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
-import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.listener.EventsListener;
@@ -67,7 +67,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	//plugin manager
 	public ASWPluginManager pmanager;
 	//configs
-	public AutoSaveConfigMSG configmsg;
+	public AutoSaveWorldConfigMSG configmsg;
 	public AutoSaveWorldConfig config;
 	public LocaleChanger localeChanger;
 	//event listener
@@ -94,7 +94,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		constants = new GlobalConstants(this);
 		config = new AutoSaveWorldConfig(this);
 		config.load();
-		configmsg = new AutoSaveConfigMSG(this);
+		configmsg = new AutoSaveWorldConfigMSG(this);
 		configmsg.loadmsg();
 		localeChanger = new LocaleChanger(this, configmsg);
 		eh = new EventsListener(this,config);

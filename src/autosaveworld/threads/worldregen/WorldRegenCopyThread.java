@@ -25,7 +25,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.restart.RestartWaiter;
@@ -38,8 +38,8 @@ public class WorldRegenCopyThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
-	private AutoSaveConfigMSG configmsg;
-	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveConfigMSG configmsg) {
+	private AutoSaveWorldConfigMSG configmsg;
+	public WorldRegenCopyThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

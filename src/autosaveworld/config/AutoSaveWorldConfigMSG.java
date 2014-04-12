@@ -25,10 +25,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import autosaveworld.core.AutoSaveWorld;
 
-public class AutoSaveConfigMSG {
+public class AutoSaveWorldConfigMSG {
 
 	private AutoSaveWorld plugin;
-	public AutoSaveConfigMSG(AutoSaveWorld plugin) {
+	public AutoSaveWorldConfigMSG(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 	}
 

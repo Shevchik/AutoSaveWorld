@@ -28,7 +28,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
@@ -37,9 +37,9 @@ public class CommandsHandler implements CommandExecutor {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
-	private AutoSaveConfigMSG configmsg;
+	private AutoSaveWorldConfigMSG configmsg;
 	private LocaleChanger localeChanger;
-	public CommandsHandler(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveConfigMSG configmsg, LocaleChanger localeChanger) {
+	public CommandsHandler(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, LocaleChanger localeChanger) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

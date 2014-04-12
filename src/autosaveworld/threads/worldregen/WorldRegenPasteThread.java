@@ -23,7 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
@@ -35,8 +35,8 @@ public class WorldRegenPasteThread extends Thread {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
-	private AutoSaveConfigMSG configmsg;
-	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveConfigMSG configmsg) {
+	private AutoSaveWorldConfigMSG configmsg;
+	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;

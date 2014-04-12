@@ -16,8 +16,8 @@ public class LocaleChanger {
 
 
 	private AutoSaveWorld plugin;
-	private AutoSaveConfigMSG configmsg;
-	public LocaleChanger(AutoSaveWorld plugin, AutoSaveConfigMSG configmsg) {
+	private AutoSaveWorldConfigMSG configmsg;
+	public LocaleChanger(AutoSaveWorld plugin, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.configmsg = configmsg;
 	}

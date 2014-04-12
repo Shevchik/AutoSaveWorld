@@ -22,15 +22,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 
 public class AntiJoinListener implements Listener {
 
 	private AutoSaveWorld plugin;
-	private AutoSaveConfigMSG configmsg;
+	private AutoSaveWorldConfigMSG configmsg;
 
-	public AntiJoinListener(AutoSaveWorld plugin, AutoSaveConfigMSG configmsg) {
+	public AntiJoinListener(AutoSaveWorld plugin, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.configmsg = configmsg;
 	}
