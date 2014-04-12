@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge.plugins;
+package autosaveworld.threads.purge.byname.plugins;
 
 import java.util.ArrayList;
 
@@ -27,7 +27,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;

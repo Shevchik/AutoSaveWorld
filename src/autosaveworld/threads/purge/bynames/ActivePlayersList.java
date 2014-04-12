@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.threads.purge.bynames;
 
 import java.io.File;
 import java.lang.reflect.Constructor;

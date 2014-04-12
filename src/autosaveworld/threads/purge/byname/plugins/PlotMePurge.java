@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge.plugins;
+package autosaveworld.threads.purge.byname.plugins;
 
 import java.util.HashSet;
 
@@ -23,7 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 import com.worldcretornica.plotme.Plot;
 import com.worldcretornica.plotme.PlotManager;

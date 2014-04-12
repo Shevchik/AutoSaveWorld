@@ -1,4 +1,4 @@
-package autosaveworld.threads.purge.plugins;
+package autosaveworld.threads.purge.byname.plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.util.Vector;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.purge.ActivePlayersList;
 import autosaveworld.threads.purge.WorldEditRegeneration;
+import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
