@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 
 public class UniquePlayerIdentifierDetector {
-	
+
 	public static UniquePlayerIdentifierType getUniquePlayerIdentifierType() {
 		try {
 			Server server = Bukkit.getServer();

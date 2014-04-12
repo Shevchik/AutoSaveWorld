@@ -21,8 +21,8 @@ import java.text.SimpleDateFormat;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 

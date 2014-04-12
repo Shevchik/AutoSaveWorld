@@ -24,8 +24,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 
 public class AutoSaveThread extends Thread {

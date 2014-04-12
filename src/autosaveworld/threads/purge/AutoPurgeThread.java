@@ -17,8 +17,8 @@
 
 package autosaveworld.threads.purge;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.purge.UniquePlayerIdentifierDetector.UniquePlayerIdentifierType;
 import autosaveworld.threads.purge.bynames.PurgeByNames;
@@ -99,17 +99,17 @@ public class AutoPurgeThread extends Thread {
 		plugin.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
 
 		plugin.debug("Purge started");
-		
+
 		plugin.debug("Getting player unique identifier type");
 		UniquePlayerIdentifierType type = UniquePlayerIdentifierDetector.getUniquePlayerIdentifierType();
-		
+
 		plugin.debug("Player unique identifier type is "+type.toString());
 		if (type == UniquePlayerIdentifierType.NAME) {
-			new PurgeByNames(plugin, config).startPurge(); 
+			new PurgeByNames(plugin, config).startPurge();
 		} else if (type == UniquePlayerIdentifierType.UUID) {
 			new PurgeByUUIDs(plugin, config).startPurge();
 		}
-		
+
 		plugin.debug("Purge finished");
 
 		plugin.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);

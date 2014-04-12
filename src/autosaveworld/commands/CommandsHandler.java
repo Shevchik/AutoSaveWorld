@@ -28,8 +28,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveConfigMSG;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
 

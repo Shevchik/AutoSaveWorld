@@ -35,7 +35,7 @@ public class PurgeByUUIDs {
 		ActivePlayersList aplist = new ActivePlayersList(plugin, config);
 		aplist.gatherActivePlayersList(config.purgeAwayTime * 1000);
 		plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
-		
+
 		plugin.debug("Purging player .dat files");
 		if (config.purgedat) {
 			try {

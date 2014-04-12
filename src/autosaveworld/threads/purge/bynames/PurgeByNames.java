@@ -31,14 +31,14 @@ import autosaveworld.threads.purge.byname.plugins.VaultPurge;
 import autosaveworld.threads.purge.byname.plugins.WGPurge;
 
 public class PurgeByNames {
-	
+
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
 	public PurgeByNames(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
 		this.config = config;
 	}
-	
+
 	public void startPurge() {
 		plugin.debug("Gathering active players list");
 		ActivePlayersList aplist = new ActivePlayersList(plugin, config);
