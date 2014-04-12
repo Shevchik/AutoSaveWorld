@@ -40,6 +40,7 @@ public class ActivePlayersList {
 	private HashSet<String> plactivencs = new HashSet<String>();
 	private HashSet<String> plactivecs = new HashSet<String>();
 
+	@SuppressWarnings("deprecation")
 	public void gatherActivePlayersList(long awaytime) {
 		try {
 			//fill lists

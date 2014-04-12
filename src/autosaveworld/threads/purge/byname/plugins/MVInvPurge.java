@@ -40,6 +40,7 @@ public class MVInvPurge {
 	}
 
 
+	@SuppressWarnings("deprecation")
 	public void doMVInvPurgeTask(ActivePlayersList pacheck) {
 
 		plugin.debug("MVInv purge started");
