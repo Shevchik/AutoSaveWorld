@@ -15,7 +15,7 @@ public class UniquePlayerIdentifierDetector {
 			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer(UUID.randomUUID()).getClass();
 			craftofflineplayer.getConstructor(server.getClass(), GameProfile.class);
 			return UniquePlayerIdentifierType.UUID;
-		} catch (Exception e) {
+		} catch (Exception | NoSuchMethodError e) {
 		}
 		return UniquePlayerIdentifierType.NAME;
 	}
