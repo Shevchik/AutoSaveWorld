@@ -10,10 +10,13 @@ import autosaveworld.core.AutoSaveWorld;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.LocalEntity;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class SchematicOperations {
@@ -28,15 +31,23 @@ public class SchematicOperations {
 			@Override
 			public void run() {
 				try {
-					//copy to clipboard
-					EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
-					es.setFastMode(true);
+					//create clipboard
+					BukkitWorld bw = new BukkitWorld(world);
+					EditSession es = new EditSession(bw, Integer.MAX_VALUE);
 					CuboidClipboard clipboard = new CuboidClipboard(
 						bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-						bvmin, bvmin.subtract(bvmax)
+						bvmin, 
+						bvmin.subtract(bvmax)
 					);
+					Region region = new CuboidRegion(bw, bvmin, bvmax);
+					es.setFastMode(true);
+					//copy blocks
 					clipboard.copy(es);
-					//TODO: rewrite to save blocks and entities manually
+					//copy entities
+		            LocalEntity[] entities = bw.getEntities(region);
+		            for (LocalEntity entity : entities) {
+		                clipboard.storeEntity(entity);
+		            }
 					//save to schematic
 					File f = new File(schematic);
 					SchematicFormat.getFormats().iterator().next().save(clipboard, f);
