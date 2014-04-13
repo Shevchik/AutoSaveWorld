@@ -36,6 +36,7 @@ public class SchematicOperations {
 						bvmin, bvmin.subtract(bvmax)
 					);
 					clipboard.copy(es);
+					//TODO: rewrite to save blocks and entities manually
 					//save to schematic
 					File f = new File(schematic);
 					SchematicFormat.getFormats().iterator().next().save(clipboard, f);
@@ -50,13 +51,13 @@ public class SchematicOperations {
 		}
 	}
 
-	public void pasteFromSchematic(final String shematic, final World world) {
+	public void pasteFromSchematic(final String schematic, final World world) {
 		try {
 			//load from schematic to clipboard
 			final EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 			es.setFastMode(true);
 			es.enableQueue();
-			File f = new File(shematic);
+			File f = new File(schematic);
 			final CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
 			//get schematic coords
 			final Vector size = cc.getSize();
@@ -80,7 +81,7 @@ public class SchematicOperations {
 			Runnable paste = new Runnable() {
 				@Override
 				public void run() {
-					//paste schematic
+					//paste blocks
 					for (int x = 0; x < size.getBlockX(); ++x) {
 						for (int y = 0; y < size.getBlockY(); ++y) {
 							for (int z = 0; z < size.getBlockZ(); ++z) {
@@ -100,6 +101,7 @@ public class SchematicOperations {
 						}
 					}
 					es.flushQueue();
+					//TODO: paste entities
 				}
 			};
 			pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, paste);
