@@ -43,7 +43,7 @@ public class SchematicOperations {
 					es.setFastMode(true);
 					//copy blocks
 					clipboard.copy(es);
-					//copy entities
+					//copy entities (note: worldedit doesn't save entities to schematic, but i will just leave it here in case worldedit will start doing it some day)
 					LocalEntity[] entities = bw.getEntities(region);
 					for (LocalEntity entity : entities) {
 						clipboard.storeEntity(entity);
@@ -112,7 +112,7 @@ public class SchematicOperations {
 						}
 					}
 					es.flushQueue();
-					//paste entities
+					//paste entities (note: worldedit doesn't paste entities from schematic, but i will just leave it here in case worldedit will start doing it some day)
 					try {
 						cc.pasteEntities(origin);
 					} catch (Exception e) {
