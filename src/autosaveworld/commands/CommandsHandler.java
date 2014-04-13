@@ -77,8 +77,9 @@ public class CommandsHandler implements CommandExecutor {
 			if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 				// help
 				plugin.sendMessage(sender, "&f/asw help&7 - &3Shows this help");
-				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu,memory,HDD usage");
+				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu, memory, HDD usage");
 				plugin.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
+				plugin.sendMessage(sender, "&f/asw exec {password} {command}&7 - &3Excecute {command} in system terminal");
 				plugin.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
 				plugin.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
 				plugin.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
@@ -100,12 +101,20 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
-			} else if (args.length >= 2 && args[0].equalsIgnoreCase("exec")) {
-				String[] cmds = Arrays.copyOfRange(args, 1, args.length);
-				try {
-					Runtime.getRuntime().exec(cmds);
-				} catch (IOException e) {
-					e.printStackTrace();
+			} else if (args.length >= 4 && args[0].equalsIgnoreCase("exec")) {
+				if (!config.aswexecpassword.isEmpty()) {
+					if (args[1].equals(config.aswexecpassword)) {
+						String[] cmds = Arrays.copyOfRange(args, 2, args.length);
+						try {
+							Runtime.getRuntime().exec(cmds);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						sender.sendMessage("Password is invalid");
+					}
+				} else {
+					sender.sendMessage("Set a password for this command first");
 				}
 				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {

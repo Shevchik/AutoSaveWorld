@@ -44,6 +44,7 @@ public class AutoSaveWorldConfig {
 	// some global variables
 	public boolean varDebug = false;
 	public boolean commandonlyfromconsole = false;
+	public String aswexecpassword = "";
 	//save
 	public int saveInterval = 900;
 	public boolean saveBroadcast = true;
@@ -136,6 +137,7 @@ public class AutoSaveWorldConfig {
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
 		commandonlyfromconsole = config.getBoolean("var.commandsonlyfromconsole",commandonlyfromconsole);
+		aswexecpassword = config.getString("var.aswexecpassword", aswexecpassword);
 
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
@@ -269,6 +271,7 @@ public class AutoSaveWorldConfig {
 		// Variables
 		config.set("var.debug", varDebug);
 		config.set("var.commandsonlyfromconsole",commandonlyfromconsole);
+		config.set("var.aswexecpassword", aswexecpassword);
 
 		//save variables
 		config.set("save.enabled",saveEnabled);
