@@ -101,7 +101,12 @@ public class SchematicOperations {
 						}
 					}
 					es.flushQueue();
-					//TODO: paste entities
+					//paste entities
+					try {
+						cc.pasteEntities(origin);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			};
 			pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, paste);
