@@ -55,6 +55,7 @@ public class SchematicOperations {
 			//load from schematic to clipboard
 			final EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
 			es.setFastMode(true);
+			es.enableQueue();
 			File f = new File(shematic);
 			final CuboidClipboard cc = SchematicFormat.getFormat(f).load(f);
 			//get schematic coords
@@ -79,26 +80,26 @@ public class SchematicOperations {
 			Runnable paste = new Runnable() {
 				@Override
 				public void run() {
-						//paste schematic
-						for (int x = 0; x < size.getBlockX(); ++x) {
-							for (int y = 0; y < size.getBlockY(); ++y) {
-								for (int z = 0; z < size.getBlockZ(); ++z) {
-									Vector blockpos = new Vector(x, y, z);
-									final BaseBlock block = cc.getBlock(blockpos);
+					//paste schematic
+					for (int x = 0; x < size.getBlockX(); ++x) {
+						for (int y = 0; y < size.getBlockY(); ++y) {
+							for (int z = 0; z < size.getBlockZ(); ++z) {
+								Vector blockpos = new Vector(x, y, z);
+								final BaseBlock block = cc.getBlock(blockpos);
 
-									if (block == null) {
-										continue;
-									}
+								if (block == null) {
+									continue;
+								}
 
-									try {
-										es.setBlock(new Vector(x, y, z).add(origin), block);
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
+								try {
+									es.smartSetBlock(new Vector(x, y, z).add(origin), block);
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
 							}
 						}
-						es.flushQueue();
+					}
+					es.flushQueue();
 				}
 			};
 			pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, paste);
