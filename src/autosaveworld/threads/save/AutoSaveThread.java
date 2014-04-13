@@ -183,17 +183,12 @@ public class AutoSaveThread extends Thread {
 			Field worldDataField = worldserver.getClass().getSuperclass().getDeclaredField("worldData");
 			worldDataField.setAccessible(true);
 			Object worldData = worldDataField.get(worldserver);
-			Field serverField = worldserver.getClass().getDeclaredField("server");
-			serverField.setAccessible(true);
-			Object server = serverField.get(worldserver);
-			Method getPlayerListMethod = server.getClass().getDeclaredMethod("getPlayerList");
-			getPlayerListMethod.setAccessible(true);
-			Object playerList = getPlayerListMethod.invoke(server);
-			Method qMethod = playerList.getClass().getSuperclass().getDeclaredMethod("q");
-			qMethod.setAccessible(true);
-			Object NBTTagCompound = qMethod.invoke(playerList);
-			Method saveWorldDataMethod = dataManager.getClass().getSuperclass().getDeclaredMethod("saveWorldData", worldDataField.getType(), qMethod.getReturnType());
-			saveWorldDataMethod.invoke(dataManager, worldData, NBTTagCompound);
+			for (Method method : dataManager.getClass().getSuperclass().getDeclaredMethods()) {
+				if (method.getName().equals("saveWorldData") && method.getParameterTypes().length == 2) {
+					method.setAccessible(true);
+					method.invoke(dataManager, worldData, null);
+				}
+			}
 			// invoke saveChunks
 			Field chunkProviderField = worldserver.getClass().getSuperclass().getDeclaredField("chunkProvider");
 			chunkProviderField.setAccessible(true);
