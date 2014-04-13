@@ -183,13 +183,20 @@ public class AutoSaveThread extends Thread {
 			Field worldDataField = worldserver.getClass().getSuperclass().getDeclaredField("worldData");
 			worldDataField.setAccessible(true);
 			Object worldData = worldDataField.get(worldserver);
+			boolean methodfound = false;
 			for (Method method : dataManager.getClass().getSuperclass().getDeclaredMethods()) {
 				if (method.getName().equals("saveWorldData") && method.getParameterTypes().length == 2) {
 					method.setAccessible(true);
 					method.invoke(dataManager, worldData, null);
+					methodfound = true;
+					break;
 				}
 			}
+			if (!methodfound) {
+				throw new RuntimeException("Cannot find method saveWorldData");
+			}
 			// invoke saveChunks
+			methodfound = false;
 			Field chunkProviderField = worldserver.getClass().getSuperclass().getDeclaredField("chunkProvider");
 			chunkProviderField.setAccessible(true);
 			Object chunkProvider = chunkProviderField.get(worldserver);
@@ -197,8 +204,12 @@ public class AutoSaveThread extends Thread {
 				if (method.getName().equals("saveChunks") && method.getParameterTypes().length == 2) {
 					method.setAccessible(true);
 					method.invoke(chunkProvider, true, null);
+					methodfound = true;
 					break;
 				}
+			}
+			if (!methodfound) {
+				throw new RuntimeException("Cannot find method saveChunks");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
