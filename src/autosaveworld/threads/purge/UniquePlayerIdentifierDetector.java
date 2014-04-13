@@ -1,5 +1,7 @@
 package autosaveworld.threads.purge;
 
+import java.util.UUID;
+
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Bukkit;
@@ -10,8 +12,7 @@ public class UniquePlayerIdentifierDetector {
 	public static UniquePlayerIdentifierType getUniquePlayerIdentifierType() {
 		try {
 			Server server = Bukkit.getServer();
-			@SuppressWarnings("deprecation")
-			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
+			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer(UUID.randomUUID()).getClass();
 			craftofflineplayer.getConstructor(server.getClass(), GameProfile.class);
 			return UniquePlayerIdentifierType.UUID;
 		} catch (Exception e) {
