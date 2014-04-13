@@ -44,10 +44,10 @@ public class SchematicOperations {
 					//copy blocks
 					clipboard.copy(es);
 					//copy entities
-		            LocalEntity[] entities = bw.getEntities(region);
-		            for (LocalEntity entity : entities) {
-		                clipboard.storeEntity(entity);
-		            }
+					LocalEntity[] entities = bw.getEntities(region);
+					for (LocalEntity entity : entities) {
+						clipboard.storeEntity(entity);
+					}
 					//save to schematic
 					File f = new File(schematic);
 					SchematicFormat.getFormats().iterator().next().save(clipboard, f);
