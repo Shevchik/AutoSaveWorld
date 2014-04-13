@@ -17,8 +17,8 @@
 
 package autosaveworld.threads.purge;
 
-import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.purge.UniquePlayerIdentifierDetector.UniquePlayerIdentifierType;
 import autosaveworld.threads.purge.bynames.PurgeByNames;

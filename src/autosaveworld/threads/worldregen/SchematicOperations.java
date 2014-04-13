@@ -36,7 +36,7 @@ public class SchematicOperations {
 					EditSession es = new EditSession(bw, Integer.MAX_VALUE);
 					CuboidClipboard clipboard = new CuboidClipboard(
 						bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-						bvmin, 
+						bvmin,
 						bvmin.subtract(bvmax)
 					);
 					Region region = new CuboidRegion(bw, bvmin, bvmax);

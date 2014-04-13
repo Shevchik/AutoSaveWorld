@@ -26,8 +26,8 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.listener.EventsListener;
 import autosaveworld.pluginmanager.ASWPluginManager;
