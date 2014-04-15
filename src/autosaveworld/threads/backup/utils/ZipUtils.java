@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -35,13 +36,19 @@ public class ZipUtils {
 	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException {
 		destFile.getParentFile().mkdirs();
 
-		try (BufferedOutputStream bufOutStream = new BufferedOutputStream(new FileOutputStream(destFile))) {
+		try (OutputStream fos = new FileOutputStream(destFile)) {
+			zipFolder(srcDir, fos, excludefolders);
+		}
+	}
+
+	public static void zipFolder(final File srcDir, final OutputStream outputStream, List<String> excludefolders) throws FileNotFoundException, IOException {
+		try (BufferedOutputStream bufOutStream = new BufferedOutputStream(outputStream)) {
 			try (ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream)) {
 				zipDir(excludefolders, zipOutStream, srcDir, "");
 			}
 		}
 	}
-
+	
 	private static void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException {
 		final File zipDir = new File(srcDir, currentDir);
 

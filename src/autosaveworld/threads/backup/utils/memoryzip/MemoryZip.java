@@ -17,20 +17,13 @@
 
 package autosaveworld.threads.backup.utils.memoryzip;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import autosaveworld.threads.backup.ExcludeManager;
+import autosaveworld.threads.backup.utils.ZipUtils;
 
 public class MemoryZip {
 
@@ -39,7 +32,7 @@ public class MemoryZip {
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	private final short END_OF_STREAM_SIGNAL = 1337;
-	
+
 	private LinkedBlockingQueue<Short> byteqeue = new LinkedBlockingQueue<Short>(10 * 1024 * 1024);
 	protected int read() {
 		try {
@@ -72,7 +65,12 @@ public class MemoryZip {
 				@Override
 				public void run() {
 					try {
-						mz.zipFolder(inputDir, excludefolders);
+						ZipUtils.zipFolder(inputDir, mz.os, excludefolders);
+						try {
+							mz.byteqeue.put(mz.END_OF_STREAM_SIGNAL);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -83,52 +81,4 @@ public class MemoryZip {
 		return mz.is;
 	}
 
-	private void zipFolder(final File srcDir, List<String> excludefolders) throws FileNotFoundException, IOException {
-		try (BufferedOutputStream bos = new BufferedOutputStream(os)) {
-			try (ZipOutputStream zipOutStream = new ZipOutputStream(bos)) {
-				zipDir(excludefolders, zipOutStream, srcDir, "");
-			}
-		}
-		try {
-			byteqeue.put(END_OF_STREAM_SIGNAL);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException {
-		final File zipDir = new File(srcDir, currentDir);
-
-		for (final String child : zipDir.list()) {
-			final File srcFile = new File(zipDir, child);
-
-			if (srcFile.isDirectory()) {
-				if (!ExcludeManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) {
-					zipDir(excludefolders, zipOutStream, srcDir, currentDir + child + File.separator);
-				}
-			} else {
-				zipFile(zipOutStream, srcFile, srcDir.getName() + File.separator + currentDir + child);
-			}
-		}
-	}
-
-	private void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException {
-		if (!srcFile.getName().endsWith(".lck")) {
-			try (InputStream inStream = new FileInputStream(srcFile)) {
-				final ZipEntry zipEntry = new ZipEntry(entry);
-				zipOutStream.putNextEntry(zipEntry);
-				try {
-					int len;
-					final byte[] buf = new byte[4096];
-					while ((len = inStream.read(buf)) > 0) {
-						zipOutStream.write(buf, 0, len);
-					}
-				} finally {
-					zipOutStream.closeEntry();
-				}
-			}
-			Thread.yield();
-		}
-	}
-	
 }
