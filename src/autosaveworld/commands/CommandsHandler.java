@@ -162,7 +162,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("backup")) {
 				//backup
-				plugin.backupThread6.start();
+				plugin.backupThread6.startbackup();
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("purge")) {
 				//purge
