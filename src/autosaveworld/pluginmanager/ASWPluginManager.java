@@ -18,6 +18,7 @@
 package autosaveworld.pluginmanager;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -34,6 +35,9 @@ public class ASWPluginManager {
 	private AutoSaveWorld plugin;
 	public ASWPluginManager(AutoSaveWorld plugin) {
 		this.plugin = plugin;
+		if (ManagementFactory.getRuntimeMXBean().getInputArguments().contains("-XX:+DisableExplicitGC")) {
+			plugin.warn("Your JVM is configured to ignore GC calls, plugin manager may not work as expected");
+		}
 	}
 
 	private InternalUtils iutils = new InternalUtils();
