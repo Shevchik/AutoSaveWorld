@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.backup.memoryzip;
+package autosaveworld.threads.backup.utils.memoryzip;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

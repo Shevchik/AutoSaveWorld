@@ -15,21 +15,20 @@
  *
  */
 
-package autosaveworld.threads.backup.memoryzip;
+package autosaveworld.threads.backup.utils.memoryzip;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
-public class MemoryZipOutputStream extends OutputStream {
+public class MemoryZipInputStream extends InputStream {
 
 	private MemoryZip mz;
-	protected MemoryZipOutputStream(MemoryZip mz) {
+	protected MemoryZipInputStream(MemoryZip mz) {
 		this.mz = mz;
 	}
 
 	@Override
-	public void write(int b) throws IOException {
-		mz.write((byte) b);
+	public int read() {
+		return mz.read();
 	}
 
 }

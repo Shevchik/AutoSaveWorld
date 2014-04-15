@@ -25,8 +25,8 @@ import java.util.concurrent.ExecutorService;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.threads.backup.BackupFileUtils;
-import autosaveworld.threads.backup.ZipUtils;
+import autosaveworld.threads.backup.utils.BackupFileUtils;
+import autosaveworld.threads.backup.utils.ZipUtils;
 
 public class LFSBackupOperations {
 

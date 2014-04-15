@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.backup;
+package autosaveworld.threads.backup.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +25,8 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import autosaveworld.threads.backup.memoryzip.MemoryZip;
+import autosaveworld.threads.backup.ExcludeManager;
+import autosaveworld.threads.backup.utils.memoryzip.MemoryZip;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 
 public class BackupFileUtils {
