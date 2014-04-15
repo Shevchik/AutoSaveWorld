@@ -48,7 +48,7 @@ public class ZipUtils {
 			}
 		}
 	}
-	
+
 	private static void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException {
 		final File zipDir = new File(srcDir, currentDir);
 
