@@ -1,9 +1,9 @@
 package autosaveworld.config;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -58,16 +58,9 @@ public class LocaleChanger {
 	//load needed locale file
 	private void loadLocaleFile(String locale) {
 		try {
-			InputStream in = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
-			OutputStream out = new FileOutputStream(new File(plugin.constants.getConfigMSGPath()));
-
-			byte[] buf = new byte[4096];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
+			InputStream is = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
+			Path file = new File(plugin.constants.getConfigMSGPath()).toPath();
+			Files.copy(is, file);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
