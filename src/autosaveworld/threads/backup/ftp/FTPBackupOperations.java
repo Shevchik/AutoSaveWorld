@@ -19,14 +19,12 @@ package autosaveworld.threads.backup.ftp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.threads.backup.BackupFileUtils;
-import autosaveworld.threads.backup.ZipUtils;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPBackupOperations {
@@ -51,11 +49,7 @@ public class FTPBackupOperations {
 			if (!zip) {
 				BackupFileUtils.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
 			} else {
-				File tempzip = new File(plugin.constants.getBackupTempFolder(),worldfolder.getName()+".zip");
-				ZipUtils.zipFolder(worldfolder, tempzip, excludefolders);
-				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
-				tempzip.delete();
-				new File(plugin.constants.getBackupTempFolder()).delete();
+				BackupFileUtils.zipAndUploadDirectoryToFTP(ftp, worldfolder, excludefolders);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,14 +67,7 @@ public class FTPBackupOperations {
 			if (!zip) {
 				BackupFileUtils.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
 			} else  {
-				File tempzip = new File(plugin.constants.getBackupTempFolder(), plfolder.getName()+".zip");
-				List<String> excludefolderslist = new ArrayList<String>();
-				excludefolderslist.addAll(excludefolders);
-				excludefolderslist.add(plugin.constants.getBackupTempFolder());
-				ZipUtils.zipFolder(plfolder, tempzip, excludefolderslist);
-				BackupFileUtils.uploadDirectoryToFTP(ftp, tempzip, new ArrayList<String>());
-				tempzip.delete();
-				new File(plugin.constants.getBackupTempFolder()).delete();
+				BackupFileUtils.zipAndUploadDirectoryToFTP(ftp, plfolder, excludefolders);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

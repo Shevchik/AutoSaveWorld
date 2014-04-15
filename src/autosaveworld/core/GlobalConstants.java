@@ -47,12 +47,6 @@ public class GlobalConstants {
 		return getPluginFolder()+backuppreserverfile;
 	}
 
-	//backup
-	private String backuptempfolder = "BackupTemp"+File.separator;
-	public String getBackupTempFolder() {
-		return getPluginFolder()+backuptempfolder;
-	}
-
 	//worldregen
 	private String worldregentempfolder = "WorldRegenTemp"+File.separator;
 	private String worldnamefile = "wname.yml";

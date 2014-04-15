@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import autosaveworld.threads.backup.memoryzip.MemoryZip;
 import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
 
 public class BackupFileUtils {
@@ -114,6 +115,15 @@ public class BackupFileUtils {
 				}
 				Thread.yield();
 			}
+		}
+	}
+
+	public static void zipAndUploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) {
+		InputStream is = MemoryZip.startZIP(src, excludefolders);
+		try {
+			ftp.storeFile(src.getName()+".zip", is);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
