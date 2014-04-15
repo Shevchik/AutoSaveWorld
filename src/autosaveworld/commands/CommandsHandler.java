@@ -92,7 +92,6 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
 				plugin.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
 				plugin.sendMessage(sender, "&f/asw forcegc&7 - &3Forces GC");
-				plugin.sendMessage(sender, "&f/asw exec {command}&7 - &3Executes command in operation system terminal");
 				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows some server resources usage info");
 				plugin.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 				plugin.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
@@ -131,7 +130,7 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.sendMessage(sender, "&9Forcing GC");
 				System.gc();
 				System.gc();
-				plugin.sendMessage(sender, "&9GC probably finished");
+				plugin.sendMessage(sender, "&9GC finished");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("serverstatus")) {
 				DecimalFormat df = new DecimalFormat("0.00");
