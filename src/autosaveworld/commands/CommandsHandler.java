@@ -66,7 +66,7 @@ public class CommandsHandler implements CommandExecutor {
 			return true;
 		} else if (commandName.equalsIgnoreCase("autobackup")) {
 			//"autobackup" command handler
-			plugin.backupThread6.startbackup();
+			plugin.backupThread.startbackup();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autopurge")) {
 			//"autopurge" command handler
@@ -162,7 +162,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("backup")) {
 				//backup
-				plugin.backupThread6.startbackup();
+				plugin.backupThread.startbackup();
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("purge")) {
 				//purge

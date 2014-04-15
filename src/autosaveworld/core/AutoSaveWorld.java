@@ -52,7 +52,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	//save
 	public AutoSaveThread saveThread = null;
 	//backup
-	public AutoBackupThread backupThread6 = null;
+	public AutoBackupThread backupThread = null;
 	//purge
 	public AutoPurgeThread purgeThread = null;
 	//restart
@@ -165,9 +165,9 @@ public class AutoSaveWorld extends JavaPlugin {
 				return true;
 			}
 			case BACKUP: {
-				if (backupThread6 == null || !backupThread6.isAlive()) {
-					backupThread6 = new AutoBackupThread(this, config, configmsg);
-					backupThread6.start();
+				if (backupThread == null || !backupThread.isAlive()) {
+					backupThread = new AutoBackupThread(this, config, configmsg);
+					backupThread.start();
 				}
 				return true;
 			}
@@ -240,13 +240,13 @@ public class AutoSaveWorld extends JavaPlugin {
 				}
 			}
 			case BACKUP: {
-				if (backupThread6 == null) {
+				if (backupThread == null) {
 					return true;
 				} else {
-					backupThread6.stopThread();
+					backupThread.stopThread();
 					try {
-						backupThread6.join(2000);
-						backupThread6 = null;
+						backupThread.join(2000);
+						backupThread = null;
 						return true;
 					} catch (InterruptedException e) {
 						warn("Could not stop AutoBackupThread");
