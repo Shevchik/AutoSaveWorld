@@ -19,8 +19,10 @@ package autosaveworld.commands;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -127,6 +129,11 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.pmanager.handlePluginManagerCommand(sender, args[1], sb.toString());
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcegc")) {
+				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+				if (arguments.contains("-XX:+DisableExplicitGC")) {
+					plugin.sendMessage(sender, "&4Your JVM is configured to ignore GC calls, can't force gc");
+					return true;
+				}
 				plugin.sendMessage(sender, "&9Forcing GC");
 				System.gc();
 				System.gc();
