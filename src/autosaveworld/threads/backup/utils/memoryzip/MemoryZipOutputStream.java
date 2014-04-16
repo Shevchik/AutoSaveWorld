@@ -29,7 +29,7 @@ public class MemoryZipOutputStream extends OutputStream {
 
 	@Override
 	public void write(int b) throws IOException {
-		mz.write((byte) b);
+		mz.write(b & 0xFF);
 	}
 
 }

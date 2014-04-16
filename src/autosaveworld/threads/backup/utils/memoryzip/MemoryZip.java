@@ -34,27 +34,12 @@ public class MemoryZip {
 
 	private PrimitiveIntLinkedBlockingQueue byteqeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
 	protected int read() {
-		try {
-			int b = byteqeue.take();
-			if (b < 0) {
-				b += 256;
-			}
-			if (b == END_OF_STREAM_SIGNAL) {
-				return -1;
-			}
-			return b;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return -1;
+		int b = byteqeue.take();
+		return b != END_OF_STREAM_SIGNAL ? b : -1;
 	}
 
 	protected void write(int b) {
-		try {
-			byteqeue.put(b);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		byteqeue.put(b);
 	}
 
 	public static MemoryZipInputStream startZIP(final File inputDir, final List<String> excludefolders) {
@@ -65,11 +50,7 @@ public class MemoryZip {
 				public void run() {
 					try {
 						ZipUtils.zipFolder(inputDir, mz.os, excludefolders);
-						try {
-							mz.byteqeue.put(mz.END_OF_STREAM_SIGNAL);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+						mz.byteqeue.put(mz.END_OF_STREAM_SIGNAL);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

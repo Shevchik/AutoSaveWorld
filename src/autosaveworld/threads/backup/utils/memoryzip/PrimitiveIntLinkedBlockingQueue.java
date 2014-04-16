@@ -78,15 +78,15 @@ public class PrimitiveIntLinkedBlockingQueue {
 		last = head = new Node(0);
 	}
 
-	public void put(int b) throws InterruptedException {
+	public void put(int b) {
 		int c = -1;
 		Node node = new Node(b);
 		final ReentrantLock putLock = this.putLock;
 		final AtomicInteger count = this.count;
-		putLock.lockInterruptibly();
+		putLock.lock();
 		try {
 			while (count.get() == capacity) {
-				notFull.await();
+				notFull.awaitUninterruptibly();
 			}
 			last = last.next = node;
 			c = count.getAndIncrement();
@@ -101,15 +101,15 @@ public class PrimitiveIntLinkedBlockingQueue {
 		}
 	}
 
-	public int take() throws InterruptedException {
+	public int take() {
 		int x;
 		int c = -1;
 		final AtomicInteger count = this.count;
 		final ReentrantLock takeLock = this.takeLock;
-		takeLock.lockInterruptibly();
+		takeLock.lock();
 		try {
 			while (count.get() == 0) {
-				notEmpty.await();
+				notEmpty.awaitUninterruptibly();
 			}
 			x = head.next.item;
 			head = head.next;
