@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import autosaveworld.threads.backup.utils.ZipUtils;
 
 public class MemoryZip {
@@ -34,15 +32,15 @@ public class MemoryZip {
 
 	private final short END_OF_STREAM_SIGNAL = 1337;
 
-	private LinkedBlockingQueue<Short> byteqeue = new LinkedBlockingQueue<Short>(10 * 1024 * 1024);
+	private PrimitiveIntLinkedBlockingQueue byteqeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
 	protected int read() {
 		try {
 			int b = byteqeue.take();
-			if (b == END_OF_STREAM_SIGNAL) {
-				return -1;
-			}
 			if (b < 0) {
 				b += 256;
+			}
+			if (b == END_OF_STREAM_SIGNAL) {
+				return -1;
 			}
 			return b;
 		} catch (InterruptedException e) {
@@ -51,9 +49,9 @@ public class MemoryZip {
 		return -1;
 	}
 
-	protected void write(byte b) {
+	protected void write(int b) {
 		try {
-			byteqeue.put((short) b);
+			byteqeue.put(b);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
