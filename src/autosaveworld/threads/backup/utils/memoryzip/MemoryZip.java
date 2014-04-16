@@ -32,8 +32,7 @@ public class MemoryZip {
 
 	private PrimitiveIntLinkedBlockingQueue bytequeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
 	protected int read() {
-		int b = bytequeue.take();
-		return b;
+		return bytequeue.take();
 	}
 
 	protected void write(int b) {
