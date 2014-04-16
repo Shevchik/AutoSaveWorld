@@ -26,6 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.threads.worldregen.dataschematic.SchematicOperations;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.griefprevention.GPPaste;
 import autosaveworld.threads.worldregen.towny.TownyPaste;
