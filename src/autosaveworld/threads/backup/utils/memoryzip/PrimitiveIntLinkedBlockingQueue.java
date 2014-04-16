@@ -111,10 +111,8 @@ public class PrimitiveIntLinkedBlockingQueue {
 			while (count.get() == 0) {
 				notEmpty.await();
 			}
-			Node node = head.next;
-			x = node.item;
-			head.next = null;
-			head = node;
+			x = head.next.item;
+			head = head.next;
 			c = count.getAndDecrement();
 			if (c > 1) {
 				notEmpty.signal();
