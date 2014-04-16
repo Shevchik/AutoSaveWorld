@@ -18,10 +18,10 @@
 package autosaveworld.threads.backup.utils.memoryzip;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import autosaveworld.threads.backup.utils.ZipUtils;
 
 public class MemoryZip {
@@ -45,12 +45,8 @@ public class MemoryZip {
 			new Runnable() {
 				@Override
 				public void run() {
-					try {
-						ZipUtils.zipFolder(inputDir, mz.os, excludefolders);
-						mz.bytequeue.put(-1);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					ZipUtils.zipFolder(inputDir, mz.os, excludefolders);
+					mz.bytequeue.put(-1);
 				}
 			}
 		);

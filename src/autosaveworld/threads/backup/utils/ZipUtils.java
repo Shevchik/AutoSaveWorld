@@ -20,7 +20,6 @@ package autosaveworld.threads.backup.utils;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,19 +32,23 @@ import autosaveworld.threads.backup.ExcludeManager;
 
 public class ZipUtils {
 
-	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException {
+	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) {
 		destFile.getParentFile().mkdirs();
 
 		try (OutputStream fos = new FileOutputStream(destFile)) {
 			zipFolder(srcDir, fos, excludefolders);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public static void zipFolder(final File srcDir, final OutputStream outputStream, List<String> excludefolders) throws FileNotFoundException, IOException {
+	public static void zipFolder(final File srcDir, final OutputStream outputStream, List<String> excludefolders) {
 		try (BufferedOutputStream bufOutStream = new BufferedOutputStream(outputStream)) {
 			try (ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream)) {
 				zipDir(excludefolders, zipOutStream, srcDir, "");
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -76,7 +79,7 @@ public class ZipUtils {
 
 				try {
 					int len;
-					while ((len = inStream.read(buf)) > 0) {
+					while ((len = inStream.read(buf)) != -1) {
 						zipOutStream.write(buf, 0, len);
 					}
 				} finally {

@@ -18,7 +18,6 @@
 package autosaveworld.threads.backup.localfs;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -63,21 +62,15 @@ public class LFSBackupOperations {
 				plugin.debug("Backuping world "+world.getWorldFolder().getName());
 				boolean savestatus = world.isAutoSave();
 				world.setAutoSave(false);
-				try {
-					File worldfolder = world.getWorldFolder().getCanonicalFile();
-					String worldBackup = worldbackupfolder+File.separator+latestbackuptimestamp;
-					if (!zip) {
-						BackupFileUtils.copyDirectory(worldfolder, new File(worldBackup),excludefolders);
-					} else {
-						ZipUtils.zipFolder(worldfolder, new File(worldBackup+".zip"), excludefolders);
-					}
-					plugin.debug("Backuped world "+world.getWorldFolder().getName());
-				} catch (Exception e) {
-					plugin.debug("Failed to backup world "+world.getWorldFolder().getName());
-					e.printStackTrace();
-				} finally {
-					world.setAutoSave(savestatus);
+				File worldfolder = world.getWorldFolder().getAbsoluteFile();
+				String worldBackup = worldbackupfolder+File.separator+latestbackuptimestamp;
+				if (!zip) {
+					BackupFileUtils.copyDirectory(worldfolder, new File(worldBackup),excludefolders);
+				} else {
+					ZipUtils.zipFolder(worldfolder, new File(worldBackup+".zip"), excludefolders);
 				}
+				plugin.debug("Backuped world "+world.getWorldFolder().getName());
+				world.setAutoSave(savestatus);
 			}
 		};
 		//add to executor
@@ -105,19 +98,14 @@ public class LFSBackupOperations {
 					}
 				}
 				plugin.debug("Backuping plugins");
-				try {
-					File pluginsfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
-					String pluginsBackup = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+latestbackuptimestamp;
-					if (!zip) {
-						BackupFileUtils.copyDirectory(pluginsfolder,new File(pluginsBackup),excludefolders);
-					} else  {
-						ZipUtils.zipFolder(pluginsfolder, new File(pluginsBackup+".zip"), excludefolders);
-					}
-					plugin.debug("Backuped plugins");
-				} catch (IOException e) {
-					plugin.debug("Failed to backup plugins");
-					e.printStackTrace();
+				File pluginsfolder = plugin.getDataFolder().getParentFile().getAbsoluteFile();
+				String pluginsBackup = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+latestbackuptimestamp;
+				if (!zip) {
+					BackupFileUtils.copyDirectory(pluginsfolder,new File(pluginsBackup), excludefolders);
+				} else  {
+					ZipUtils.zipFolder(pluginsfolder, new File(pluginsBackup+".zip"), excludefolders);
 				}
+				plugin.debug("Backuped plugins");
 			}
 		};
 		//add to executor

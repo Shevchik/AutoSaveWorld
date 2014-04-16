@@ -42,7 +42,6 @@ public class BackupFileUtils {
 				}
 			}
 		} else {
-			//ignore lock files
 			if (!sourceLocation.getName().endsWith(".lck")) {
 				try {
 					Files.copy(sourceLocation.toPath(), targetLocation.toPath());
@@ -54,8 +53,7 @@ public class BackupFileUtils {
 		}
 	}
 
-	public static void deleteDirectory(File file)
-	{
+	public static void deleteDirectory(File file) {
 		if(!file.exists()) {
 			return;
 		}
@@ -103,9 +101,7 @@ public class BackupFileUtils {
 				}
 			}
 			ftp.changeToParentDirectory();
-		}
-		else {
-			//ignore lock files
+		} else {
 			if (!src.getName().endsWith(".lck")) {
 				try {
 					InputStream is = new FileInputStream(src);
