@@ -24,10 +24,10 @@ import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.libs.org.apache.commons.net.ftp.FTP;
+import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
+import autosaveworld.libs.org.apache.commons.net.ftp.FTPReply;
 import autosaveworld.threads.backup.utils.BackupFileUtils;
-import autosaveworldsrclibs.org.apache.commons.net.ftp.FTP;
-import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPClient;
-import autosaveworldsrclibs.org.apache.commons.net.ftp.FTPReply;
 
 public class FTPBackup {
 
