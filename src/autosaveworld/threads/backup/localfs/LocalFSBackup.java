@@ -18,9 +18,8 @@
 package autosaveworld.threads.backup.localfs;
 
 import java.text.SimpleDateFormat;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -47,11 +46,7 @@ public class LocalFSBackup {
 			//create executor
 			int maxthreads = Runtime.getRuntime().availableProcessors() - 1;
 			if (maxthreads == 0) {maxthreads = 1;}
-			ExecutorService backupService = new ThreadPoolExecutor(
-				maxthreads, maxthreads, 1, TimeUnit.MILLISECONDS,
-				new ArrayBlockingQueue<Runnable>(maxthreads, true),
-				new ThreadPoolExecutor.CallerRunsPolicy()
-			);
+			ExecutorService backupService = Executors.newFixedThreadPool(maxthreads);
 
 			//create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
