@@ -30,16 +30,14 @@ public class MemoryZip {
 	private MemoryZipInputStream is = new MemoryZipInputStream(this);
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
 
-	private final short END_OF_STREAM_SIGNAL = 1337;
-
-	private PrimitiveIntLinkedBlockingQueue byteqeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
+	private PrimitiveIntLinkedBlockingQueue bytequeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
 	protected int read() {
-		int b = byteqeue.take();
-		return b != END_OF_STREAM_SIGNAL ? b : -1;
+		int b = bytequeue.take();
+		return b;
 	}
 
 	protected void write(int b) {
-		byteqeue.put(b);
+		bytequeue.put(b);
 	}
 
 	public static MemoryZipInputStream startZIP(final File inputDir, final List<String> excludefolders) {
@@ -50,7 +48,7 @@ public class MemoryZip {
 				public void run() {
 					try {
 						ZipUtils.zipFolder(inputDir, mz.os, excludefolders);
-						mz.byteqeue.put(mz.END_OF_STREAM_SIGNAL);
+						mz.bytequeue.put(-1);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
