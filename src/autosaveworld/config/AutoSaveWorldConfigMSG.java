@@ -23,14 +23,9 @@ import java.io.IOException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 
 public class AutoSaveWorldConfigMSG {
-
-	private AutoSaveWorld plugin;
-	public AutoSaveWorldConfigMSG(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
 
 	// Messages
 	public String messageSaveBroadcastPre = "&9AutoSaving";
@@ -45,7 +40,7 @@ public class AutoSaveWorldConfigMSG {
 	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
 
 	public void loadmsg() {
-		FileConfiguration configfile = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigMSGPath()));
+		FileConfiguration configfile = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigMSGPath()));
 		messageSaveBroadcastPre = configfile.getString("broadcast.pre", messageSaveBroadcastPre);
 		messageSaveBroadcastPost = configfile.getString("broadcast.post", messageSaveBroadcastPost);
 		messageBackupBroadcastPre = configfile.getString("broadcastbackup.pre", messageBackupBroadcastPre);
@@ -72,7 +67,7 @@ public class AutoSaveWorldConfigMSG {
 		configfile.set("autorestart.countdown", messageAutoRestartCountdown);
 		configfile.set("worldregen.kickmessage", messageWorldRegenKick);
 		try {
-			configfile.save(new File(plugin.constants.getConfigMSGPath()));
+			configfile.save(new File(GlobalConstants.getConfigMSGPath()));
 		} catch (IOException e) {
 		}
 	}

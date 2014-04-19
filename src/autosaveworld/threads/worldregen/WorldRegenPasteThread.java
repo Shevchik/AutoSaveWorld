@@ -26,6 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.dataschematic.SchematicOperations;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
@@ -46,7 +47,7 @@ public class WorldRegenPasteThread extends Thread {
 
 	private boolean paste = false;
 	public void checkIfShouldPaste() {
-		File check = new File(plugin.constants.getWorldnameFile());
+		File check = new File(GlobalConstants.getWorldnameFile());
 		if (check.exists()) {
 			paste = true;
 		}
@@ -78,7 +79,7 @@ public class WorldRegenPasteThread extends Thread {
 		Bukkit.getPluginManager().registerEvents(ajl, plugin);
 
 		//load config
-		FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(plugin.constants.getWorldnameFile()));
+		FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getWorldnameFile()));
 		String worldtopasteto = cfg.getString("wname");
 
 		//wait for server to load
@@ -101,33 +102,33 @@ public class WorldRegenPasteThread extends Thread {
 
 		// paste WG buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
-			new WorldGuardPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+			new WorldGuardPaste(this, worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste Factions buildings
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
-			new FactionsPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+			new FactionsPaste(this, worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste GriefPrevention claims
 		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
-			new GPPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+			new GPPaste(this, worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste Towny towns
 		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
-			new TownyPaste(plugin, this, worldtopasteto).pasteAllFromSchematics();
+			new TownyPaste(this, worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//clear temp folder
 		MessageLogger.debug("Cleaning temp folders");
 
-		deleteDirectory(new File(plugin.constants.getWGTempFolder()));
-		deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
-		deleteDirectory(new File(plugin.constants.getGPTempFolder()));
-		deleteDirectory(new File(plugin.constants.getTownyTempFolder()));
-		new File(plugin.constants.getWorldnameFile()).delete();
-		new File(plugin.constants.getWorldRegenTempFolder()).delete();
+		deleteDirectory(new File(GlobalConstants.getWGTempFolder()));
+		deleteDirectory(new File(GlobalConstants.getFactionsTempFolder()));
+		deleteDirectory(new File(GlobalConstants.getGPTempFolder()));
+		deleteDirectory(new File(GlobalConstants.getTownyTempFolder()));
+		new File(GlobalConstants.getWorldnameFile()).delete();
+		new File(GlobalConstants.getWorldRegenTempFolder()).delete();
 
 		MessageLogger.debug("Restore finished");
 

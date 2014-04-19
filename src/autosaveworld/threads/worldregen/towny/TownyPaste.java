@@ -23,7 +23,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
@@ -34,11 +34,9 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class TownyPaste {
 
-	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public TownyPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
-		this.plugin = plugin;
+	public TownyPaste(WorldRegenPasteThread wrthread, String worldtopasteto) {;
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
@@ -47,7 +45,7 @@ public class TownyPaste {
 		try {
 			MessageLogger.debug("Pasting Towny towns from schematics");
 
-			String schemfolder = plugin.constants.getTownyTempFolder();
+			String schemfolder = GlobalConstants.getTownyTempFolder();
 
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtopaste.getName()).getTowns();
 			for (Town town : towns) {

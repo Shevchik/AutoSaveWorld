@@ -28,18 +28,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 
 
 public class AutoSaveWorldConfig {
 
 	private FileConfiguration config;
-	private AutoSaveWorld plugin;
-	public AutoSaveWorldConfig(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
-
 
 	// some global variables
 	public boolean varDebug = false;
@@ -132,7 +126,7 @@ public class AutoSaveWorldConfig {
 	//config load/save functions
 	public void load() {
 
-		config = YamlConfiguration.loadConfiguration(new File(plugin.constants.getConfigPath()));
+		config = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
 
 		// Variables
 		varDebug = config.getBoolean("var.debug", varDebug);
@@ -375,7 +369,7 @@ public class AutoSaveWorldConfig {
 		config.set("worldregen.savetowny",worldregensavetowny);
 
 		try {
-			config.save(new File(plugin.constants.getConfigPath()));
+			config.save(new File(GlobalConstants.getConfigPath()));
 		} catch (IOException ex) {
 		}
 	}

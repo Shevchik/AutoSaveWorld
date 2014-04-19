@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.restart.RestartWaiter;
 import autosaveworld.threads.worldregen.dataschematic.SchematicOperations;
@@ -115,22 +116,22 @@ public class WorldRegenCopyThread extends Thread {
 
 		//save WorldGuard buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
-			new WorldGuardCopy(plugin, this, worldtoregen).copyAllToSchematics();
+			new WorldGuardCopy(this, worldtoregen).copyAllToSchematics();
 		}
 
 		//save Factions homes
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
-			new FactionsCopy(plugin, this, worldtoregen).copyAllToSchematics();
+			new FactionsCopy(this, worldtoregen).copyAllToSchematics();
 		}
 
 		//save GriefPrevention claims
 		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
-			new GPCopy(plugin, this, worldtoregen).copyAllToSchematics();
+			new GPCopy(this, worldtoregen).copyAllToSchematics();
 		}
 
 		//save Towny towns
 		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
-			new TownyCopy(plugin, this, worldtoregen).copyAllToSchematics();
+			new TownyCopy(this, worldtoregen).copyAllToSchematics();
 		}
 
 		MessageLogger.debug("Saving finished");
@@ -146,7 +147,7 @@ public class WorldRegenCopyThread extends Thread {
 		//Save worldname file
 		FileConfiguration cfg = new YamlConfiguration();
 		cfg.set("wname", worldtoregen);
-		cfg.save(new File(plugin.constants.getWorldnameFile()));
+		cfg.save(new File(GlobalConstants.getWorldnameFile()));
 
 		MessageLogger.debug("Deleting map and restarting server");
 		//Add hook that will delete world folder, signal that restart should wait, and schedule restart restart

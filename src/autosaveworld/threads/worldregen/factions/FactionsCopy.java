@@ -24,7 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
@@ -37,11 +37,9 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class FactionsCopy {
 
-	private AutoSaveWorld plugin;
 	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public FactionsCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen) {
-		this.plugin = plugin;
+	public FactionsCopy(WorldRegenCopyThread wrthread, String worldtoregen) {
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 		this.wrthread = wrthread;
 	}
@@ -49,7 +47,7 @@ public class FactionsCopy {
 	public void copyAllToSchematics() {
 		MessageLogger.debug("Saving factions lands to schematics");
 
-		new File(plugin.constants.getFactionsTempFolder()).mkdirs();
+		new File(GlobalConstants.getFactionsTempFolder()).mkdirs();
 
 		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll()) {
 			Set<PS> chunks = BoardColls.get().getChunks(f);
@@ -57,7 +55,7 @@ public class FactionsCopy {
 			if (chunks.size() != 0) {
 				MessageLogger.debug("Saving faction land "+f.getName()+" to schematic");
 				//create temp folder for faction
-				new File(plugin.constants.getFactionsTempFolder()+f.getName()).mkdirs();
+				new File(GlobalConstants.getFactionsTempFolder()+f.getName()).mkdirs();
 				//save all chunks one by one
 				for (PS ps : chunks) {
 					if (ps.getWorld().equalsIgnoreCase(wtoregen.getName())) {
@@ -82,7 +80,7 @@ public class FactionsCopy {
 						);
 						//save
 						MessageLogger.debug("Saving "+f.getName()+" chunk to schematic");
-						wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+						wrthread.getSchematicOperations().saveToSchematic(GlobalConstants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
 						MessageLogger.debug(f.getName()+" chunk saved");
 					}
 				}

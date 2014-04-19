@@ -20,7 +20,7 @@ package autosaveworld.threads.worldregen.wg;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
@@ -30,11 +30,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class WorldGuardPaste {
 
-	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public WorldGuardPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
-		this.plugin = plugin;
+	public WorldGuardPaste(WorldRegenPasteThread wrthread, String worldtopasteto) {
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
@@ -43,9 +41,9 @@ public class WorldGuardPaste {
 	public void pasteAllFromSchematics() {
 		MessageLogger.debug("Pasting WG regions from schematics");
 
-		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+		WorldGuardPlugin wg = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
 
-		String schemfolder = plugin.constants.getWGTempFolder();
+		String schemfolder = GlobalConstants.getWGTempFolder();
 		final RegionManager m = wg.getRegionManager(wtopaste);
 		//paste all regions
 		for (final ProtectedRegion rg : m.getRegions().values()) {

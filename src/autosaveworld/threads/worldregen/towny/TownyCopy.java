@@ -24,7 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
@@ -37,11 +37,9 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class TownyCopy {
 
-	private AutoSaveWorld plugin;
 	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public TownyCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen) {
-		this.plugin = plugin;
+	public TownyCopy(WorldRegenCopyThread wrthread, String worldtoregen) {
 		this.wrthread = wrthread;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 	}
@@ -50,7 +48,7 @@ public class TownyCopy {
 		try {
 			MessageLogger.debug("Saving Towny towns to schematics");
 
-			new File(plugin.constants.getTownyTempFolder()).mkdirs();
+			new File(GlobalConstants.getTownyTempFolder()).mkdirs();
 
 			List<Town> towns = TownyUniverse.getDataSource().getWorld(wtoregen.getName()).getTowns();
 			for (Town town : towns) {
@@ -60,7 +58,7 @@ public class TownyCopy {
 					for (TownBlock tb : tblocks) {
 						if (tb.getWorld().getName().equals(wtoregen.getName())) {
 							//create temp folder for town
-							new File(plugin.constants.getTownyTempFolder()+town.getName()).mkdirs();
+							new File(GlobalConstants.getTownyTempFolder()+town.getName()).mkdirs();
 							//get coords
 							final int xcoord = tb.getX();
 							final int zcoord = tb.getZ();
@@ -82,7 +80,7 @@ public class TownyCopy {
 							);
 							//save
 							MessageLogger.debug("Saving Towny town "+town.getName()+" townblock to schematic");
-							wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+							wrthread.getSchematicOperations().saveToSchematic(GlobalConstants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
 							MessageLogger.debug(town.getName()+" townblock saved");
 						}
 					}

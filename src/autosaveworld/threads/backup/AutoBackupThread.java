@@ -26,6 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ftp.FTPBackup;
 import autosaveworld.threads.backup.localfs.LocalFSBackup;
@@ -48,7 +49,7 @@ public class AutoBackupThread extends Thread {
 		if (config.backupEnabled) {
 			FileConfiguration config = new YamlConfiguration();
 			config.set("counter", counter);
-			try {config.save(new File(plugin.constants.getBackupIntervalPreservePath()));} catch (IOException e) {}
+			try {config.save(new File(GlobalConstants.getBackupIntervalPreservePath()));} catch (IOException e) {}
 		}
 		//stop
 		run = false;
@@ -71,7 +72,7 @@ public class AutoBackupThread extends Thread {
 
 		//load counter on enable
 		if (config.backupEnabled){
-			File preservefile = new File(plugin.constants.getBackupIntervalPreservePath());
+			File preservefile = new File(GlobalConstants.getBackupIntervalPreservePath());
 			FileConfiguration config = YamlConfiguration.loadConfiguration(preservefile);
 			counter = config.getInt("counter", 0);
 			preservefile.delete();

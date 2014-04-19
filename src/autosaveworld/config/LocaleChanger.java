@@ -11,6 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 
 public class LocaleChanger {
@@ -60,7 +61,7 @@ public class LocaleChanger {
 	private void loadLocaleFile(String locale) {
 		try {
 			InputStream is = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
-			Path file = new File(plugin.constants.getConfigMSGPath()).toPath();
+			Path file = new File(GlobalConstants.getConfigMSGPath()).toPath();
 			Files.copy(is, file);
 		} catch (Exception e) {
 			e.printStackTrace();

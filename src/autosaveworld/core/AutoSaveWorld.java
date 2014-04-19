@@ -39,8 +39,6 @@ import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class AutoSaveWorld extends JavaPlugin {
 
-	//constatns
-	public GlobalConstants constants = null;
 	//save
 	public AutoSaveThread saveThread = null;
 	//backup
@@ -81,10 +79,10 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		constants = new GlobalConstants(this);
-		config = new AutoSaveWorldConfig(this);
+		new GlobalConstants(this);
+		config = new AutoSaveWorldConfig();
 		config.load();
-		configmsg = new AutoSaveWorldConfigMSG(this);
+		configmsg = new AutoSaveWorldConfigMSG();
 		configmsg.loadmsg();
 		new MessageLogger(getLogger(), config);
 		localeChanger = new LocaleChanger(this, configmsg);
@@ -140,7 +138,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeChanger = null;
 		eh = null;
 		ch = null;
-		constants = null;
 	}
 
 

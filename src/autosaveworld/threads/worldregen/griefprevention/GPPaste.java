@@ -27,17 +27,15 @@ import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class GPPaste {
 
-	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public GPPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
-		this.plugin = plugin;
+	public GPPaste(WorldRegenPasteThread wrthread, String worldtopasteto) {
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
@@ -46,7 +44,7 @@ public class GPPaste {
 	public void pasteAllFromSchematics() {
 		MessageLogger.debug("Pasting GP regions from schematics");
 
-		final String schemfolder = plugin.constants.getGPTempFolder();
+		final String schemfolder = GlobalConstants.getGPTempFolder();
 
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
 		//get database

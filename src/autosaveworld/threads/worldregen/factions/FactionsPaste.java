@@ -23,7 +23,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
@@ -34,11 +34,9 @@ import com.massivecraft.mcore.ps.PS;
 
 public class FactionsPaste {
 
-	private AutoSaveWorld plugin;
 	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public FactionsPaste(AutoSaveWorld plugin, WorldRegenPasteThread wrthread, String worldtopasteto) {
-		this.plugin = plugin;
+	public FactionsPaste(WorldRegenPasteThread wrthread, String worldtopasteto) {
 		this.wrthread = wrthread;
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
@@ -46,7 +44,7 @@ public class FactionsPaste {
 	public void pasteAllFromSchematics() {
 		MessageLogger.debug("Pasting factions lands from schematics");
 
-		String schemfolder = plugin.constants.getFactionsTempFolder();
+		String schemfolder = GlobalConstants.getFactionsTempFolder();
 
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll()) {
 			Set<PS> chunks = BoardColls.get().getChunks(f);

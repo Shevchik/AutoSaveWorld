@@ -26,50 +26,50 @@ public class GlobalConstants {
 	}
 
 	//main
-	private String pluginfolder;
-	public String getPluginFolder() {
+	private static String pluginfolder;
+	public static String getPluginFolder() {
 		return pluginfolder;
 	}
 
 	//config
-	private String configfile = "config.yml";
-	public String getConfigPath() {
+	private static String configfile = "config.yml";
+	public static String getConfigPath() {
 		return getPluginFolder()+configfile;
 	}
-	private String configmsgfile = "configmsg.yml";
-	public String getConfigMSGPath() {
+	private static String configmsgfile = "configmsg.yml";
+	public static String getConfigMSGPath() {
 		return getPluginFolder()+configmsgfile;
 	}
 
 	//counter preserve files
-	private String backuppreserverfile = "backupintervalpreserve.yml";
-	public String getBackupIntervalPreservePath() {
+	private static String backuppreserverfile = "backupintervalpreserve.yml";
+	public static String getBackupIntervalPreservePath() {
 		return getPluginFolder()+backuppreserverfile;
 	}
 
 	//worldregen
-	private String worldregentempfolder = "WorldRegenTemp"+File.separator;
-	private String worldnamefile = "wname.yml";
-	private String wgtempfolder = "WG"+File.separator;
-	private String factionstempfolder = "Factions"+File.separator;
-	private String griefpreventiontempfolder = "GP"+File.separator;
-	private String townytempfolder = "Towny"+File.separator;
-	public String getWorldRegenTempFolder() {
+	private static String worldregentempfolder = "WorldRegenTemp"+File.separator;
+	private static String worldnamefile = "wname.yml";
+	private static String wgtempfolder = "WG"+File.separator;
+	private static String factionstempfolder = "Factions"+File.separator;
+	private static String griefpreventiontempfolder = "GP"+File.separator;
+	private static String townytempfolder = "Towny"+File.separator;
+	public static String getWorldRegenTempFolder() {
 		return getPluginFolder()+worldregentempfolder;
 	}
-	public String getWorldnameFile() {
+	public static String getWorldnameFile() {
 		return getWorldRegenTempFolder()+worldnamefile;
 	}
-	public String getWGTempFolder() {
+	public static String getWGTempFolder() {
 		return getWorldRegenTempFolder()+wgtempfolder;
 	}
-	public String getFactionsTempFolder() {
+	public static String getFactionsTempFolder() {
 		return getWorldRegenTempFolder()+factionstempfolder;
 	}
-	public String getGPTempFolder() {
+	public static String getGPTempFolder() {
 		return getWorldRegenTempFolder()+griefpreventiontempfolder;
 	}
-	public String getTownyTempFolder() {
+	public static String getTownyTempFolder() {
 		return getWorldRegenTempFolder()+townytempfolder;
 	}
 

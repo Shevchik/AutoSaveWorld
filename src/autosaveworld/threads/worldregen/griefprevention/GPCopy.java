@@ -29,7 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
@@ -38,11 +38,9 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class GPCopy {
 
-	private AutoSaveWorld plugin;
 	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public GPCopy(AutoSaveWorld plugin, WorldRegenCopyThread wrthread, String worldtoregen) {
-		this.plugin = plugin;
+	public GPCopy(WorldRegenCopyThread wrthread, String worldtoregen) {
 		this.wrthread = wrthread;
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 	}
@@ -50,7 +48,7 @@ public class GPCopy {
 	public void copyAllToSchematics() {
 		MessageLogger.debug("Saving griefprevention regions to schematics");
 
-		new File(plugin.constants.getGPTempFolder()).mkdirs();
+		new File(GlobalConstants.getGPTempFolder()).mkdirs();
 
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
 
@@ -93,7 +91,7 @@ public class GPCopy {
 			);
 			//save
 			MessageLogger.debug("Saving GP Region "+claim.getID()+" to schematic");
-			wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
+			wrthread.getSchematicOperations().saveToSchematic(GlobalConstants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
 			MessageLogger.debug("GP Region "+claim.getID()+" saved");
 		}
 	}
