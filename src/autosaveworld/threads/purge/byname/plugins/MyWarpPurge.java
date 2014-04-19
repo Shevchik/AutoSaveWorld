@@ -46,48 +46,41 @@ public class MyWarpPurge {
 		int deleted = 0;
 
 		TreeSet<Warp> warps = mywarp.getWarpManager().getWarps(null, null);
-		for (Warp warp : warps)
-		{
-			if (!pacheck.isActiveCS(warp.getCreator()))
-			{
-				//add warp to delete batch
+		for (Warp warp : warps) {
+			if (!pacheck.isActiveCS(warp.getCreator())) {
+				// add warp to delete batch
 				warptodel.add(warp);
-				//delete warps if maximum batch size reached
-				if (warptodel.size() == 80)
-				{
+				// delete warps if maximum batch size reached
+				if (warptodel.size() == 80) {
 					flushBatch(mywarp);
 				}
-				//count deleted protections
+				// count deleted protections
 				deleted += 1;
 			}
 		}
-		//flush the rest of the batch
+		// flush the rest of the batch
 		flushBatch(mywarp);
 
-		MessageLogger.debug("MyWarp purge finished, deleted "+ deleted+" inactive warps");
+		MessageLogger.debug("MyWarp purge finished, deleted " + deleted + " inactive warps");
 	}
 
 	private ArrayList<Warp> warptodel = new ArrayList<Warp>(100);
-	private void flushBatch(final MyWarp mywarp)
-	{
-		Runnable rempr = new Runnable()
-		{
+	private void flushBatch(final MyWarp mywarp) {
+		Runnable rempr = new Runnable() {
 			@Override
-			public void run()
-			{
-				for (Warp warp : warptodel)
-				{
-					//delete warp
-					MessageLogger.debug("Removing warp for inactive player "+warp.getCreator());
+			public void run() {
+				for (Warp warp : warptodel) {
+					// delete warp
+					MessageLogger.debug("Removing warp for inactive player "+ warp.getCreator());
 					mywarp.getWarpManager().deleteWarp(warp);
 				}
 				warptodel.clear();
 			}
 		};
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rempr);
+		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+				rempr);
 
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid))
-		{
+		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
 			try {Thread.sleep(50);} catch (InterruptedException e) {}
 		}
 	}

@@ -28,7 +28,7 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import autosaveworld.config.AutoSaveWorldConfig;
 
 public class MessageLogger {
-	
+
 	private static AutoSaveWorldConfig config;
 	private static Logger log;
 	private static FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
