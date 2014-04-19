@@ -28,6 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class GPPaste {
@@ -43,7 +44,7 @@ public class GPPaste {
 
 
 	public void pasteAllFromSchematics() {
-		plugin.debug("Pasting GP regions from schematics");
+		MessageLogger.debug("Pasting GP regions from schematics");
 
 		final String schemfolder = plugin.constants.getGPTempFolder();
 
@@ -57,7 +58,7 @@ public class GPPaste {
 			ca = (ClaimArray) o;
 		} catch (Exception e) {
 			e.printStackTrace();
-			plugin.warn("Failed to access GriefPrevntion database. GP paste cancelled");
+			MessageLogger.warn("Failed to access GriefPrevntion database. GP paste cancelled");
 			return;
 		}
 
@@ -65,9 +66,9 @@ public class GPPaste {
 		for (int i = 0; i<ca.size(); i++) {
 			Claim claim = ca.get(i);
 			//paste
-			plugin.debug("Pasting GP region "+claim.getID()+" from schematics");
+			MessageLogger.debug("Pasting GP region "+claim.getID()+" from schematics");
 			wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+claim.getID(), wtopaste);
-			plugin.debug("Pasted GP region "+claim.getID()+" from schematics");
+			MessageLogger.debug("Pasted GP region "+claim.getID()+" from schematics");
 		}
 	}
 

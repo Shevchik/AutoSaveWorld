@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.core;
+package autosaveworld.core.logging;
 
 import org.bukkit.ChatColor;
 

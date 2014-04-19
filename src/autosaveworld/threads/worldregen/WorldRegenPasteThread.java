@@ -26,6 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.dataschematic.SchematicOperations;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.griefprevention.GPPaste;
@@ -73,7 +74,7 @@ public class WorldRegenPasteThread extends Thread {
 
 	private void doWorldPaste() throws InterruptedException {
 		//deny players from join
-		AntiJoinListener ajl = new AntiJoinListener(plugin, configmsg);
+		AntiJoinListener ajl = new AntiJoinListener(configmsg);
 		Bukkit.getPluginManager().registerEvents(ajl, plugin);
 
 		//load config
@@ -92,11 +93,11 @@ public class WorldRegenPasteThread extends Thread {
 
 		//check for worldedit
 		if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
-			plugin.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server",true);
+			MessageLogger.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server",true);
 			return;
 		}
 
-		plugin.debug("Restoring buildings");
+		MessageLogger.debug("Restoring buildings");
 
 		// paste WG buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
@@ -119,7 +120,7 @@ public class WorldRegenPasteThread extends Thread {
 		}
 
 		//clear temp folder
-		plugin.debug("Cleaning temp folders");
+		MessageLogger.debug("Cleaning temp folders");
 
 		deleteDirectory(new File(plugin.constants.getWGTempFolder()));
 		deleteDirectory(new File(plugin.constants.getFactionsTempFolder()));
@@ -128,14 +129,14 @@ public class WorldRegenPasteThread extends Thread {
 		new File(plugin.constants.getWorldnameFile()).delete();
 		new File(plugin.constants.getWorldRegenTempFolder()).delete();
 
-		plugin.debug("Restore finished");
+		MessageLogger.debug("Restore finished");
 
 		//save server, just in case
-		plugin.debug("Saving server");
+		MessageLogger.debug("Saving server");
 		plugin.saveThread.performSave();
 
 		//restart
-		plugin.debug("Restarting server");
+		MessageLogger.debug("Restarting server");
 		plugin.autorestartThread.startrestart(true);
 	}
 

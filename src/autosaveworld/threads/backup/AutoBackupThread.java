@@ -26,6 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ftp.FTPBackup;
 import autosaveworld.threads.backup.localfs.LocalFSBackup;
 import autosaveworld.threads.backup.script.ScriptBackup;
@@ -65,7 +66,7 @@ public class AutoBackupThread extends Thread {
 	@Override
 	public void run() {
 
-		plugin.debug("AutoBackupThread Started");
+		MessageLogger.debug("AutoBackupThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
 
 		//load counter on enable
@@ -105,7 +106,7 @@ public class AutoBackupThread extends Thread {
 
 		}
 
-		plugin.debug("Graceful quit of AutoBackupThread");
+		MessageLogger.debug("Graceful quit of AutoBackupThread");
 
 	}
 
@@ -120,29 +121,29 @@ public class AutoBackupThread extends Thread {
 
 		long timestart = System.currentTimeMillis();
 
-		plugin.broadcast(configmsg.messageBackupBroadcastPre, config.backupBroadcast);
+		MessageLogger.broadcast(configmsg.messageBackupBroadcastPre, config.backupBroadcast);
 
 		if (config.localfsbackupenabled) {
-			plugin.debug("Starting LocalFS backup");
+			MessageLogger.debug("Starting LocalFS backup");
 			new LocalFSBackup(plugin, config).performBackup();
-			plugin.debug("LocalFS backup finished");
+			MessageLogger.debug("LocalFS backup finished");
 		}
 
 		if (config.ftpbackupenabled) {
-			plugin.debug("Starting FTP backup");
+			MessageLogger.debug("Starting FTP backup");
 			new FTPBackup(plugin, config).performBackup();
-			plugin.debug("FTP backup finished");
+			MessageLogger.debug("FTP backup finished");
 		}
 
 		if (config.scriptbackupenabled) {
-			plugin.debug("Starting Script Backup");
-			new ScriptBackup(plugin, config).performBackup();
-			plugin.debug("Script Backup Finished");
+			MessageLogger.debug("Starting Script Backup");
+			new ScriptBackup(config).performBackup();
+			MessageLogger.debug("Script Backup Finished");
 		}
 
-		plugin.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
+		MessageLogger.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
 
-		plugin.broadcast(configmsg.messageBackupBroadcastPost, config.backupBroadcast);
+		MessageLogger.broadcast(configmsg.messageBackupBroadcastPost, config.backupBroadcast);
 
 	}
 

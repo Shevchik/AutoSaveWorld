@@ -27,6 +27,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class AutoSaveThread extends Thread {
 
@@ -54,7 +55,7 @@ public class AutoSaveThread extends Thread {
 	@Override
 	public void run() {
 
-		plugin.debug("AutoSaveThread Started");
+		MessageLogger.debug("AutoSaveThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
 
 		while (run) {
@@ -86,29 +87,29 @@ public class AutoSaveThread extends Thread {
 			}
 		}
 
-		plugin.debug("Graceful quit of AutoSaveThread");
+		MessageLogger.debug("Graceful quit of AutoSaveThread");
 
 	}
 
 	public void performSaveNow() {
-		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
+		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
-		plugin.debug("Saving players");
+		MessageLogger.debug("Saving players");
 		plugin.getServer().savePlayers();
-		plugin.debug("Saved Players");
-		plugin.debug("Saving worlds");
+		MessageLogger.debug("Saved Players");
+		MessageLogger.debug("Saving worlds");
 		for (World w : plugin.getServer().getWorlds()) {
 			saveWorld(w);
 		}
-		plugin.debug("Saved Worlds");
+		MessageLogger.debug("Saved Worlds");
 
-		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
+		MessageLogger.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 	}
 
 	public void performSave() {
-		plugin.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
+		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 		// Save the players
-		plugin.debug("Saving players");
+		MessageLogger.debug("Saving players");
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
 		int taskid;
 		if (run) {
@@ -124,16 +125,16 @@ public class AutoSaveThread extends Thread {
 				try {Thread.sleep(100);} catch (InterruptedException e) {}
 			}
 		}
-		plugin.debug("Saved Players");
+		MessageLogger.debug("Saved Players");
 		// Save the worlds
-		plugin.debug("Saving worlds");
+		MessageLogger.debug("Saving worlds");
 		for (final World world : plugin.getServer().getWorlds()) {
 			if (run) {
 				taskid = scheduler.scheduleSyncDelayedTask(plugin,
 					new Runnable() {
 						@Override
 						public void run() {
-							plugin.debug(String.format("Saving world: %s", world.getName()));
+							MessageLogger.debug(String.format("Saving world: %s", world.getName()));
 							saveWorld(world);
 						}
 					}
@@ -143,8 +144,8 @@ public class AutoSaveThread extends Thread {
 				}
 			}
 		}
-		plugin.debug("Saved Worlds");
-		plugin.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
+		MessageLogger.debug("Saved Worlds");
+		MessageLogger.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
 	}
 
 	private void saveWorld(World world) {
@@ -214,7 +215,7 @@ public class AutoSaveThread extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 			// failed to save using reflections, save world normal
-			plugin.debug("failed to workaround stucture saving, saving world using normal methods");
+			MessageLogger.debug("failed to workaround stucture saving, saving world using normal methods");
 			saveWorldNormal(world);
 		}
 		// reset saveenabled state

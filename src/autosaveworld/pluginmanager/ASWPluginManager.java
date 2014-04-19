@@ -29,6 +29,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class ASWPluginManager {
 
@@ -36,7 +37,7 @@ public class ASWPluginManager {
 	public ASWPluginManager(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 		if (ManagementFactory.getRuntimeMXBean().getInputArguments().contains("-XX:+DisableExplicitGC")) {
-			plugin.warn("Your JVM is configured to ignore GC calls, plugin manager may not work as expected");
+			MessageLogger.warn("Your JVM is configured to ignore GC calls, plugin manager may not work as expected");
 		}
 	}
 
@@ -50,7 +51,7 @@ public class ASWPluginManager {
 		} else if (command.equalsIgnoreCase("reload")) {
 			reloadPlugin(sender,pluginname);
 		} else {
-			plugin.sendMessage(sender, "Invalid plugin manager command");
+			MessageLogger.sendMessage(sender, "Invalid plugin manager command");
 		}
 	}
 
@@ -59,39 +60,39 @@ public class ASWPluginManager {
 		Plugin pmplugin = findPlugin(pluginname);
 		//ignore if plugin is not loaded
 		if (pmplugin == null) {
-			plugin.sendMessage(sender, "Plugin with this name not found");
+			MessageLogger.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
 		//now unload plugin
 		try {
 			iutils.unloadPlugin(pmplugin);
-			plugin.sendMessage(sender, "Plugin unloaded");
+			MessageLogger.sendMessage(sender, "Plugin unloaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			plugin.sendMessage(sender, "Some error occured while unloading plugin");
+			MessageLogger.sendMessage(sender, "Some error occured while unloading plugin");
 		}
 	}
 
 	private void loadPlugin(CommandSender sender, String pluginname) {
 		//ignore if plugin is already loaded
 		if (isPluginAlreadyLoaded(pluginname)) {
-			plugin.sendMessage(sender, "Plugin is already loaded");
+			MessageLogger.sendMessage(sender, "Plugin is already loaded");
 			return;
 		}
 		//find plugin file
 		File pmpluginfile = findPluginFile(pluginname);
 		//ignore if we can't find plugin file
 		if (!pmpluginfile.exists()) {
-			plugin.sendMessage(sender, "File with this plugin name not found");
+			MessageLogger.sendMessage(sender, "File with this plugin name not found");
 			return;
 		}
 		//now load plugin
 		try {
 			iutils.loadPlugin(pmpluginfile);
-			plugin.sendMessage(sender, "Plugin loaded");
+			MessageLogger.sendMessage(sender, "Plugin loaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			plugin.sendMessage(sender, "Some error occured while loading plugin");
+			MessageLogger.sendMessage(sender, "Some error occured while loading plugin");
 		}
 	}
 
@@ -102,22 +103,22 @@ public class ASWPluginManager {
 		File pmpluginfile = findPluginFile(pluginname);
 		//ignore if plugin is not loaded
 		if (pmplugin == null) {
-			plugin.sendMessage(sender, "Plugin with this name not found");
+			MessageLogger.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
 		//ignore if we can't find plugin file
 		if (!pmpluginfile.exists()) {
-			plugin.sendMessage(sender, "File with this plugin name not found");
+			MessageLogger.sendMessage(sender, "File with this plugin name not found");
 			return;
 		}
 		//now reload plugin
 		try {
 			iutils.unloadPlugin(pmplugin);
 			iutils.loadPlugin(pmpluginfile);
-			plugin.sendMessage(sender, "Plugin reloaded");
+			MessageLogger.sendMessage(sender, "Plugin reloaded");
 		} catch (Exception e) {
 			e.printStackTrace();
-			plugin.sendMessage(sender, "Some error occured while reloading plugin");
+			MessageLogger.sendMessage(sender, "Some error occured while reloading plugin");
 		}
 	}
 

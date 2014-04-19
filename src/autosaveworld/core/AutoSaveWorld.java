@@ -17,18 +17,13 @@
 
 package autosaveworld.core;
 
-import java.util.logging.Logger;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.listener.EventsListener;
 import autosaveworld.pluginmanager.ASWPluginManager;
 import autosaveworld.threads.ThreadType;
@@ -43,9 +38,6 @@ import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 public class AutoSaveWorld extends JavaPlugin {
-
-	private Logger log;
-	private FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
 
 	//constatns
 	public GlobalConstants constants = null;
@@ -81,7 +73,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	}
 	public boolean checkCanDoOperation() {
 		if (operationInProgress) {
-			warn("Other autosaveworld operation is in progress, current operation aborted");
+			MessageLogger.warn("Other autosaveworld operation is in progress, current operation aborted");
 			return false;
 		}
 		return true;
@@ -89,13 +81,12 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// Load Configuration
-		log = getLogger();
 		constants = new GlobalConstants(this);
 		config = new AutoSaveWorldConfig(this);
 		config.load();
 		configmsg = new AutoSaveWorldConfigMSG(this);
 		configmsg.loadmsg();
+		new MessageLogger(getLogger(), config);
 		localeChanger = new LocaleChanger(this, configmsg);
 		eh = new EventsListener(this,config);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
@@ -124,14 +115,14 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void onDisable() {
 		if (config.saveOnASWDisable) {
 			// Perform a Save NOW!
-			debug("Saving");
+			MessageLogger.debug("Saving");
 			saveThread.performSaveNow();
 		}
 		// Save config
-		debug("Saving config");
+		MessageLogger.debug("Saving config");
 		config.save();
 		// Stop threads
-		debug("Stopping Threads");
+		MessageLogger.debug("Stopping Threads");
 		stopThread(ThreadType.SAVE);
 		stopThread(ThreadType.BACKUP);
 		stopThread(ThreadType.PURGE);
@@ -149,7 +140,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeChanger = null;
 		eh = null;
 		ch = null;
-		formattingCodesParser = null;
 		constants = null;
 	}
 
@@ -234,7 +224,7 @@ public class AutoSaveWorld extends JavaPlugin {
 						saveThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop AutoSaveThread");
+						MessageLogger.warn("Could not stop AutoSaveThread");
 						return false;
 					}
 				}
@@ -249,7 +239,7 @@ public class AutoSaveWorld extends JavaPlugin {
 						backupThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop AutoBackupThread");
+						MessageLogger.warn("Could not stop AutoBackupThread");
 						return false;
 					}
 				}
@@ -264,7 +254,7 @@ public class AutoSaveWorld extends JavaPlugin {
 						purgeThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop AutoPurgeThread");
+						MessageLogger.warn("Could not stop AutoPurgeThread");
 						return false;
 					}
 				}
@@ -279,7 +269,7 @@ public class AutoSaveWorld extends JavaPlugin {
 						crashrestartThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop CrashRestartThread");
+						MessageLogger.warn("Could not stop CrashRestartThread");
 						return false;
 					}
 				}
@@ -294,7 +284,7 @@ public class AutoSaveWorld extends JavaPlugin {
 						autorestartThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop AutoRestartThread");
+						MessageLogger.warn("Could not stop AutoRestartThread");
 						return false;
 					}
 				}
@@ -309,7 +299,7 @@ public class AutoSaveWorld extends JavaPlugin {
 						consolecommandThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop ConsoleCommandThread");
+						MessageLogger.warn("Could not stop ConsoleCommandThread");
 						return false;
 					}
 				}
@@ -324,7 +314,7 @@ public class AutoSaveWorld extends JavaPlugin {
 						worldregencopyThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop WorldRegenThread");
+						MessageLogger.warn("Could not stop WorldRegenThread");
 						return false;
 					}
 				}
@@ -339,57 +329,13 @@ public class AutoSaveWorld extends JavaPlugin {
 						worldregenpasteThread = null;
 						return true;
 					} catch (InterruptedException e) {
-						warn("Could not stop WorldRegenThread");
+						MessageLogger.warn("Could not stop WorldRegenThread");
 						return false;
 					}
 				}
 			}
 			default: {
 				return false;
-			}
-		}
-	}
-
-	public void sendMessage(CommandSender sender, String message) {
-		if (!message.equals("")) {
-			if (formattingCodesParser != null) {
-				sender.sendMessage(formattingCodesParser.parseFormattingCodes(message));
-			}
-		}
-	}
-
-	public void broadcast(String message, boolean broadcast) {
-		if (!message.equals("") && broadcast) {
-			if (formattingCodesParser != null) {
-				getServer().broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
-			}
-		}
-	}
-
-	public void kickPlayer(Player player, String message) {
-		if (formattingCodesParser != null) {
-			player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
-		}
-	}
-
-	public void disallow(PlayerLoginEvent e, String message) {
-		if (formattingCodesParser != null) {
-			e.disallow(Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
-		}
-	}
-
-	public void debug(String message) {
-		if (config != null && config.varDebug) {
-			if (formattingCodesParser != null) {
-				log.info(formattingCodesParser.stripFormattingCodes(message));
-			}
-		}
-	}
-
-	public void warn(String message) {
-		if (log != null) {
-			if (formattingCodesParser != null) {
-				log.warning(formattingCodesParser.stripFormattingCodes(message));
 			}
 		}
 	}

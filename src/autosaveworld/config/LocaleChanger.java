@@ -11,6 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class LocaleChanger {
 
@@ -48,10 +49,10 @@ public class LocaleChanger {
 
 	public void loadLocale(String locale) {
 		//load messages file from package
-		plugin.debug("switching to "+locale);
+		MessageLogger.debug("switching to "+locale);
 		loadLocaleFile(locale);
 		//now load it
-		plugin.debug("loading configs");
+		MessageLogger.debug("loading configs");
 		configmsg.loadmsg();
 	}
 

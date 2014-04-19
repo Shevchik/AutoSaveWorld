@@ -25,6 +25,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 import com.massivecraft.factions.entity.BoardColls;
@@ -46,7 +47,7 @@ public class FactionsCopy {
 	}
 
 	public void copyAllToSchematics() {
-		plugin.debug("Saving factions lands to schematics");
+		MessageLogger.debug("Saving factions lands to schematics");
 
 		new File(plugin.constants.getFactionsTempFolder()).mkdirs();
 
@@ -54,7 +55,7 @@ public class FactionsCopy {
 			Set<PS> chunks = BoardColls.get().getChunks(f);
 			//ignore factions with no claimed land
 			if (chunks.size() != 0) {
-				plugin.debug("Saving faction land "+f.getName()+" to schematic");
+				MessageLogger.debug("Saving faction land "+f.getName()+" to schematic");
 				//create temp folder for faction
 				new File(plugin.constants.getFactionsTempFolder()+f.getName()).mkdirs();
 				//save all chunks one by one
@@ -80,12 +81,12 @@ public class FactionsCopy {
 							)
 						);
 						//save
-						plugin.debug("Saving "+f.getName()+" chunk to schematic");
+						MessageLogger.debug("Saving "+f.getName()+" chunk to schematic");
 						wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
-						plugin.debug(f.getName()+" chunk saved");
+						MessageLogger.debug(f.getName()+" chunk saved");
 					}
 				}
-				plugin.debug("Faction land "+f.getName()+" saved");
+				MessageLogger.debug("Faction land "+f.getName()+" saved");
 			}
 		}
 	}

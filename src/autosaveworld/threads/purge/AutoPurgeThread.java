@@ -20,6 +20,7 @@ package autosaveworld.threads.purge;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.UniquePlayerIdentifierDetector.UniquePlayerIdentifierType;
 import autosaveworld.threads.purge.bynames.PurgeByNames;
 import autosaveworld.threads.purge.byuuids.PurgeByUUIDs;
@@ -50,7 +51,7 @@ public class AutoPurgeThread extends Thread {
 	@Override
 	public void run() {
 
-		plugin.debug("AutoPurgeThread Started");
+		MessageLogger.debug("AutoPurgeThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoPurgeThread");
 
 
@@ -85,7 +86,7 @@ public class AutoPurgeThread extends Thread {
 
 		}
 
-		plugin.debug("Graceful quit of AutoPurgeThread");
+		MessageLogger.debug("Graceful quit of AutoPurgeThread");
 
 	}
 
@@ -96,23 +97,23 @@ public class AutoPurgeThread extends Thread {
 
 		command = false;
 
-		plugin.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
+		MessageLogger.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
 
-		plugin.debug("Purge started");
+		MessageLogger.debug("Purge started");
 
-		plugin.debug("Getting player unique identifier type");
+		MessageLogger.debug("Getting player unique identifier type");
 		UniquePlayerIdentifierType type = UniquePlayerIdentifierDetector.getUniquePlayerIdentifierType();
 
-		plugin.debug("Player unique identifier type is "+type.toString());
+		MessageLogger.debug("Player unique identifier type is "+type.toString());
 		if (type == UniquePlayerIdentifierType.NAME) {
 			new PurgeByNames(plugin, config).startPurge();
 		} else if (type == UniquePlayerIdentifierType.UUID) {
 			new PurgeByUUIDs(plugin, config).startPurge();
 		}
 
-		plugin.debug("Purge finished");
+		MessageLogger.debug("Purge finished");
 
-		plugin.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
+		MessageLogger.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
 
 	}
 

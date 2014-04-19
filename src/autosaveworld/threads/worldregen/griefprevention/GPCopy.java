@@ -30,6 +30,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 import com.sk89q.worldedit.Vector;
@@ -47,7 +48,7 @@ public class GPCopy {
 	}
 
 	public void copyAllToSchematics() {
-		plugin.debug("Saving griefprevention regions to schematics");
+		MessageLogger.debug("Saving griefprevention regions to schematics");
 
 		new File(plugin.constants.getGPTempFolder()).mkdirs();
 
@@ -62,7 +63,7 @@ public class GPCopy {
 			ca = (ClaimArray) o;
 		} catch (Exception e) {
 			e.printStackTrace();
-			plugin.warn("Failed to access GriefPrevntion database. GP save cancelled");
+			MessageLogger.warn("Failed to access GriefPrevntion database. GP save cancelled");
 			return;
 		}
 
@@ -91,9 +92,9 @@ public class GPCopy {
 				)
 			);
 			//save
-			plugin.debug("Saving GP Region "+claim.getID()+" to schematic");
+			MessageLogger.debug("Saving GP Region "+claim.getID()+" to schematic");
 			wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
-			plugin.debug("GP Region "+claim.getID()+" saved");
+			MessageLogger.debug("GP Region "+claim.getID()+" saved");
 		}
 	}
 

@@ -20,14 +20,12 @@ package autosaveworld.threads.backup.script;
 import java.io.File;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class ScriptBackup {
 
-	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
-	public ScriptBackup(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
-		this.plugin = plugin;
+	public ScriptBackup(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
 
@@ -36,7 +34,7 @@ public class ScriptBackup {
 		for (String scriptpath : config.scriptbackupscriptpaths) {
 			File scriptfile = new File(scriptpath);
 			if (!scriptpath.isEmpty() && scriptfile.exists()) {
-				plugin.debug("Executing script "+ scriptfile.getAbsolutePath());
+				MessageLogger.debug("Executing script "+ scriptfile.getAbsolutePath());
 				final Process p;
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.command(scriptfile.getAbsolutePath());
@@ -48,7 +46,7 @@ public class ScriptBackup {
 					e.printStackTrace();
 				}
 			} else {
-				plugin.debug("Script path is invalid");
+				MessageLogger.debug("Script path is invalid");
 			}
 		}
 	}

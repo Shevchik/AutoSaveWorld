@@ -25,7 +25,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 import com.onarandombox.multiverseinventories.MultiverseInventories;
@@ -33,17 +33,10 @@ import com.onarandombox.multiverseinventories.api.profile.WorldGroupProfile;
 
 public class MVInvPurge {
 
-	private AutoSaveWorld plugin;
-
-	public MVInvPurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
-
 	@SuppressWarnings("deprecation")
 	public void doMVInvPurgeTask(ActivePlayersList pacheck) {
 
-		plugin.debug("MVInv purge started");
+		MessageLogger.debug("MVInv purge started");
 
 		int deleted = 0;
 
@@ -59,7 +52,7 @@ public class MVInvPurge {
 				String plname = plfile.substring(0, plfile.lastIndexOf("."));
 
 				if (!pacheck.isActiveCS(plname)) {
-					plugin.debug("Removing "+plname+" MVInv files");
+					MessageLogger.debug("Removing "+plname+" MVInv files");
 					//remove files from MVInv world folders
 					for (World wname : Bukkit.getWorlds()) {
 						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData((OfflinePlayer) ctor.newInstance(server, plname));
@@ -78,7 +71,7 @@ public class MVInvPurge {
 		} catch (Exception e) {
 		}
 
-		plugin.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
+		MessageLogger.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
 	}
 
 }

@@ -19,27 +19,26 @@ package autosaveworld.threads.purge.byuuids;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.byuuids.plugins.DatfilePurge;
 
 public class PurgeByUUIDs {
 
-	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
 	public PurgeByUUIDs(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
-		this.plugin = plugin;
 		this.config = config;
 	}
 
 	public void startPurge() {
-		plugin.debug("Gathering active players list");
-		ActivePlayersList aplist = new ActivePlayersList(plugin, config);
+		MessageLogger.debug("Gathering active players list");
+		ActivePlayersList aplist = new ActivePlayersList(config);
 		aplist.gatherActivePlayersList(config.purgeAwayTime * 1000);
-		plugin.debug("Found "+aplist.getActivePlayersCount()+" active players");
+		MessageLogger.debug("Found "+aplist.getActivePlayersCount()+" active players");
 
-		plugin.debug("Purging player .dat files");
+		MessageLogger.debug("Purging player .dat files");
 		if (config.purgedat) {
 			try {
-				new DatfilePurge(plugin).doDelPlayerDatFileTask(aplist);
+				new DatfilePurge().doDelPlayerDatFileTask(aplist);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

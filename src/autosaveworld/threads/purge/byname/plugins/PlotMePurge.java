@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 import com.worldcretornica.plotme.Plot;
@@ -40,31 +41,31 @@ public class PlotMePurge {
 
 	public void doPlotMePurgeTask(ActivePlayersList pacheck, final boolean regenplot) {
 
-		plugin.debug("PlotMe purge started");
+		MessageLogger.debug("PlotMe purge started");
 
 		int delplots = 0;
 
 		for (final World w : Bukkit.getWorlds()) {
 			if (PlotManager.isPlotWorld(w)) {
-				plugin.debug("Checking plots in world "+w.getName().toLowerCase());
+				MessageLogger.debug("Checking plots in world "+w.getName().toLowerCase());
 
 				//search plot for inactive owners
 				HashSet<Plot> plots = new HashSet<Plot>(PlotManager.getPlots(w).values());
 				for (final Plot p : plots) {
 					final String PlotID = p.id;
-					plugin.debug("Checking plot " + PlotID);
+					MessageLogger.debug("Checking plot " + PlotID);
 
 					if (!pacheck.isActiveCS(p.getOwner())) {
-						plugin.debug("Plot owner is inactive. Purging plot "+PlotID);
+						MessageLogger.debug("Plot owner is inactive. Purging plot "+PlotID);
 
 						Runnable delPlot = new Runnable() {
 							@Override
 							public void run() {
 								if (regenplot) {
-									plugin.debug("Regenerating plot "+PlotID);
+									MessageLogger.debug("Regenerating plot "+PlotID);
 									PlotManager.clear(w, p);
 								}
-								plugin.debug("Deleting plot "+PlotID);
+								MessageLogger.debug("Deleting plot "+PlotID);
 								PlotManager.getPlots(w).remove(PlotID);
 
 								PlotManager.removeOwnerSign(w, PlotID);
@@ -85,7 +86,7 @@ public class PlotMePurge {
 			}
 		}
 
-		plugin.debug("PlotMe purge finished, deleted "+ delplots +" inactive plots");
+		MessageLogger.debug("PlotMe purge finished, deleted "+ delplots +" inactive plots");
 	}
 
 }

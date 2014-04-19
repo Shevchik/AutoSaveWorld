@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.WorldEditRegeneration;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
@@ -43,38 +44,38 @@ public class WGPurge {
 
 	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap) {
 
-		plugin.debug("WG purge started");
+		MessageLogger.debug("WG purge started");
 
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
 
 		int deletedrg = 0;
 
 		for (final World w : Bukkit.getWorlds()) {
-			plugin.debug("Checking WG protections in world " + w.getName());
+			MessageLogger.debug("Checking WG protections in world " + w.getName());
 			final RegionManager m = wg.getRegionManager(w);
 
 			// searching for inactive players in regions
 			HashSet<ProtectedRegion> regions = new HashSet<ProtectedRegion>(m.getRegions().values());
 			for (final ProtectedRegion rg : regions) {
-				plugin.debug("Checking region " + rg.getId());
+				MessageLogger.debug("Checking region " + rg.getId());
 				Set<String> owners = rg.getOwners().getPlayers();
 				Set<String> members = rg.getMembers().getPlayers();
 				int inactive = 0;
 				for (String checkPlayer : owners) {
 					if (!pacheck.isActiveNCS(checkPlayer)) {
-						plugin.debug(checkPlayer+ " is inactive");
+						MessageLogger.debug(checkPlayer+ " is inactive");
 						inactive++;
 					}
 				}
 				for (String checkPlayer : members) {
 					if (!pacheck.isActiveNCS(checkPlayer)) {
-						plugin.debug(checkPlayer+ " is inactive");
+						MessageLogger.debug(checkPlayer+ " is inactive");
 						inactive++;
 					}
 				}
 				// check region for remove (ignore regions without owners and members)
 				if (rg.hasMembersOrOwners() && inactive == owners.size() + members.size()) {
-					plugin.debug("No active owners and members for region "+rg.getId()+". Purging region");
+					MessageLogger.debug("No active owners and members for region "+rg.getId()+". Purging region");
 					if (regenrg) {
 						//regen and delete region
 						purgeRG(m,w,rg,regenrg,noregenoverlap);
@@ -96,7 +97,7 @@ public class WGPurge {
 			}
 		}
 
-		plugin.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
+		MessageLogger.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
 	}
 
 	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, final boolean noregenoverlap) {
@@ -107,10 +108,10 @@ public class WGPurge {
 			public void run() {
 				try {
 					if (!(noregenoverlap && m.getApplicableRegions(rg).size() > 1)) {
-						plugin.debug("Regenerating region " + rg.getId());
+						MessageLogger.debug("Regenerating region " + rg.getId());
 						WorldEditRegeneration.regenerateRegion(w, minpoint, maxpoint);
 					}
-					plugin.debug("Deleting region " + rg.getId());
+					MessageLogger.debug("Deleting region " + rg.getId());
 					m.removeRegion(rg.getId());
 					m.save();
 				} catch (Exception e) {
@@ -132,7 +133,7 @@ public class WGPurge {
 			@Override
 			public void run() {
 				for (String regionid : rgtodel) {
-					plugin.debug("Deleting region " + regionid);
+					MessageLogger.debug("Deleting region " + regionid);
 					m.removeRegion(regionid);
 				}
 				try {m.save();} catch (Exception e) {}

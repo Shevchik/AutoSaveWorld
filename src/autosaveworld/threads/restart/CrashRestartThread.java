@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class CrashRestartThread extends Thread{
 
@@ -47,16 +48,16 @@ public class CrashRestartThread extends Thread{
 	private boolean run = true;
 	@Override
 	public void run() {
-		plugin.debug("CrashRestartThread started");
+		MessageLogger.debug("CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 
-		plugin.debug("Delaying crashrestart checker start for "+config.crdelay+" seconds");
+		MessageLogger.debug("Delaying crashrestart checker start for "+config.crdelay+" seconds");
 		//wait for configurable delay
 		try {Thread.sleep(config.crdelay*1000);} catch (InterruptedException e) {}
 		//do not enable self if plugin is disabled
 		if (!plugin.isEnabled()) {return;}
 
-		plugin.debug("Running crashrestart checker");
+		MessageLogger.debug("Running crashrestart checker");
 		//schedule sync task in, this will provide us info about when the last server tick occured
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			@Override
@@ -93,7 +94,7 @@ public class CrashRestartThread extends Thread{
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 
-		plugin.debug("Graceful quit of CrashRestartThread");
+		MessageLogger.debug("Graceful quit of CrashRestartThread");
 
 	}
 

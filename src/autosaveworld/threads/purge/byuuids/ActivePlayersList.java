@@ -23,14 +23,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class ActivePlayersList {
 
-	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
-	public ActivePlayersList(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
-		this.plugin = plugin;
+	public ActivePlayersList(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
 
@@ -39,7 +37,7 @@ public class ActivePlayersList {
 	public void gatherActivePlayersList(long awaytime) {
 		for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 			String uuid = player.getUniqueId().toString().replace("-", "");
-			plugin.debug("Checking player "+uuid);
+			MessageLogger.debug("Checking player "+uuid);
 			if (System.currentTimeMillis() - player.getLastPlayed() < awaytime) {
 				System.out.println("Adding player "+uuid+" to active list");
 				plactive.add(uuid);

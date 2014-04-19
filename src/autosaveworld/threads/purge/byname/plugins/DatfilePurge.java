@@ -21,20 +21,14 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 public class DatfilePurge {
 
-	private AutoSaveWorld plugin;
-
-	public DatfilePurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
 	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) {
 
-		plugin.debug("Playre .dat file purge started");
+		MessageLogger.debug("Playre .dat file purge started");
 
 		int deleted = 0;
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
@@ -43,14 +37,14 @@ public class DatfilePurge {
 			if (playerfile.getName().endsWith(".dat")) {
 				String playername = playerfile.getName().substring(0, playerfile.getName().length() - 4);
 				if (!pacheck.isActiveCS(playername)) {
-					plugin.debug(playername + " is inactive. Removing dat file");
+					MessageLogger.debug(playername + " is inactive. Removing dat file");
 					playerfile.delete();
 					deleted += 1;
 				}
 			}
 		}
 
-		plugin.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
+		MessageLogger.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
 	}
 
 }

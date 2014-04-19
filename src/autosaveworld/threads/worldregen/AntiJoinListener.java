@@ -23,26 +23,24 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import autosaveworld.config.AutoSaveWorldConfigMSG;
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class AntiJoinListener implements Listener {
 
-	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfigMSG configmsg;
 
-	public AntiJoinListener(AutoSaveWorld plugin, AutoSaveWorldConfigMSG configmsg) {
-		this.plugin = plugin;
+	public AntiJoinListener(AutoSaveWorldConfigMSG configmsg) {
 		this.configmsg = configmsg;
 	}
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		plugin.kickPlayer(e.getPlayer(), configmsg.messageWorldRegenKick);
+		MessageLogger.kickPlayer(e.getPlayer(), configmsg.messageWorldRegenKick);
 	}
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent e) {
-		plugin.disallow(e, configmsg.messageWorldRegenKick);
+		MessageLogger.disallow(e, configmsg.messageWorldRegenKick);
 	}
 
 }

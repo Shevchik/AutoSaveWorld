@@ -27,6 +27,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 import com.griefcraft.lwc.LWCPlugin;
@@ -42,7 +43,7 @@ public class LWCPurge {
 
 	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks) {
 
-		plugin.debug("LWC purge started");
+		MessageLogger.debug("LWC purge started");
 
 		LWCPlugin lwc = (LWCPlugin) Bukkit.getPluginManager().getPlugin("LWC");
 
@@ -64,7 +65,7 @@ public class LWCPurge {
 		//flush the rest of the batch;
 		flushBatch(lwc, delblocks);
 
-		plugin.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
+		MessageLogger.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
 	}
 
 	private ArrayList<Protection> prtodel = new ArrayList<Protection>(100);
@@ -75,7 +76,7 @@ public class LWCPurge {
 				for (Protection pr : prtodel) {
 					//delete block
 					if (delblocks) {
-						plugin.debug("Removing protected block for inactive player "+pr.getOwner());
+						MessageLogger.debug("Removing protected block for inactive player "+pr.getOwner());
 						Block block = pr.getBlock();
 						BlockState bs = block.getState();
 						if (bs instanceof Chest) {
@@ -87,7 +88,7 @@ public class LWCPurge {
 						block.setType(Material.AIR);
 					}
 					//delete protection
-					plugin.debug("Removing protection for inactive player "+pr.getOwner());
+					MessageLogger.debug("Removing protection for inactive player "+pr.getOwner());
 					lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
 				}
 				prtodel.clear();

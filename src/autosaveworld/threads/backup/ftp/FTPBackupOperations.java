@@ -24,6 +24,7 @@ import java.util.List;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworld.threads.backup.utils.BackupFileUtils;
 
@@ -41,7 +42,7 @@ public class FTPBackupOperations {
 	}
 
 	public void backupWorld(World world) {
-		plugin.debug("Backuping world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
 		boolean savestaus = world.isAutoSave();
 		world.setAutoSave(false);
 		try {
@@ -57,7 +58,7 @@ public class FTPBackupOperations {
 			world.setAutoSave(savestaus);
 		}
 
-		plugin.debug("Backuped world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
 	}
 
 

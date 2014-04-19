@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 import com.massivecraft.factions.entity.BoardColls;
@@ -43,7 +44,7 @@ public class FactionsPaste {
 	}
 
 	public void pasteAllFromSchematics() {
-		plugin.debug("Pasting factions lands from schematics");
+		MessageLogger.debug("Pasting factions lands from schematics");
 
 		String schemfolder = plugin.constants.getFactionsTempFolder();
 
@@ -51,19 +52,19 @@ public class FactionsPaste {
 			Set<PS> chunks = BoardColls.get().getChunks(f);
 			//ignore factions with no claimed land
 			if (chunks.size() != 0) {
-				plugin.debug("Pasting faction land "+f.getName()+" from schematic");
+				MessageLogger.debug("Pasting faction land "+f.getName()+" from schematic");
 				//paste all chunks
 				for (PS ps: chunks) {
 					if (ps.getWorld().equalsIgnoreCase(wtopaste.getName())) {
 						final int xcoord = ps.getChunkX();
 						final int zcoord = ps.getChunkZ();
 						//paste
-						plugin.debug("Pasting "+f.getName()+" chunk from schematic");
+						MessageLogger.debug("Pasting "+f.getName()+" chunk from schematic");
 						wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
-						plugin.debug("Pasted "+f.getName()+" chunk from schematic");
+						MessageLogger.debug("Pasted "+f.getName()+" chunk from schematic");
 					}
 				}
-				plugin.debug("Pasted faction land "+f.getName()+" from schematic");
+				MessageLogger.debug("Pasted faction land "+f.getName()+" from schematic");
 			}
 		}
 	}

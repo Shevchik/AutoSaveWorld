@@ -25,6 +25,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
@@ -47,7 +48,7 @@ public class TownyCopy {
 
 	public void copyAllToSchematics() {
 		try {
-			plugin.debug("Saving Towny towns to schematics");
+			MessageLogger.debug("Saving Towny towns to schematics");
 
 			new File(plugin.constants.getTownyTempFolder()).mkdirs();
 
@@ -55,7 +56,7 @@ public class TownyCopy {
 			for (Town town : towns) {
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0) {
-					plugin.debug("Saving town claim "+town.getName()+" to schematic");
+					MessageLogger.debug("Saving town claim "+town.getName()+" to schematic");
 					for (TownBlock tb : tblocks) {
 						if (tb.getWorld().getName().equals(wtoregen.getName())) {
 							//create temp folder for town
@@ -80,12 +81,12 @@ public class TownyCopy {
 								)
 							);
 							//save
-							plugin.debug("Saving Towny town "+town.getName()+" townblock to schematic");
+							MessageLogger.debug("Saving Towny town "+town.getName()+" townblock to schematic");
 							wrthread.getSchematicOperations().saveToSchematic(plugin.constants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
-							plugin.debug(town.getName()+" townblock saved");
+							MessageLogger.debug(town.getName()+" townblock saved");
 						}
 					}
-					plugin.debug("Towmy claim "+town.getName()+" saved");
+					MessageLogger.debug("Towmy claim "+town.getName()+" saved");
 				}
 			}
 		} catch (NotRegisteredException e) {

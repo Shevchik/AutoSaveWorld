@@ -34,6 +34,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class CommandsHandler implements CommandExecutor {
 
@@ -57,7 +58,7 @@ public class CommandsHandler implements CommandExecutor {
 
 		//check permissions
 		if (!permCheck.isAllowed(sender, commandName, args, config.commandonlyfromconsole)) {
-			plugin.sendMessage(sender, configmsg.messageInsufficientPermissions);
+			MessageLogger.sendMessage(sender, configmsg.messageInsufficientPermissions);
 			return true;
 		}
 
@@ -78,29 +79,29 @@ public class CommandsHandler implements CommandExecutor {
 			//"autosaveworld" command handler
 			if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 				// help
-				plugin.sendMessage(sender, "&f/asw help&7 - &3Shows this help");
-				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu, memory, HDD usage");
-				plugin.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
-				plugin.sendMessage(sender, "&f/asw exec {password} {command}&7 - &3Excecute {command} in system terminal");
-				plugin.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
-				plugin.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
-				plugin.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
-				plugin.sendMessage(sender, "&f/asw save&7 - &3Saves all worlds and players");
-				plugin.sendMessage(sender, "&f/save&7 - &3Same as /asw save");
-				plugin.sendMessage(sender, "&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds) and plugins (if enabled in config)");
-				plugin.sendMessage(sender, "&f/backup&7 - &3Same as /asw backup");
-				plugin.sendMessage(sender, "&f/asw purge&7 - &3Purges plugins info from inactive players");
-				plugin.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
-				plugin.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
-				plugin.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
-				plugin.sendMessage(sender, "&f/asw forcegc&7 - &3Forces GC");
-				plugin.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows some server resources usage info");
-				plugin.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
-				plugin.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
-				plugin.sendMessage(sender, "&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
-				plugin.sendMessage(sender, "&f/asw locale available&7 - &3Show available messages locales");
-				plugin.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
-				plugin.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
+				MessageLogger.sendMessage(sender, "&f/asw help&7 - &3Shows this help");
+				MessageLogger.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu, memory, HDD usage");
+				MessageLogger.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
+				MessageLogger.sendMessage(sender, "&f/asw exec {password} {command}&7 - &3Excecute {command} in system terminal");
+				MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
+				MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
+				MessageLogger.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
+				MessageLogger.sendMessage(sender, "&f/asw save&7 - &3Saves all worlds and players");
+				MessageLogger.sendMessage(sender, "&f/save&7 - &3Same as /asw save");
+				MessageLogger.sendMessage(sender, "&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds) and plugins (if enabled in config)");
+				MessageLogger.sendMessage(sender, "&f/backup&7 - &3Same as /asw backup");
+				MessageLogger.sendMessage(sender, "&f/asw purge&7 - &3Purges plugins info from inactive players");
+				MessageLogger.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
+				MessageLogger.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
+				MessageLogger.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
+				MessageLogger.sendMessage(sender, "&f/asw forcegc&7 - &3Forces GC");
+				MessageLogger.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows some server resources usage info");
+				MessageLogger.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
+				MessageLogger.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
+				MessageLogger.sendMessage(sender, "&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
+				MessageLogger.sendMessage(sender, "&f/asw locale available&7 - &3Show available messages locales");
+				MessageLogger.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
+				MessageLogger.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
 			} else if (args.length >= 4 && args[0].equalsIgnoreCase("exec")) {
 				if (!config.aswexecpassword.isEmpty()) {
@@ -131,13 +132,13 @@ public class CommandsHandler implements CommandExecutor {
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcegc")) {
 				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
 				if (arguments.contains("-XX:+DisableExplicitGC")) {
-					plugin.sendMessage(sender, "&4Your JVM is configured to ignore GC calls, can't force gc");
+					MessageLogger.sendMessage(sender, "&4Your JVM is configured to ignore GC calls, can't force gc");
 					return true;
 				}
-				plugin.sendMessage(sender, "&9Forcing GC");
+				MessageLogger.sendMessage(sender, "&9Forcing GC");
 				System.gc();
 				System.gc();
-				plugin.sendMessage(sender, "&9GC finished");
+				MessageLogger.sendMessage(sender, "&9GC finished");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("serverstatus")) {
 				DecimalFormat df = new DecimalFormat("0.00");
@@ -181,11 +182,11 @@ public class CommandsHandler implements CommandExecutor {
 			} else if ((args.length == 2 && args[0].equalsIgnoreCase("regenworld"))) {
 				//regen world
 				if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
-					plugin.sendMessage(sender, "You need WorldEdit installed to do that");
+					MessageLogger.sendMessage(sender, "You need WorldEdit installed to do that");
 					return true;
 				}
 				if (Bukkit.getWorld(args[1]) == null) {
-					plugin.sendMessage(sender, "This world doesn't exist");
+					MessageLogger.sendMessage(sender, "This world doesn't exist");
 					return true;
 				}
 				plugin.worldregencopyThread.startworldregen(args[1]);
@@ -194,38 +195,38 @@ public class CommandsHandler implements CommandExecutor {
 				//reload
 				config.load();
 				configmsg.loadmsg();
-				plugin.sendMessage(sender, "All configurations reloaded");
+				MessageLogger.sendMessage(sender, "All configurations reloaded");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reloadconfig")) {
 				//reload config
 				config.load();
-				plugin.sendMessage(sender,"Main configuration reloaded");
+				MessageLogger.sendMessage(sender,"Main configuration reloaded");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reloadmsg")) {
 				//reload messages
 				configmsg.loadmsg();
-				plugin.sendMessage(sender, "Messages file reloaded");
+				MessageLogger.sendMessage(sender, "Messages file reloaded");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("version")) {
 				//version
-				plugin.sendMessage(sender, plugin.getDescription().getName()+ " " + plugin.getDescription().getVersion());
+				MessageLogger.sendMessage(sender, plugin.getDescription().getName()+ " " + plugin.getDescription().getVersion());
 				return true;
 			} else if ((args.length >= 1 && args[0].equalsIgnoreCase("locale"))) {
 				//locale loader
 				if (args.length == 2 && args[1].equalsIgnoreCase("available")) {
-					plugin.sendMessage(sender, "Available locales: "+ localeChanger.getAvailableLocales());
+					MessageLogger.sendMessage(sender, "Available locales: "+ localeChanger.getAvailableLocales());
 					return true;
 				} else if (args.length == 2 && args[1].equalsIgnoreCase("load")) {
-					plugin.sendMessage(sender,"You should specify a locale to load (get available locales using /asw locale available command)");
+					MessageLogger.sendMessage(sender,"You should specify a locale to load (get available locales using /asw locale available command)");
 					return true;
 				} else if (args.length == 3 && args[1].equalsIgnoreCase("load")) {
 					if (localeChanger.getAvailableLocales().contains(args[2])) {
-						plugin.sendMessage(sender, "Loading locale " + args[2]);
+						MessageLogger.sendMessage(sender, "Loading locale " + args[2]);
 						localeChanger.loadLocale(args[2]);
-						plugin.sendMessage(sender, "Loaded locale " + args[2]);
+						MessageLogger.sendMessage(sender, "Loaded locale " + args[2]);
 						return true;
 					} else {
-						plugin.sendMessage(sender, "Locale " + args[2] + " is not available");
+						MessageLogger.sendMessage(sender, "Locale " + args[2] + " is not available");
 						return true;
 					}
 				}

@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.restart.RestartWaiter;
 import autosaveworld.threads.worldregen.dataschematic.SchematicOperations;
 import autosaveworld.threads.worldregen.factions.FactionsCopy;
@@ -65,7 +66,7 @@ public class WorldRegenCopyThread extends Thread {
 	private boolean doregen = false;
 	@Override
 	public void run() {
-		plugin.debug("WorldRegenThread Started");
+		MessageLogger.debug("WorldRegenThread Started");
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenCopyThread");
 
 		while (run) {
@@ -87,7 +88,7 @@ public class WorldRegenCopyThread extends Thread {
 			}
 		}
 
-		plugin.debug("Graceful quit of WorldRegenThread");
+		MessageLogger.debug("Graceful quit of WorldRegenThread");
 	}
 
 
@@ -96,13 +97,13 @@ public class WorldRegenCopyThread extends Thread {
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
 
 		//kick all player and deny them from join
-		AntiJoinListener ajl = new AntiJoinListener(plugin,configmsg);
+		AntiJoinListener ajl = new AntiJoinListener(configmsg);
 		Bukkit.getPluginManager().registerEvents(ajl, plugin);
 		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					plugin.kickPlayer(p,configmsg.messageWorldRegenKick);
+					MessageLogger.kickPlayer(p,configmsg.messageWorldRegenKick);
 				}
 			}
 		});
@@ -110,7 +111,7 @@ public class WorldRegenCopyThread extends Thread {
 			Thread.sleep(1000);
 		}
 
-		plugin.debug("Saving buildings");
+		MessageLogger.debug("Saving buildings");
 
 		//save WorldGuard buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
@@ -132,14 +133,14 @@ public class WorldRegenCopyThread extends Thread {
 			new TownyCopy(plugin, this, worldtoregen).copyAllToSchematics();
 		}
 
-		plugin.debug("Saving finished");
+		MessageLogger.debug("Saving finished");
 
 		if (config.worldregenremoveseeddata) {
-			plugin.debug("Removing seed data");
+			MessageLogger.debug("Removing seed data");
 			new File(wtoregen.getWorldFolder(),"level.dat").delete();
 			new File(wtoregen.getWorldFolder(),"level.dat_old").delete();
 			new File(wtoregen.getWorldFolder(),"uid.dat").delete();
-			plugin.debug("Removing finished");
+			MessageLogger.debug("Removing finished");
 		}
 
 		//Save worldname file
@@ -147,7 +148,7 @@ public class WorldRegenCopyThread extends Thread {
 		cfg.set("wname", worldtoregen);
 		cfg.save(new File(plugin.constants.getWorldnameFile()));
 
-		plugin.debug("Deleting map and restarting server");
+		MessageLogger.debug("Deleting map and restarting server");
 		//Add hook that will delete world folder, signal that restart should wait, and schedule restart restart
 		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath());
 		Runtime.getRuntime().addShutdownHook(wrsh);

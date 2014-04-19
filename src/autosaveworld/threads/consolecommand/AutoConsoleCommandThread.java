@@ -26,6 +26,7 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 public class AutoConsoleCommandThread extends Thread {
 
@@ -48,7 +49,7 @@ public class AutoConsoleCommandThread extends Thread {
 	@Override
 	public void run() {
 
-		plugin.debug("AutoConsoleCommandThread Started");
+		MessageLogger.debug("AutoConsoleCommandThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 
 		//wait for server to start
@@ -71,7 +72,7 @@ public class AutoConsoleCommandThread extends Thread {
 				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
 				String ctime = getCurTime();
 				if (cminute != minute && config.cctimescommands.containsKey(ctime)) {
-					plugin.debug("Executing console commands (timesmode)");
+					MessageLogger.debug("Executing console commands (timesmode)");
 					minute = cminute;
 					executeCommands(config.cctimescommands.get(ctime));
 				}
@@ -80,7 +81,7 @@ public class AutoConsoleCommandThread extends Thread {
 			//handle interval mode
 			if (config.ccintervalenabled) {
 				for (int interval : getIntervalsToExecute()) {
-					plugin.debug("Executing console commands (intervalmode)");
+					MessageLogger.debug("Executing console commands (intervalmode)");
 					executeCommands(config.ccintervalscommands.get(interval));
 				}
 				intervalcounter++;
@@ -90,7 +91,7 @@ public class AutoConsoleCommandThread extends Thread {
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 
-		plugin.debug("Graceful quit of AutoConsoleCommandThread");
+		MessageLogger.debug("Graceful quit of AutoConsoleCommandThread");
 
 	}
 

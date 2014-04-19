@@ -26,6 +26,7 @@ import me.taylorkelly.mywarp.data.Warp;
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 public class MyWarpPurge {
@@ -38,7 +39,7 @@ public class MyWarpPurge {
 
 	public void doMyWarpPurgeTask(ActivePlayersList pacheck) {
 
-		plugin.debug("MyWarp purge started");
+		MessageLogger.debug("MyWarp purge started");
 
 		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
 
@@ -63,7 +64,7 @@ public class MyWarpPurge {
 		//flush the rest of the batch
 		flushBatch(mywarp);
 
-		plugin.debug("MyWarp purge finished, deleted "+ deleted+" inactive warps");
+		MessageLogger.debug("MyWarp purge finished, deleted "+ deleted+" inactive warps");
 	}
 
 	private ArrayList<Warp> warptodel = new ArrayList<Warp>(100);
@@ -77,7 +78,7 @@ public class MyWarpPurge {
 				for (Warp warp : warptodel)
 				{
 					//delete warp
-					plugin.debug("Removing warp for inactive player "+warp.getCreator());
+					MessageLogger.debug("Removing warp for inactive player "+warp.getCreator());
 					mywarp.getWarpManager().deleteWarp(warp);
 				}
 				warptodel.clear();

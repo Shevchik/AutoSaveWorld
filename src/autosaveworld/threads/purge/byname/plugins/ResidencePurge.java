@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.util.Vector;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.WorldEditRegeneration;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
@@ -25,7 +26,7 @@ public class ResidencePurge {
 
 	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres) {
 
-		plugin.debug("Residence purge started");
+		MessageLogger.debug("Residence purge started");
 
 		int deletedres = 0;
 
@@ -34,10 +35,10 @@ public class ResidencePurge {
 
 		//search for residences with inactive players
 		for (final String res : reslist) {
-			plugin.debug("Checking residence " + res);
+			MessageLogger.debug("Checking residence " + res);
 			final ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
 			if (!pacheck.isActiveCS(cres.getOwner())) {
-				plugin.debug("Owner of residence "+res+" is inactive. Purging residence");
+				MessageLogger.debug("Owner of residence "+res+" is inactive. Purging residence");
 
 				//regen residence areas if needed
 				if (regenres && wepresent) {
@@ -47,7 +48,7 @@ public class ResidencePurge {
 							Vector maxpoint = ca.getHighLoc().toVector();
 							@Override
 							public void run() {
-								plugin.debug("Regenerating residence "+res+" cuboid area");
+								MessageLogger.debug("Regenerating residence "+res+" cuboid area");
 								WorldEditRegeneration.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint);
 							}
 						};
@@ -59,7 +60,7 @@ public class ResidencePurge {
 						}
 					}
 					//delete residence from db
-					plugin.debug("Deleting residence "+res);
+					MessageLogger.debug("Deleting residence "+res);
 					Runnable delres = new Runnable() {
 						@Override
 						public void run() {
@@ -78,7 +79,7 @@ public class ResidencePurge {
 			}
 		}
 
-		plugin.debug("Residence purge finished, deleted "+ deletedres+" inactive residences");
+		MessageLogger.debug("Residence purge finished, deleted "+ deletedres+" inactive residences");
 	}
 
 }

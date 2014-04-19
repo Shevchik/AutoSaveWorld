@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
@@ -44,7 +45,7 @@ public class TownyPaste {
 
 	public void pasteAllFromSchematics() {
 		try {
-			plugin.debug("Pasting Towny towns from schematics");
+			MessageLogger.debug("Pasting Towny towns from schematics");
 
 			String schemfolder = plugin.constants.getTownyTempFolder();
 
@@ -52,18 +53,18 @@ public class TownyPaste {
 			for (Town town : towns) {
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0) {
-					plugin.debug("Pasting town claim "+town.getName()+" from schematic");
+					MessageLogger.debug("Pasting town claim "+town.getName()+" from schematic");
 					for (TownBlock tb : tblocks) {
 						if (tb.getWorld().getName().equals(wtopaste.getName())) {
 							final int xcoord = tb.getX();
 							final int zcoord = tb.getZ();
 							//paste
-							plugin.debug("Pasting "+town.getName()+" townblock from schematic");
+							MessageLogger.debug("Pasting "+town.getName()+" townblock from schematic");
 							wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
-							plugin.debug("Pasted "+town.getName()+" townblock from schematic");
+							MessageLogger.debug("Pasted "+town.getName()+" townblock from schematic");
 						}
 					}
-					plugin.debug("Pasted town claim "+town.getName()+" from schematic");
+					MessageLogger.debug("Pasted town claim "+town.getName()+" from schematic");
 				}
 			}
 		} catch (NotRegisteredException e) {

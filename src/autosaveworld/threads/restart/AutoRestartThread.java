@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 
 
 public class AutoRestartThread  extends Thread{
@@ -54,7 +55,7 @@ public class AutoRestartThread  extends Thread{
 	private boolean skipcountdown = false;
 	@Override
 	public void run() {
-		plugin.debug("AutoRestartThread started");
+		MessageLogger.debug("AutoRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld AutoRestartThread");
 
 		//check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
@@ -68,15 +69,15 @@ public class AutoRestartThread  extends Thread{
 				if (config.autorestartcountdown && !skipcountdown) {
 					for (int i = config.autorestartbroadcastonseconds.get(0); i>0; i--) {
 						if (config.autorestartbroadcastonseconds.contains(i)) {
-							plugin.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)), true);
+							MessageLogger.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)), true);
 						}
 						try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					}
 				}
 
-				plugin.broadcast(configmsg.messageAutoRestart, config.autorestartBroadcast);
+				MessageLogger.broadcast(configmsg.messageAutoRestart, config.autorestartBroadcast);
 
-				plugin.debug("AutoRestarting server");
+				MessageLogger.debug("AutoRestarting server");
 
 				if (!config.autorestartjuststop) {
 					jvmsh.setPath(config.autorestartscriptpath);
@@ -104,7 +105,7 @@ public class AutoRestartThread  extends Thread{
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		}
 
-		plugin.debug("Graceful quit of AutoRestartThread");
+		MessageLogger.debug("Graceful quit of AutoRestartThread");
 
 	}
 

@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
 public class VaultPurge {
@@ -39,7 +40,7 @@ public class VaultPurge {
 	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
 	public void doPermissionsPurgeTask(ActivePlayersList pacheck) {
 
-		plugin.debug("Player permissions purge started");
+		MessageLogger.debug("Player permissions purge started");
 
 		Permission permission = Bukkit.getServicesManager().getRegistration(Permission.class).getProvider();
 
@@ -64,7 +65,7 @@ public class VaultPurge {
 		//flush the rest of the batch
 		flushPermsBatch(permission);
 
-		plugin.debug("Player permissions purge finished, deleted "+deleted+" players permissions");
+		MessageLogger.debug("Player permissions purge finished, deleted "+deleted+" players permissions");
 	}
 	private void flushPermsBatch(final Permission permission) {
 		//delete permissions
@@ -72,7 +73,7 @@ public class VaultPurge {
 			@Override
 			public void run() {
 				for (String playername : playerstopurgeperms) {
-					plugin.debug(playername + " is inactive. Removing permissions");
+					MessageLogger.debug(playername + " is inactive. Removing permissions");
 					//remove all player groups
 					for (String group : permission.getGroups()) {
 						permission.playerRemoveGroup((String)null, playername, group);
@@ -95,7 +96,7 @@ public class VaultPurge {
 	private ArrayList<String> playerstopurgeecon = new ArrayList<String>(70);
 	public void doEconomyPurgeTask(ActivePlayersList pacheck) {
 
-		plugin.debug("Player economy purge started");
+		MessageLogger.debug("Player economy purge started");
 
 		Economy economy = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
 
@@ -120,7 +121,7 @@ public class VaultPurge {
 		//flush the rest of the batch
 		flushEconomyBatch(economy);
 
-		plugin.debug("Player economy purge finished, deleted "+deleted+" players economy accounts");
+		MessageLogger.debug("Player economy purge finished, deleted "+deleted+" players economy accounts");
 	}
 	private void flushEconomyBatch(final Economy economy) {
 		//delete economy accounts
@@ -128,7 +129,7 @@ public class VaultPurge {
 			@Override
 			public void run() {
 				for (String playername : playerstopurgeecon) {
-					plugin.debug(playername + " is inactive. Removing economy account");
+					MessageLogger.debug(playername + " is inactive. Removing economy account");
 					//set player balance to 0
 					economy.withdrawPlayer(playername, economy.getBalance(playername));
 				}
