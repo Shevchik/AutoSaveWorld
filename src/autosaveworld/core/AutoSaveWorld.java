@@ -183,7 +183,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			}
 			case CONSOLECOMMAND: {
 				if (consolecommandThread == null || !consolecommandThread.isAlive()) {
-					consolecommandThread = new AutoConsoleCommandThread(this, config);
+					consolecommandThread = new AutoConsoleCommandThread(config);
 					consolecommandThread.start();
 				}
 				return true;

@@ -25,15 +25,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.SchedulerUtils;
 
 public class AutoConsoleCommandThread extends Thread {
 
-	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
-	public AutoConsoleCommandThread(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
-		this.plugin = plugin;
+	public AutoConsoleCommandThread(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
 
@@ -43,7 +41,6 @@ public class AutoConsoleCommandThread extends Thread {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 	private SimpleDateFormat msdf = new SimpleDateFormat("mm");
-	private long loaded = 0;
 
 	private volatile boolean run = true;
 	@Override
@@ -53,17 +50,12 @@ public class AutoConsoleCommandThread extends Thread {
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 
 		//wait for server to start
-		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				loaded = System.currentTimeMillis();
+		SchedulerUtils.callSyncTaskAndWait(
+			new Runnable() {
+				public void run() {
+				}
 			}
-		});
-		while (loaded == 0) {
-			try{Thread.sleep(1000);} catch (Exception e) {}
-		}
-		Bukkit.getScheduler().cancelTask(ltask);
-
+		);
 
 		while (run) {
 
@@ -97,16 +89,18 @@ public class AutoConsoleCommandThread extends Thread {
 
 
 	private void executeCommands(final List<String> commands) {
-		if (plugin != null && plugin.isEnabled()) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					ConsoleCommandSender csender = Bukkit.getConsoleSender();
-					for (String command : commands) {
-						Bukkit.dispatchCommand(csender, command);
+		if (run) {
+			SchedulerUtils.scheduleSyncTask(
+				new Runnable() {
+					@Override
+					public void run() {
+						ConsoleCommandSender csender = Bukkit.getConsoleSender();
+						for (String command : commands) {
+							Bukkit.dispatchCommand(csender, command);
+						}
 					}
 				}
-			});
+			);
 		}
 	}
 
