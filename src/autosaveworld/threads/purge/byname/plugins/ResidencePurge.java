@@ -7,22 +7,16 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.util.Vector;
 
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.WorldEditRegeneration;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.utils.SchedulerUtils;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
 
 public class ResidencePurge {
-
-	private AutoSaveWorld plugin;
-
-	public ResidencePurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
 
 	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres) {
 
@@ -52,12 +46,7 @@ public class ResidencePurge {
 								WorldEditRegeneration.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint);
 							}
 						};
-						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, caregen);
-
-						//Wait until previous residence regeneration is finished to avoid full main thread freezing
-						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-							try {Thread.sleep(100);} catch (InterruptedException e) {}
-						}
+						SchedulerUtils.callSyncTaskAndWait(caregen);
 					}
 					//delete residence from db
 					MessageLogger.debug("Deleting residence "+res);
@@ -68,11 +57,7 @@ public class ResidencePurge {
 							Residence.getResidenceManager().save();
 						}
 					};
-					int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delres);
-
-					while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-						try {Thread.sleep(100);} catch (InterruptedException e) {}
-					}
+					SchedulerUtils.callSyncTaskAndWait(delres);
 
 					deletedres += 1;
 				}

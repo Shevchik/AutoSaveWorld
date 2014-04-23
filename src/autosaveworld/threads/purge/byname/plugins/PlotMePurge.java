@@ -22,22 +22,15 @@ import java.util.HashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.utils.SchedulerUtils;
 
 import com.worldcretornica.plotme.Plot;
 import com.worldcretornica.plotme.PlotManager;
 import com.worldcretornica.plotme.SqlManager;
 
 public class PlotMePurge {
-
-	private AutoSaveWorld plugin;
-
-	public PlotMePurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
 
 	public void doPlotMePurgeTask(ActivePlayersList pacheck, final boolean regenplot) {
 
@@ -74,12 +67,8 @@ public class PlotMePurge {
 								SqlManager.deletePlot(PlotManager.getIdX(PlotID), PlotManager.getIdZ(PlotID), w.getName().toLowerCase());
 							}
 						};
-						int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, delPlot);
+						SchedulerUtils.callSyncTaskAndWait(delPlot);
 
-						//Wait until previous plot regeneration is finished to avoid full main thread freezing
-						while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-							try {Thread.sleep(100);} catch (InterruptedException e) {}
-						}
 						delplots +=1;
 					}
 				}

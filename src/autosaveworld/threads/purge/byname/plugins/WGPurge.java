@@ -24,10 +24,10 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.WorldEditRegeneration;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.utils.SchedulerUtils;
 
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -36,17 +36,11 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class WGPurge {
 
-	private AutoSaveWorld plugin;
-
-	public WGPurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
 	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap) {
 
 		MessageLogger.debug("WG purge started");
 
-		WorldGuardPlugin wg = (WorldGuardPlugin) plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+		WorldGuardPlugin wg = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
 
 		int deletedrg = 0;
 
@@ -83,8 +77,7 @@ public class WGPurge {
 						//add region to delete batch
 						rgtodel.add(rg.getId());
 						//delete regions if maximum batch size reached
-						if (rgtodel.size() == 40)
-						{
+						if (rgtodel.size() == 40) {
 							flushBatch(m);
 						}
 					}
@@ -118,12 +111,7 @@ public class WGPurge {
 				}
 			}
 		};
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rgregen);
-
-		//Wait until previous region regeneration is finished to avoid full main thread freezing
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e) {}
-		}
+		SchedulerUtils.callSyncTaskAndWait(rgregen);
 	}
 
 	private ArrayList<String> rgtodel = new ArrayList<String>(70);
@@ -140,12 +128,7 @@ public class WGPurge {
 				rgtodel.clear();
 			}
 		};
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteregions);
-
-		//Wait until previous regions delete is finished to avoid full main thread freezing
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e) {}
-		}
+		SchedulerUtils.callSyncTaskAndWait(deleteregions);
 	}
 
 }

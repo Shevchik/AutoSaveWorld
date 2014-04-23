@@ -26,20 +26,14 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.utils.SchedulerUtils;
 
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;
 
 public class LWCPurge {
-
-	private AutoSaveWorld plugin;
-
-	public LWCPurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
 
 	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks) {
 
@@ -94,11 +88,7 @@ public class LWCPurge {
 				prtodel.clear();
 			}
 		};
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, rempr);
-
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(50);} catch (InterruptedException e) {}
-		}
+		SchedulerUtils.callSyncTaskAndWait(rempr);
 	}
 
 }

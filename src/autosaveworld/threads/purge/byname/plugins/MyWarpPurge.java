@@ -25,17 +25,11 @@ import me.taylorkelly.mywarp.data.Warp;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.utils.SchedulerUtils;
 
 public class MyWarpPurge {
-
-	private AutoSaveWorld plugin;
-
-	public MyWarpPurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
 
 	public void doMyWarpPurgeTask(ActivePlayersList pacheck) {
 
@@ -77,12 +71,7 @@ public class MyWarpPurge {
 				warptodel.clear();
 			}
 		};
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
-				rempr);
-
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(50);} catch (InterruptedException e) {}
-		}
+		SchedulerUtils.callSyncTaskAndWait(rempr);
 	}
 
 }

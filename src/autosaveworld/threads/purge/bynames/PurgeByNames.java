@@ -51,7 +51,7 @@ public class PurgeByNames {
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgewg) {
 			MessageLogger.debug("WG found, purging");
 			try {
-				new WGPurge(plugin).doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
+				new WGPurge().doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -60,7 +60,7 @@ public class PurgeByNames {
 		if ((pm.getPlugin("LWC") != null) && config.purgelwc) {
 			MessageLogger.debug("LWC found, purging");
 			try {
-				new LWCPurge(plugin).doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
+				new LWCPurge().doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -78,7 +78,7 @@ public class PurgeByNames {
 		if ((pm.getPlugin("PlotMe") !=null) && config.purgepm) {
 			MessageLogger.debug("PlotMe found, purging");
 			try {
-				new PlotMePurge(plugin).doPlotMePurgeTask(aplist, config.purgepmregen);
+				new PlotMePurge().doPlotMePurgeTask(aplist, config.purgepmregen);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -87,14 +87,14 @@ public class PurgeByNames {
 		if ((pm.getPlugin("Residence") !=null) && config.purgeresidence) {
 			MessageLogger.debug("Residence found, purging");
 			try {
-				new ResidencePurge(plugin).doResidencePurgeTask(aplist, config.purgeresregenarena);
+				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeresregenarena);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
 		if (pm.getPlugin("Vault") != null) {
-			VaultPurge vp = new VaultPurge(plugin);
+			VaultPurge vp = new VaultPurge();
 			if (config.purgeeconomy) {
 				MessageLogger.debug("Vault found, purging economy");
 				vp.doEconomyPurgeTask(aplist);
@@ -108,7 +108,7 @@ public class PurgeByNames {
 		if (pm.getPlugin("MyWarp") != null && config.purgemywarp) {
 			MessageLogger.debug("MyWarp found, purging");
 			try {
-				new MyWarpPurge(plugin).doMyWarpPurgeTask(aplist);
+				new MyWarpPurge().doMyWarpPurgeTask(aplist);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

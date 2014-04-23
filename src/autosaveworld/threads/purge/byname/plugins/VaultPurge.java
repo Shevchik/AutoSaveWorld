@@ -26,16 +26,11 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.utils.SchedulerUtils;
 
 public class VaultPurge {
-
-	private AutoSaveWorld plugin;
-	public VaultPurge(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
 
 	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
 	public void doPermissionsPurgeTask(ActivePlayersList pacheck) {
@@ -85,12 +80,7 @@ public class VaultPurge {
 				playerstopurgeperms.clear();
 			}
 		};
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteperms);
-
-		//Wait until previous permissions delete is finished to avoid full main thread freezing
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e) {}
-		}
+		SchedulerUtils.callSyncTaskAndWait(deleteperms);
 	}
 
 	private ArrayList<String> playerstopurgeecon = new ArrayList<String>(70);
@@ -107,7 +97,7 @@ public class VaultPurge {
 		for (String playerfile : playersdatfolder.list()) {
 			if (playerfile.endsWith(".dat")) {
 				String playername = playerfile.substring(0, playerfile.length() - 4);
-				if (!pacheck.isActiveCS(playername)) {
+				if (economy.hasAccount(playername) && !pacheck.isActiveCS(playername)) {
 					//add player to delete batch
 					playerstopurgeecon.add(playername);
 					//delete economy if maximum batch size reached
@@ -136,12 +126,7 @@ public class VaultPurge {
 				playerstopurgeecon.clear();
 			}
 		};
-		int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, deleteeconomy);
-
-		//Wait until previous permissions delete is finished to avoid full main thread freezing
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e) {}
-		}
+		SchedulerUtils.callSyncTaskAndWait(deleteeconomy);
 	}
 
 }
