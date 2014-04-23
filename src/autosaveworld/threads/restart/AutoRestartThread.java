@@ -90,7 +90,8 @@ public class AutoRestartThread  extends Thread{
 								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 							}
 						}
-					}
+					},
+					10
 				);
 
 				Bukkit.shutdown();
