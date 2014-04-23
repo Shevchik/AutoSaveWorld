@@ -3,10 +3,9 @@ package autosaveworld.threads.worldregen;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.utils.SchedulerUtils;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
@@ -20,11 +19,6 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class SchematicOperations {
-
-	private AutoSaveWorld plugin;
-	public SchematicOperations(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
 
 	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax) {
 		Runnable copypaste = new Runnable() {
@@ -56,10 +50,7 @@ public class SchematicOperations {
 				}
 			}
 		};
-		int ststaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, copypaste);
-		while (Bukkit.getScheduler().isCurrentlyRunning(ststaskid) || Bukkit.getScheduler().isQueued(ststaskid)) {
-			try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-		}
+		SchedulerUtils.callSyncTaskAndWait(copypaste);
 	}
 
 	public void pasteFromSchematic(final String schematic, final World world) {
@@ -85,10 +76,7 @@ public class SchematicOperations {
 					}
 				}
 			};
-			int pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, genchunks);
-			while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
-				try {Thread.sleep(100);} catch (InterruptedException e) {}
-			}
+			SchedulerUtils.callSyncTaskAndWait(genchunks);
 			Runnable paste = new Runnable() {
 				@Override
 				public void run() {
@@ -120,10 +108,7 @@ public class SchematicOperations {
 					}
 				}
 			};
-			pfstaskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, paste);
-			while (Bukkit.getScheduler().isCurrentlyRunning(pfstaskid) || Bukkit.getScheduler().isQueued(pfstaskid)) {
-				try {Thread.sleep(100);} catch (InterruptedException e) {}
-			}
+			SchedulerUtils.callSyncTaskAndWait(paste);
 		} catch (IOException | DataException e) {
 			e.printStackTrace();
 		}

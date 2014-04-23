@@ -160,7 +160,7 @@ public class WorldRegenCopyThread extends Thread {
 	private SchematicOperations schemops = null;
 	public SchematicOperations getSchematicOperations() {
 		if (schemops == null) {
-			schemops = new SchematicOperations(plugin);
+			schemops = new SchematicOperations();
 		}
 		return schemops;
 	}
