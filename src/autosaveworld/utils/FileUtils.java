@@ -15,30 +15,22 @@
  *
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.utils;
 
 import java.io.File;
 
-import autosaveworld.threads.restart.RestartWaiter;
-import autosaveworld.utils.FileUtils;
+public class FileUtils {
 
-public class WorldRegenJVMshutdownhook extends Thread {
-
-	private String fldtodelete;
-
-	public WorldRegenJVMshutdownhook(String fldtodelete) {
-		this.fldtodelete = fldtodelete;
-	}
-
-	@Override
-	public void run() {
-
-		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
-
-		//Delete region from world folder
-		FileUtils.deleteDirectory(new File(fldtodelete+File.separator+"region"));
-		//Signal that restarthook can restart
-		RestartWaiter.decrementWait();
+	public static void deleteDirectory(File file) {
+		if(!file.exists()) {return;}
+		if(file.isDirectory()) {
+			for(File f : file.listFiles()) {
+				deleteDirectory(f);
+			}
+			file.delete();
+		} else {
+			file.delete();
+		}
 	}
 
 }

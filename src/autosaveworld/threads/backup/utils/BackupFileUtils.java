@@ -53,20 +53,6 @@ public class BackupFileUtils {
 		}
 	}
 
-	public static void deleteDirectory(File file) {
-		if(!file.exists()) {
-			return;
-		}
-		if(file.isDirectory()) {
-			for(File f : file.listFiles()) {
-				deleteDirectory(f);
-			}
-			file.delete();
-		} else {
-			file.delete();
-		}
-	}
-
 	public static String findOldestBackupNameLFS(String backupsfodler) {
 		String[] timestamps = new File(backupsfodler).list();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");

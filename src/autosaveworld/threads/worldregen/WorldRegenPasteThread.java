@@ -32,6 +32,7 @@ import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.griefprevention.GPPaste;
 import autosaveworld.threads.worldregen.towny.TownyPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
+import autosaveworld.utils.FileUtils;
 
 public class WorldRegenPasteThread extends Thread {
 
@@ -122,10 +123,10 @@ public class WorldRegenPasteThread extends Thread {
 		//clear temp folder
 		MessageLogger.debug("Cleaning temp folders");
 
-		deleteDirectory(new File(GlobalConstants.getWGTempFolder()));
-		deleteDirectory(new File(GlobalConstants.getFactionsTempFolder()));
-		deleteDirectory(new File(GlobalConstants.getGPTempFolder()));
-		deleteDirectory(new File(GlobalConstants.getTownyTempFolder()));
+		FileUtils.deleteDirectory(new File(GlobalConstants.getWGTempFolder()));
+		FileUtils.deleteDirectory(new File(GlobalConstants.getFactionsTempFolder()));
+		FileUtils.deleteDirectory(new File(GlobalConstants.getGPTempFolder()));
+		FileUtils.deleteDirectory(new File(GlobalConstants.getTownyTempFolder()));
 		new File(GlobalConstants.getWorldnameFile()).delete();
 		new File(GlobalConstants.getWorldRegenTempFolder()).delete();
 
@@ -147,18 +148,6 @@ public class WorldRegenPasteThread extends Thread {
 			schemops = new SchematicOperations();
 		}
 		return schemops;
-	}
-
-	private void deleteDirectory(File file) {
-		if(!file.exists())  {return;}
-		if(file.isDirectory()) {
-			for(File f : file.listFiles()) {
-				deleteDirectory(f);
-			}
-			file.delete();
-		} else {
-			file.delete();
-		}
 	}
 
 }

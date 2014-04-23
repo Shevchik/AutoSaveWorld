@@ -27,6 +27,7 @@ import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.utils.BackupFileUtils;
 import autosaveworld.threads.backup.utils.ZipUtils;
+import autosaveworld.utils.FileUtils;
 
 public class LFSBackupOperations {
 
@@ -57,7 +58,7 @@ public class LFSBackupOperations {
 					//delete oldest backup
 					if (oldestBackupName != null) {
 						File oldestBakup = new File(worldbackupfolder + File.separator + oldestBackupName);
-						BackupFileUtils.deleteDirectory(oldestBakup);
+						FileUtils.deleteDirectory(oldestBakup);
 					}
 				}
 				MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
@@ -95,7 +96,7 @@ public class LFSBackupOperations {
 					//delete oldest backup
 					if (oldestBackupName != null) {
 						File oldestBakup = new File(pluginsbackupfolder + File.separator + oldestBackupName);
-						BackupFileUtils.deleteDirectory(oldestBakup);
+						FileUtils.deleteDirectory(oldestBakup);
 					}
 				}
 				MessageLogger.debug("Backuping plugins");
@@ -115,8 +116,8 @@ public class LFSBackupOperations {
 
 	public void deleteOldestPluginsBackup(String oldestbackupdate) {
 		String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+oldestbackupdate;
-		BackupFileUtils.deleteDirectory(new File(fldtodel));
-		BackupFileUtils.deleteDirectory(new File(fldtodel+".zip"));
+		FileUtils.deleteDirectory(new File(fldtodel));
+		FileUtils.deleteDirectory(new File(fldtodel+".zip"));
 	}
 
 }
