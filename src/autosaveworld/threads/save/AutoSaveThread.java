@@ -22,12 +22,11 @@ import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.scheduler.BukkitScheduler;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.SchedulerUtils;
 
 public class AutoSaveThread extends Thread {
 
@@ -110,10 +109,8 @@ public class AutoSaveThread extends Thread {
 		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 		// Save the players
 		MessageLogger.debug("Saving players");
-		BukkitScheduler scheduler = plugin.getServer().getScheduler();
-		int taskid;
 		if (run) {
-			taskid = scheduler.scheduleSyncDelayedTask(plugin,
+			SchedulerUtils.callSyncTaskAndWait(
 				new Runnable() {
 					@Override
 					public void run() {
@@ -121,16 +118,13 @@ public class AutoSaveThread extends Thread {
 					}
 				}
 			);
-			while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid)) {
-				try {Thread.sleep(100);} catch (InterruptedException e) {}
-			}
 		}
 		MessageLogger.debug("Saved Players");
 		// Save the worlds
 		MessageLogger.debug("Saving worlds");
 		for (final World world : plugin.getServer().getWorlds()) {
 			if (run) {
-				taskid = scheduler.scheduleSyncDelayedTask(plugin,
+				SchedulerUtils.callSyncTaskAndWait(
 					new Runnable() {
 						@Override
 						public void run() {
@@ -139,9 +133,6 @@ public class AutoSaveThread extends Thread {
 						}
 					}
 				);
-				while (scheduler.isCurrentlyRunning(taskid) || scheduler.isQueued(taskid)) {
-					try {Thread.sleep(100);} catch (InterruptedException e) {}
-				}
 			}
 		}
 		MessageLogger.debug("Saved Worlds");
