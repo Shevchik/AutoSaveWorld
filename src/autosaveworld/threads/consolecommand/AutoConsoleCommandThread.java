@@ -52,6 +52,7 @@ public class AutoConsoleCommandThread extends Thread {
 		//wait for server to start
 		SchedulerUtils.callSyncTaskAndWait(
 			new Runnable() {
+				@Override
 				public void run() {
 				}
 			}

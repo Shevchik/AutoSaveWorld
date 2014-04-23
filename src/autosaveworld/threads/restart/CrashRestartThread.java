@@ -64,7 +64,7 @@ public class CrashRestartThread extends Thread{
 					syncticktime = System.currentTimeMillis();
 				}
 			},
-			0, 
+			0,
 			20
 		);
 
