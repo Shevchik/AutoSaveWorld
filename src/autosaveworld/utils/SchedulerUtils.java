@@ -30,10 +30,19 @@ public class SchedulerUtils {
 		SchedulerUtils.plugin = plugin;
 	}
 
-	public static void callSyncTaskAndWait(final Runnable run) {
+	public static void callSyncTaskAndWait(Runnable run) {
+		scheduleSyncTaskAndWaitInternal(run, -1);
+	}
+
+	public static void scheduleSyncTaskAndWait(Runnable run, int timeout) {
+		scheduleSyncTaskAndWaitInternal(run, timeout*=1000);
+	}
+
+	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
 		if (Bukkit.isPrimaryThread()) {
 			throw new RuntimeException("This method can't be called from the main thread");
 		}
+		boolean infinitewait = timeout == -1;
 		final AtomicBoolean syncTaskFinishedFlag = new AtomicBoolean(false);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
 			new Runnable() {
@@ -44,7 +53,8 @@ public class SchedulerUtils {
 				}
 			}
 		);
-		while (!syncTaskFinishedFlag.get()) {
+		while (!syncTaskFinishedFlag.get() && (timeout > 0 || infinitewait)) {
+			timeout -= 50;
 			try {Thread.sleep(50);} catch (InterruptedException e) {}
 		}
 	}
@@ -55,6 +65,10 @@ public class SchedulerUtils {
 
 	public static void scheduleSyncTask(Runnable run, int delay) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, run, delay);
+	}
+
+	public static void scheduleSyncRepeatingTask(Runnable run, int delay, int interval) {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, run, delay, interval);
 	}
 
 }
