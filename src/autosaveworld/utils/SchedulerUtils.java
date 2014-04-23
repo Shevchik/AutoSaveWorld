@@ -22,7 +22,7 @@ import org.bukkit.Bukkit;
 import autosaveworld.core.AutoSaveWorld;
 
 public class SchedulerUtils {
-	
+
 	private static AutoSaveWorld plugin;
 	public SchedulerUtils(AutoSaveWorld plugin) {
 		SchedulerUtils.plugin = plugin;
@@ -38,7 +38,7 @@ public class SchedulerUtils {
 		if (Bukkit.isPrimaryThread()) {
 			throw new RuntimeException("This method can't be called from the main thread");
 		}
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, 
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
 			new Runnable() {
 				@Override
 				public void run() {
@@ -50,6 +50,14 @@ public class SchedulerUtils {
 		while (!syncTaskFinishedFlag.get()) {
 			try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
 		}
+	}
+
+	public static void scheduleSyncTask(Runnable run) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, run);
+	}
+
+	public static void scheduleSyncTask(Runnable run, int delay) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, run, delay);
 	}
 
 }
