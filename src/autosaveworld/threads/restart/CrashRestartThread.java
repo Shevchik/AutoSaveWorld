@@ -26,16 +26,14 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.SchedulerUtils;
 
 public class CrashRestartThread extends Thread{
 
-	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
 	private RestartJVMshutdownhook jvmsh;
-	public CrashRestartThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
-		this.plugin = plugin;
+	public CrashRestartThread(AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
 		this.config = config;
 		this.jvmsh = jvmsh;
 	}
@@ -59,12 +57,16 @@ public class CrashRestartThread extends Thread{
 
 		MessageLogger.debug("Running crashrestart checker");
 		//schedule sync task in, this will provide us info about when the last server tick occured
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				syncticktime = System.currentTimeMillis();
-			}
-		}, 0, 20);
+		SchedulerUtils.scheduleSyncRepeatingTask(
+			new Runnable() {
+				@Override
+				public void run() {
+					syncticktime = System.currentTimeMillis();
+				}
+			},
+			0, 
+			20
+		);
 
 		while (run) {
 			long diff = System.currentTimeMillis() - syncticktime;
