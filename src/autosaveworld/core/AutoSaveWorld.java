@@ -176,7 +176,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			}
 			case AUTORESTART: {
 				if (autorestartThread == null || !autorestartThread.isAlive()) {
-					autorestartThread = new AutoRestartThread(this, config, configmsg, JVMsh);
+					autorestartThread = new AutoRestartThread(config, configmsg, JVMsh);
 					autorestartThread.start();
 				}
 				return true;

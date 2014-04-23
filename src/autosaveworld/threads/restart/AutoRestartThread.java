@@ -23,18 +23,16 @@ import org.bukkit.Bukkit;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.SchedulerUtils;
 
 
 public class AutoRestartThread  extends Thread{
 
-	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 	private RestartJVMshutdownhook jvmsh;
-	public AutoRestartThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
-		this.plugin = plugin;
+	public AutoRestartThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
 		this.config = config;
 		this.configmsg = configmsg;
 		this.jvmsh = jvmsh;
@@ -84,22 +82,18 @@ public class AutoRestartThread  extends Thread{
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 
-
-				int taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					@Override
-					public void run() {
-						for (String command : config.autorestartcommmands) {
-							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+				SchedulerUtils.callSyncTaskAndWait(
+					new Runnable() {
+						@Override
+						public void run() {
+							for (String command : config.autorestartcommmands) {
+								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+							}
 						}
 					}
-				});
-				int curwait = 0;
-				while ((Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) && curwait < 10) {
-					try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-					curwait++;
-				}
+				);
 
-				plugin.getServer().shutdown();
+				Bukkit.shutdown();
 
 			}
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
