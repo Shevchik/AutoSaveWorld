@@ -1,4 +1,4 @@
-package autosaveworld.threads.worldregen.dataschematic;
+package autosaveworld.threads.worldregen;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class SchematicOperations {
 
@@ -49,7 +50,7 @@ public class SchematicOperations {
 					}
 					//save to schematic
 					File f = new File(schematic);
-					MCEditSchematic.save(clipboard, f);
+					SchematicFormat.MCEDIT.save(clipboard, f);
 				} catch (IOException | DataException e) {
 					e.printStackTrace();
 				}
@@ -68,7 +69,7 @@ public class SchematicOperations {
 			es.setFastMode(true);
 			es.enableQueue();
 			File f = new File(schematic);
-			final CuboidClipboard cc = MCEditSchematic.load(f);
+			final CuboidClipboard cc = SchematicFormat.MCEDIT.load(f);
 			//get schematic coords
 			final Vector size = cc.getSize();
 			final Vector origin = cc.getOrigin();

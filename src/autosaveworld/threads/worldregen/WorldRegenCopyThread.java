@@ -31,7 +31,6 @@ import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.restart.RestartWaiter;
-import autosaveworld.threads.worldregen.dataschematic.SchematicOperations;
 import autosaveworld.threads.worldregen.factions.FactionsCopy;
 import autosaveworld.threads.worldregen.griefprevention.GPCopy;
 import autosaveworld.threads.worldregen.towny.TownyCopy;

@@ -28,7 +28,6 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.worldregen.dataschematic.SchematicOperations;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.griefprevention.GPPaste;
 import autosaveworld.threads.worldregen.towny.TownyPaste;
