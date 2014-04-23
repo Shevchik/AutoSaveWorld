@@ -34,7 +34,7 @@ public class SchedulerUtils {
 		scheduleSyncTaskAndWaitInternal(run, -1);
 	}
 
-	public static void scheduleSyncTaskAndWait(Runnable run, int timeout) {
+	public static void callSyncTaskAndWait(Runnable run, int timeout) {
 		scheduleSyncTaskAndWaitInternal(run, timeout*=1000);
 	}
 
