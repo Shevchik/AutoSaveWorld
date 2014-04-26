@@ -13,7 +13,6 @@ public class UniquePlayerIdentifierDetector {
 			craftofflineplayer.getDeclaredConstructor(craftserver, net.minecraft.util.com.mojang.authlib.GameProfile.class);
 			return UniquePlayerIdentifierType.UUID;
 		} catch (Exception | NoSuchMethodError e) {
-			e.printStackTrace();
 		}
 		return UniquePlayerIdentifierType.NAME;
 	}
