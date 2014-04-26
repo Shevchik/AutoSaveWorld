@@ -17,8 +17,6 @@
 
 package autosaveworld.utils;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.AutoSaveWorld;
@@ -31,31 +29,34 @@ public class SchedulerUtils {
 	}
 
 	public static void callSyncTaskAndWait(Runnable run) {
-		scheduleSyncTaskAndWaitInternal(run, -1);
+		scheduleSyncTaskAndWaitInternal(run, 0);
 	}
 
 	public static void callSyncTaskAndWait(Runnable run, int timeout) {
-		scheduleSyncTaskAndWaitInternal(run, timeout*=1000);
+		scheduleSyncTaskAndWaitInternal(run, timeout *= 1000);
 	}
 
 	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
 		if (Bukkit.isPrimaryThread()) {
 			throw new RuntimeException("This method can't be called from the main thread");
 		}
-		boolean infinitewait = timeout == -1;
-		final AtomicBoolean syncTaskFinishedFlag = new AtomicBoolean(false);
+		final Object lock = new Object();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
 			new Runnable() {
 				@Override
 				public void run() {
 					run.run();
-					syncTaskFinishedFlag.set(true);
+					synchronized (lock) {
+						lock.notify();
+					}
 				}
 			}
 		);
-		while (!syncTaskFinishedFlag.get() && (timeout > 0 || infinitewait)) {
-			timeout -= 50;
-			try {Thread.sleep(50);} catch (InterruptedException e) {}
+		try {
+			synchronized (lock) {
+				lock.wait(timeout);
+			}
+		} catch (InterruptedException e) {
 		}
 	}
 
