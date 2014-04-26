@@ -2,20 +2,18 @@ package autosaveworld.threads.purge;
 
 import java.util.UUID;
 
-import net.minecraft.util.com.mojang.authlib.GameProfile;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 
 public class UniquePlayerIdentifierDetector {
 
 	public static UniquePlayerIdentifierType getUniquePlayerIdentifierType() {
 		try {
-			Server server = Bukkit.getServer();
+			Class<?> craftserver = Bukkit.getServer().getClass();
 			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer(UUID.randomUUID()).getClass();
-			craftofflineplayer.getConstructor(server.getClass(), GameProfile.class);
+			craftofflineplayer.getDeclaredConstructor(craftserver, net.minecraft.util.com.mojang.authlib.GameProfile.class);
 			return UniquePlayerIdentifierType.UUID;
 		} catch (Exception | NoSuchMethodError e) {
+			e.printStackTrace();
 		}
 		return UniquePlayerIdentifierType.NAME;
 	}
