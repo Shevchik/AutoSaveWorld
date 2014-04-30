@@ -64,10 +64,6 @@ public class SchedulerUtils {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, run);
 	}
 
-	public static void scheduleSyncTask(Runnable run, int delay) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, run, delay);
-	}
-
 	public static void scheduleSyncRepeatingTask(Runnable run, int delay, int interval) {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, run, delay, interval);
 	}
