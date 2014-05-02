@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.pluginmanager;
+package autosaveworld.modules.pluginmanager;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;

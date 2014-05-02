@@ -25,7 +25,7 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.listener.EventsListener;
-import autosaveworld.pluginmanager.ASWPluginManager;
+import autosaveworld.modules.pluginmanager.ASWPluginManager;
 import autosaveworld.threads.ThreadType;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
