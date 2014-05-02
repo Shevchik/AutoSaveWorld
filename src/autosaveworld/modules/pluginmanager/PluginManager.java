@@ -31,10 +31,10 @@ import org.bukkit.plugin.Plugin;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 
-public class ASWPluginManager {
+public class PluginManager {
 
 	private AutoSaveWorld plugin;
-	public ASWPluginManager(AutoSaveWorld plugin) {
+	public PluginManager(AutoSaveWorld plugin) {
 		this.plugin = plugin;
 		if (ManagementFactory.getRuntimeMXBean().getInputArguments().contains("-XX:+DisableExplicitGC")) {
 			MessageLogger.warn("Your JVM is configured to ignore GC calls, plugin manager may not work as expected");
