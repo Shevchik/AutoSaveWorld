@@ -35,6 +35,7 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.StringUtils;
 
 public class CommandsHandler implements CommandExecutor {
 
@@ -103,6 +104,16 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 				MessageLogger.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
+			} else if (args.length >= 5 && args[0].equalsIgnoreCase("process")) {
+				if (!config.aswexecpassword.isEmpty()) {
+					if (args[1].equals(config.aswexecpassword)) {
+						
+					} else {
+						sender.sendMessage("Password is invalid");
+					}
+				} else {
+					sender.sendMessage("Set a password for this command first");
+				}
 			} else if (args.length >= 4 && args[0].equalsIgnoreCase("exec")) {
 				if (!config.aswexecpassword.isEmpty()) {
 					if (args[1].equals(config.aswexecpassword)) {
@@ -121,7 +132,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
-				plugin.pmanager.handlePluginManagerCommand(sender, args[1], join(nameArray, " "));
+				plugin.pmanager.handlePluginManagerCommand(sender, args[1], StringUtils.join(nameArray, " "));
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcegc")) {
 				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
@@ -228,22 +239,6 @@ public class CommandsHandler implements CommandExecutor {
 			return false;
 		}
 		return false;
-	}
-
-	private String join(String[] args, String join) {
-		if (args.length == 0) {
-			return "";
-		}
-		if (args.length == 1) {
-			return args[0];
-		}
-		StringBuilder sb = new StringBuilder(50);
-		sb.append(args[0]);
-		for (int i = 1; i < args.length; i++) {
-			sb.append(join);
-			sb.append(args[i]);
-		}
-		return sb.toString();
 	}
 
 }
