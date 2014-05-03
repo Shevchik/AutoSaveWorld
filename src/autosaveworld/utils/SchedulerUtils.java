@@ -39,9 +39,6 @@ public class SchedulerUtils {
 	}
 
 	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
-		if (Bukkit.isPrimaryThread()) {
-			throw new RuntimeException("This method can't be called from the main thread");
-		}
 		final LinkedBlockingQueue<Boolean> lock = new LinkedBlockingQueue<Boolean>(1);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(
 			plugin,
