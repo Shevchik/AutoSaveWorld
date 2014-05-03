@@ -107,14 +107,14 @@ public class CommandsHandler implements CommandExecutor {
 			} else if (args.length >= 5 && args[0].equalsIgnoreCase("process")) {
 				if (!config.aswexecpassword.isEmpty()) {
 					if (args[1].equals(config.aswexecpassword)) {
-						
+
 					} else {
 						sender.sendMessage("Password is invalid");
 					}
 				} else {
 					sender.sendMessage("Set a password for this command first");
 				}
-			} else if (args.length >= 4 && args[0].equalsIgnoreCase("exec")) {
+			} else if (args.length >= 3 && args[0].equalsIgnoreCase("exec")) {
 				if (!config.aswexecpassword.isEmpty()) {
 					if (args[1].equals(config.aswexecpassword)) {
 						String[] cmds = Arrays.copyOfRange(args, 2, args.length);
