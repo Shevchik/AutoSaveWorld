@@ -137,7 +137,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
-				plugin.pmanager.handlePluginManagerCommand(sender, args[1], StringUtils.join(nameArray, " "));
+				plugin.pluginmanager.handlePluginManagerCommand(sender, args[1], StringUtils.join(nameArray, " "));
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcegc")) {
 				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();

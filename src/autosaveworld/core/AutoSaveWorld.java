@@ -57,7 +57,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public WorldRegenCopyThread worldregencopyThread = null;
 	public WorldRegenPasteThread worldregenpasteThread = null;
 	//plugin manager
-	public PluginManager pmanager;
+	public PluginManager pluginmanager;
 	//process manager
 	public ProcessManager processmanager;
 	//configs
@@ -94,7 +94,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		eh = new EventsListener(this,config);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		// Load plugin manager
-		pmanager = new PluginManager(this);
+		pluginmanager = new PluginManager(this);
 		// Load process manager
 		processmanager = new ProcessManager();
 		// Register events and commands
@@ -138,7 +138,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.WORLDREGENCOPY);
 		stopThread(ThreadType.WORLDREGENPASTE);
 		//null plugin manager
-		pmanager = null;
+		pluginmanager = null;
 		//null process manager
 		processmanager = null;
 		//null values
