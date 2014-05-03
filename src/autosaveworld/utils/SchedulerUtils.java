@@ -17,6 +17,8 @@
 
 package autosaveworld.utils;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.AutoSaveWorld;
@@ -33,30 +35,32 @@ public class SchedulerUtils {
 	}
 
 	public static void callSyncTaskAndWait(Runnable run, int timeout) {
-		scheduleSyncTaskAndWaitInternal(run, timeout *= 1000);
+		scheduleSyncTaskAndWaitInternal(run, timeout);
 	}
 
 	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
 		if (Bukkit.isPrimaryThread()) {
 			throw new RuntimeException("This method can't be called from the main thread");
 		}
-		final Object lock = new Object();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+		final LinkedBlockingQueue<Boolean> lock = new LinkedBlockingQueue<Boolean>(1);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(
+			plugin,
 			new Runnable() {
 				@Override
 				public void run() {
 					run.run();
-					synchronized (lock) {
-						lock.notify();
-					}
+					lock.add(true);
 				}
 			}
 		);
 		try {
-			synchronized (lock) {
-				lock.wait(timeout);
+			if (timeout == 0) {
+				lock.take();
+			} else {
+				lock.poll(timeout, TimeUnit.SECONDS);
 			}
 		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
