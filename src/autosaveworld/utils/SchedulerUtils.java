@@ -49,7 +49,7 @@ public class SchedulerUtils {
 				@Override
 				public void run() {
 					run.run();
-					lock.add(true);
+					lock.offer(true);
 				}
 			}
 		);
@@ -60,7 +60,6 @@ public class SchedulerUtils {
 				lock.poll(timeout, TimeUnit.SECONDS);
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 
