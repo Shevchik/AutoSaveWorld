@@ -39,7 +39,7 @@ public class RunningProcess {
 	public void start(CommandSender sender) {
 		sender.sendMessage("Starting process");
 		ProcessBuilder pb = new ProcessBuilder();
-		pb.redirectErrorStream();
+		pb.redirectErrorStream(true);
 		pb.command(args);
 		try {
 			p = pb.start();
