@@ -121,13 +121,7 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
-				StringBuilder sb = new StringBuilder(50);
-				for (String namearg : nameArray) {
-					sb.append(namearg);
-					sb.append(" ");
-				}
-				sb.deleteCharAt(sb.length()-1);
-				plugin.pmanager.handlePluginManagerCommand(sender, args[1], sb.toString());
+				plugin.pmanager.handlePluginManagerCommand(sender, args[1], join(nameArray, " "));
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcegc")) {
 				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
@@ -234,6 +228,22 @@ public class CommandsHandler implements CommandExecutor {
 			return false;
 		}
 		return false;
+	}
+
+	private String join(String[] args, String join) {
+		if (args.length == 0) {
+			return "";
+		}
+		if (args.length == 1) {
+			return args[0];
+		}
+		StringBuilder sb = new StringBuilder(50);
+		sb.append(args[0]);
+		for (int i = 1; i < args.length; i++) {
+			sb.append(join);
+			sb.append(args[i]);
+		}
+		return sb.toString();
 	}
 
 }
