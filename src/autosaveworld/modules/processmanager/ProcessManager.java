@@ -28,9 +28,9 @@ public class ProcessManager {
 			runProcess(sender, processname, args);
 		} else if (command.equalsIgnoreCase("stop")) {
 			killProcess(sender, processname);
-		} else if (command.equalsIgnoreCase("printoutput")) {
+		} else if (command.equalsIgnoreCase("output")) {
 			printProcessOutput(sender, processname);
-		} else if (command.equalsIgnoreCase("supplyinput")) {
+		} else if (command.equalsIgnoreCase("input")) {
 			supplyProcessInput(sender, processname, StringUtils.join(args, " "));
 		}
 	}
