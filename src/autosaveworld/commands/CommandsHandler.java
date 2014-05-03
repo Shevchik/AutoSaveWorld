@@ -104,16 +104,21 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 				MessageLogger.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
-			} else if (args.length >= 5 && args[0].equalsIgnoreCase("process")) {
+			} else if (args.length >= 4 && args[0].equalsIgnoreCase("process")) {
 				if (!config.aswexecpassword.isEmpty()) {
 					if (args[1].equals(config.aswexecpassword)) {
-
+						String[] processargs = null;
+						if (args.length > 4) {
+							processargs = Arrays.copyOfRange(args, 4, args.length);
+						}
+						plugin.processmanager.handleProcessManagerCommand(sender, args[2], args[3], processargs);
 					} else {
 						sender.sendMessage("Password is invalid");
 					}
 				} else {
 					sender.sendMessage("Set a password for this command first");
 				}
+				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("exec")) {
 				if (!config.aswexecpassword.isEmpty()) {
 					if (args[1].equals(config.aswexecpassword)) {

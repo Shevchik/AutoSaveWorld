@@ -17,6 +17,68 @@
 
 package autosaveworld.modules.processmanager;
 
+import org.bukkit.command.CommandSender;
+
+import autosaveworld.utils.StringUtils;
+
 public class ProcessManager {
+
+	public void handleProcessManagerCommand(CommandSender sender, String command, String processname, String[] args) {
+		if (command.equalsIgnoreCase("start")) {
+			runProcess(sender, processname, args);
+		} else if (command.equalsIgnoreCase("stop")) {
+			killProcess(sender, processname);
+		} else if (command.equalsIgnoreCase("printoutput")) {
+			printProcessOutput(sender, processname);
+		} else if (command.equalsIgnoreCase("supplyinput")) {
+			supplyProcessInput(sender, processname, StringUtils.join(args, " "));
+		}
+	}
+
+	private ProcessStorage storage = new ProcessStorage();
+
+	private void runProcess(CommandSender sender, String prname,  String [] args) {
+		if (storage.getProcess(prname) != null) {
+			sender.sendMessage("Process with this name already registered");
+			return;
+		}
+		if (args == null) {
+			sender.sendMessage("No process args detected");
+			return;
+		}
+		RunningProcess process = new RunningProcess(args);
+		storage.registerProcess(prname, process);
+		process.start(sender);
+	}
+
+	private void printProcessOutput(CommandSender sender, String processname) {
+		RunningProcess process = storage.getProcess(processname);
+		if (process != null) {
+			sender.sendMessage("Printing latest process output");
+			process.printOutput(sender);
+		} else {
+			sender.sendMessage("Process with this name is not found");
+		}
+	}
+
+	private void supplyProcessInput(CommandSender sender, String processname, String line) {
+		RunningProcess process = storage.getProcess(processname);
+		if (process != null) {
+			sender.sendMessage("Sending line to the process");
+			process.supplyInput(sender, line);
+		} else {
+			sender.sendMessage("Process with this name is not found");
+		}
+	}
+
+	private void killProcess(CommandSender sender, String processname) {
+		RunningProcess process = storage.getProcess(processname);
+		if (process != null) {
+			storage.unregisterProcess(processname);
+			process.stop();
+		} else {
+			sender.sendMessage("Process with this name is not found");
+		}
+	}
 
 }

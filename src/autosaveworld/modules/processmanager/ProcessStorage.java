@@ -17,6 +17,22 @@
 
 package autosaveworld.modules.processmanager;
 
+import java.util.HashMap;
+
 public class ProcessStorage {
+
+	private HashMap<String, RunningProcess> processes = new HashMap<String, RunningProcess>();
+
+	public void registerProcess(String name, RunningProcess pr) {
+		processes.put(name, pr);
+	}
+
+	public RunningProcess getProcess(String name) {
+		return processes.get(name);
+	}
+
+	public void unregisterProcess(String name) {
+		processes.remove(name);
+	}
 
 }

@@ -17,6 +17,74 @@
 
 package autosaveworld.modules.processmanager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.bukkit.command.CommandSender;
+
 public class RunningProcess {
+
+	private String[] args;
+	public RunningProcess(String[] args) {
+		this.args = args;
+	}
+
+	private Process p;
+
+	private Queue<String> output = new LinkedList<String>();
+
+	public void start(CommandSender sender) {
+		ProcessBuilder pb = new ProcessBuilder();
+		pb.redirectErrorStream();
+		pb.command(args);
+		try {
+			p = pb.start();
+		} catch (Exception e) {
+			sender.sendMessage("Error occured when starting process");
+			sender.sendMessage(e.getMessage());
+			return;
+		}
+		new Thread() {
+			@Override
+			public void run() {
+				BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				String line;
+				try {
+					while (p != null && (line = br.readLine()) != null) {
+						output.add(line);
+					}
+				} catch (IOException e) {
+				}
+			}
+		}.start();
+	}
+
+	public void printOutput(CommandSender sender) {
+		String line;
+		while ((line = output.poll()) != null) {
+			sender.sendMessage(line);
+		}
+		try {
+			int exit = p.exitValue();
+			sender.sendMessage("Process finished exit code "+exit);
+		} catch (Exception e) {
+		}
+	}
+
+	public void supplyInput(CommandSender sender, String line) {
+		try {
+			p.getOutputStream().write(line.getBytes());
+		} catch (IOException e) {
+			sender.sendMessage(e.getMessage());
+		}
+	}
+
+	public void stop() {
+		p.destroy();
+		p = null;
+	}
 
 }

@@ -26,6 +26,7 @@ import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.listener.EventsListener;
 import autosaveworld.modules.pluginmanager.PluginManager;
+import autosaveworld.modules.processmanager.ProcessManager;
 import autosaveworld.threads.ThreadType;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
@@ -57,6 +58,8 @@ public class AutoSaveWorld extends JavaPlugin {
 	public WorldRegenPasteThread worldregenpasteThread = null;
 	//plugin manager
 	public PluginManager pmanager;
+	//process manager
+	public ProcessManager processmanager;
 	//configs
 	public AutoSaveWorldConfigMSG configmsg;
 	public AutoSaveWorldConfig config;
@@ -92,6 +95,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		// Load plugin manager
 		pmanager = new PluginManager(this);
+		// Load process manager
+		processmanager = new ProcessManager();
 		// Register events and commands
 		getCommand("autosaveworld").setExecutor(ch);
 		getCommand("autosave").setExecutor(ch);
@@ -134,6 +139,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.WORLDREGENPASTE);
 		//null plugin manager
 		pmanager = null;
+		//null process manager
+		processmanager = null;
 		//null values
 		configmsg = null;
 		config = null;
