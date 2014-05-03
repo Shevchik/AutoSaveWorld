@@ -37,13 +37,14 @@ public class RunningProcess {
 	private Queue<String> output = new LinkedList<String>();
 
 	public void start(CommandSender sender) {
+		sender.sendMessage("Starting process");
 		ProcessBuilder pb = new ProcessBuilder();
 		pb.redirectErrorStream();
 		pb.command(args);
 		try {
 			p = pb.start();
 		} catch (Exception e) {
-			sender.sendMessage("Error occured when starting process");
+			sender.sendMessage("Error occured while starting process");
 			sender.sendMessage(e.getMessage());
 			return;
 		}
@@ -60,9 +61,11 @@ public class RunningProcess {
 				}
 			}
 		}.start();
+		sender.sendMessage("Process started");
 	}
 
 	public void printOutput(CommandSender sender) {
+		sender.sendMessage("Printing latest process output");
 		String line;
 		while ((line = output.poll()) != null) {
 			sender.sendMessage(line);
@@ -72,19 +75,26 @@ public class RunningProcess {
 			sender.sendMessage("Process finished exit code "+exit);
 		} catch (Exception e) {
 		}
+		sender.sendMessage("Process output print finished");
 	}
 
 	public void supplyInput(CommandSender sender, String line) {
+		sender.sendMessage("Sending line to the process");
 		try {
 			p.getOutputStream().write(line.getBytes());
 		} catch (IOException e) {
+			sender.sendMessage("Error occured while sending line to process");
 			sender.sendMessage(e.getMessage());
+			return;
 		}
+		sender.sendMessage("Line sent");
 	}
 
-	public void stop() {
+	public void stop(CommandSender sender) {
+		sender.sendMessage("Stopping process");
 		p.destroy();
 		p = null;
+		sender.sendMessage("Process stopped");
 	}
 
 }

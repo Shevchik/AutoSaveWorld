@@ -54,7 +54,6 @@ public class ProcessManager {
 	private void printProcessOutput(CommandSender sender, String processname) {
 		RunningProcess process = storage.getProcess(processname);
 		if (process != null) {
-			sender.sendMessage("Printing latest process output");
 			process.printOutput(sender);
 		} else {
 			sender.sendMessage("Process with this name is not found");
@@ -64,7 +63,6 @@ public class ProcessManager {
 	private void supplyProcessInput(CommandSender sender, String processname, String line) {
 		RunningProcess process = storage.getProcess(processname);
 		if (process != null) {
-			sender.sendMessage("Sending line to the process");
 			process.supplyInput(sender, line);
 		} else {
 			sender.sendMessage("Process with this name is not found");
@@ -75,7 +73,7 @@ public class ProcessManager {
 		RunningProcess process = storage.getProcess(processname);
 		if (process != null) {
 			storage.unregisterProcess(processname);
-			process.stop();
+			process.stop(sender);
 		} else {
 			sender.sendMessage("Process with this name is not found");
 		}
