@@ -18,6 +18,7 @@
 package autosaveworld.modules.processmanager;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ProcessStorage {
 
@@ -33,6 +34,10 @@ public class ProcessStorage {
 
 	public void unregisterProcess(String name) {
 		processes.remove(name);
+	}
+
+	public HashSet<String> getRegisteredProcesses() {
+		return new HashSet<String>(processes.keySet());
 	}
 
 }

@@ -32,12 +32,17 @@ public class ProcessManager {
 			printProcessOutput(sender, processname);
 		} else if (command.equalsIgnoreCase("input")) {
 			supplyProcessInput(sender, processname, StringUtils.join(args, " "));
+		} else if (command.equalsIgnoreCase("list")) {
+			listProcesses(sender);
 		}
 	}
 
 	private ProcessStorage storage = new ProcessStorage();
 
 	private void runProcess(CommandSender sender, String prname,  String [] args) {
+		if (prname == null) {
+			sender.sendMessage("Process name is empty");
+		}
 		if (storage.getProcess(prname) != null) {
 			sender.sendMessage("Process with this name already registered");
 			return;
@@ -61,6 +66,9 @@ public class ProcessManager {
 	}
 
 	private void supplyProcessInput(CommandSender sender, String processname, String line) {
+		if (processname == null) {
+			sender.sendMessage("Process name is empty");
+		}
 		RunningProcess process = storage.getProcess(processname);
 		if (process != null) {
 			process.supplyInput(sender, line);
@@ -70,12 +78,22 @@ public class ProcessManager {
 	}
 
 	private void killProcess(CommandSender sender, String processname) {
+		if (processname == null) {
+			sender.sendMessage("Process name is empty");
+		}
 		RunningProcess process = storage.getProcess(processname);
 		if (process != null) {
 			storage.unregisterProcess(processname);
 			process.stop(sender);
 		} else {
 			sender.sendMessage("Process with this name is not found");
+		}
+	}
+
+	private void listProcesses(CommandSender sender) {
+		sender.sendMessage("Registered processes:");
+		for (String processname : storage.getRegisteredProcesses()) {
+			sender.sendMessage(processname);
 		}
 	}
 
