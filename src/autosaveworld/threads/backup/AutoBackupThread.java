@@ -94,15 +94,20 @@ public class AutoBackupThread extends Thread {
 
 			counter = 0;
 			if (run && (config.backupEnabled || command)) {
-				if (plugin.checkCanDoOperation()) {
-					plugin.setOperationInProgress(true);
+				while (run && !plugin.checkCanDoOperation()) {
+					MessageLogger.warn("[Backup] Other operation is in process, waiting 10 secs and trying again");
 					try {
-						performBackup();
-					} catch (Exception e) {
-						e.printStackTrace();
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
 					}
-					plugin.setOperationInProgress(false);
 				}
+				plugin.setOperationInProgress(true);
+				try {
+					performBackup();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				plugin.setOperationInProgress(false);
 			}
 
 		}
