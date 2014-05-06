@@ -18,7 +18,6 @@
 package autosaveworld.commands;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -83,7 +82,6 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/asw help&7 - &3Shows this help");
 				MessageLogger.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu, memory, HDD usage");
 				MessageLogger.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
-				MessageLogger.sendMessage(sender, "&f/asw exec {password} {command}&7 - &3Excecute {command} in system terminal");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
@@ -112,22 +110,6 @@ public class CommandsHandler implements CommandExecutor {
 							processargs = Arrays.copyOfRange(args, 4, args.length);
 						}
 						plugin.processmanager.handleProcessManagerCommand(sender, args[2], args[3], processargs);
-					} else {
-						sender.sendMessage("Password is invalid");
-					}
-				} else {
-					sender.sendMessage("Set a password for this command first");
-				}
-				return true;
-			} else if (args.length >= 3 && args[0].equalsIgnoreCase("exec")) {
-				if (!config.aswexecpassword.isEmpty()) {
-					if (args[1].equals(config.aswexecpassword)) {
-						String[] cmds = Arrays.copyOfRange(args, 2, args.length);
-						try {
-							Runtime.getRuntime().exec(cmds);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
 					} else {
 						sender.sendMessage("Password is invalid");
 					}
