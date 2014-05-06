@@ -73,15 +73,13 @@ public class AutoPurgeThread extends Thread {
 			}
 
 			if (run && (config.purgeEnabled || command)) {
-				if (plugin.checkCanDoOperation()) {
-					plugin.setOperationInProgress(true);
-					try {
-						performPurge();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					plugin.setOperationInProgress(false);
+				plugin.lock.lock();
+				try {
+					performPurge();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				plugin.lock.unlock();
 			}
 
 		}

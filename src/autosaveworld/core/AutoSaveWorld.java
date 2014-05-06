@@ -17,6 +17,8 @@
 
 package autosaveworld.core;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
@@ -69,17 +71,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	//command executor
 	public CommandsHandler ch;
 	//operation lock
-	private boolean operationInProgress = false;
-	public void setOperationInProgress(boolean inProgress) {
-		operationInProgress = inProgress;
-	}
-	public boolean checkCanDoOperation() {
-		if (operationInProgress) {
-			MessageLogger.warn("Other autosaveworld operation is in progress, current operation aborted");
-			return false;
-		}
-		return true;
-	}
+	public ReentrantLock lock = new ReentrantLock();
 
 	@Override
 	public void onEnable() {

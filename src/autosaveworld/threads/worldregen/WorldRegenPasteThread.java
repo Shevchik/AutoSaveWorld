@@ -64,13 +64,12 @@ public class WorldRegenPasteThread extends Thread {
 		//do not do anything if we are not regenerating world
 		if (!paste) {return;}
 
-		plugin.setOperationInProgress(true);
 		try {
 			doWorldPaste();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		plugin.setOperationInProgress(false);
+
 	}
 
 	private void doWorldPaste() throws InterruptedException {

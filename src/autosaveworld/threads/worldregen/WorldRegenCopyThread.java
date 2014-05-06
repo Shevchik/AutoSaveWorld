@@ -53,10 +53,8 @@ public class WorldRegenCopyThread extends Thread {
 	}
 
 	public void startworldregen(String worldname) {
-		if (plugin.checkCanDoOperation()) {
-			this.worldtoregen = worldname;
-			doregen = true;
-		}
+		this.worldtoregen = worldname;
+		doregen = true;
 	}
 
 
@@ -71,13 +69,11 @@ public class WorldRegenCopyThread extends Thread {
 
 		while (run) {
 			if (doregen) {
-				plugin.setOperationInProgress(true);
 				try {
 					doWorldRegen();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				plugin.setOperationInProgress(false);
 				doregen = false;
 				run = false;
 			}
