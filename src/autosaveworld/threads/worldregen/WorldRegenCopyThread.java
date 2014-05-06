@@ -35,6 +35,7 @@ import autosaveworld.threads.worldregen.factions.FactionsCopy;
 import autosaveworld.threads.worldregen.griefprevention.GPCopy;
 import autosaveworld.threads.worldregen.towny.TownyCopy;
 import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
+import autosaveworld.utils.SchedulerUtils;
 
 public class WorldRegenCopyThread extends Thread {
 
@@ -59,7 +60,6 @@ public class WorldRegenCopyThread extends Thread {
 
 
 	private String worldtoregen = "";
-	private int taskid;
 	private volatile boolean run = true;
 	private boolean doregen = false;
 	@Override
@@ -95,17 +95,16 @@ public class WorldRegenCopyThread extends Thread {
 		//kick all player and deny them from join
 		AntiJoinListener ajl = new AntiJoinListener(configmsg);
 		Bukkit.getPluginManager().registerEvents(ajl, plugin);
-		taskid = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					MessageLogger.kickPlayer(p,configmsg.messageWorldRegenKick);
+		SchedulerUtils.callSyncTaskAndWait(
+			new Runnable() {
+				@Override
+				public void run() {
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						MessageLogger.kickPlayer(p, configmsg.messageWorldRegenKick);
+					}
 				}
 			}
-		});
-		while (Bukkit.getScheduler().isCurrentlyRunning(taskid) || Bukkit.getScheduler().isQueued(taskid)) {
-			Thread.sleep(1000);
-		}
+		);
 
 		MessageLogger.debug("Saving buildings");
 
