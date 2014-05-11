@@ -39,9 +39,6 @@ public class AutoConsoleCommandThread extends Thread {
 		this.run = false;
 	}
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-	private SimpleDateFormat msdf = new SimpleDateFormat("mm");
-
 	private volatile boolean run = true;
 	@Override
 	public void run() {
@@ -62,11 +59,8 @@ public class AutoConsoleCommandThread extends Thread {
 
 			//handle times mode
 			if (config.cctimeenabled) {
-				int cminute = Integer.valueOf(msdf.format(System.currentTimeMillis()));
-				String ctime = getCurTime();
-				if (cminute != minute && config.cctimescommands.containsKey(ctime)) {
+				for (String ctime : getTimesToExecute()) {
 					MessageLogger.debug("Executing console commands (timesmode)");
-					minute = cminute;
 					executeCommands(config.cctimescommands.get(ctime));
 				}
 			}
@@ -77,7 +71,6 @@ public class AutoConsoleCommandThread extends Thread {
 					MessageLogger.debug("Executing console commands (intervalmode)");
 					executeCommands(config.ccintervalscommands.get(interval));
 				}
-				intervalcounter++;
 			}
 
 			//sleep for a second
@@ -108,8 +101,17 @@ public class AutoConsoleCommandThread extends Thread {
 
 	//timesmode checks
 	private int minute = -1;
-	private String getCurTime() {
-		return sdf.format(System.currentTimeMillis());
+	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	private SimpleDateFormat msdf = new SimpleDateFormat("mm");
+	private List<String> getTimesToExecute() {
+		List<String> timestoexecute = new ArrayList<String>();
+		int cminute = Integer.parseInt(msdf.format(System.currentTimeMillis()));
+		String ctime = sdf.format(System.currentTimeMillis());
+		if (cminute != minute && config.cctimescommands.containsKey(ctime)) {
+			minute = cminute;
+			timestoexecute.add(ctime);
+		}	
+		return timestoexecute;
 	}
 
 	//intervalmode checks
@@ -121,8 +123,8 @@ public class AutoConsoleCommandThread extends Thread {
 				inttoexecute.add(interval);
 			}
 		}
+		intervalcounter++;
 		return inttoexecute;
 	}
-
 
 }
