@@ -75,8 +75,8 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		new GlobalConstants(this);
-		new SchedulerUtils(this);
+		GlobalConstants.init(this);
+		SchedulerUtils.init(this);
 		config = new AutoSaveWorldConfig();
 		config.load();
 		configmsg = new AutoSaveWorldConfigMSG();

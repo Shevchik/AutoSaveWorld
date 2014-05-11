@@ -21,7 +21,7 @@ import java.io.File;
 
 public class GlobalConstants {
 
-	public GlobalConstants(AutoSaveWorld plugin) {
+	public static void init(AutoSaveWorld plugin) {
 		pluginfolder = plugin.getDataFolder().getPath()+File.separator;
 	}
 

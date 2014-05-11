@@ -26,7 +26,8 @@ import autosaveworld.core.AutoSaveWorld;
 public class SchedulerUtils {
 
 	private static AutoSaveWorld plugin;
-	public SchedulerUtils(AutoSaveWorld plugin) {
+
+	public static void init(AutoSaveWorld plugin) {
 		SchedulerUtils.plugin = plugin;
 	}
 
