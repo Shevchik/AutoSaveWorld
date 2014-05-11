@@ -81,7 +81,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		config.load();
 		configmsg = new AutoSaveWorldConfigMSG();
 		configmsg.loadmsg();
-		new MessageLogger(getLogger(), config);
+		MessageLogger.init(getLogger(), config);
 		localeChanger = new LocaleChanger(this, configmsg);
 		eh = new EventsListener(this,config);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);

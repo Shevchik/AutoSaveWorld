@@ -32,7 +32,8 @@ public class MessageLogger {
 	private static AutoSaveWorldConfig config;
 	private static Logger log;
 	private static FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
-	public MessageLogger(Logger log, AutoSaveWorldConfig config) {
+
+	public static void init(Logger log, AutoSaveWorldConfig config) {
 		MessageLogger.log = log;
 		MessageLogger.config = config;
 	}
