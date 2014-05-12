@@ -15,21 +15,32 @@
  *
  */
 
-package autosaveworld.threads.backup.utils.memory;
+package autosaveworld.threads.backup.utils.memorystream;
 
-import java.io.IOException;
-import java.io.OutputStream;
+public class MemoryStream {
 
-public class MemoryOutputStream extends OutputStream {
-
-	private MemoryStream mz;
-	protected MemoryOutputStream(MemoryStream mz) {
-		this.mz = mz;
+	private MemoryOutputStream os = new MemoryOutputStream(this);
+	public MemoryOutputStream getOutputStream() {
+		return os;
 	}
 
-	@Override
-	public void write(int b) throws IOException {
-		mz.write(b & 0xFF);
+	private MemoryInputStream is = new MemoryInputStream(this);
+	public MemoryInputStream getInputStream() {
+		return is;
+	}
+
+	public void putStreamEndSignal() {
+		bytequeue.put(-1);
+	}
+
+	private PrimitiveIntLinkedBlockingQueue bytequeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
+
+	protected int read() {
+		return bytequeue.take();
+	}
+
+	protected void write(int b) {
+		bytequeue.put(b);
 	}
 
 }
