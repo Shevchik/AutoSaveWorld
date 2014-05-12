@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.backup.utils.memoryzip;
+package autosaveworld.threads.backup.utils.memory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;

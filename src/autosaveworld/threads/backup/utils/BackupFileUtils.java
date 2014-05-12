@@ -27,7 +27,7 @@ import java.util.List;
 
 import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworld.threads.backup.ExcludeManager;
-import autosaveworld.threads.backup.utils.memoryzip.MemoryZip;
+import autosaveworld.threads.backup.utils.memory.MemoryStream;
 
 public class BackupFileUtils {
 
@@ -102,7 +102,7 @@ public class BackupFileUtils {
 	}
 
 	public static void zipAndUploadDirectoryToFTP(FTPClient ftp, File src, List<String> excludefolders) {
-		InputStream is = MemoryZip.startZIP(src, excludefolders);
+		InputStream is = MemoryStream.startZIP(src, excludefolders);
 		try {
 			ftp.storeFile(src.getName()+".zip", is);
 		} catch (Exception e) {

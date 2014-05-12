@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.backup.utils.memoryzip;
+package autosaveworld.threads.backup.utils.memory;
 
 import java.io.File;
 import java.util.List;
@@ -24,13 +24,14 @@ import java.util.concurrent.Executors;
 
 import autosaveworld.threads.backup.utils.ZipUtils;
 
-public class MemoryZip {
+public class MemoryStream {
 
-	private MemoryZipOutputStream os = new MemoryZipOutputStream(this);
-	private MemoryZipInputStream is = new MemoryZipInputStream(this);
+	private MemoryOutputStream os = new MemoryOutputStream(this);
+	private MemoryInputStream is = new MemoryInputStream(this);
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	private PrimitiveIntLinkedBlockingQueue bytequeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
+
 	protected int read() {
 		return bytequeue.take();
 	}
@@ -39,8 +40,8 @@ public class MemoryZip {
 		bytequeue.put(b);
 	}
 
-	public static MemoryZipInputStream startZIP(final File inputDir, final List<String> excludefolders) {
-		final MemoryZip mz = new MemoryZip();
+	public static MemoryInputStream startZIP(final File inputDir, final List<String> excludefolders) {
+		final MemoryStream mz = new MemoryStream();
 		mz.executor.submit(
 			new Runnable() {
 				@Override

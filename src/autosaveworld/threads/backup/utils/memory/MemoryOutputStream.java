@@ -15,15 +15,15 @@
  *
  */
 
-package autosaveworld.threads.backup.utils.memoryzip;
+package autosaveworld.threads.backup.utils.memory;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class MemoryZipOutputStream extends OutputStream {
+public class MemoryOutputStream extends OutputStream {
 
-	private MemoryZip mz;
-	protected MemoryZipOutputStream(MemoryZip mz) {
+	private MemoryStream mz;
+	protected MemoryOutputStream(MemoryStream mz) {
 		this.mz = mz;
 	}
 
