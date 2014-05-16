@@ -97,7 +97,9 @@ public class AutoSaveThread extends Thread {
 		MessageLogger.debug("Saved Players");
 		MessageLogger.debug("Saving worlds");
 		for (World w : plugin.getServer().getWorlds()) {
-			saveWorld(w);
+			if (w.isAutoSave()) {
+				saveWorld(w);
+			}
 		}
 		MessageLogger.debug("Saved Worlds");
 
@@ -127,8 +129,10 @@ public class AutoSaveThread extends Thread {
 					new Runnable() {
 						@Override
 						public void run() {
-							MessageLogger.debug(String.format("Saving world: %s", world.getName()));
-							saveWorld(world);
+							if (world.isAutoSave()) {
+								MessageLogger.debug(String.format("Saving world: %s", world.getName()));
+								saveWorld(world);
+							}
 						}
 					}
 				);
