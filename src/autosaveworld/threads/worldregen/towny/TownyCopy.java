@@ -27,7 +27,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
-import autosaveworld.threads.worldregen.WorldRegenCopyThread;
+import autosaveworld.threads.worldregen.SchematicOperations;
 
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
@@ -38,10 +38,8 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class TownyCopy {
 
-	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public TownyCopy(WorldRegenCopyThread wrthread, String worldtoregen) {
-		this.wrthread = wrthread;
+	public TownyCopy(String worldtoregen) {
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
@@ -82,7 +80,7 @@ public class TownyCopy {
 							//save
 							MessageLogger.debug("Saving Towny town "+town.getName()+" townblock to schematic");
 							SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
-							wrthread.getSchematicOperations().saveToSchematic(schematicdata);
+							SchematicOperations.saveToSchematic(schematicdata);
 							MessageLogger.debug(town.getName()+" townblock saved");
 						}
 					}

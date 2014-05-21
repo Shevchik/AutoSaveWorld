@@ -36,7 +36,7 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class SchematicOperations {
 
-	public void saveToSchematic(final SchematicToSave schematicdata) {
+	public static void saveToSchematic(final SchematicToSave schematicdata) {
 		Runnable copypaste = new Runnable() {
 			@Override
 			public void run() {
@@ -68,7 +68,7 @@ public class SchematicOperations {
 		SchedulerUtils.callSyncTaskAndWait(copypaste);
 	}
 
-	public void pasteFromSchematic(final SchematicToLoad schematicdata) {
+	public static void pasteFromSchematic(final SchematicToLoad schematicdata) {
 		try {
 			//load from schematic to clipboard
 			final EditSession es = new EditSession(new BukkitWorld(schematicdata.getWorld()),Integer.MAX_VALUE);

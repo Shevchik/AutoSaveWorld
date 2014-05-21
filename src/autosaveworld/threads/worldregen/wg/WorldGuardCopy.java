@@ -25,7 +25,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
-import autosaveworld.threads.worldregen.WorldRegenCopyThread;
+import autosaveworld.threads.worldregen.SchematicOperations;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -33,10 +33,8 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class WorldGuardCopy {
 
-	private WorldRegenCopyThread wrthread;
 	private World wtoregen;
-	public WorldGuardCopy(WorldRegenCopyThread wrthread, String worldtoregen) {
-		this.wrthread = wrthread;
+	public WorldGuardCopy(String worldtoregen) {
 		this.wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
@@ -54,7 +52,7 @@ public class WorldGuardCopy {
 			//save
 			MessageLogger.debug("Saving WG Region "+rg.getId()+" to schematic");
 			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getWGTempFolder()+rg.getId(), wtoregen, rg.getMinimumPoint(), rg.getMaximumPoint());
-			wrthread.getSchematicOperations().saveToSchematic(schematicdata);
+			SchematicOperations.saveToSchematic(schematicdata);
 			MessageLogger.debug("WG Region "+rg.getId()+" saved");
 		}
 	}

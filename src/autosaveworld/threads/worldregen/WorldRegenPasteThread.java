@@ -102,22 +102,22 @@ public class WorldRegenPasteThread extends Thread {
 
 		// paste WG buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
-			new WorldGuardPaste(this, worldtopasteto).pasteAllFromSchematics();
+			new WorldGuardPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste Factions buildings
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
-			new FactionsPaste(this, worldtopasteto).pasteAllFromSchematics();
+			new FactionsPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste GriefPrevention claims
 		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
-			new GPPaste(this, worldtopasteto).pasteAllFromSchematics();
+			new GPPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste Towny towns
 		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
-			new TownyPaste(this, worldtopasteto).pasteAllFromSchematics();
+			new TownyPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//clear temp folder
@@ -139,15 +139,6 @@ public class WorldRegenPasteThread extends Thread {
 		//restart
 		MessageLogger.debug("Restarting server");
 		plugin.autorestartThread.startrestart(true);
-	}
-
-
-	private SchematicOperations schemops = null;
-	public SchematicOperations getSchematicOperations() {
-		if (schemops == null) {
-			schemops = new SchematicOperations();
-		}
-		return schemops;
 	}
 
 }

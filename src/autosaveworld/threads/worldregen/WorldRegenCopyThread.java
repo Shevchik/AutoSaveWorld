@@ -110,22 +110,22 @@ public class WorldRegenCopyThread extends Thread {
 
 		//save WorldGuard buildings
 		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
-			new WorldGuardCopy(this, worldtoregen).copyAllToSchematics();
+			new WorldGuardCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		//save Factions homes
 		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
-			new FactionsCopy(this, worldtoregen).copyAllToSchematics();
+			new FactionsCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		//save GriefPrevention claims
 		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
-			new GPCopy(this, worldtoregen).copyAllToSchematics();
+			new GPCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		//save Towny towns
 		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
-			new TownyCopy(this, worldtoregen).copyAllToSchematics();
+			new TownyCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		MessageLogger.debug("Saving finished");

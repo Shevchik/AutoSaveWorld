@@ -30,14 +30,12 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToLoad;
-import autosaveworld.threads.worldregen.WorldRegenPasteThread;
+import autosaveworld.threads.worldregen.SchematicOperations;
 
 public class GPPaste {
 
-	private WorldRegenPasteThread wrthread;
 	private World wtopaste;
-	public GPPaste(WorldRegenPasteThread wrthread, String worldtopasteto) {
-		this.wrthread = wrthread;
+	public GPPaste(String worldtopasteto) {
 		this.wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
@@ -67,7 +65,7 @@ public class GPPaste {
 			//paste
 			MessageLogger.debug("Pasting GP region "+claim.getID()+" from schematics");
 			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+claim.getID(), wtopaste);
-			wrthread.getSchematicOperations().pasteFromSchematic(schematicdata);
+			SchematicOperations.pasteFromSchematic(schematicdata);
 			MessageLogger.debug("Pasted GP region "+claim.getID()+" from schematics");
 		}
 	}
