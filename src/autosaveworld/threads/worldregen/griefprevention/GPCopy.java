@@ -32,6 +32,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
+import autosaveworld.threads.worldregen.SchematicOperations.SchematicToSave;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
@@ -91,7 +92,8 @@ public class GPCopy {
 			);
 			//save
 			MessageLogger.debug("Saving GP Region "+claim.getID()+" to schematic");
-			wrthread.getSchematicOperations().saveToSchematic(GlobalConstants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
+			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
+			wrthread.getSchematicOperations().saveToSchematic(schematicdata);
 			MessageLogger.debug("GP Region "+claim.getID()+" saved");
 		}
 	}

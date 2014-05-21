@@ -27,6 +27,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
+import autosaveworld.threads.worldregen.SchematicOperations.SchematicToSave;
 
 import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;
@@ -80,7 +81,8 @@ public class FactionsCopy {
 						);
 						//save
 						MessageLogger.debug("Saving "+f.getName()+" chunk to schematic");
-						wrthread.getSchematicOperations().saveToSchematic(GlobalConstants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+						SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+						wrthread.getSchematicOperations().saveToSchematic(schematicdata);
 						MessageLogger.debug(f.getName()+" chunk saved");
 					}
 				}

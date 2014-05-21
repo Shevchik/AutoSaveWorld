@@ -20,20 +20,20 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class SchematicOperations {
 
-	public void saveToSchematic(final String schematic, final World world, final Vector bvmin, final Vector bvmax) {
+	public void saveToSchematic(final SchematicToSave schematicdata) {
 		Runnable copypaste = new Runnable() {
 			@Override
 			public void run() {
 				try {
 					//create clipboard
-					BukkitWorld bw = new BukkitWorld(world);
+					BukkitWorld bw = new BukkitWorld(schematicdata.getWorld());
 					EditSession es = new EditSession(bw, Integer.MAX_VALUE);
 					CuboidClipboard clipboard = new CuboidClipboard(
-						bvmax.subtract(bvmin).add(new Vector(1, 1, 1)),
-						bvmin,
-						bvmin.subtract(bvmax)
+						schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)),
+						schematicdata.getMin(),
+						schematicdata.getMin().subtract(schematicdata.getMax())
 					);
-					Region region = new CuboidRegion(bw, bvmin, bvmax);
+					Region region = new CuboidRegion(bw, schematicdata.getMin(), schematicdata.getMax());
 					es.setFastMode(true);
 					//copy blocks
 					clipboard.copy(es);
@@ -43,8 +43,7 @@ public class SchematicOperations {
 						clipboard.storeEntity(entity);
 					}
 					//save to schematic
-					File f = new File(schematic);
-					SchematicFormat.MCEDIT.save(clipboard, f);
+					SchematicFormat.MCEDIT.save(clipboard, schematicdata.getFile());
 				} catch (IOException | DataException e) {
 					e.printStackTrace();
 				}
@@ -117,17 +116,23 @@ public class SchematicOperations {
 	public static class SchematicToSave {
 
 		private File file;
+		private World world;
 		private Vector bvmin;
 		private Vector bvmax;
 
-		public SchematicToSave(String filepath, Vector bvmin, Vector bvmax) {
+		public SchematicToSave(String filepath, World world, Vector bvmin, Vector bvmax) {
 			this.file = new File(filepath);
+			this.world = world;
 			this.bvmin = bvmin;
 			this.bvmax = bvmax;
 		}
 
 		public File getFile() {
 			return file;
+		}
+
+		public World getWorld() {
+			return world;
 		}
 
 		public Vector getMin() {
