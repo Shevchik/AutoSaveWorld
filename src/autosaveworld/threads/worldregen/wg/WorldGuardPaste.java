@@ -23,6 +23,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
+import autosaveworld.threads.worldregen.SchematicOperations.SchematicToLoad;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -51,7 +52,8 @@ public class WorldGuardPaste {
 			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 			//paste
 			MessageLogger.debug("Pasting WG region "+rg.getId()+" from schematic");
-			wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+rg.getId(), wtopaste);
+			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+rg.getId(), wtopaste);
+			wrthread.getSchematicOperations().pasteFromSchematic(schematicdata);
 			MessageLogger.debug("Pasted WG region "+rg.getId()+" from schematic");
 		}
 	}

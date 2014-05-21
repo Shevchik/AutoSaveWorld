@@ -25,6 +25,7 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.worldregen.SchematicOperations.SchematicToLoad;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 
 import com.massivecraft.factions.entity.BoardColls;
@@ -58,7 +59,8 @@ public class FactionsPaste {
 						final int zcoord = ps.getChunkZ();
 						//paste
 						MessageLogger.debug("Pasting "+f.getName()+" chunk from schematic");
-						wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+						SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+						wrthread.getSchematicOperations().pasteFromSchematic(schematicdata);
 						MessageLogger.debug("Pasted "+f.getName()+" chunk from schematic");
 					}
 				}

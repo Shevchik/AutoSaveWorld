@@ -52,14 +52,13 @@ public class SchematicOperations {
 		SchedulerUtils.callSyncTaskAndWait(copypaste);
 	}
 
-	public void pasteFromSchematic(final String schematic, final World world) {
+	public void pasteFromSchematic(final SchematicToLoad schematicdata) {
 		try {
 			//load from schematic to clipboard
-			final EditSession es = new EditSession(new BukkitWorld(world),Integer.MAX_VALUE);
+			final EditSession es = new EditSession(new BukkitWorld(schematicdata.getWorld()),Integer.MAX_VALUE);
 			es.setFastMode(true);
 			es.enableQueue();
-			File f = new File(schematic);
-			final CuboidClipboard cc = SchematicFormat.MCEDIT.load(f);
+			final CuboidClipboard cc = SchematicFormat.MCEDIT.load(schematicdata.getFile());
 			//get schematic coords
 			final Vector size = cc.getSize();
 			final Vector origin = cc.getOrigin();
@@ -70,7 +69,7 @@ public class SchematicOperations {
 					for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
 						for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
 							//getChunkAt automatically loads chunk
-							world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z).load();
+							schematicdata.getWorld().getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z).load();
 						}
 					}
 				}

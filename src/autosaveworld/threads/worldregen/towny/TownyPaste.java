@@ -26,6 +26,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
+import autosaveworld.threads.worldregen.SchematicOperations.SchematicToLoad;
 
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
@@ -58,7 +59,8 @@ public class TownyPaste {
 							final int zcoord = tb.getZ();
 							//paste
 							MessageLogger.debug("Pasting "+town.getName()+" townblock from schematic");
-							wrthread.getSchematicOperations().pasteFromSchematic(schemfolder+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+							SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+							wrthread.getSchematicOperations().pasteFromSchematic(schematicdata);
 							MessageLogger.debug("Pasted "+town.getName()+" townblock from schematic");
 						}
 					}
