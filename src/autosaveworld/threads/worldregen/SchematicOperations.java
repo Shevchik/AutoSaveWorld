@@ -114,4 +114,50 @@ public class SchematicOperations {
 		}
 	}
 
+	public static class SchematicToSave {
+
+		private File file;
+		private Vector bvmin;
+		private Vector bvmax;
+
+		public SchematicToSave(String filepath, Vector bvmin, Vector bvmax) {
+			this.file = new File(filepath);
+			this.bvmin = bvmin;
+			this.bvmax = bvmax;
+		}
+
+		public File getFile() {
+			return file;
+		}
+
+		public Vector getMin() {
+			return bvmin;
+		}
+
+		public Vector getMax() {
+			return bvmax;
+		}
+
+	}
+
+	public static class SchematicToLoad {
+
+		private File file;
+		private World world;
+
+		public SchematicToLoad(String filepath, World world) {
+			this.file = new File(filepath);
+			this.world = world;
+		}
+
+		public File getFile() {
+			return file;
+		}
+
+		public World getWorld() {
+			return world;
+		}
+
+	}
+
 }
