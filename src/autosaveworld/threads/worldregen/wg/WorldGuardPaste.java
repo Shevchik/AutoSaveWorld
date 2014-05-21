@@ -22,8 +22,8 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.worldregen.SchematicData.SchematicToLoad;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
-import autosaveworld.threads.worldregen.SchematicOperations.SchematicToLoad;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;

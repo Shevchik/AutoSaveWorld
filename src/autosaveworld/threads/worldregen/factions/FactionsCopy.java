@@ -26,8 +26,8 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
-import autosaveworld.threads.worldregen.SchematicOperations.SchematicToSave;
 
 import com.massivecraft.factions.entity.BoardColls;
 import com.massivecraft.factions.entity.Faction;

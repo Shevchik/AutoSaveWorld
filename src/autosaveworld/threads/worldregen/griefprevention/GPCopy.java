@@ -31,8 +31,8 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
-import autosaveworld.threads.worldregen.SchematicOperations.SchematicToSave;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
