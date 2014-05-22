@@ -20,6 +20,8 @@ package autosaveworld.threads.worldregen;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import org.bukkit.World;
+
 import autosaveworld.threads.worldregen.SchematicData.SchematicToLoad;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
 import autosaveworld.utils.SchedulerUtils;
@@ -71,38 +73,51 @@ public class SchematicOperations {
 		SchedulerUtils.callSyncTaskAndWait(copypaste);
 	}
 
-	public static void pasteFromSchematic(final SchematicToLoad schematicdata) {
-		try {
-			//load from schematic to clipboard
-			final EditSession es = new EditSession(new BukkitWorld(schematicdata.getWorld()),Integer.MAX_VALUE);
-			es.setFastMode(true);
-			es.enableQueue();
-			final CuboidClipboard cc = SchematicFormat.MCEDIT.load(schematicdata.getFile());
-			//get schematic coords
-			final Vector size = cc.getSize();
-			final Vector origin = cc.getOrigin();
-			Runnable genchunks = new Runnable() {
-				@Override
-				public void run() {
+	public static void pasteFromSchematic(final LinkedList<SchematicToLoad> schematicdatas) {
+		final World world = schematicdatas.get(0).getWorld();
+		final LinkedList<CuboidClipboard> clipboards = new LinkedList<CuboidClipboard>();
+		//load from schematics to clipboards
+		for (SchematicToLoad schematicdata : schematicdatas) {
+			try {
+				clipboards.add(SchematicFormat.MCEDIT.load(schematicdata.getFile()));
+			} catch (IOException | DataException e) {
+				e.printStackTrace();
+			}
+		}
+		//generate chunks
+		Runnable genchunks = new Runnable() {
+			@Override
+			public void run() {
+				for (CuboidClipboard clipboard : clipboards) {
+					final Vector size = clipboard.getSize();
+					final Vector origin = clipboard.getOrigin();
 					//generate chunks at schematic position and 3 chunk radius nearby
 					for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
 						for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
 							//getChunkAt automatically loads chunk
-							schematicdata.getWorld().getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z).load();
+							world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z);
 						}
 					}
 				}
-			};
-			SchedulerUtils.callSyncTaskAndWait(genchunks);
-			Runnable paste = new Runnable() {
-				@Override
-				public void run() {
+			}
+		};
+		SchedulerUtils.callSyncTaskAndWait(genchunks);
+		//paste schematics
+		Runnable paste = new Runnable() {
+			@Override
+			public void run() {
+				for (CuboidClipboard clipboard : clipboards) {
+					EditSession es = new EditSession(new BukkitWorld(world), Integer.MAX_VALUE);
+					es.setFastMode(true);
+					es.enableQueue();
+					final Vector size = clipboard.getSize();
+					final Vector origin = clipboard.getOrigin();
 					//paste blocks
 					for (int x = 0; x < size.getBlockX(); ++x) {
 						for (int y = 0; y < size.getBlockY(); ++y) {
 							for (int z = 0; z < size.getBlockZ(); ++z) {
 								Vector blockpos = new Vector(x, y, z);
-								final BaseBlock block = cc.getBlock(blockpos);
+								final BaseBlock block = clipboard.getBlock(blockpos);
 
 								if (block == null) {
 									continue;
@@ -116,19 +131,21 @@ public class SchematicOperations {
 							}
 						}
 					}
-					es.flushQueue();
+					try {
+						es.flushQueue();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					//paste entities (note: worldedit doesn't paste entities from schematic, but i will just leave it here in case worldedit will start doing it some day)
 					try {
-						cc.pasteEntities(origin);
+						clipboard.pasteEntities(origin);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-			};
-			SchedulerUtils.callSyncTaskAndWait(paste);
-		} catch (IOException | DataException e) {
-			e.printStackTrace();
-		}
+			}
+		};
+		SchedulerUtils.callSyncTaskAndWait(paste);
 	}
 
 }

@@ -17,6 +17,9 @@
 
 package autosaveworld.threads.worldregen.wg;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -51,7 +54,7 @@ public class WorldGuardPaste {
 			//paste
 			MessageLogger.debug("Pasting WG region "+rg.getId()+" from schematic");
 			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+rg.getId(), wtopaste);
-			SchematicOperations.pasteFromSchematic(schematicdata);
+			SchematicOperations.pasteFromSchematic(new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("Pasted WG region "+rg.getId()+" from schematic");
 		}
 	}

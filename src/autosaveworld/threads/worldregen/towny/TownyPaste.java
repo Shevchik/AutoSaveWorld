@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen.towny;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -51,6 +52,7 @@ public class TownyPaste {
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0) {
 					MessageLogger.debug("Pasting town claim "+town.getName()+" from schematic");
+					LinkedList<SchematicToLoad> schematics = new LinkedList<SchematicToLoad>();
 					for (TownBlock tb : tblocks) {
 						if (tb.getWorld().getName().equals(wtopaste.getName())) {
 							final int xcoord = tb.getX();
@@ -58,10 +60,11 @@ public class TownyPaste {
 							//paste
 							MessageLogger.debug("Pasting "+town.getName()+" townblock from schematic");
 							SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
-							SchematicOperations.pasteFromSchematic(schematicdata);
+							schematics.add(schematicdata);
 							MessageLogger.debug("Pasted "+town.getName()+" townblock from schematic");
 						}
 					}
+					SchematicOperations.pasteFromSchematic(schematics);
 					MessageLogger.debug("Pasted town claim "+town.getName()+" from schematic");
 				}
 			}

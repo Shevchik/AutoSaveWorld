@@ -18,6 +18,8 @@
 package autosaveworld.threads.worldregen.griefprevention;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimArray;
@@ -65,7 +67,7 @@ public class GPPaste {
 			//paste
 			MessageLogger.debug("Pasting GP region "+claim.getID()+" from schematics");
 			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+claim.getID(), wtopaste);
-			SchematicOperations.pasteFromSchematic(schematicdata);
+			SchematicOperations.pasteFromSchematic(new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("Pasted GP region "+claim.getID()+" from schematics");
 		}
 	}

@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen.factions;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -50,18 +51,17 @@ public class FactionsPaste {
 			//ignore factions with no claimed land
 			if (chunks.size() != 0) {
 				MessageLogger.debug("Pasting faction land "+f.getName()+" from schematic");
+				LinkedList<SchematicToLoad> schematics = new LinkedList<SchematicToLoad>();
 				//paste all chunks
 				for (PS ps: chunks) {
 					if (ps.getWorld().equalsIgnoreCase(wtopaste.getName())) {
 						final int xcoord = ps.getChunkX();
 						final int zcoord = ps.getChunkZ();
-						//paste
-						MessageLogger.debug("Pasting "+f.getName()+" chunk from schematic");
 						SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
-						SchematicOperations.pasteFromSchematic(schematicdata);
-						MessageLogger.debug("Pasted "+f.getName()+" chunk from schematic");
+						schematics.add(schematicdata);
 					}
 				}
+				SchematicOperations.pasteFromSchematic(schematics);
 				MessageLogger.debug("Pasted faction land "+f.getName()+" from schematic");
 			}
 		}
