@@ -75,8 +75,6 @@ public class WorldRegenPasteThread extends Thread {
 	private void doWorldPaste() throws InterruptedException {
 		//deny players from join
 		Bukkit.getPluginManager().registerEvents(new AntiJoinListener(configmsg), plugin);
-		//deny some world physics
-		Bukkit.getPluginManager().registerEvents(new PhysicsListener(), plugin);
 
 		//load config
 		FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getWorldnameFile()));
