@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen.factions;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -55,7 +56,8 @@ public class FactionsCopy {
 				MessageLogger.debug("Saving faction land "+f.getName()+" to schematic");
 				//create temp folder for faction
 				new File(GlobalConstants.getFactionsTempFolder()+f.getName()).mkdirs();
-				//save all chunks one by one
+				//save all chunks
+				LinkedList<SchematicToSave> schematics = new LinkedList<SchematicToSave>();
 				for (PS ps : chunks) {
 					if (ps.getWorld().equalsIgnoreCase(wtoregen.getName())) {
 						//get coords
@@ -77,13 +79,12 @@ public class FactionsCopy {
 								zcoord*16+15
 							)
 						);
-						//save
-						MessageLogger.debug("Saving "+f.getName()+" chunk to schematic");
+						//add to save list
 						SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
-						SchematicOperations.saveToSchematic(schematicdata);
-						MessageLogger.debug(f.getName()+" chunk saved");
+						schematics.add(schematicdata);
 					}
 				}
+				SchematicOperations.saveToSchematic(schematics);
 				MessageLogger.debug("Faction land "+f.getName()+" saved");
 			}
 		}

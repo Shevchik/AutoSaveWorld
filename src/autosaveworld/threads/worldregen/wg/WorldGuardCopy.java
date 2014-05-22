@@ -18,6 +18,8 @@
 package autosaveworld.threads.worldregen.wg;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -52,7 +54,7 @@ public class WorldGuardCopy {
 			//save
 			MessageLogger.debug("Saving WG Region "+rg.getId()+" to schematic");
 			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getWGTempFolder()+rg.getId(), wtoregen, rg.getMinimumPoint(), rg.getMaximumPoint());
-			SchematicOperations.saveToSchematic(schematicdata);
+			SchematicOperations.saveToSchematic(new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("WG Region "+rg.getId()+" saved");
 		}
 	}

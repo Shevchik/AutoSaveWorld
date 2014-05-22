@@ -19,6 +19,8 @@ package autosaveworld.threads.worldregen.griefprevention;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimArray;
@@ -91,7 +93,7 @@ public class GPCopy {
 			//save
 			MessageLogger.debug("Saving GP Region "+claim.getID()+" to schematic");
 			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
-			SchematicOperations.saveToSchematic(schematicdata);
+			SchematicOperations.saveToSchematic(new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("GP Region "+claim.getID()+" saved");
 		}
 	}

@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 import autosaveworld.threads.worldregen.SchematicData.SchematicToLoad;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
@@ -36,32 +37,34 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class SchematicOperations {
 
-	public static void saveToSchematic(final SchematicToSave schematicdata) {
+	public static void saveToSchematic(final LinkedList<SchematicToSave> schematicdatas) {
 		Runnable copypaste = new Runnable() {
 			@Override
 			public void run() {
-				try {
-					//create clipboard
-					BukkitWorld bw = new BukkitWorld(schematicdata.getWorld());
-					EditSession es = new EditSession(bw, Integer.MAX_VALUE);
-					CuboidClipboard clipboard = new CuboidClipboard(
-						schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)),
-						schematicdata.getMin(),
-						schematicdata.getMin().subtract(schematicdata.getMax())
-					);
-					Region region = new CuboidRegion(bw, schematicdata.getMin(), schematicdata.getMax());
-					es.setFastMode(true);
-					//copy blocks
-					clipboard.copy(es);
-					//copy entities (note: worldedit doesn't save entities to schematic, but i will just leave it here in case worldedit will start doing it some day)
-					LocalEntity[] entities = bw.getEntities(region);
-					for (LocalEntity entity : entities) {
-						clipboard.storeEntity(entity);
+				for (SchematicToSave schematicdata : schematicdatas) {
+					try {
+						//create clipboard
+						BukkitWorld bw = new BukkitWorld(schematicdata.getWorld());
+						EditSession es = new EditSession(bw, Integer.MAX_VALUE);
+						CuboidClipboard clipboard = new CuboidClipboard(
+							schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)),
+							schematicdata.getMin(),
+							schematicdata.getMin().subtract(schematicdata.getMax())
+						);
+						Region region = new CuboidRegion(bw, schematicdata.getMin(), schematicdata.getMax());
+						es.setFastMode(true);
+						//copy blocks
+						clipboard.copy(es);
+						//copy entities (note: worldedit doesn't save entities to schematic, but i will just leave it here in case worldedit will start doing it some day)
+						LocalEntity[] entities = bw.getEntities(region);
+						for (LocalEntity entity : entities) {
+							clipboard.storeEntity(entity);
+						}
+						//save to schematic
+						SchematicFormat.MCEDIT.save(clipboard, schematicdata.getFile());
+					} catch (IOException | DataException e) {
+						e.printStackTrace();
 					}
-					//save to schematic
-					SchematicFormat.MCEDIT.save(clipboard, schematicdata.getFile());
-				} catch (IOException | DataException e) {
-					e.printStackTrace();
 				}
 			}
 		};

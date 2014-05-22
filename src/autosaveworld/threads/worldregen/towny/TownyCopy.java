@@ -18,6 +18,7 @@
 package autosaveworld.threads.worldregen.towny;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -54,10 +55,12 @@ public class TownyCopy {
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0) {
 					MessageLogger.debug("Saving town claim "+town.getName()+" to schematic");
+					//create temp folder for town
+					new File(GlobalConstants.getTownyTempFolder()+town.getName()).mkdirs();
+					//save all chunks
+					LinkedList<SchematicToSave> schematics = new LinkedList<SchematicToSave>();
 					for (TownBlock tb : tblocks) {
 						if (tb.getWorld().getName().equals(wtoregen.getName())) {
-							//create temp folder for town
-							new File(GlobalConstants.getTownyTempFolder()+town.getName()).mkdirs();
 							//get coords
 							final int xcoord = tb.getX();
 							final int zcoord = tb.getZ();
@@ -77,14 +80,13 @@ public class TownyCopy {
 									zcoord*16+15
 								)
 							);
-							//save
-							MessageLogger.debug("Saving Towny town "+town.getName()+" townblock to schematic");
+							//add to save list
 							SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
-							SchematicOperations.saveToSchematic(schematicdata);
-							MessageLogger.debug(town.getName()+" townblock saved");
+							schematics.add(schematicdata);
 						}
 					}
-					MessageLogger.debug("Towmy claim "+town.getName()+" saved");
+					SchematicOperations.saveToSchematic(schematics);
+					MessageLogger.debug("Towny claim "+town.getName()+" saved");
 				}
 			}
 		} catch (NotRegisteredException e) {
