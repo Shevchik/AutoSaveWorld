@@ -137,56 +137,56 @@ public class AutoSaveWorld extends JavaPlugin {
 
 
 
-	protected boolean startThread(ThreadType type) {
+	protected void startThread(ThreadType type) {
 		switch (type) {
 			case SAVE: {
 				if (saveThread == null || !saveThread.isAlive()) {
 					saveThread = new AutoSaveThread(this, config, configmsg);
 					saveThread.start();
 				}
-				return true;
+				return;
 			}
 			case BACKUP: {
 				if (backupThread == null || !backupThread.isAlive()) {
 					backupThread = new AutoBackupThread(this, config, configmsg);
 					backupThread.start();
 				}
-				return true;
+				return;
 			}
 			case PURGE: {
 				if (purgeThread == null || !purgeThread.isAlive()) {
 					purgeThread = new AutoPurgeThread(this, config, configmsg);
 					purgeThread.start();
 				}
-				return true;
+				return;
 			}
 			case CRASHRESTART: {
 				if (crashrestartThread == null || !crashrestartThread.isAlive()) {
 					crashrestartThread = new CrashRestartThread(config, JVMsh);
 					crashrestartThread.start();
 				}
-				return true;
+				return;
 			}
 			case AUTORESTART: {
 				if (autorestartThread == null || !autorestartThread.isAlive()) {
 					autorestartThread = new AutoRestartThread(config, configmsg, JVMsh);
 					autorestartThread.start();
 				}
-				return true;
+				return;
 			}
 			case CONSOLECOMMAND: {
 				if (consolecommandThread == null || !consolecommandThread.isAlive()) {
 					consolecommandThread = new AutoConsoleCommandThread(config);
 					consolecommandThread.start();
 				}
-				return true;
+				return;
 			}
 			case WORLDREGENCOPY: {
 				if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
 					worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg);
 					worldregencopyThread.start();
 				}
-				return true;
+				return;
 			}
 			case WORLDREGENPASTE: {
 				if (worldregenpasteThread == null || !worldregenpasteThread.isAlive()) {
@@ -194,140 +194,110 @@ public class AutoSaveWorld extends JavaPlugin {
 					worldregenpasteThread.checkIfShouldPaste();
 					worldregenpasteThread.start();
 				}
-				return true;
-			}
-			default: {
-				return false;
+				return;
 			}
 		}
 	}
 
 
 
-	protected boolean stopThread(ThreadType type) {
+	protected void stopThread(ThreadType type) {
 		switch (type) {
 			case SAVE: {
-				if (saveThread == null) {
-					return true;
-				} else {
+				if (saveThread != null) {
 					saveThread.stopThread();
 					try {
 						saveThread.join(2000);
 						saveThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop AutoSaveThread");
-						return false;
 					}
 				}
+				return;
 			}
 			case BACKUP: {
-				if (backupThread == null) {
-					return true;
-				} else {
+				if (backupThread != null) {
 					backupThread.stopThread();
 					try {
 						backupThread.join(2000);
 						backupThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop AutoBackupThread");
-						return false;
 					}
 				}
+				return;
 			}
 			case PURGE: {
-				if (purgeThread == null) {
-					return true;
-				} else {
+				if (purgeThread != null) {
 					purgeThread.stopThread();
 					try {
 						purgeThread.join(2000);
 						purgeThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop AutoPurgeThread");
-						return false;
 					}
 				}
+				return;
 			}
 			case CRASHRESTART: {
-				if (crashrestartThread == null) {
-					return true;
-				} else {
+				if (crashrestartThread != null) {
 					crashrestartThread.stopThread();
 					try {
 						crashrestartThread.join(2000);
 						crashrestartThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop CrashRestartThread");
-						return false;
 					}
 				}
+				return;
 			}
 			case AUTORESTART: {
-				if (autorestartThread == null) {
-					return true;
-				} else {
+				if (autorestartThread != null) {
 					autorestartThread.stopThread();
 					try {
 						autorestartThread.join(2000);
 						autorestartThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop AutoRestartThread");
-						return false;
 					}
 				}
+				return;
 			}
 			case CONSOLECOMMAND: {
-				if (consolecommandThread == null) {
-					return true;
-				} else {
+				if (consolecommandThread != null) {
 					consolecommandThread.stopThread();
 					try {
 						consolecommandThread.join(2000);
 						consolecommandThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop ConsoleCommandThread");
-						return false;
 					}
 				}
+				return;
 			}
 			case WORLDREGENCOPY: {
-				if (worldregencopyThread == null) {
-					return true;
-				} else {
+				if (worldregencopyThread != null) {
 					worldregencopyThread.stopThread();
 					try {
 						worldregencopyThread.join(2000);
 						worldregencopyThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop WorldRegenThread");
-						return false;
 					}
 				}
+				return;
 			}
 			case WORLDREGENPASTE: {
-				if (worldregenpasteThread == null) {
-					return true;
-				} else {
+				if (worldregenpasteThread != null) {
 					worldregenpasteThread.stopThread();
 					try {
 						worldregenpasteThread.join(2000);
 						worldregenpasteThread = null;
-						return true;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop WorldRegenThread");
-						return false;
 					}
 				}
-			}
-			default: {
-				return false;
+				return;
 			}
 		}
 	}
