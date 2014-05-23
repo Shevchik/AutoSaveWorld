@@ -26,7 +26,6 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.listener.EventsListener;
 import autosaveworld.modules.pluginmanager.PluginManager;
 import autosaveworld.modules.processmanager.ProcessManager;
 import autosaveworld.threads.ThreadType;
@@ -66,8 +65,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	public AutoSaveWorldConfigMSG configmsg;
 	public AutoSaveWorldConfig config;
 	public LocaleChanger localeChanger;
-	//event listener
-	public EventsListener eh;
 	//command executor
 	public CommandsHandler ch;
 	//operation lock
@@ -83,7 +80,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		configmsg.loadmsg();
 		MessageLogger.init(getLogger(), config);
 		localeChanger = new LocaleChanger(this, configmsg);
-		eh = new EventsListener(this,config);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		// Load plugin manager
 		pluginmanager = new PluginManager(this);
@@ -94,7 +90,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		getCommand("autosave").setExecutor(ch);
 		getCommand("autobackup").setExecutor(ch);
 		getCommand("autopurge").setExecutor(ch);
-		getServer().getPluginManager().registerEvents(eh, this);
 		// Start Threads
 		startThread(ThreadType.SAVE);
 		startThread(ThreadType.BACKUP);
@@ -137,7 +132,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		configmsg = null;
 		config = null;
 		localeChanger = null;
-		eh = null;
 		ch = null;
 	}
 
