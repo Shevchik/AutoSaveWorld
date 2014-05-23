@@ -157,11 +157,6 @@ public class AutoSaveThread extends Thread {
 	}
 
 	private void saveWorldDoNoSaveStructureInfo(World world) {
-		// save saveenabled state
-		boolean saveenabled = world.isAutoSave();
-		// set saveenabled state
-		world.setAutoSave(true);
-		// now lets save everything besides structures
 		try {
 			// get worldserver and dataManager
 			Field worldField = world.getClass().getDeclaredField("world");
@@ -212,8 +207,6 @@ public class AutoSaveThread extends Thread {
 			MessageLogger.debug("failed to workaround stucture saving, saving world using normal methods");
 			saveWorldNormal(world);
 		}
-		// reset saveenabled state
-		world.setAutoSave(saveenabled);
 	}
 
 }
