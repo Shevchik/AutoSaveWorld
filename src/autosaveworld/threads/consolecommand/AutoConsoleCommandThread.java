@@ -110,7 +110,7 @@ public class AutoConsoleCommandThread extends Thread {
 		if (cminute != minute && config.cctimescommands.containsKey(ctime)) {
 			minute = cminute;
 			timestoexecute.add(ctime);
-		}	
+		}
 		return timestoexecute;
 	}
 
