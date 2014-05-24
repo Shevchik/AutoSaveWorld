@@ -43,20 +43,20 @@ import autosaveworld.utils.SchedulerUtils;
 public class AutoSaveWorld extends JavaPlugin {
 
 	//save
-	public AutoSaveThread saveThread = null;
+	public AutoSaveThread saveThread;
 	//backup
-	public AutoBackupThread backupThread = null;
+	public AutoBackupThread backupThread;
 	//purge
-	public AutoPurgeThread purgeThread = null;
+	public AutoPurgeThread purgeThread;
 	//restart
-	public CrashRestartThread crashrestartThread = null;
-	public AutoRestartThread autorestartThread = null;
-	private RestartJVMshutdownhook JVMsh = null;
+	public CrashRestartThread crashrestartThread;
+	public AutoRestartThread autorestartThread;
+	private RestartJVMshutdownhook JVMsh;
 	//autoconsolecommand
-	public AutoConsoleCommandThread consolecommandThread = null;
+	public AutoConsoleCommandThread consolecommandThread;
 	//worldregen
-	public WorldRegenCopyThread worldregencopyThread = null;
-	public WorldRegenPasteThread worldregenpasteThread = null;
+	public WorldRegenCopyThread worldregencopyThread;
+	public WorldRegenPasteThread worldregenpasteThread;
 	//plugin manager
 	public PluginManager pluginmanager;
 	//process manager
