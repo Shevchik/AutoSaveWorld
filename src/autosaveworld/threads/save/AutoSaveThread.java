@@ -59,13 +59,6 @@ public class AutoSaveThread extends Thread {
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
 
 		while (run) {
-			// Prevent AutoSave from never sleeping
-			// If interval is 0, sleep for 5 seconds and skip saving
-			if (config.saveInterval == 0) {
-				try {Thread.sleep(5000);} catch (InterruptedException e) {}
-				continue;
-			}
-
 			// sleep
 			for (int i = 0; i < config.saveInterval; i++) {
 				if (!run || command) {break;}

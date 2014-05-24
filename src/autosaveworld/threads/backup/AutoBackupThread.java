@@ -79,13 +79,6 @@ public class AutoBackupThread extends Thread {
 		}
 
 		while (run) {
-			// Prevent AutoBackup from never sleeping
-			// If interval is 0, sleep for 10 seconds and skip backup
-			if(config.backupInterval == 0) {
-				try {Thread.sleep(10000);} catch(InterruptedException e) {}
-				continue;
-			}
-
 			// Do our Sleep stuff!
 			for (; counter < config.backupInterval; counter++) {
 				if (!run || command) {break;}
@@ -104,7 +97,6 @@ public class AutoBackupThread extends Thread {
 			}
 
 		}
-
 		MessageLogger.debug("Graceful quit of AutoBackupThread");
 
 	}

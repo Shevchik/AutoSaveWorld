@@ -56,15 +56,6 @@ public class AutoPurgeThread extends Thread {
 
 
 		while (run) {
-			// Prevent AutoPurge from never sleeping
-			// If interval is 0, sleep for 10 seconds and skip purging
-			if (config.purgeInterval == 0) {
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {}
-				continue;
-			}
-
 			// Do our Sleep stuff!
 			for (int i = 0; i < config.purgeInterval; i++) {
 				if (!run) {break;}
@@ -81,7 +72,6 @@ public class AutoPurgeThread extends Thread {
 				}
 				plugin.lock.unlock();
 			}
-
 		}
 
 		MessageLogger.debug("Graceful quit of AutoPurgeThread");
