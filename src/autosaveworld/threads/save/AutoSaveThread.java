@@ -97,9 +97,7 @@ public class AutoSaveThread extends Thread {
 		MessageLogger.debug("Saved Players");
 		MessageLogger.debug("Saving worlds");
 		for (World w : plugin.getServer().getWorlds()) {
-			if (w.isAutoSave()) {
-				saveWorld(w);
-			}
+			saveWorld(w);
 		}
 		MessageLogger.debug("Saved Worlds");
 
@@ -129,10 +127,7 @@ public class AutoSaveThread extends Thread {
 					new Runnable() {
 						@Override
 						public void run() {
-							if (world.isAutoSave()) {
-								MessageLogger.debug(String.format("Saving world: %s", world.getName()));
-								saveWorld(world);
-							}
+							saveWorld(world);
 						}
 					}
 				);
@@ -143,6 +138,9 @@ public class AutoSaveThread extends Thread {
 	}
 
 	private void saveWorld(World world) {
+		if (!world.isAutoSave()) {
+			return;
+		}
 		// structures are saved only for main world so we use this workaround
 		// only for main world
 		if (config.donotsavestructures && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName())) {
