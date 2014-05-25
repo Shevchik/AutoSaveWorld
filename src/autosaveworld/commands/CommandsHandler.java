@@ -102,24 +102,16 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 				MessageLogger.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
-			} else if (args.length >= 3 && args[0].equalsIgnoreCase("process")) {
-				if (!config.aswexecpassword.isEmpty()) {
-					if (args[1].equals(config.aswexecpassword)) {
-						String processname = null;
-						if (args.length > 3) {
-							processname = args[3];
-						}
-						String[] processargs = null;
-						if (args.length > 4) {
-							processargs = Arrays.copyOfRange(args, 4, args.length);
-						}
-						plugin.processmanager.handleProcessManagerCommand(sender, args[2], processname, processargs);
-					} else {
-						sender.sendMessage("Password is invalid");
-					}
-				} else {
-					sender.sendMessage("Set a password for this command first");
+			} else if (args.length >= 2 && args[0].equalsIgnoreCase("process")) {
+				String processname = null;
+				if (args.length > 2) {
+					processname = args[2];
 				}
+				String[] processargs = null;
+				if (args.length > 3) {
+					processargs = Arrays.copyOfRange(args, 3, args.length);
+				}
+				plugin.processmanager.handleProcessManagerCommand(sender, args[1], processname, processargs);
 				return true;
 			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
