@@ -33,7 +33,7 @@ public class MemoryStream {
 		bytequeue.put(-1);
 	}
 
-	private PrimitiveIntLinkedBlockingQueue bytequeue = new PrimitiveIntLinkedBlockingQueue(10 * 1024 * 1024);
+	private IntLinkedBlockingQueue bytequeue = new IntLinkedBlockingQueue(10 * 1024 * 1024);
 
 	protected int read() {
 		return bytequeue.take();

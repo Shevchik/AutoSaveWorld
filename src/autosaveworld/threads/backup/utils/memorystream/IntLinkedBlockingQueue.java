@@ -21,12 +21,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class PrimitiveIntLinkedBlockingQueue {
+public class IntLinkedBlockingQueue {
 
-	static class Node {
+	private static class Node {
 		int item;
 
-		Node(int b) {
+		public Node(int b) {
 			this.item = b;
 		}
 
@@ -66,11 +66,11 @@ public class PrimitiveIntLinkedBlockingQueue {
 		}
 	}
 
-	public PrimitiveIntLinkedBlockingQueue() {
+	public IntLinkedBlockingQueue() {
 		this(Integer.MAX_VALUE);
 	}
 
-	public PrimitiveIntLinkedBlockingQueue(int capacity) {
+	public IntLinkedBlockingQueue(int capacity) {
 		if (capacity <= 0) {
 			throw new IllegalArgumentException();
 		}
