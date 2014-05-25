@@ -16,7 +16,6 @@ import autosaveworld.core.logging.MessageLogger;
 
 public class LocaleChanger {
 
-
 	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfigMSG configmsg;
 	public LocaleChanger(AutoSaveWorld plugin, AutoSaveWorldConfigMSG configmsg) {
@@ -25,8 +24,7 @@ public class LocaleChanger {
 	}
 
 	//available locales
-	public List<String> getAvailableLocales()
-	{
+	public List<String> getAvailableLocales() {
 		List<String> locales = new ArrayList<String>();
 		try {
 			//add additional locales based on files in the jar.
