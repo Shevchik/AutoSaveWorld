@@ -81,11 +81,11 @@ public class TownyCopy {
 								)
 							);
 							//add to save list
-							SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+							SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, bvmin, bvmax);
 							schematics.add(schematicdata);
 						}
 					}
-					SchematicOperations.saveToSchematic(schematics);
+					SchematicOperations.saveToSchematic(wtoregen, schematics);
 					MessageLogger.debug("Towny claim "+town.getName()+" saved");
 				}
 			}

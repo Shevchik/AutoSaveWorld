@@ -80,11 +80,11 @@ public class FactionsCopy {
 							)
 						);
 						//add to save list
-						SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtoregen, bvmin, bvmax);
+						SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, bvmin, bvmax);
 						schematics.add(schematicdata);
 					}
 				}
-				SchematicOperations.saveToSchematic(schematics);
+				SchematicOperations.saveToSchematic(wtoregen, schematics);
 				MessageLogger.debug("Faction land "+f.getName()+" saved");
 			}
 		}

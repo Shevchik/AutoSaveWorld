@@ -39,14 +39,14 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 
 public class SchematicOperations {
 
-	public static void saveToSchematic(final LinkedList<SchematicToSave> schematicdatas) {
+	public static void saveToSchematic(final World world, final LinkedList<SchematicToSave> schematicdatas) {
 		Runnable copypaste = new Runnable() {
 			@Override
 			public void run() {
 				for (SchematicToSave schematicdata : schematicdatas) {
 					try {
 						//create clipboard
-						BukkitWorld bw = new BukkitWorld(schematicdata.getWorld());
+						BukkitWorld bw = new BukkitWorld(world);
 						EditSession es = new EditSession(bw, Integer.MAX_VALUE);
 						CuboidClipboard clipboard = new CuboidClipboard(
 							schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)),
@@ -73,8 +73,7 @@ public class SchematicOperations {
 		SchedulerUtils.callSyncTaskAndWait(copypaste);
 	}
 
-	public static void pasteFromSchematic(final LinkedList<SchematicToLoad> schematicdatas) {
-		final World world = schematicdatas.get(0).getWorld();
+	public static void pasteFromSchematic(final World world, final LinkedList<SchematicToLoad> schematicdatas) {
 		final LinkedList<CuboidClipboard> clipboards = new LinkedList<CuboidClipboard>();
 		//load from schematics to clipboards
 		for (SchematicToLoad schematicdata : schematicdatas) {

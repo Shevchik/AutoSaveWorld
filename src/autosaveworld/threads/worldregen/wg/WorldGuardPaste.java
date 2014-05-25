@@ -53,8 +53,8 @@ public class WorldGuardPaste {
 			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 			//paste
 			MessageLogger.debug("Pasting WG region "+rg.getId()+" from schematic");
-			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+rg.getId(), wtopaste);
-			SchematicOperations.pasteFromSchematic(new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
+			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+rg.getId());
+			SchematicOperations.pasteFromSchematic(wtopaste, new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("Pasted WG region "+rg.getId()+" from schematic");
 		}
 	}

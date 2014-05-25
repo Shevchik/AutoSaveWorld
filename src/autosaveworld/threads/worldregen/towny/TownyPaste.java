@@ -57,14 +57,11 @@ public class TownyPaste {
 						if (tb.getWorld().getName().equals(wtopaste.getName())) {
 							final int xcoord = tb.getX();
 							final int zcoord = tb.getZ();
-							//paste
-							MessageLogger.debug("Pasting "+town.getName()+" townblock from schematic");
-							SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+							SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord);
 							schematics.add(schematicdata);
-							MessageLogger.debug("Pasted "+town.getName()+" townblock from schematic");
 						}
 					}
-					SchematicOperations.pasteFromSchematic(schematics);
+					SchematicOperations.pasteFromSchematic(wtopaste, schematics);
 					MessageLogger.debug("Pasted town claim "+town.getName()+" from schematic");
 				}
 			}

@@ -53,8 +53,8 @@ public class WorldGuardCopy {
 			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
 			//save
 			MessageLogger.debug("Saving WG Region "+rg.getId()+" to schematic");
-			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getWGTempFolder()+rg.getId(), wtoregen, rg.getMinimumPoint(), rg.getMaximumPoint());
-			SchematicOperations.saveToSchematic(new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
+			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getWGTempFolder()+rg.getId(), rg.getMinimumPoint(), rg.getMaximumPoint());
+			SchematicOperations.saveToSchematic(wtoregen, new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("WG Region "+rg.getId()+" saved");
 		}
 	}

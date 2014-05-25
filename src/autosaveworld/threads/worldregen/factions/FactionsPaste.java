@@ -57,11 +57,11 @@ public class FactionsPaste {
 					if (ps.getWorld().equalsIgnoreCase(wtopaste.getName())) {
 						final int xcoord = ps.getChunkX();
 						final int zcoord = ps.getChunkZ();
-						SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, wtopaste);
+						SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord);
 						schematics.add(schematicdata);
 					}
 				}
-				SchematicOperations.pasteFromSchematic(schematics);
+				SchematicOperations.pasteFromSchematic(wtopaste, schematics);
 				MessageLogger.debug("Pasted faction land "+f.getName()+" from schematic");
 			}
 		}

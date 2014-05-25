@@ -92,8 +92,8 @@ public class GPCopy {
 			);
 			//save
 			MessageLogger.debug("Saving GP Region "+claim.getID()+" to schematic");
-			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getGPTempFolder()+claim.getID().toString(), wtoregen, bvmin, bvmax);
-			SchematicOperations.saveToSchematic(new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
+			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getGPTempFolder()+claim.getID().toString(), bvmin, bvmax);
+			SchematicOperations.saveToSchematic(wtoregen, new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("GP Region "+claim.getID()+" saved");
 		}
 	}

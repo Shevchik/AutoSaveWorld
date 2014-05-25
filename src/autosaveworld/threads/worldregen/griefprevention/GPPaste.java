@@ -66,8 +66,8 @@ public class GPPaste {
 			Claim claim = ca.get(i);
 			//paste
 			MessageLogger.debug("Pasting GP region "+claim.getID()+" from schematics");
-			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+claim.getID(), wtopaste);
-			SchematicOperations.pasteFromSchematic(new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
+			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+claim.getID());
+			SchematicOperations.pasteFromSchematic(wtopaste, new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
 			MessageLogger.debug("Pasted GP region "+claim.getID()+" from schematics");
 		}
 	}
