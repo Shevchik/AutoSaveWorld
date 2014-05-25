@@ -79,12 +79,6 @@ public class CommandsHandler implements CommandExecutor {
 			//"autosaveworld" command handler
 			if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
 				// help
-				MessageLogger.sendMessage(sender, "&f/asw help&7 - &3Shows this help");
-				MessageLogger.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu, memory, HDD usage");
-				MessageLogger.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
-				MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
-				MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
-				MessageLogger.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
 				MessageLogger.sendMessage(sender, "&f/asw save&7 - &3Saves all worlds and players");
 				MessageLogger.sendMessage(sender, "&f/save&7 - &3Same as /asw save");
 				MessageLogger.sendMessage(sender, "&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds) and plugins (if enabled in config)");
@@ -93,8 +87,16 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
 				MessageLogger.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
 				MessageLogger.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
-				MessageLogger.sendMessage(sender, "&f/asw forcegc&7 - &3Forces GC");
-				MessageLogger.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows some server resources usage info");
+				MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
+				MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
+				MessageLogger.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Reloads(unloads and then loads) plugin {pluginname}");
+				MessageLogger.sendMessage(sender, "&f/asw process start {processname} {command line}&7 - &3Starts process using {command line}");
+				MessageLogger.sendMessage(sender, "&f/asw process stop {processname}&7 - &3Stops process");
+				MessageLogger.sendMessage(sender, "&f/asw process output {processname}&7 - &3Prints latest process output from output and error streams");
+				MessageLogger.sendMessage(sender, "&f/asw process input {processname} {input}&7 - &3Sends a line to process input stream");
+				MessageLogger.sendMessage(sender, "&f/asw process list&7 - &3Shows registered processes");
+				MessageLogger.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu, memory, HDD usage");
+				MessageLogger.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
 				MessageLogger.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 				MessageLogger.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");
 				MessageLogger.sendMessage(sender, "&f/asw reloadmsg&7 - &3Reload message config (configmsg.yml)");
