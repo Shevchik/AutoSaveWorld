@@ -54,7 +54,7 @@ public class ActivePlayersList {
 					MessageLogger.debug("Checking player "+nickname);
 					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
 					if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime) {
-						System.out.println("Adding player "+nickname+" to active list");
+						MessageLogger.debug("Adding player "+nickname+" to active list");
 						plactivecs.add(offplayer.getName());
 						plactivencs.add(offplayer.getName().toLowerCase());
 					}

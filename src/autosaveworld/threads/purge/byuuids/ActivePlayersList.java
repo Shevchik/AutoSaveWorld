@@ -39,7 +39,7 @@ public class ActivePlayersList {
 			String uuid = player.getUniqueId().toString().replace("-", "");
 			MessageLogger.debug("Checking player "+uuid);
 			if (System.currentTimeMillis() - player.getLastPlayed() < awaytime) {
-				System.out.println("Adding player "+uuid+" to active list");
+				MessageLogger.debug("Adding player "+uuid+" to active list");
 				plactive.add(uuid);
 			}
 			for (String listuuid : config.purgeIgnoredUUIDs) {
