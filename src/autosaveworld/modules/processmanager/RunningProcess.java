@@ -18,8 +18,10 @@
 package autosaveworld.modules.processmanager;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -81,7 +83,9 @@ public class RunningProcess {
 	public void supplyInput(CommandSender sender, String line) {
 		sender.sendMessage("Sending line to the process");
 		try {
-			p.getOutputStream().write(line.getBytes());
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+			writer.write(line);
+			writer.newLine();
 		} catch (IOException e) {
 			sender.sendMessage("Error occured while sending line to process");
 			sender.sendMessage(e.getMessage());
