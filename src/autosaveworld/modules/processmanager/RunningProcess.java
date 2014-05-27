@@ -86,6 +86,7 @@ public class RunningProcess {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
 			writer.write(line);
 			writer.newLine();
+			writer.flush();
 		} catch (IOException e) {
 			sender.sendMessage("Error occured while sending line to process");
 			sender.sendMessage(e.getMessage());
