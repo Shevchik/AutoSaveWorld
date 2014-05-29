@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import autosaveworld.config.localefiles.LocaleFiles;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
@@ -24,25 +25,28 @@ public class LocaleChanger {
 	}
 
 	//available locales
-	public List<String> getAvailableLocales() {
-		List<String> locales = new ArrayList<String>();
+	public List<String> getAvailableLocales() {	
+		List<String> locales = new LinkedList<String>();
 		try {
 			//add additional locales based on files in the jar.
 			final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry ze = entries.nextElement();
-				if (!ze.isDirectory()) {
-					if (ze.getName().contains("localefiles")) {
-						String lname = new File(ze.getName()).getName();
-						lname = lname.split("[_]")[1];
-						lname = lname.split("[.]")[0];
-						locales.add(lname);
+				if (!ze.isDirectory() && ze.getName().contains("/")) {
+					String pathname = ze.getName().substring(0, ze.getName().lastIndexOf("/"));
+					String filename = ze.getName().substring(ze.getName().lastIndexOf("/") + 1, ze.getName().length());
+					if (pathname.equalsIgnoreCase(LocaleFiles.getPackageName())) {
+						if (filename.endsWith(".yml") && filename.contains("_")) {
+							locales.add(filename.substring(0, filename.length() - 4).split("[_]")[1]);
+						}
 					}
 				}
 			}
 			zipFile.close();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			locales.add("Error occured while scanning for available locales");
+		}
 		return locales;
 	}
 
