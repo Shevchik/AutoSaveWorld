@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge.byname.plugins;
+package autosaveworld.threads.purge.bynames.plugins;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
