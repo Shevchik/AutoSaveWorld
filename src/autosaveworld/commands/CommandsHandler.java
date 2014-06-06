@@ -86,6 +86,7 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/asw purge&7 - &3Purges plugins info from inactive players");
 				MessageLogger.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
 				MessageLogger.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
+				MessageLogger.sendMessage(sender, "&f/asw forcerestart&7 - &3Restarts server without countdown");
 				MessageLogger.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
@@ -165,9 +166,13 @@ public class CommandsHandler implements CommandExecutor {
 				//purge
 				plugin.purgeThread.startpurge();
 				return true;
-			} else if ((args.length == 1 && args[0].equalsIgnoreCase("restart"))) {
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("restart")) {
 				//restart
 				plugin.autorestartThread.startrestart(false);
+				return true;
+			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcerestart")) {
+				//restrat without countdown
+				plugin.autorestartThread.startrestart(true);
 				return true;
 			} else if ((args.length == 2 && args[0].equalsIgnoreCase("regenworld"))) {
 				//regen world
