@@ -11,7 +11,7 @@ import autosaveworld.threads.backup.utils.memorystream.MemoryStream;
 public class MemoryZip {
 
 	public static MemoryInputStream startZIP(final File inputDir, final List<String> excludefolders) {
-		ExecutorService executor = Executors.newSingleThreadExecutor()
+		ExecutorService executor = Executors.newSingleThreadExecutor();
 		final MemoryStream mz = new MemoryStream();
 		executor.submit(
 			new Runnable() {
