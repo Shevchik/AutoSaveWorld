@@ -44,9 +44,7 @@ public class LocalFSBackup {
 			LFSBackupOperations bo = new LFSBackupOperations(plugin, config.lfsbackupzip, extpath, config.lfsbackupexcludefolders);
 
 			//create executor
-			int maxthreads = Runtime.getRuntime().availableProcessors() - 1;
-			if (maxthreads == 0) {maxthreads = 1;}
-			ExecutorService backupService = Executors.newFixedThreadPool(maxthreads);
+			ExecutorService backupService = Executors.newFixedThreadPool(Math.max(Runtime.getRuntime().availableProcessors() - 1, 1));
 
 			//create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
