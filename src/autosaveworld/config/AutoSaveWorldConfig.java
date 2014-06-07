@@ -64,7 +64,7 @@ public class AutoSaveWorldConfig {
 	public int ftpport = 21;
 	public String ftpusername = "user";
 	public String ftppassworld = "password";
-	public String ftppath = "/asw/";
+	public String ftppath = "asw";
 	public List<String> ftpbackupWorlds = null;
 	public boolean ftpbackuppluginsfolder = false;
 	public List<String> ftpbackupexcludefolders;
