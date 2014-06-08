@@ -25,7 +25,7 @@ public class LocaleChanger {
 	}
 
 	//available locales
-	public List<String> getAvailableLocales() {	
+	public List<String> getAvailableLocales() {
 		List<String> locales = new LinkedList<String>();
 		try {
 			//add additional locales based on files in the jar.
