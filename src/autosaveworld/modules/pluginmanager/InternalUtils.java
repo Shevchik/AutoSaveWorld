@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,18 +66,17 @@ public class InternalUtils {
 		Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
 		getCommandsMethod.setAccessible(true);
 		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
-		for (Command cmd : new ArrayList<Command>(commands)) {
-			//if you ask why i'm doing this shit, the answer is stupid mcore
+		System.out.println(Bukkit.getServer().getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
+		for (Command cmd : new LinkedList<Command>(commands)) {
 			if (cmd instanceof PluginIdentifiableCommand) {
 				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
 				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName())) {
 					cmd.unregister(commandMap);
-					if (commands.getClass().getSimpleName().equals("UnmodifiableCollection")) {
-						removeFromUnmodifiableCollection(commands, cmd);
-					} else {
-						commands.remove(cmd);
-					}
+					removeCommand(commands, cmd);
 				}
+			} else  if (cmd.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
+				cmd.unregister(commandMap);
+				removeCommand(commands, cmd);
 			}
 		}
 		//close file in url classloader
@@ -89,6 +88,14 @@ public class InternalUtils {
 		//force gc
 		System.gc();
 		System.gc();
+	}
+
+	private void removeCommand(Collection<Command> commands, Command cmd) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		if (commands.getClass().getSimpleName().equals("UnmodifiableCollection")) {
+			removeFromUnmodifiableCollection(commands, cmd);
+		} else {
+			commands.remove(cmd);
+		}
 	}
 
 	private void removeFromUnmodifiableCollection(Collection<?> collection, Object toremove) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
