@@ -45,7 +45,7 @@ public class RestartJVMshutdownhook extends Thread {
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
 			File restartscript = new File(crashrestartscriptpath);
-			if (!crashrestartscriptpath.isEmpty() && restartscript.exists()) {
+			if (!crashrestartscriptpath.isEmpty() && restartscript.exists() && restartscript.isFile()) {
 				System.out.println("[AutoSaveWorld] Startup script found. Restarting");
 				System.out.flush();
 				restartscript.setExecutable(true);
