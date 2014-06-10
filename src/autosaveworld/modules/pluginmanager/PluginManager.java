@@ -19,6 +19,7 @@ package autosaveworld.modules.pluginmanager;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -49,9 +50,34 @@ public class PluginManager {
 		} else if (command.equalsIgnoreCase("unload")) {
 			unloadPlugin(sender,pluginname);
 		} else if (command.equalsIgnoreCase("reload")) {
-			reloadPlugin(sender,pluginname);
+			reloadPlugin(sender,pluginname,false);
+		} else if (command.equalsIgnoreCase("ureload")) {
+			reloadPlugin(sender,pluginname,false);
 		} else {
 			MessageLogger.sendMessage(sender, "Invalid plugin manager command");
+		}
+	}
+
+	private void loadPlugin(CommandSender sender, String pluginname) {
+		//ignore if plugin is already loaded
+		if (isPluginAlreadyLoaded(pluginname)) {
+			MessageLogger.sendMessage(sender, "Plugin is already loaded");
+			return;
+		}
+		//find plugin file
+		File pmpluginfile = findPluginFile(plugin.getDataFolder().getParentFile(), pluginname);
+		//ignore if we can't find plugin file
+		if (!pmpluginfile.exists()) {
+			MessageLogger.sendMessage(sender, "File with this plugin name not found");
+			return;
+		}
+		//now load plugin
+		try {
+			iutils.loadPlugin(pmpluginfile);
+			MessageLogger.sendMessage(sender, "Plugin loaded");
+		} catch (Exception e) {
+			e.printStackTrace();
+			MessageLogger.sendMessage(sender, "Some error occured while loading plugin");
 		}
 	}
 
@@ -73,52 +99,53 @@ public class PluginManager {
 		}
 	}
 
-	private void loadPlugin(CommandSender sender, String pluginname) {
-		//ignore if plugin is already loaded
-		if (isPluginAlreadyLoaded(pluginname)) {
-			MessageLogger.sendMessage(sender, "Plugin is already loaded");
-			return;
-		}
-		//find plugin file
-		File pmpluginfile = findPluginFile(pluginname);
-		//ignore if we can't find plugin file
-		if (!pmpluginfile.exists()) {
-			MessageLogger.sendMessage(sender, "File with this plugin name not found");
-			return;
-		}
-		//now load plugin
-		try {
-			iutils.loadPlugin(pmpluginfile);
-			MessageLogger.sendMessage(sender, "Plugin loaded");
-		} catch (Exception e) {
-			e.printStackTrace();
-			MessageLogger.sendMessage(sender, "Some error occured while loading plugin");
-		}
-	}
-
-	private void reloadPlugin(CommandSender sender, String pluginname) {
+	private void reloadPlugin(CommandSender sender, String pluginname, boolean update) {
 		//find plugin
 		Plugin pmplugin = findPlugin(pluginname);
-		//find plugin file
-		File pmpluginfile = findPluginFile(pluginname);
 		//ignore if plugin is not loaded
 		if (pmplugin == null) {
 			MessageLogger.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
-		//ignore if we can't find plugin file
-		if (!pmpluginfile.exists()) {
-			MessageLogger.sendMessage(sender, "File with this plugin name not found");
-			return;
-		}
-		//now reload plugin
-		try {
-			iutils.unloadPlugin(pmplugin);
-			iutils.loadPlugin(pmpluginfile);
-			MessageLogger.sendMessage(sender, "Plugin reloaded");
-		} catch (Exception e) {
-			e.printStackTrace();
-			MessageLogger.sendMessage(sender, "Some error occured while reloading plugin");
+		if (update) {
+			//find plugin file
+			File pmpluginfile = findPluginFile(new File(plugin.getDataFolder().getParentFile(), "update"), pluginname);
+			//ignore if we can't find plugin file
+			if (!pmpluginfile.exists()) {
+				MessageLogger.sendMessage(sender, "File with this plugin name not found");
+				return;
+			}
+			try {
+				//unload plugin
+				iutils.unloadPlugin(pmplugin);
+				//move file
+				File moveto = new File(plugin.getDataFolder().getParentFile(), pmpluginfile.getName());
+				Files.copy(pmpluginfile.toPath(), moveto.toPath());
+				//detele file
+				pmpluginfile.delete();
+				//load plugin
+				iutils.loadPlugin(moveto);
+			} catch (Exception e) {
+				e.printStackTrace();
+				MessageLogger.sendMessage(sender, "Some error occured while reloading plugin");
+			}
+		} else {
+			//find plugin file
+			File pmpluginfile = findPluginFile(plugin.getDataFolder().getParentFile(), pluginname);
+			//ignore if we can't find plugin file
+			if (!pmpluginfile.exists()) {
+				MessageLogger.sendMessage(sender, "File with this plugin name not found");
+				return;
+			}
+			//now reload plugin
+			try {
+				iutils.unloadPlugin(pmplugin);
+				iutils.loadPlugin(pmpluginfile);
+				MessageLogger.sendMessage(sender, "Plugin reloaded");
+			} catch (Exception e) {
+				e.printStackTrace();
+				MessageLogger.sendMessage(sender, "Some error occured while reloading plugin");
+			}
 		}
 	}
 
@@ -131,11 +158,13 @@ public class PluginManager {
 		return Bukkit.getPluginManager().getPlugin(pluginname);
 	}
 
-	private File findPluginFile(String pluginname) {
-		for (File pluginfile : plugin.getDataFolder().getParentFile().listFiles()) {
-			String pluginName = getPluginName(pluginfile);
-			if (pluginName != null && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
-				return pluginfile;
+	private File findPluginFile(File folder, String pluginname) {
+		if (folder.exists() && folder.isDirectory()) {
+			for (File pluginfile : folder.listFiles()) {
+				String pluginName = getPluginName(pluginfile);
+				if (pluginName != null && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
+					return pluginfile;
+				}
 			}
 		}
 		return new File(plugin.getDataFolder().getParent(), pluginname+".jar");
