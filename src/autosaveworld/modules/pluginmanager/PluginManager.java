@@ -133,24 +133,30 @@ public class PluginManager {
 
 	private File findPluginFile(String pluginname) {
 		for (File pluginfile : plugin.getDataFolder().getParentFile().listFiles()) {
-			try {
-				if (pluginfile.getName().endsWith(".jar")) {
-					final JarFile jarFile = new JarFile(pluginfile);
-					JarEntry je = jarFile.getJarEntry("plugin.yml");
-					if (je != null) {
-						FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
-						String jarpluginName = plugininfo.getString("name");
-						if (pluginname.equalsIgnoreCase(jarpluginName) || pluginname.equalsIgnoreCase(jarpluginName.replace(" ", "_"))) {
-							jarFile.close();
-							return pluginfile;
-						}
-					}
-					jarFile.close();
-				}
-			} catch (Exception e) {
+			String pluginName = getPluginName(pluginfile);
+			if (pluginName != null && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
+				return pluginfile;
 			}
 		}
 		return new File(plugin.getDataFolder().getParent(), pluginname+".jar");
+	}
+
+	private String getPluginName(File pluginfile) {
+		try {
+			if (pluginfile.getName().endsWith(".jar")) {
+				final JarFile jarFile = new JarFile(pluginfile);
+				JarEntry je = jarFile.getJarEntry("plugin.yml");
+				if (je != null) {
+					FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
+					String jarpluginName = plugininfo.getString("name");
+					jarFile.close();
+					return jarpluginName;
+				}
+				jarFile.close();
+			}
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
 	private boolean isPluginAlreadyLoaded(String pluginname) {
