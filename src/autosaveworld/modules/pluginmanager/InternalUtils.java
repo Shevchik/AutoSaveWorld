@@ -66,7 +66,6 @@ public class InternalUtils {
 		Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
 		getCommandsMethod.setAccessible(true);
 		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
-		System.out.println(Bukkit.getServer().getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
 		for (Command cmd : new LinkedList<Command>(commands)) {
 			if (cmd instanceof PluginIdentifiableCommand) {
 				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
