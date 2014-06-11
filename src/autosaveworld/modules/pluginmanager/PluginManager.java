@@ -176,6 +176,7 @@ public class PluginManager {
 				final JarFile jarFile = new JarFile(pluginfile);
 				JarEntry je = jarFile.getJarEntry("plugin.yml");
 				if (je != null) {
+					@SuppressWarnings("deprecation")
 					FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
 					String jarpluginName = plugininfo.getString("name");
 					jarFile.close();
