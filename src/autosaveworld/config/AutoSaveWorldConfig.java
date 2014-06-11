@@ -96,7 +96,8 @@ public class AutoSaveWorldConfig {
 	public boolean purgedat = true;
 	//crashrestart
 	public boolean crashrestartenabled = false;
-	public String crashrestartscriptpath="";
+	public boolean crashrestartforce = false;
+	public String crashrestartscriptpath= "";
 	public boolean crstop = false;
 	public long crtimeout = 60;
 	public int crdelay = 20;
@@ -202,7 +203,8 @@ public class AutoSaveWorldConfig {
 		purgedat = config.getBoolean("purge.dat.enabled", purgedat);
 
 		//crashrestart variables
-		crashrestartenabled = config.getBoolean("crashrestart.enabled",crashrestartenabled);
+		crashrestartenabled = config.getBoolean("crashrestart.enabled", crashrestartenabled);
+		crashrestartforce = config.getBoolean("crashrestart.forcestop", crashrestartforce);
 		crdelay = config.getInt("crashrestart.startdelay",crdelay);
 		crashrestartscriptpath = config.getString("crashrestart.scriptpath",crashrestartscriptpath);
 		crtimeout = config.getLong("crashrestart.timeout",crtimeout);
@@ -326,6 +328,7 @@ public class AutoSaveWorldConfig {
 
 		//crashrestart variables
 		config.set("crashrestart.enabled",crashrestartenabled);
+		config.set("crashrestart.forcestop", crashrestartforce);
 		config.set("crashrestart.startdelay",crdelay);
 		config.set("crashrestart.scriptpath",crashrestartscriptpath);
 		config.set("crashrestart.timeout",crtimeout);

@@ -24,6 +24,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
+import org.spigotmc.AsyncCatcher;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
@@ -31,9 +34,11 @@ import autosaveworld.utils.SchedulerUtils;
 
 public class CrashRestartThread extends Thread{
 
+	private Thread bukkitMainThread;
 	private AutoSaveWorldConfig config;
 	private RestartJVMshutdownhook jvmsh;
-	public CrashRestartThread(AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
+	public CrashRestartThread(Thread thread, AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
+		this.bukkitMainThread = thread;
 		this.config = config;
 		this.jvmsh = jvmsh;
 	}
@@ -44,6 +49,7 @@ public class CrashRestartThread extends Thread{
 
 	private long syncticktime = 0;
 	private boolean run = true;
+	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
 		MessageLogger.debug("CrashRestartThread started");
@@ -89,6 +95,43 @@ public class CrashRestartThread extends Thread{
 					}
 
 					Bukkit.shutdown();
+					if (config.crashrestartforce) {
+						//freeze main thread
+						bukkitMainThread.suspend();
+						//disable spigot async catcher
+						try {
+							AsyncCatcher.enabled = false;
+						} catch (Throwable t) {
+						}
+						//unload plugins
+						for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+							try {
+								Bukkit.getPluginManager().disablePlugin(plugin);
+							} catch (Throwable e) {
+								e.printStackTrace();
+							}
+						}
+						//save players
+						try {
+							Bukkit.savePlayers();
+						} catch (Throwable e) {
+							e.printStackTrace();
+						}
+						//save worlds
+						for (World w : Bukkit.getWorlds()) {
+							if (w.isAutoSave()) {
+								try {
+									w.save();
+								} catch (Throwable e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						//resume main thread
+						bukkitMainThread.resume();
+						//shutdown jvm
+						System.exit(0);
+					}
 				}
 
 			}

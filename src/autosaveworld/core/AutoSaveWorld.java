@@ -162,7 +162,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			}
 			case CRASHRESTART: {
 				if (crashrestartThread == null || !crashrestartThread.isAlive()) {
-					crashrestartThread = new CrashRestartThread(config, JVMsh);
+					crashrestartThread = new CrashRestartThread(Thread.currentThread(), config, JVMsh);
 					crashrestartThread.start();
 				}
 				return;
