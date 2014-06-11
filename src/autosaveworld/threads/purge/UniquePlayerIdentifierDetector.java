@@ -12,7 +12,7 @@ public class UniquePlayerIdentifierDetector {
 			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer(UUID.randomUUID()).getClass();
 			craftofflineplayer.getDeclaredConstructor(craftserver, net.minecraft.util.com.mojang.authlib.GameProfile.class);
 			return UniquePlayerIdentifierType.UUID;
-		} catch (Exception | NoSuchMethodError e) {
+		} catch (Throwable e) {
 		}
 		return UniquePlayerIdentifierType.NAME;
 	}
