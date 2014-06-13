@@ -97,8 +97,8 @@ public class PurgeByNames {
 			}
 		}
 
-		MessageLogger.debug("Purging player .dat files");
 		if (config.purgedat) {
+			MessageLogger.debug("Purging player .dat files");
 			try {
 				new DatfilePurge().doDelPlayerDatFileTask(aplist);
 			} catch (Exception e) {
