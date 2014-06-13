@@ -91,6 +91,7 @@ public class FTPBackup {
 				bo.backupPlugins();
 				MessageLogger.debug("Backuped plugins");
 			}
+			ftpclient.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
