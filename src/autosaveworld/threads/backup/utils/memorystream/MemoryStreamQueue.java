@@ -121,12 +121,12 @@ public class MemoryStreamQueue {
 			eof = true;
 		}
 		head = head.next;
-		c = count.getAndDecrement();
-		if (c > 1) {
+		c = count.decrementAndGet();
+		if (c > 0) {
 			notEmpty.signal();
 		}
 		takeLock.unlock();
-		if (c == capacity) {
+		if (c < capacity) {
 			signalNotFull();
 		}
 		return x;
@@ -156,12 +156,12 @@ public class MemoryStreamQueue {
 		if (eof) {
 			i++;
 		}
-		c = count.getAndAdd(-i);
-		if (c > 1) {
+		c = count.addAndGet(-i);
+		if (c > 0) {
 			notEmpty.signal();
 		}
         takeLock.unlock();
-		if (c == capacity) {
+		if (c < capacity) {
 			signalNotFull();
 		}
 		if (eof && i == 1) {
