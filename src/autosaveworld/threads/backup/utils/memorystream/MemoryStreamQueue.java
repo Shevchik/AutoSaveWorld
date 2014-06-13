@@ -132,4 +132,42 @@ public class MemoryStreamQueue {
 		return x;
 	}
 
+	public int take(byte[] b, int off, int len) {
+		if (eof) {
+			return -1;
+		}
+		int c = -1;
+		takeLock.lock();
+		while (count.get() == 0) {
+			notEmpty.awaitUninterruptibly();
+		}
+		int n = Math.min(len, count.get());
+		int i = 0;
+		while (i < n) {
+			int item = head.next.item;
+			head = head.next;
+			if (item == -1) {
+				eof = true;
+				break;
+			}
+			b[off + i] = (byte) item;
+			i++;
+		}
+		if (eof) {
+			i++;
+		}
+		c = count.getAndAdd(-i);
+		if (c > 1) {
+			notEmpty.signal();
+		}
+        takeLock.unlock();
+		if (c == capacity) {
+			signalNotFull();
+		}
+		if (eof && i == 1) {
+			return -1;
+		}
+		return i;
+    }
+
 }

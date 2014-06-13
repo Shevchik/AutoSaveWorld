@@ -48,6 +48,16 @@ public class MemoryStream {
 			return stream.take();
 		}
 
+		@Override
+		public int read(byte[] b) {
+			return read(b, 0, b.length);
+		}
+
+		@Override
+		public int read(byte[] b, int off, int len) {
+			return stream.take(b, off, len);
+		}
+
 	}
 
 	public class MemoryOutputStream extends OutputStream {
