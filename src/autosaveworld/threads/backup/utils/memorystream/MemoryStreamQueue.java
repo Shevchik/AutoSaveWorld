@@ -47,7 +47,6 @@ public class MemoryStreamQueue {
 	private final Condition notFull = putLock.newCondition();
 
 	private void signalNotEmpty() {
-		final ReentrantLock takeLock = this.takeLock;
 		takeLock.lock();
 		try {
 			notEmpty.signal();
@@ -57,7 +56,6 @@ public class MemoryStreamQueue {
 	}
 
 	private void signalNotFull() {
-		final ReentrantLock putLock = this.putLock;
 		putLock.lock();
 		try {
 			notFull.signal();
