@@ -85,7 +85,11 @@ public class PurgeByNames {
 
 		if (pm.getPlugin("Vault") != null && config.purgeperms) {
 			MessageLogger.debug("Vault found, purging permissions");
-			new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
+			try {
+				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (pm.getPlugin("MyWarp") != null && config.purgemywarp) {
