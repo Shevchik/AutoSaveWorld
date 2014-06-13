@@ -21,14 +21,22 @@ import java.io.InputStream;
 
 public class MemoryInputStream extends InputStream {
 
-	private MemoryStream mz;
-	protected MemoryInputStream(MemoryStream mz) {
-		this.mz = mz;
+	private MemoryStream ms;
+	protected MemoryInputStream(MemoryStream ms) {
+		this.ms = ms;
 	}
 
+	private boolean eof = false;
 	@Override
 	public int read() {
-		return mz.read();
+		if (eof) {
+			return -1;
+		}
+		int r = ms.read();
+		if (r == -1) {
+			eof = true;
+		}
+		return r;
 	}
 
 }
