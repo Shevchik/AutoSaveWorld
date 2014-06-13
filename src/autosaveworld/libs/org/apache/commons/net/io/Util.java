@@ -29,10 +29,10 @@ public final class Util {
 	}
 
 	public static final void copyStream(InputStream source, OutputStream dest) throws IOException {
+		byte[] buf = new byte[4096];
 		try {
-			int read;
-			while ((read = source.read()) != -1) {
-				dest.write(read);
+			while (source.read(buf) != -1) {
+				dest.write(buf);
 			}
 			dest.flush();
 		} catch (IOException e) {
