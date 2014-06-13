@@ -22,14 +22,14 @@ import java.io.OutputStream;
 
 public class MemoryOutputStream extends OutputStream {
 
-	private MemoryStream mz;
+	private MemoryStream ms;
 	protected MemoryOutputStream(MemoryStream mz) {
-		this.mz = mz;
+		this.ms = mz;
 	}
 
 	@Override
 	public void write(int b) throws IOException {
-		mz.write(b & 0xFF);
+		ms.write(b & 0xFF);
 	}
 
 }
