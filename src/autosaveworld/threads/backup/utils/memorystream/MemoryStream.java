@@ -17,14 +17,17 @@
 
 package autosaveworld.threads.backup.utils.memorystream;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class MemoryStream {
 
-	private MemoryOutputStream os = new MemoryOutputStream(this);
+	private MemoryOutputStream os = new MemoryOutputStream();
 	public MemoryOutputStream getOutputStream() {
 		return os;
 	}
 
-	private MemoryInputStream is = new MemoryInputStream(this);
+	private MemoryInputStream is = new MemoryInputStream();
 	public MemoryInputStream getInputStream() {
 		return is;
 	}
@@ -35,12 +38,28 @@ public class MemoryStream {
 
 	private MemoryStreamQueue stream = new MemoryStreamQueue(10 * 1024 * 1024);
 
-	protected int read() {
-		return stream.take();
+	public class MemoryInputStream extends InputStream {
+
+		private MemoryInputStream() {	
+		}
+
+		@Override
+		public int read() {
+			return stream.take();
+		}
+
 	}
 
-	protected void write(int b) {
-		stream.put(b);
+	public class MemoryOutputStream extends OutputStream {
+
+		private MemoryOutputStream() {
+		}
+
+		@Override
+		public void write(int b) {
+			stream.put(b);
+		}
+
 	}
 
 }

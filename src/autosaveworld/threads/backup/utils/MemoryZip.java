@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import autosaveworld.threads.backup.utils.memorystream.MemoryInputStream;
 import autosaveworld.threads.backup.utils.memorystream.MemoryStream;
+import autosaveworld.threads.backup.utils.memorystream.MemoryStream.MemoryInputStream;
 
 public class MemoryZip {
 
