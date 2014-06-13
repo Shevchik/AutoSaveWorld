@@ -19,10 +19,10 @@ package autosaveworld.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,6 +55,7 @@ public class AutoSaveWorldConfig {
 	public int lfsMaxNumberOfWorldsBackups = 15;
 	public boolean lfsbackuppluginsfolder = false;
 	public int lfsMaxNumberOfPluginsBackups = 15;
+	public List<String> lfsincludefolders;
 	public List<String> lfsextfolders;
 	public List<String> lfsbackupexcludefolders;
 	public boolean lfsbackupzip = false;
@@ -65,19 +66,19 @@ public class AutoSaveWorldConfig {
 	public String ftpusername = "user";
 	public String ftppassworld = "password";
 	public String ftppath = "asw";
-	public List<String> ftpbackupWorlds = null;
+	public List<String> ftpbackupWorlds;
 	public boolean ftpbackuppluginsfolder = false;
 	public List<String> ftpbackupexcludefolders;
 	public int ftpbackupmaxnumberofbackups = 4;
 	public boolean ftpbackupzip = false;
 	//script
 	public boolean scriptbackupenabled = false;
-	public List<String> scriptbackupscriptpaths = new ArrayList<String>();
+	public List<String> scriptbackupscriptpaths;
 	//purge
 	public int purgeInterval = 60*60*24;
 	public long purgeAwayTime = 60*60*24*30;
-	public List<String> purgeIgnoredNicks = new ArrayList<String>();
-	public List<String> purgeIgnoredUUIDs = new ArrayList<String>();
+	public List<String> purgeIgnoredNicks;
+	public List<String> purgeIgnoredUUIDs;
 	public boolean purgeEnabled = false;
 	public boolean purgeBroadcast = true;
 	public boolean purgewg = true;
@@ -103,16 +104,16 @@ public class AutoSaveWorldConfig {
 	public boolean autorestart = false;
 	public boolean autorestartBroadcast = true;
 	public String autorestartscriptpath = "";
-	public List<String> autorestarttime = new ArrayList<String>();
+	public List<String> autorestarttime;
 	public boolean autorestartcountdown = true;
-	public List<Integer> autorestartbroadcastonseconds = new ArrayList<Integer>();
-	public List<String> autorestartcommmands = new ArrayList<String>();
+	public List<Integer> autorestartbroadcastonseconds;
+	public List<String> autorestartcommmands;
 	public boolean autorestartjuststop = false;
 	//consolecmmand
 	public boolean cctimeenabled = false;
-	public HashMap<String, List<String>> cctimescommands = new HashMap<String, List<String>>();
+	public Map<String, List<String>> cctimescommands;
 	public boolean ccintervalenabled = false;
-	public HashMap<Integer, List<String>> ccintervalscommands = new HashMap<Integer, List<String>>();
+	public Map<Integer, List<String>> ccintervalscommands;
 	//worldregen
 	public boolean worldregenremoveseeddata = false;
 	public boolean worldregensavewg = true;
@@ -121,7 +122,6 @@ public class AutoSaveWorldConfig {
 	public boolean worldregensavetowny = true;
 
 
-	//config load/save functions
 	public void load() {
 
 		config = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
@@ -225,24 +225,26 @@ public class AutoSaveWorldConfig {
 		Collections.sort(autorestartbroadcastonseconds, Collections.reverseOrder());
 		//autoconsolecommand variables
 		cctimeenabled = config.getBoolean("consolecommand.timemode.enabled", cctimeenabled);
-		cctimescommands.clear();
+		HashMap<String, List<String>> cctimelmap = new HashMap<String, List<String>>();
 		ConfigurationSection cctimescs = config.getConfigurationSection("consolecommand.timemode.times");
 		if (cctimescs != null) {
 			for (String time : cctimescs.getKeys(false)) {
-				cctimescommands.put(time, cctimescs.getStringList(time));
+				cctimelmap.put(time, cctimescs.getStringList(time));
 			}
 		}
+		cctimescommands = cctimelmap;
 		ccintervalenabled = config.getBoolean("consolecommand.intervalmode.enabled", ccintervalenabled);
-		ccintervalscommands.clear();
+		HashMap<Integer, List<String>> ccintervallmap = new HashMap<Integer, List<String>>();
 		ConfigurationSection ccintervalscs = config.getConfigurationSection("consolecommand.intervalmode.intervals");
 		if (ccintervalscs != null) {
 			for (String interval : ccintervalscs.getKeys(false)) {
 				try {
-					ccintervalscommands.put(Integer.valueOf(interval), ccintervalscs.getStringList(interval));
+					ccintervallmap.put(Integer.valueOf(interval), ccintervalscs.getStringList(interval));
 				} catch (Exception e) {
 				}
 			}
 		}
+		ccintervalscommands = ccintervallmap;
 
 		//worldregen variables
 		worldregenremoveseeddata = config.getBoolean("worldregen.newseed",worldregenremoveseeddata);
