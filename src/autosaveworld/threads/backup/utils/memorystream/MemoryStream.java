@@ -48,32 +48,8 @@ public class MemoryStream {
 		return r;
 	}
 
-	protected int read(byte b[], int off, int len) {
-        int c = read();
-        if (c == -1) {
-            return -1;
-        }
-        b[off] = (byte)c;
-
-        int i = 1;
-        for (; i < len ; i++) {
-            c = read();
-            if (c == -1) {
-                break;
-            }
-            b[off + i] = (byte)c;
-        }
-        return i;
-	}
-
 	protected void write(int b) {
 		bytequeue.put(b & 0xFF);
-	}
-
-	protected void write(byte b[], int off, int len) {
-        for (int i = 0 ; i < len ; i++) {
-            write(b[off + i]);
-        }
 	}
 
 }

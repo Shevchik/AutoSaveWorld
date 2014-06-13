@@ -81,8 +81,6 @@ public class IntLinkedBlockingQueue {
 	public void put(int b) {
 		int c = -1;
 		Node node = new Node(b);
-		final ReentrantLock putLock = this.putLock;
-		final AtomicInteger count = this.count;
 		putLock.lock();
 		try {
 			while (count.get() == capacity) {
@@ -104,22 +102,17 @@ public class IntLinkedBlockingQueue {
 	public int take() {
 		int x;
 		int c = -1;
-		final AtomicInteger count = this.count;
-		final ReentrantLock takeLock = this.takeLock;
 		takeLock.lock();
-		try {
-			while (count.get() == 0) {
-				notEmpty.awaitUninterruptibly();
-			}
-			x = head.next.item;
-			head = head.next;
-			c = count.getAndDecrement();
-			if (c > 1) {
-				notEmpty.signal();
-			}
-		} finally {
-			takeLock.unlock();
+		while (count.get() == 0) {
+			notEmpty.awaitUninterruptibly();
 		}
+		x = head.next.item;
+		head = head.next;
+		c = count.getAndDecrement();
+		if (c > 1) {
+			notEmpty.signal();
+		}
+		takeLock.unlock();
 		if (c == capacity) {
 			signalNotFull();
 		}

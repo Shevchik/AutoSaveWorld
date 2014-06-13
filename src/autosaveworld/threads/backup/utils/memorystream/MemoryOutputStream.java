@@ -31,16 +31,4 @@ public class MemoryOutputStream extends OutputStream {
 		ms.write(b);
 	}
 
-	@Override
-	public void write(byte b[], int off, int len) {
-        if (b == null) {
-            throw new NullPointerException();
-        } else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
-            throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
-            return;
-        }
-		ms.write(b, off, len);
-	}
-
 }
