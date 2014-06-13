@@ -20,7 +20,6 @@ package autosaveworld.threads.purge.bynames.plugins;
 import java.io.File;
 import java.util.ArrayList;
 
-import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
@@ -33,7 +32,7 @@ import autosaveworld.utils.SchedulerUtils;
 public class VaultPurge {
 
 	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
-	public void doPermissionsPurgeTask(ActivePlayersList pacheck) {
+	public void doPermissionsPurgeTask(ActivePlayersList pacheck, String savecmd) {
 
 		MessageLogger.debug("Player permissions purge started");
 
@@ -51,18 +50,18 @@ public class VaultPurge {
 					playerstopurgeperms.add(playername);
 					//delete permissions if maximum batch size reached
 					if (playerstopurgeperms.size() == 40) {
-						flushPermsBatch(permission);
+						flushPermsBatch(permission, savecmd);
 					}
 					deleted += 1;
 				}
 			}
 		}
 		//flush the rest of the batch
-		flushPermsBatch(permission);
+		flushPermsBatch(permission, savecmd);
 
 		MessageLogger.debug("Player permissions purge finished, deleted "+deleted+" players permissions");
 	}
-	private void flushPermsBatch(final Permission permission) {
+	private void flushPermsBatch(final Permission permission, final String savecmd) {
 		//delete permissions
 		Runnable deleteperms = new Runnable() {
 			@Override
@@ -77,56 +76,11 @@ public class VaultPurge {
 						}
 					}
 				}
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), savecmd);
 				playerstopurgeperms.clear();
 			}
 		};
 		SchedulerUtils.callSyncTaskAndWait(deleteperms);
-	}
-
-	private ArrayList<String> playerstopurgeecon = new ArrayList<String>(70);
-	public void doEconomyPurgeTask(ActivePlayersList pacheck) {
-
-		MessageLogger.debug("Player economy purge started");
-
-		Economy economy = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
-
-		int deleted = 0;
-
-		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
-		File playersdatfolder = new File(worldfoldername+ File.separator + "players"+ File.separator);
-		for (String playerfile : playersdatfolder.list()) {
-			if (playerfile.endsWith(".dat")) {
-				String playername = playerfile.substring(0, playerfile.length() - 4);
-				if (economy.hasAccount(playername) && !pacheck.isActiveCS(playername)) {
-					//add player to delete batch
-					playerstopurgeecon.add(playername);
-					//delete economy if maximum batch size reached
-					if (playerstopurgeecon.size() == 40) {
-						flushEconomyBatch(economy);
-					}
-					deleted += 1;
-				}
-			}
-		}
-		//flush the rest of the batch
-		flushEconomyBatch(economy);
-
-		MessageLogger.debug("Player economy purge finished, deleted "+deleted+" players economy accounts");
-	}
-	private void flushEconomyBatch(final Economy economy) {
-		//delete economy accounts
-		Runnable deleteeconomy = new Runnable() {
-			@Override
-			public void run() {
-				for (String playername : playerstopurgeecon) {
-					MessageLogger.debug(playername + " is inactive. Removing economy account");
-					//set player balance to 0
-					economy.withdrawPlayer(playername, economy.getBalance(playername));
-				}
-				playerstopurgeecon.clear();
-			}
-		};
-		SchedulerUtils.callSyncTaskAndWait(deleteeconomy);
 	}
 
 }

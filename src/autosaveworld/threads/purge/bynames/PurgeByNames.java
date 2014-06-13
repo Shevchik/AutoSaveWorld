@@ -83,16 +83,9 @@ public class PurgeByNames {
 			}
 		}
 
-		if (pm.getPlugin("Vault") != null) {
-			VaultPurge vp = new VaultPurge();
-			if (config.purgeeconomy) {
-				MessageLogger.debug("Vault found, purging economy");
-				vp.doEconomyPurgeTask(aplist);
-			}
-			if (config.purgeperms) {
-				MessageLogger.debug("Vault found, purging permissions");
-				vp.doPermissionsPurgeTask(aplist);
-			}
+		if (pm.getPlugin("Vault") != null && config.purgeperms) {
+			MessageLogger.debug("Vault found, purging permissions");
+			new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
 		}
 
 		if (pm.getPlugin("MyWarp") != null && config.purgemywarp) {

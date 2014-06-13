@@ -88,8 +88,8 @@ public class AutoSaveWorldConfig {
 	public boolean purgemvinv = true;
 	public boolean purgeresidence = true;
 	public boolean purgeresregenarena = false;
-	public boolean purgeeconomy = true;
 	public boolean purgeperms = true;
+	public String purgepermssavemcd = "mansave";
 	public boolean purgemywarp = true;
 	public boolean purgedat = true;
 	//crashrestart
@@ -193,8 +193,8 @@ public class AutoSaveWorldConfig {
 		purgemvinv = config.getBoolean("purge.mvinv.enabled",purgemvinv);
 		purgeresidence = config.getBoolean("purge.residence.enabled", purgeresidence);
 		purgeresregenarena = config.getBoolean("purge.residence.regenpurgedresidence",purgeresregenarena);
-		purgeeconomy = config.getBoolean("purge.economy.enabled", purgeeconomy);
 		purgeperms = config.getBoolean("purge.permissions.enabled", purgeperms);
+		purgepermssavemcd = config.getString("purge.permissions.savecmd", purgepermssavemcd);
 		purgemywarp = config.getBoolean("purge.mywarp.enabled", purgemywarp);
 		purgedat = config.getBoolean("purge.dat.enabled", purgedat);
 
@@ -315,8 +315,8 @@ public class AutoSaveWorldConfig {
 		config.set("purge.mvinv.enabled",purgemvinv);
 		config.set("purge.residence.enabled", purgeresidence);
 		config.set("purge.residence.regenpurgedresidence",purgeresregenarena);
-		config.set("purge.economy.enabled", purgeeconomy);
 		config.set("purge.permissions.enabled", purgeperms);
+		config.set("purge.permissions.savecmd", purgepermssavemcd);
 		config.set("purge.mywarp.enabled", purgemywarp);
 		config.set("purge.dat.enabled", purgedat);
 
