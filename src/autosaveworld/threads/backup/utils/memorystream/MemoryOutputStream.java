@@ -17,19 +17,30 @@
 
 package autosaveworld.threads.backup.utils.memorystream;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 public class MemoryOutputStream extends OutputStream {
 
 	private MemoryStream ms;
-	protected MemoryOutputStream(MemoryStream mz) {
-		this.ms = mz;
+	protected MemoryOutputStream(MemoryStream ms) {
+		this.ms = ms;
 	}
 
 	@Override
-	public void write(int b) throws IOException {
+	public void write(int b) {
 		ms.write(b & 0xFF);
+	}
+
+	@Override
+	public void write(byte b[], int off, int len) {
+        if (b == null) {
+            throw new NullPointerException();
+        } else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
+            throw new IndexOutOfBoundsException();
+        } else if (len == 0) {
+            return;
+        }
+		ms.write(b, off, len);
 	}
 
 }
