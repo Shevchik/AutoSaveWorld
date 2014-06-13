@@ -31,7 +31,7 @@ public class MemoryOutputStream extends OutputStream {
 		ms.write(b & 0xFF);
 	}
 
-	@Override
+	/*@Override
 	public void write(byte b[], int off, int len) {
         if (b == null) {
             throw new NullPointerException();
@@ -41,6 +41,6 @@ public class MemoryOutputStream extends OutputStream {
             return;
         }
 		ms.write(b, off, len);
-	}
+	}*/
 
 }
