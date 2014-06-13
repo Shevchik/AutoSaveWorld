@@ -105,7 +105,7 @@ public class MemoryStreamQueue {
 			notFull.awaitUninterruptibly();
 		}
 		for (int i = 0; i < len; i++) {
-			Node node = new Node(b[off + i] & 0xFF);	
+			Node node = new Node(b[off + i] & 0xFF);
 			last = last.next = node;
 		}
 		c = count.addAndGet(len);
