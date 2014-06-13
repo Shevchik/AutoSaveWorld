@@ -30,26 +30,17 @@ public class MemoryStream {
 	}
 
 	public void putStreamEndSignal() {
-		bytequeue.put(-1);
+		stream.putEndOfStreamSignal();
 	}
 
-	private IntLinkedBlockingQueue bytequeue = new IntLinkedBlockingQueue(10 * 1024 * 1024);
-
-	private boolean eof = false;
+	private MemoryStreamQueue stream = new MemoryStreamQueue(10 * 1024 * 1024);
 
 	protected int read() {
-		if (eof) {
-			return -1;
-		}
-		int r = bytequeue.take();
-		if (r == -1) {
-			eof = true;
-		}
-		return r;
+		return stream.take();
 	}
 
 	protected void write(int b) {
-		bytequeue.put(b & 0xFF);
+		stream.put(b);
 	}
 
 }
