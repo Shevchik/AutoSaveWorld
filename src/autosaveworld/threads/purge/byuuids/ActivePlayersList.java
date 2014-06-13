@@ -17,7 +17,9 @@
 
 package autosaveworld.threads.purge.byuuids;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -34,6 +36,7 @@ public class ActivePlayersList {
 
 	private HashSet<String> plactive = new HashSet<String>();
 
+	@SuppressWarnings("deprecation")
 	public void gatherActivePlayersList(long awaytime) {
 		for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 			String uuid = player.getUniqueId().toString().replace("-", "");
@@ -42,6 +45,13 @@ public class ActivePlayersList {
 				MessageLogger.debug("Adding player "+uuid+" to active list");
 				plactive.add(uuid);
 			}
+			for (String name : config.purgeIgnoredNicks) {
+				try {
+					config.purgeIgnoredUUIDs.add(Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", ""));
+				} catch (Exception e) {
+				}
+			}
+			config.purgeIgnoredNicks.clear();
 			for (String listuuid : config.purgeIgnoredUUIDs) {
 				plactive.add(listuuid.replace("-", ""));
 			}
