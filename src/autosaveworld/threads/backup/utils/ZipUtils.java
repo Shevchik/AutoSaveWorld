@@ -47,6 +47,7 @@ public class ZipUtils {
 			try (ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream)) {
 				zipDir(excludefolders, zipOutStream, srcDir, "");
 			}
+			bufOutStream.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -86,7 +87,6 @@ public class ZipUtils {
 					zipOutStream.closeEntry();
 				}
 			}
-			Thread.yield();
 		}
 	}
 
