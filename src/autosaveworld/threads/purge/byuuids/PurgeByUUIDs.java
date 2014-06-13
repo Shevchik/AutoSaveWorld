@@ -45,7 +45,7 @@ public class PurgeByUUIDs {
 			MessageLogger.debug("Vault found, purging permissions");
 			try {
 				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
@@ -54,7 +54,7 @@ public class PurgeByUUIDs {
 		if (config.purgedat) {
 			try {
 				new DatfilePurge().doDelPlayerDatFileTask(aplist);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}

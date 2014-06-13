@@ -51,7 +51,7 @@ public class PurgeByNames {
 			MessageLogger.debug("WG found, purging");
 			try {
 				new WGPurge().doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
@@ -60,7 +60,7 @@ public class PurgeByNames {
 			MessageLogger.debug("LWC found, purging");
 			try {
 				new LWCPurge().doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
@@ -69,7 +69,7 @@ public class PurgeByNames {
 			MessageLogger.debug("Multiverse-Inventories found, purging");
 			try {
 				new MVInvPurge().doMVInvPurgeTask(aplist);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
@@ -78,7 +78,7 @@ public class PurgeByNames {
 			MessageLogger.debug("Residence found, purging");
 			try {
 				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeresregenarena);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
@@ -87,7 +87,7 @@ public class PurgeByNames {
 			MessageLogger.debug("Vault found, purging permissions");
 			try {
 				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
@@ -96,7 +96,7 @@ public class PurgeByNames {
 			MessageLogger.debug("MyWarp found, purging");
 			try {
 				new MyWarpPurge().doMyWarpPurgeTask(aplist);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
@@ -105,7 +105,7 @@ public class PurgeByNames {
 			MessageLogger.debug("Purging player .dat files");
 			try {
 				new DatfilePurge().doDelPlayerDatFileTask(aplist);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
