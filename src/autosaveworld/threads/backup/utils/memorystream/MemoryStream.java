@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.backup.utils.memorystream;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -69,6 +70,16 @@ public class MemoryStream {
 		public void write(int b) {
 			stream.put(b);
 		}
+
+		@Override
+	    public void write(byte b[]) throws IOException {
+	        write(b, 0, b.length);
+	    }
+
+		@Override
+	    public void write(byte b[], int off, int len) {
+			stream.put(b, off, len);
+	    }
 
 	}
 

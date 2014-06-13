@@ -84,18 +84,38 @@ public class MemoryStreamQueue {
 
 	private void put0(int b) {
 		int c = -1;
-		Node node = new Node(b);
 		putLock.lock();
-		while (count.get() == capacity) {
+		while (count.get() >= capacity) {
 			notFull.awaitUninterruptibly();
 		}
+		Node node = new Node(b);
 		last = last.next = node;
-		c = count.getAndIncrement();
-		if (c + 1 < capacity) {
+		c = count.incrementAndGet();
+		if (c < capacity) {
 			notFull.signal();
 		}
 		putLock.unlock();
-		if (c == 0) {
+		if (c > 0) {
+			signalNotEmpty();
+		}
+	}
+
+	public void put(byte[] b, int off, int len) {
+		int c = -1;
+		putLock.lock();
+		while (count.get() >= capacity) {
+			notFull.awaitUninterruptibly();
+		}
+		for (int i = 0; i < len; i++) {
+			Node node = new Node(b[off + i] & 0xFF);	
+			last = last.next = node;
+		}
+		c = count.addAndGet(len);
+		if (c < capacity) {
+			notFull.signal();
+		}
+		putLock.unlock();
+		if (c > 0) {
 			signalNotEmpty();
 		}
 	}
