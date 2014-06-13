@@ -86,8 +86,6 @@ public class AutoSaveWorldConfig {
 	public boolean purgelwc = true;
 	public boolean purgelwcdelprotectedblocks = false;
 	public boolean purgemvinv = true;
-	public boolean purgepm = true;
-	public boolean purgepmregen = false;
 	public boolean purgeresidence = true;
 	public boolean purgeresregenarena = false;
 	public boolean purgeeconomy = true;
@@ -193,8 +191,6 @@ public class AutoSaveWorldConfig {
 		purgelwc = config.getBoolean("purge.lwc.enabled", purgelwc);
 		purgelwcdelprotectedblocks = config.getBoolean("purge.lwc.deletepurgedblocks",purgelwcdelprotectedblocks);
 		purgemvinv = config.getBoolean("purge.mvinv.enabled",purgemvinv);
-		purgepm = config.getBoolean("purge.pm.enabled", purgepm);
-		purgepmregen = config.getBoolean("purge.pm.regenpurgedplot",purgepmregen);
 		purgeresidence = config.getBoolean("purge.residence.enabled", purgeresidence);
 		purgeresregenarena = config.getBoolean("purge.residence.regenpurgedresidence",purgeresregenarena);
 		purgeeconomy = config.getBoolean("purge.economy.enabled", purgeeconomy);
@@ -317,8 +313,6 @@ public class AutoSaveWorldConfig {
 		config.set("purge.lwc.enabled", purgelwc);
 		config.set("purge.lwc.deletepurgedblocks", purgelwcdelprotectedblocks);
 		config.set("purge.mvinv.enabled",purgemvinv);
-		config.set("purge.pm.enabled", purgepm);
-		config.set("purge.pm.regenpurgedplot",purgepmregen);
 		config.set("purge.residence.enabled", purgeresidence);
 		config.set("purge.residence.regenpurgedresidence",purgeresregenarena);
 		config.set("purge.economy.enabled", purgeeconomy);

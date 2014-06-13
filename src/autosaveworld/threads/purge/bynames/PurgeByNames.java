@@ -26,7 +26,6 @@ import autosaveworld.threads.purge.bynames.plugins.DatfilePurge;
 import autosaveworld.threads.purge.bynames.plugins.LWCPurge;
 import autosaveworld.threads.purge.bynames.plugins.MVInvPurge;
 import autosaveworld.threads.purge.bynames.plugins.MyWarpPurge;
-import autosaveworld.threads.purge.bynames.plugins.PlotMePurge;
 import autosaveworld.threads.purge.bynames.plugins.ResidencePurge;
 import autosaveworld.threads.purge.bynames.plugins.VaultPurge;
 import autosaveworld.threads.purge.bynames.plugins.WGPurge;
@@ -70,15 +69,6 @@ public class PurgeByNames {
 			MessageLogger.debug("Multiverse-Inventories found, purging");
 			try {
 				new MVInvPurge().doMVInvPurgeTask(aplist);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		if ((pm.getPlugin("PlotMe") !=null) && config.purgepm) {
-			MessageLogger.debug("PlotMe found, purging");
-			try {
-				new PlotMePurge().doPlotMePurgeTask(aplist, config.purgepmregen);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
