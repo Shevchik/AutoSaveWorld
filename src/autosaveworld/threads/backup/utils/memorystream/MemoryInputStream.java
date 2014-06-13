@@ -31,7 +31,7 @@ public class MemoryInputStream extends InputStream {
 		return ms.read();
 	}
 
-	/*@Override
+	@Override
 	public int read(byte b[], int off, int len) {
         if (b == null) {
             throw new NullPointerException();
@@ -41,6 +41,6 @@ public class MemoryInputStream extends InputStream {
             return 0;
         }
         return ms.read(b, off, len);
-	}*/
+	}
 
 }

@@ -67,7 +67,7 @@ public class MemoryStream {
 	}
 
 	protected void write(int b) {
-		bytequeue.put(b);
+		bytequeue.put(b & 0xFF);
 	}
 
 	protected void write(byte b[], int off, int len) {

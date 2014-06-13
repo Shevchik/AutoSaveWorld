@@ -28,10 +28,10 @@ public class MemoryOutputStream extends OutputStream {
 
 	@Override
 	public void write(int b) {
-		ms.write(b & 0xFF);
+		ms.write(b);
 	}
 
-	/*@Override
+	@Override
 	public void write(byte b[], int off, int len) {
         if (b == null) {
             throw new NullPointerException();
@@ -41,6 +41,6 @@ public class MemoryOutputStream extends OutputStream {
             return;
         }
 		ms.write(b, off, len);
-	}*/
+	}
 
 }
