@@ -17,10 +17,14 @@
 
 package autosaveworld.threads.purge.byuuids;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
+
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.byuuids.plugins.DatfilePurge;
+import autosaveworld.threads.purge.byuuids.plugins.VaultPurge;
 
 public class PurgeByUUIDs {
 
@@ -34,6 +38,17 @@ public class PurgeByUUIDs {
 		ActivePlayersList aplist = new ActivePlayersList(config);
 		aplist.gatherActivePlayersList(config.purgeAwayTime * 1000);
 		MessageLogger.debug("Found "+aplist.getActivePlayersCount()+" active players");
+
+		PluginManager pm = Bukkit.getPluginManager();
+
+		if (pm.getPlugin("Vault") != null && config.purgeperms) {
+			MessageLogger.debug("Vault found, purging permissions");
+			try {
+				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		MessageLogger.debug("Purging player .dat files");
 		if (config.purgedat) {
