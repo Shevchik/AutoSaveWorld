@@ -40,7 +40,7 @@ public class MemoryStream {
 
 	public class MemoryInputStream extends InputStream {
 
-		private MemoryInputStream() {	
+		private MemoryInputStream() {
 		}
 
 		@Override

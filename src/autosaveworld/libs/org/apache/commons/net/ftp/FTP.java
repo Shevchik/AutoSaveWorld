@@ -18,7 +18,6 @@
 package autosaveworld.libs.org.apache.commons.net.ftp;
 
 import java.io.BufferedReader;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
