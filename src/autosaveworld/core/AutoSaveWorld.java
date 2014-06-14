@@ -72,11 +72,11 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		MessageLogger.init(getLogger(), config);
 		GlobalConstants.init(this);
 		SchedulerUtils.init(this);
 		config = new AutoSaveWorldConfig();
 		config.load();
+		MessageLogger.init(getLogger(), config);
 		configmsg = new AutoSaveWorldConfigMSG();
 		configmsg.loadmsg();
 		localeChanger = new LocaleChanger(this, configmsg);
