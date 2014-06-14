@@ -128,13 +128,12 @@ public class MemoryStreamQueue {
 		if (eof) {
 			return -1;
 		}
-		int x;
 		int c = -1;
 		takeLock.lock();
 		while (count.get() == 0) {
 			notEmpty.awaitUninterruptibly();
 		}
-		x = head.next.item;
+		int x = head.next.item;
 		if (x == -1) {
 			eof = true;
 		}
@@ -154,6 +153,7 @@ public class MemoryStreamQueue {
 		if (eof) {
 			return -1;
 		}
+		off--;
 		int c = -1;
 		takeLock.lock();
 		while (count.get() == 0) {
@@ -164,15 +164,12 @@ public class MemoryStreamQueue {
 		while (i < n) {
 			int item = head.next.item;
 			head = head.next;
+			i++;
 			if (item == -1) {
 				eof = true;
 				break;
 			}
 			b[off + i] = (byte) item;
-			i++;
-		}
-		if (eof) {
-			i++;
 		}
 		c = count.addAndGet(-i);
 		if (c > 0) {
