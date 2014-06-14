@@ -43,15 +43,12 @@ public class FTPBackupOperations {
 
 	public void backupWorld(World world) {
 		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+
 		boolean savestaus = world.isAutoSave();
 		world.setAutoSave(false);
 		try {
 			File worldfolder = world.getWorldFolder().getCanonicalFile();
-			if (!zip) {
-				BackupFileUtils.uploadDirectoryToFTP(ftp, worldfolder, excludefolders);
-			} else {
-				BackupFileUtils.zipAndUploadDirectoryToFTP(ftp, worldfolder, excludefolders);
-			}
+			backupFolder(worldfolder);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -61,17 +58,33 @@ public class FTPBackupOperations {
 		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
 	}
 
-
 	public void backupPlugins() {
 		try {
 			File plfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
-			if (!zip) {
-				BackupFileUtils.uploadDirectoryToFTP(ftp, plfolder, excludefolders);
-			} else  {
-				BackupFileUtils.zipAndUploadDirectoryToFTP(ftp, plfolder, excludefolders);
+			backupFolder(plfolder);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void backupOtherFolders(List<String> folders) {
+		try {
+			for (String folder : folders) {
+				MessageLogger.debug("Backuping folder "+ folder);
+				File fld = new File(folder).getCanonicalFile();
+				backupFolder(fld);
+				MessageLogger.debug("Backuped folder "+ folder);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void backupFolder(File folder) throws IOException {
+		if (!zip) {
+			BackupFileUtils.uploadDirectoryToFTP(ftp, folder, excludefolders);
+		} else  {
+			BackupFileUtils.zipAndUploadDirectoryToFTP(ftp, folder, excludefolders);
 		}
 	}
 

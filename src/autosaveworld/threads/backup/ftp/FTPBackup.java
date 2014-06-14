@@ -78,19 +78,37 @@ public class FTPBackup {
 			//load BackupOperations class
 			FTPBackupOperations bo = new FTPBackupOperations(plugin, ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
 			//do worlds backup
-			MessageLogger.debug("Backuping Worlds");
-			for (World w : Bukkit.getWorlds()) {
-				if (config.ftpbackupWorlds.contains("*") || config.ftpbackupWorlds.contains(w.getWorldFolder().getName())) {
-					bo.backupWorld(w);
+			if (!config.ftpbackupWorlds.isEmpty()) {
+				MessageLogger.debug("Backuping Worlds");
+				ftpclient.makeDirectory("worlds");
+				ftpclient.changeWorkingDirectory("worlds");
+				for (World w : Bukkit.getWorlds()) {
+					if (config.ftpbackupWorlds.contains("*") || config.ftpbackupWorlds.contains(w.getWorldFolder().getName())) {
+						bo.backupWorld(w);
+					}
 				}
+				ftpclient.changeToParentDirectory();
+				MessageLogger.debug("Backuped Worlds");
 			}
-			MessageLogger.debug("Backuped Worlds");
 			//do plugins backup
 			if (config.ftpbackuppluginsfolder) {
 				MessageLogger.debug("Backuping plugins");
+				ftpclient.makeDirectory("plugins");
+				ftpclient.changeWorkingDirectory("plugins");
 				bo.backupPlugins();
+				ftpclient.changeToParentDirectory();
 				MessageLogger.debug("Backuped plugins");
 			}
+			//backup other folders
+			if (!config.ftpbackupincludefolders.isEmpty()) {
+				MessageLogger.debug("Backuping other folders");
+				ftpclient.makeDirectory("others");
+				ftpclient.changeWorkingDirectory("others");
+				bo.backupOtherFolders(config.ftpbackupincludefolders);
+				ftpclient.changeToParentDirectory();
+				MessageLogger.debug("Backuped other folders");
+			}
+			//disconnect
 			ftpclient.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();

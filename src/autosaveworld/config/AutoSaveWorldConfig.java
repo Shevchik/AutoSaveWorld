@@ -51,12 +51,12 @@ public class AutoSaveWorldConfig {
 	public boolean backupsaveBefore = true;
 	//localfs backup
 	public boolean localfsbackupenabled = true;
+	public List<String> lfsextfolders;
 	public List<String> lfsbackupWorldsList = null;
 	public int lfsMaxNumberOfWorldsBackups = 15;
 	public boolean lfsbackuppluginsfolder = false;
 	public int lfsMaxNumberOfPluginsBackups = 15;
 	public List<String> lfsincludefolders;
-	public List<String> lfsextfolders;
 	public List<String> lfsbackupexcludefolders;
 	public boolean lfsbackupzip = false;
 	//ftp backup
@@ -68,6 +68,7 @@ public class AutoSaveWorldConfig {
 	public String ftppath = "asw";
 	public List<String> ftpbackupWorlds;
 	public boolean ftpbackuppluginsfolder = false;
+	public List<String> ftpbackupincludefolders;
 	public List<String> ftpbackupexcludefolders;
 	public int ftpbackupmaxnumberofbackups = 4;
 	public boolean ftpbackupzip = false;
@@ -126,7 +127,7 @@ public class AutoSaveWorldConfig {
 
 		config = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
 
-		// Variables
+		//variables
 		varDebug = config.getBoolean("var.debug", varDebug);
 		commandonlyfromconsole = config.getBoolean("var.commandsonlyfromconsole",commandonlyfromconsole);
 
@@ -166,6 +167,7 @@ public class AutoSaveWorldConfig {
 		ftppath = config.getString("backup.ftp.path",ftppath);
 		ftpbackupWorlds = config.getStringList("backup.ftp.worlds");
 		ftpbackuppluginsfolder = config.getBoolean("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
+		ftpbackupincludefolders = config.getStringList("backup.ftp.otherfolders");
 		ftpbackupexcludefolders = config.getStringList("backup.ftp.excludefolders");
 		ftpbackupmaxnumberofbackups = config.getInt("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
 		ftpbackupzip = config.getBoolean("backup.ftp.zip",ftpbackupzip);
@@ -175,8 +177,6 @@ public class AutoSaveWorldConfig {
 		//script
 		scriptbackupenabled = config.getBoolean("backup.script.enabled",scriptbackupenabled);
 		scriptbackupscriptpaths = config.getStringList("backup.script.scriptpaths");
-
-
 
 		//purge variables
 		purgeInterval = config.getInt("purge.interval", purgeInterval);
@@ -278,13 +278,13 @@ public class AutoSaveWorldConfig {
 		config.set("backup.broadcast", backupBroadcast);
 		//localfs
 		config.set("backup.localfs.enabled",localfsbackupenabled);
+		config.set("backup.localfs.destinationfolders",lfsextfolders);
+		config.set("backup.localfs.zip",lfsbackupzip);
 		config.set("backup.localfs.worlds", lfsbackupWorldsList);
 		config.set("backup.localfs.MaxNumberOfWorldsBackups", lfsMaxNumberOfWorldsBackups);
 		config.set("backup.localfs.pluginsfolder", lfsbackuppluginsfolder);
 		config.set("backup.localfs.MaxNumberOfPluginsBackups", lfsMaxNumberOfPluginsBackups);
 		config.set("backup.localfs.excludefolders",lfsbackupexcludefolders);
-		config.set("backup.localfs.destinationfolders",lfsextfolders);
-		config.set("backup.localfs.zip",lfsbackupzip);
 		//ftp
 		config.set("backup.ftp.enabled",ftpbackupenabled);
 		config.set("backup.ftp.hostname",ftphostname);
@@ -292,11 +292,12 @@ public class AutoSaveWorldConfig {
 		config.set("backup.ftp.login",ftpusername);
 		config.set("backup.ftp.password",ftppassworld);
 		config.set("backup.ftp.path",ftppath);
+		config.set("backup.ftp.zip",ftpbackupzip);
 		config.set("backup.ftp.worlds",ftpbackupWorlds);
 		config.set("backup.ftp.pluginsfolder",ftpbackuppluginsfolder);
+		config.set("backup.ftp.otherfolders",ftpbackupincludefolders);
 		config.set("backup.ftp.excludefolders",ftpbackupexcludefolders);
 		config.set("backup.ftp.maxNumberOfBackups",ftpbackupmaxnumberofbackups);
-		config.set("backup.ftp.zip",ftpbackupzip);
 		//script
 		config.set("backup.script.enabled",scriptbackupenabled);
 		config.set("backup.script.scriptpaths",scriptbackupscriptpaths);
