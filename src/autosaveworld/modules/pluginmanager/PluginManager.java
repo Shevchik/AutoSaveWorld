@@ -52,7 +52,7 @@ public class PluginManager {
 		} else if (command.equalsIgnoreCase("reload")) {
 			reloadPlugin(sender,pluginname,false);
 		} else if (command.equalsIgnoreCase("ureload")) {
-			reloadPlugin(sender,pluginname,false);
+			reloadPlugin(sender,pluginname,true);
 		} else {
 			MessageLogger.sendMessage(sender, "Invalid plugin manager command");
 		}
