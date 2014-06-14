@@ -587,8 +587,7 @@ public class FTPClient extends FTP {
 		return FTPReply.isPositiveCompletion(getReply());
 	}
 
-	public boolean retrieveFile(String remote, OutputStream local)
-			throws IOException {
+	public boolean retrieveFile(String remote, OutputStream local) throws IOException {
 		return _retrieveFile(FTPCmd.RETR.getCommand(), remote, local);
 	}
 
@@ -629,8 +628,7 @@ public class FTPClient extends FTP {
 				socket, input);
 	}
 
-	public boolean storeFile(String remote, InputStream local)
-			throws IOException {
+	public boolean storeFile(String remote, InputStream local) throws IOException {
 		return __storeFile(FTPCmd.STOR, remote, local);
 	}
 
@@ -638,8 +636,7 @@ public class FTPClient extends FTP {
 		return __storeFileStream(FTPCmd.STOR, remote);
 	}
 
-	public boolean appendFile(String remote, InputStream local)
-			throws IOException {
+	public boolean appendFile(String remote, InputStream local) throws IOException {
 		return __storeFile(FTPCmd.APPE, remote, local);
 	}
 
