@@ -90,7 +90,6 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
-				MessageLogger.sendMessage(sender, "&f/asw pmanager ureload {pluginname}&7 - &3Uloads plugin {pluginname} and then loads it from update folder");
 				MessageLogger.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Unload plugin {pluginname} and then loads it");
 				MessageLogger.sendMessage(sender, "&f/asw process start {processname} {command line}&7 - &3Starts process using {command line}");
 				MessageLogger.sendMessage(sender, "&f/asw process stop {processname}&7 - &3Stops process");
