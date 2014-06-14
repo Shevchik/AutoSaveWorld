@@ -96,10 +96,4 @@ public class LFSBackupOperations {
 		}
 	}
 
-	public void deleteOldestPluginsBackup(String oldestbackupdate) {
-		String fldtodel = extpath+File.separator+"backups"+File.separator+"plugins"+File.separator+oldestbackupdate;
-		FileUtils.deleteDirectory(new File(fldtodel));
-		FileUtils.deleteDirectory(new File(fldtodel+".zip"));
-	}
-
 }
