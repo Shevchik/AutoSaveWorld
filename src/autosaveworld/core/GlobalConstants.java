@@ -31,6 +31,10 @@ public class GlobalConstants {
 		return pluginfolder;
 	}
 
+	public static String getPluginsFolder() {
+		return new File(pluginfolder).getParentFile().getPath();
+	}
+
 	//config
 	private static String configfile = "config.yml";
 	public static String getConfigPath() {

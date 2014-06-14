@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.utils.BackupFileUtils;
 import autosaveworld.threads.backup.utils.ZipUtils;
@@ -31,12 +31,10 @@ import autosaveworld.utils.FileUtils;
 
 public class LFSBackupOperations {
 
-	private AutoSaveWorld plugin;
 	private final boolean zip;
 	private final String extpath;
 	private final List<String> excludefolders;
-	public LFSBackupOperations(AutoSaveWorld plugin, boolean zip, String extpath, List<String> excludefolders) {
-		this.plugin = plugin;
+	public LFSBackupOperations(boolean zip, String extpath, List<String> excludefolders) {
 		this.zip = zip;
 		this.extpath = extpath;
 		this.excludefolders = excludefolders;
@@ -67,7 +65,7 @@ public class LFSBackupOperations {
 			@Override
 			public void run() {
 				MessageLogger.debug("Backuping plugins");
-				File fromfolder = plugin.getDataFolder().getParentFile().getAbsoluteFile();
+				File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
 				String destfolder = extpath+File.separator+"backups"+File.separator+"plugins";
 				backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
 				MessageLogger.debug("Backuped plugins");

@@ -26,14 +26,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.AutoSaveWorld;
 
 public class LocalFSBackup {
 
-	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
-	public LocalFSBackup(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
-		this.plugin = plugin;
+	public LocalFSBackup(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
 
@@ -41,7 +38,7 @@ public class LocalFSBackup {
 		for (String extpath : config.lfsextfolders) {
 
 			//init backup operations class
-			LFSBackupOperations bo = new LFSBackupOperations(plugin, config.lfsbackupzip, extpath, config.lfsbackupexcludefolders);
+			LFSBackupOperations bo = new LFSBackupOperations(config.lfsbackupzip, extpath, config.lfsbackupexcludefolders);
 
 			//create executor
 			ExecutorService backupService = Executors.newFixedThreadPool(Math.max(Runtime.getRuntime().availableProcessors() - 1, 1));

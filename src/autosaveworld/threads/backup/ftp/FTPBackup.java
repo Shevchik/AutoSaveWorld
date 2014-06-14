@@ -23,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTP;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
@@ -32,13 +31,10 @@ import autosaveworld.threads.backup.utils.BackupFileUtils;
 
 public class FTPBackup {
 
-	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
-	public FTPBackup(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
-		this.plugin = plugin;
+	public FTPBackup(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
-
 
 	public void performBackup() {
 		try {
@@ -76,7 +72,7 @@ public class FTPBackup {
 			ftpclient.makeDirectory(datedir);
 			ftpclient.changeWorkingDirectory(datedir);
 			//load BackupOperations class
-			FTPBackupOperations bo = new FTPBackupOperations(plugin, ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
+			FTPBackupOperations bo = new FTPBackupOperations(ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
 			//do worlds backup
 			if (!config.ftpbackupWorlds.isEmpty()) {
 				MessageLogger.debug("Backuping Worlds");

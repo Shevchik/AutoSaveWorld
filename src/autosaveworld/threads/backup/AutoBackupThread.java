@@ -116,13 +116,13 @@ public class AutoBackupThread extends Thread {
 
 		if (config.localfsbackupenabled) {
 			MessageLogger.debug("Starting LocalFS backup");
-			new LocalFSBackup(plugin, config).performBackup();
+			new LocalFSBackup(config).performBackup();
 			MessageLogger.debug("LocalFS backup finished");
 		}
 
 		if (config.ftpbackupenabled) {
 			MessageLogger.debug("Starting FTP backup");
-			new FTPBackup(plugin, config).performBackup();
+			new FTPBackup(config).performBackup();
 			MessageLogger.debug("FTP backup finished");
 		}
 

@@ -23,19 +23,17 @@ import java.util.List;
 
 import org.bukkit.World;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworld.threads.backup.utils.BackupFileUtils;
 
 public class FTPBackupOperations {
 
-	private AutoSaveWorld plugin;
 	final boolean zip;
 	final List<String> excludefolders;
 	private FTPClient ftp;
-	public FTPBackupOperations(AutoSaveWorld plugin, FTPClient ftp, boolean zip,  List<String> excludefolders) {
-		this.plugin = plugin;
+	public FTPBackupOperations(FTPClient ftp, boolean zip,  List<String> excludefolders) {
 		this.zip = zip;
 		this.excludefolders = excludefolders;
 		this.ftp = ftp;
@@ -60,7 +58,7 @@ public class FTPBackupOperations {
 
 	public void backupPlugins() {
 		try {
-			File plfolder = plugin.getDataFolder().getParentFile().getCanonicalFile();
+			File plfolder = new File(GlobalConstants.getPluginsFolder()).getCanonicalFile();
 			backupFolder(plfolder);
 		} catch (IOException e) {
 			e.printStackTrace();
