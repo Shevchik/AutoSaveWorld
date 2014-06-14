@@ -82,7 +82,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeChanger = new LocaleChanger(this, configmsg);
 		ch = new CommandsHandler(this,config,configmsg,localeChanger);
 		// Load plugin manager
-		pluginmanager = new PluginManager(this);
+		pluginmanager = new PluginManager();
 		// Load process manager
 		processmanager = new ProcessManager();
 		// Register events and commands

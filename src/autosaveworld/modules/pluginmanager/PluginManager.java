@@ -28,14 +28,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 
 public class PluginManager {
 
-	private AutoSaveWorld plugin;
-	public PluginManager(AutoSaveWorld plugin) {
-		this.plugin = plugin;
+	public PluginManager() {
 		if (ManagementFactory.getRuntimeMXBean().getInputArguments().contains("-XX:+DisableExplicitGC")) {
 			MessageLogger.warn("Your JVM is configured to ignore GC calls, plugin manager may not work as expected");
 		}
@@ -62,7 +60,7 @@ public class PluginManager {
 			return;
 		}
 		//find plugin file
-		File pmpluginfile = findPluginFile(plugin.getDataFolder().getParentFile(), pluginname);
+		File pmpluginfile = findPluginFile(pluginname);
 		//ignore if we can't find plugin file
 		if (!pmpluginfile.exists()) {
 			MessageLogger.sendMessage(sender, "File with this plugin name not found");
@@ -105,7 +103,7 @@ public class PluginManager {
 			return;
 		}
 		//find plugin file
-		File pmpluginfile = findPluginFile(plugin.getDataFolder().getParentFile(), pluginname);
+		File pmpluginfile = findPluginFile(pluginname);
 		//ignore if we can't find plugin file
 		if (!pmpluginfile.exists()) {
 			MessageLogger.sendMessage(sender, "File with this plugin name not found");
@@ -131,7 +129,19 @@ public class PluginManager {
 		return Bukkit.getPluginManager().getPlugin(pluginname);
 	}
 
-	private File findPluginFile(File folder, String pluginname) {
+	private File findPluginFile(String pluginname) {
+		File file = checkFolder(new File(GlobalConstants.getPluginsFolder()), pluginname);
+		if (file != null) {
+			return file;
+		}
+		file = checkFolder(Bukkit.getUpdateFolderFile(), pluginname);
+		if (file != null) {
+			return file;
+		}
+		return new File(GlobalConstants.getPluginsFolder(), pluginname+".jar");
+	}
+
+	private File checkFolder(File folder, String pluginname) {
 		if (folder.exists() && folder.isDirectory()) {
 			for (File pluginfile : folder.listFiles()) {
 				String pluginName = getPluginName(pluginfile);
@@ -140,7 +150,7 @@ public class PluginManager {
 				}
 			}
 		}
-		return new File(plugin.getDataFolder().getParent(), pluginname+".jar");
+		return null;
 	}
 
 	private String getPluginName(File pluginfile) {
