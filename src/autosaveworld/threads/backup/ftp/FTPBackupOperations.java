@@ -45,7 +45,7 @@ public class FTPBackupOperations {
 		boolean savestaus = world.isAutoSave();
 		world.setAutoSave(false);
 		try {
-			File worldfolder = world.getWorldFolder().getCanonicalFile();
+			File worldfolder = world.getWorldFolder().getAbsoluteFile();
 			backupFolder(worldfolder);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +58,7 @@ public class FTPBackupOperations {
 
 	public void backupPlugins() {
 		try {
-			File plfolder = new File(GlobalConstants.getPluginsFolder()).getCanonicalFile();
+			File plfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
 			backupFolder(plfolder);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -69,7 +69,7 @@ public class FTPBackupOperations {
 		try {
 			for (String folder : folders) {
 				MessageLogger.debug("Backuping folder "+ folder);
-				File fld = new File(folder).getCanonicalFile();
+				File fld = new File(folder).getAbsoluteFile();
 				backupFolder(fld);
 				MessageLogger.debug("Backuped folder "+ folder);
 			}
