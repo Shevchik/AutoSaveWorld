@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.CommandUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 
@@ -87,7 +88,7 @@ public class AutoRestartThread  extends Thread{
 						@Override
 						public void run() {
 							for (String command : config.autorestartcommmands) {
-								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+								CommandUtils.dispatchCommandAsConsole(command);
 							}
 						}
 					},

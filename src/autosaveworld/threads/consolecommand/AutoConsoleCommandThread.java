@@ -21,11 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.CommandUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class AutoConsoleCommandThread extends Thread {
@@ -88,9 +86,8 @@ public class AutoConsoleCommandThread extends Thread {
 				new Runnable() {
 					@Override
 					public void run() {
-						ConsoleCommandSender csender = Bukkit.getConsoleSender();
 						for (String command : commands) {
-							Bukkit.dispatchCommand(csender, command);
+							CommandUtils.dispatchCommandAsConsole(command);
 						}
 					}
 				}
