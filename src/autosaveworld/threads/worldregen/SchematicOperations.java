@@ -123,22 +123,22 @@ public class SchematicOperations {
 
 								try {
 									es.smartSetBlock(new Vector(x, y, z).add(origin), block);
-								} catch (Exception e) {
-									e.printStackTrace();
+								} catch (Throwable t) {
+									t.printStackTrace();
 								}
 							}
 						}
 					}
 					try {
 						es.flushQueue();
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Throwable t) {
+						t.printStackTrace();
 					}
 					//paste entities (note: worldedit doesn't paste entities from schematic, but i will just leave it here in case worldedit will start doing it some day)
 					try {
 						clipboard.pasteEntities(origin);
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Throwable t) {
+						t.printStackTrace();
 					}
 				}
 			}
