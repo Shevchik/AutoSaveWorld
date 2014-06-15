@@ -19,6 +19,8 @@ package autosaveworld.threads.purge;
 
 import org.bukkit.World;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.blocks.BaseBlock;
@@ -36,20 +38,20 @@ public class WorldEditRegeneration {
 	}
 
 	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
-		BukkitWorld bw = new BukkitWorld(world);
-		int maxy = bw.getMaxY() + 1;
-		Region region = new CuboidRegion(bw, minpoint, maxpoint);
-		BaseBlock[] history = new BaseBlock[16 * 16 * maxy];
+		LocalWorld lw = new BukkitWorld(world);
+		EditSession es = new EditSession(lw, Integer.MAX_VALUE);
+		Region region = new CuboidRegion(lw, minpoint, maxpoint);
+		BaseBlock[] history = new BaseBlock[16 * 16 * (lw.getMaxY() + 1)];
 		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			//first save all the blocks inside
 			for (int x = 0; x < 16; ++x) {
-				for (int y = 0; y < maxy; ++y) {
+				for (int y = 0; y < (lw.getMaxY() + 1); ++y) {
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
 							int index = y * 16 * 16 + z * 16 + x;
-							history[index] = bw.getBlock(pt);
+							history[index] = es.getBlock(pt);
 						}
 					}
 				}
@@ -64,13 +66,13 @@ public class WorldEditRegeneration {
 
 			//then restore
 			for (int x = 0; x < 16; ++x) {
-				for (int y = 0; y < maxy; ++y) {
+				for (int y = 0; y < (lw.getMaxY() + 1); ++y) {
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						int index = y * 16 * 16 + z * 16 + x;
 						if (!region.contains(pt)) {
 							try {
-								bw.setBlock(pt, history[index], false);
+								es.smartSetBlock(pt, history[index]);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -79,6 +81,7 @@ public class WorldEditRegeneration {
 				}
 			}
 		}
+		es.flushQueue();
 	}
 
 }
