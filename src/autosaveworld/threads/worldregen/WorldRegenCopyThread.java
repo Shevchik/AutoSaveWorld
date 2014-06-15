@@ -35,6 +35,7 @@ import autosaveworld.threads.worldregen.factions.FactionsCopy;
 import autosaveworld.threads.worldregen.griefprevention.GPCopy;
 import autosaveworld.threads.worldregen.towny.TownyCopy;
 import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
+import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class WorldRegenCopyThread extends Thread {
@@ -93,8 +94,7 @@ public class WorldRegenCopyThread extends Thread {
 		final World wtoregen = Bukkit.getWorld(worldtoregen);
 
 		//kick all player and deny them from join
-		AntiJoinListener ajl = new AntiJoinListener(configmsg);
-		Bukkit.getPluginManager().registerEvents(ajl, plugin);
+		ListenerUtils.registerListener(new AntiJoinListener(configmsg));
 		SchedulerUtils.callSyncTaskAndWait(
 			new Runnable() {
 				@Override

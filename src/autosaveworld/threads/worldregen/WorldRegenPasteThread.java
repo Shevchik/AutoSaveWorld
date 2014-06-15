@@ -33,6 +33,7 @@ import autosaveworld.threads.worldregen.griefprevention.GPPaste;
 import autosaveworld.threads.worldregen.towny.TownyPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
 import autosaveworld.utils.FileUtils;
+import autosaveworld.utils.ListenerUtils;
 
 public class WorldRegenPasteThread extends Thread {
 
@@ -74,7 +75,7 @@ public class WorldRegenPasteThread extends Thread {
 
 	private void doWorldPaste() throws InterruptedException {
 		//deny players from join
-		Bukkit.getPluginManager().registerEvents(new AntiJoinListener(configmsg), plugin);
+		ListenerUtils.registerListener(new AntiJoinListener(configmsg));
 
 		//load config
 		FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getWorldnameFile()));
