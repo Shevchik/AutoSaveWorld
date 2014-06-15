@@ -35,14 +35,15 @@ public class WorldEditRegeneration {
 		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
+	//TODO: do something with the fact that if the chunk wasn't loaded the purge will fail to paste chunk contents back
 	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
 		BukkitWorld bw = new BukkitWorld(world);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		BaseBlock[] history = new BaseBlock[16 * 16 * maxy];
 		for (Vector2D chunk : region.getChunks()) {
+			//save all the blocks inside the chunk
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
-			//first save all the blocks inside
 			for (int x = 0; x < 16; ++x) {
 				for (int y = 0; y < maxy; ++y) {
 					for (int z = 0; z < 16; ++z) {
@@ -62,7 +63,7 @@ public class WorldEditRegeneration {
 				t.printStackTrace();
 			}
 
-			//then restore
+			//then restore blocks inside the chunk but outside the region
 			for (int x = 0; x < 16; ++x) {
 				for (int y = 0; y < maxy; ++y) {
 					for (int z = 0; z < 16; ++z) {
