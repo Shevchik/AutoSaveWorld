@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.purge;
 
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.sk89q.worldedit.Vector;
@@ -35,7 +36,6 @@ public class WorldEditRegeneration {
 		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
-	//TODO: do something with the fact that if the chunk wasn't loaded the purge will fail to paste chunk contents back
 	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
 		BukkitWorld bw = new BukkitWorld(world);
 		int maxy = bw.getMaxY() + 1;
@@ -70,6 +70,7 @@ public class WorldEditRegeneration {
 						Vector pt = min.add(x, y, z);
 						int index = y * 16 * 16 + z * 16 + x;
 						if (!region.contains(pt)) {
+							world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR); //temporal fix for blocks not setting properly if chunk wasn't loaded (WTF?)
 							bw.setBlock(pt, history[index], false);
 						}
 					}
