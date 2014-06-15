@@ -70,8 +70,12 @@ public class WorldEditRegeneration {
 						Vector pt = min.add(x, y, z);
 						int index = y * 16 * 16 + z * 16 + x;
 						if (!region.contains(pt)) {
-							world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR); //temporal fix for blocks not setting properly if chunk wasn't loaded (WTF?)
-							bw.setBlock(pt, history[index], false);
+							try {
+								world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR); //temporal fix for blocks not setting properly if chunk wasn't loaded (WTF?)
+								bw.setBlock(pt, history[index], false);
+							} catch (Throwable t) {
+								t.printStackTrace();
+							}
 						}
 					}
 				}
