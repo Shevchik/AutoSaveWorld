@@ -38,6 +38,7 @@ import autosaveworld.threads.restart.RestartJVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
+import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class AutoSaveWorld extends JavaPlugin {
@@ -74,6 +75,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void onEnable() {
 		GlobalConstants.init(this);
 		SchedulerUtils.init(this);
+		ListenerUtils.init(this);
 		config = new AutoSaveWorldConfig();
 		config.load();
 		MessageLogger.init(getLogger(), config);
