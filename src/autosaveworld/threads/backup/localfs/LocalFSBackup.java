@@ -18,9 +18,6 @@
 package autosaveworld.threads.backup.localfs;
 
 import java.text.SimpleDateFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -40,29 +37,22 @@ public class LocalFSBackup {
 			//init backup operations class
 			LFSBackupOperations bo = new LFSBackupOperations(config.lfsbackupzip, extpath, config.lfsbackupexcludefolders);
 
-			//create executor
-			ExecutorService backupService = Executors.newFixedThreadPool(Math.max(Runtime.getRuntime().availableProcessors() - 1, 1));
-
 			//create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 
-			//start world backup
+			//backup worlds
 			for (World world : Bukkit.getWorlds()) {
 				//check if we need to backup this world
 				if ((config.lfsbackupWorldsList).contains("*") || config.lfsbackupWorldsList.contains(world.getName())) {
 					//backup world
-					bo.startWorldBackup(backupService, world, config.lfsMaxNumberOfWorldsBackups, backuptimestamp);
+					bo.backupWorld(world, config.lfsMaxNumberOfWorldsBackups, backuptimestamp);
 				}
 			}
 
-			//start plugins backup
+			//backups plugins
 			if (config.lfsbackuppluginsfolder) {
-				bo.startPluginsBackup(backupService, config.lfsMaxNumberOfPluginsBackups, backuptimestamp );
+				bo.backupPlugins(config.lfsMaxNumberOfPluginsBackups, backuptimestamp );
 			}
-
-			//wait for executor to finish (let's hope that the backup will finish in max 2 days)
-			backupService.shutdown();
-			try {backupService.awaitTermination(48, TimeUnit.HOURS);} catch (InterruptedException e) {}
 
 		}
 	}

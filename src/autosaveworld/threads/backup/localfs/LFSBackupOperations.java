@@ -19,7 +19,6 @@ package autosaveworld.threads.backup.localfs;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import org.bukkit.World;
 
@@ -40,39 +39,23 @@ public class LFSBackupOperations {
 		this.excludefolders = excludefolders;
 	}
 
-	public void startWorldBackup(ExecutorService backupService, final World world, final int maxBackupsCount, final String latestbackuptimestamp) {
-		//create runnable
-		Runnable backupWorld = new Runnable() {
-			@Override
-			public void run() {
-				MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
-				boolean savestatus = world.isAutoSave();
-				world.setAutoSave(false);
-				File fromfolder = world.getWorldFolder().getAbsoluteFile();
-				String destfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
-				backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
-				world.setAutoSave(savestatus);
-				MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
-			}
-		};
-		//add to executor
-		backupService.submit(backupWorld);
+	public void backupWorld(final World world, final int maxBackupsCount, final String latestbackuptimestamp) {
+		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+		boolean savestatus = world.isAutoSave();
+		world.setAutoSave(false);
+		File fromfolder = world.getWorldFolder().getAbsoluteFile();
+		String destfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
+		backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
+		world.setAutoSave(savestatus);
+		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
 	}
 
-	public void startPluginsBackup(ExecutorService backupService, final int maxBackupsCount, final String latestbackuptimestamp) {
-		//create runnable
-		Runnable backupPlugins = new Runnable() {
-			@Override
-			public void run() {
-				MessageLogger.debug("Backuping plugins");
-				File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
-				String destfolder = extpath+File.separator+"backups"+File.separator+"plugins";
-				backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
-				MessageLogger.debug("Backuped plugins");
-			}
-		};
-		//add to executor
-		backupService.submit(backupPlugins);
+	public void backupPlugins(final int maxBackupsCount, final String latestbackuptimestamp) {
+		MessageLogger.debug("Backuping plugins");
+		File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
+		String destfolder = extpath+File.separator+"backups"+File.separator+"plugins";
+		backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
+		MessageLogger.debug("Backuped plugins");
 	}
 
 	private void backupFolder(File fromfolder, String destfolder, final int maxBackupsCount, final String latestbackuptimestamp) {
