@@ -19,7 +19,6 @@ package autosaveworld.threads.purge;
 
 import org.bukkit.World;
 
-import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.blocks.BaseBlock;
@@ -39,7 +38,6 @@ public class WorldEditRegeneration {
 	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
 		BukkitWorld bw = new BukkitWorld(world);
 		int maxy = bw.getMaxY() + 1;
-		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		BaseBlock[] history = new BaseBlock[16 * 16 * maxy];
 		for (Vector2D chunk : region.getChunks()) {
@@ -51,7 +49,7 @@ public class WorldEditRegeneration {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
 							int index = y * 16 * 16 + z * 16 + x;
-							history[index] = es.getBlock(pt);
+							history[index] = bw.getBlock(pt);
 						}
 					}
 				}
@@ -71,17 +69,12 @@ public class WorldEditRegeneration {
 						Vector pt = min.add(x, y, z);
 						int index = y * 16 * 16 + z * 16 + x;
 						if (!region.contains(pt)) {
-							try {
-								es.smartSetBlock(pt, history[index]);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+							bw.setBlock(pt, history[index], false);
 						}
 					}
 				}
 			}
 		}
-		es.flushQueue();
 	}
 
 }
