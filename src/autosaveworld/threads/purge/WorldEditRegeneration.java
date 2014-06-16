@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.purge;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -59,7 +60,7 @@ public class WorldEditRegeneration {
 							if (options.shouldRemoveUnsafeBlocks()) {
 								Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
 								if (!options.isBlockSafe(block.getTypeId())) {
-									block.setTypeIdAndData(Material.AIR.getId(), (byte) 0, false);
+									block.setType(Material.AIR);
 								}
 							}
 						}
@@ -120,6 +121,29 @@ public class WorldEditRegeneration {
 
 		public boolean isBlockSafe(int id) {
 			return safelist[id];
+		}
+
+		public static HashSet<Integer> parseListToIDs(Set<String> list) {
+			HashSet<Integer> set = new HashSet<Integer>();
+			for (String element : list) {
+				if (element.contains("-")) {
+					try {
+						String[] split = element.split("[-]");
+						int start = Integer.parseInt(split[0]);
+						int end = Integer.parseInt(split[1]);
+						for (int i = start; i <= end; i++) {
+							set.add(i);
+						}
+					} catch (Exception e) {
+					}
+				} else {
+					try {
+						set.add(Integer.parseInt(element));
+					} catch (Exception e) {
+					}
+				}
+			}
+			return set;
 		}
 
 	}
