@@ -17,8 +17,13 @@
 
 package autosaveworld.threads.purge;
 
+import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+
+import autosaveworld.config.AutoSaveWorldConfig;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
@@ -30,13 +35,14 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class WorldEditRegeneration {
 
-	public static void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint) {
+	public static void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
 		Vector minbpoint = BukkitUtil.toVector(minpoint);
 		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
-		regenerateRegion(world, minbpoint, maxbpoint);
+		regenerateRegion(world, minbpoint, maxbpoint, options);
 	}
 
-	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
+	@SuppressWarnings("deprecation")
+	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options) {
 		BukkitWorld bw = new BukkitWorld(world);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
@@ -52,9 +58,12 @@ public class WorldEditRegeneration {
 							int index = y * 16 * 16 + z * 16 + x;
 							history[index] = bw.getBlock(pt);
 						} else {
-							//TODO: reset block only if special config option is enabled
-							//TODO: reset block only if it is not in the safe reset list (by default safe list should be 0-255 block id)
-							//world.getBlockAt(x, y, z).setType(Material.AIR);
+							if (options.shouldRemoveUnsafeBlocks()) {
+								Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
+								if (!options.isBlockSafe(block.getTypeId())) {
+									block.setTypeIdAndData(Material.AIR.getId(), (byte) 0, false);
+								}
+							}
 						}
 					}
 				}
@@ -87,6 +96,34 @@ public class WorldEditRegeneration {
 				}
 			}
 		}
+	}
+
+	public static class RegenOptions {
+
+		private boolean removeunsafeblocks = false;
+		private boolean[] safelist = new boolean[4096];
+
+		public RegenOptions() {
+		}
+
+		public RegenOptions(Set<Integer> safeblocks) {
+			removeunsafeblocks = true;
+			for (int safeblockid : safeblocks) {
+				safelist[safeblockid] = true;
+			}
+		}
+
+		public RegenOptions(AutoSaveWorldConfig config) {
+		}
+
+		public boolean shouldRemoveUnsafeBlocks() {
+			return removeunsafeblocks;
+		}
+
+		public boolean isBlockSafe(int id) {
+			return safelist[id];
+		}
+
 	}
 
 }

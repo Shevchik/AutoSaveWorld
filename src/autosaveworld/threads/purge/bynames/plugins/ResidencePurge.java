@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.WorldEditRegeneration;
+import autosaveworld.threads.purge.WorldEditRegeneration.RegenOptions;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 import autosaveworld.utils.SchedulerUtils;
 
@@ -43,7 +44,7 @@ public class ResidencePurge {
 							@Override
 							public void run() {
 								MessageLogger.debug("Regenerating residence "+res+" cuboid area");
-								WorldEditRegeneration.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint);
+								WorldEditRegeneration.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint, new RegenOptions());
 							}
 						};
 						SchedulerUtils.callSyncTaskAndWait(caregen);
