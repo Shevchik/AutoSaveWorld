@@ -51,6 +51,10 @@ public class WorldEditRegeneration {
 						if (!region.contains(pt)) {
 							int index = y * 16 * 16 + z * 16 + x;
 							history[index] = bw.getBlock(pt);
+						} else {
+							//TODO: reset block only if special config option is enabled
+							//TODO: reset block only if it is not in the safe reset list (by default safe list should be 0-255 block id)
+							//world.getBlockAt(x, y, z).setType(Material.AIR);
 						}
 					}
 				}
@@ -71,7 +75,9 @@ public class WorldEditRegeneration {
 						int index = y * 16 * 16 + z * 16 + x;
 						if (!region.contains(pt)) {
 							try {
-								world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR); //temporal fix for blocks not setting properly if chunk wasn't loaded (WTF?)
+								//set block to air to fix one really weird problem
+								world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
+								//set block back
 								bw.setBlock(pt, history[index], false);
 							} catch (Throwable t) {
 								t.printStackTrace();
