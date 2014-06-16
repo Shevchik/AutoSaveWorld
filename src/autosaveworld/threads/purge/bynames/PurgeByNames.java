@@ -17,6 +17,8 @@
 
 package autosaveworld.threads.purge.bynames;
 
+import java.util.HashSet;
+
 import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveWorldConfig;
@@ -50,7 +52,7 @@ public class PurgeByNames {
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgewg) {
 			MessageLogger.debug("WG found, purging");
 			try {
-				new WGPurge().doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap);
+				new WGPurge().doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap, new HashSet<Integer>());
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -77,7 +79,7 @@ public class PurgeByNames {
 		if ((pm.getPlugin("Residence") !=null) && config.purgeresidence) {
 			MessageLogger.debug("Residence found, purging");
 			try {
-				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeresregenarena);
+				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeresregenarena, new HashSet<Integer>());
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

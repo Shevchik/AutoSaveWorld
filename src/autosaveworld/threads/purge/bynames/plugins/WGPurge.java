@@ -37,7 +37,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class WGPurge {
 
-	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap, final Set<Integer> safeids) {
 
 		MessageLogger.debug("WG purge started");
 
@@ -73,7 +73,7 @@ public class WGPurge {
 					MessageLogger.debug("No active owners and members for region "+rg.getId()+". Purging region");
 					if (regenrg) {
 						//regen and delete region
-						purgeRG(m,w,rg,regenrg,noregenoverlap);
+						purgeRG(m,w,rg,regenrg,noregenoverlap,safeids);
 					} else {
 						//add region to delete batch
 						rgtodel.add(rg.getId());
@@ -94,7 +94,7 @@ public class WGPurge {
 		MessageLogger.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
 	}
 
-	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, final boolean noregenoverlap) {
+	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, final boolean noregenoverlap, final Set<Integer> safeids) {
 		Runnable rgregen =  new Runnable() {
 			BlockVector minpoint = rg.getMinimumPoint();
 			BlockVector maxpoint = rg.getMaximumPoint();
@@ -103,7 +103,7 @@ public class WGPurge {
 				try {
 					if (!(noregenoverlap && m.getApplicableRegions(rg).size() > 1)) {
 						MessageLogger.debug("Regenerating region " + rg.getId());
-						WorldEditRegeneration.regenerateRegion(w, minpoint, maxpoint, new RegenOptions());
+						WorldEditRegeneration.regenerateRegion(w, minpoint, maxpoint, new RegenOptions(safeids));
 					}
 					MessageLogger.debug("Deleting region " + rg.getId());
 					m.removeRegion(rg.getId());

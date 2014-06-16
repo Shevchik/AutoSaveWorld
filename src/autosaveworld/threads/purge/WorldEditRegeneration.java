@@ -23,8 +23,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import autosaveworld.config.AutoSaveWorldConfig;
-
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.blocks.BaseBlock;
@@ -107,13 +105,13 @@ public class WorldEditRegeneration {
 		}
 
 		public RegenOptions(Set<Integer> safeblocks) {
+			if (safeblocks.isEmpty()) {
+				return;
+			}
 			removeunsafeblocks = true;
 			for (int safeblockid : safeblocks) {
 				safelist[safeblockid] = true;
 			}
-		}
-
-		public RegenOptions(AutoSaveWorldConfig config) {
 		}
 
 		public boolean shouldRemoveUnsafeBlocks() {
