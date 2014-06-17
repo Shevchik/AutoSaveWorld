@@ -100,22 +100,22 @@ public class WorldRegenPasteThread extends Thread {
 		MessageLogger.debug("Restoring buildings");
 
 		// paste WG buildings
-		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
+		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldRegenSaveWG) {
 			new WorldGuardPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste Factions buildings
-		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
+		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldRegenSaveFactions) {
 			new FactionsPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste GriefPrevention claims
-		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
+		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldRegenSaveGP) {
 			new GPPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//paste Towny towns
-		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
+		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregenSaveTowny) {
 			new TownyPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 

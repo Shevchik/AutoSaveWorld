@@ -40,13 +40,13 @@ public class FTPBackup {
 			//init
 			FTPClient ftpclient = new FTPClient();
 			//connect
-			ftpclient.connect(config.ftphostname, config.ftpport);
+			ftpclient.connect(config.backupFTPHostname, config.backupFTPPort);
 			if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
 				ftpclient.disconnect();
 				MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
 				return;
 			}
-			if (!ftpclient.login(config.ftpusername, config.ftppassworld)) {
+			if (!ftpclient.login(config.backupFTPUsername, config.backupFTPPassworld)) {
 				ftpclient.disconnect();
 				MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
 				return;
@@ -54,13 +54,13 @@ public class FTPBackup {
 			//set file type
 			ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
 			//create dirs
-			ftpclient.makeDirectory(config.ftppath);
-			ftpclient.changeWorkingDirectory(config.ftppath);
+			ftpclient.makeDirectory(config.backupFTPPath);
+			ftpclient.changeWorkingDirectory(config.backupFTPPath);
 			ftpclient.makeDirectory("backups");
 			ftpclient.changeWorkingDirectory("backups");
 			//delete oldest backup
 			String[] listnames = ftpclient.listNames();
-			if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups) {
+			if (config.backupFTPMaxNumberOfBackups != 0 && listnames != null && listnames.length >= config.backupFTPMaxNumberOfBackups) {
 				MessageLogger.debug("Deleting oldest backup");
 				//find oldest backup
 				String oldestBackup = FTPUtils.findOldestBackupName(listnames);
@@ -71,14 +71,14 @@ public class FTPBackup {
 			ftpclient.makeDirectory(datedir);
 			ftpclient.changeWorkingDirectory(datedir);
 			//load BackupOperations class
-			FTPBackupOperations bo = new FTPBackupOperations(ftpclient, config.ftpbackupzip, config.ftpbackupexcludefolders);
+			FTPBackupOperations bo = new FTPBackupOperations(ftpclient, config.backupFTPZipEnabled, config.backupFTPExcludeFolders);
 			//do worlds backup
-			if (!config.ftpbackupWorlds.isEmpty()) {
+			if (!config.backupFTPBackupWorldsList.isEmpty()) {
 				MessageLogger.debug("Backuping Worlds");
 				ftpclient.makeDirectory("worlds");
 				ftpclient.changeWorkingDirectory("worlds");
 				for (World w : Bukkit.getWorlds()) {
-					if (config.ftpbackupWorlds.contains("*") || config.ftpbackupWorlds.contains(w.getWorldFolder().getName())) {
+					if (config.backupFTPBackupWorldsList.contains("*") || config.backupFTPBackupWorldsList.contains(w.getWorldFolder().getName())) {
 						bo.backupWorld(w);
 					}
 				}
@@ -86,7 +86,7 @@ public class FTPBackup {
 				MessageLogger.debug("Backuped Worlds");
 			}
 			//do plugins backup
-			if (config.ftpbackuppluginsfolder) {
+			if (config.backupFTPPluginsFolder) {
 				MessageLogger.debug("Backuping plugins");
 				ftpclient.makeDirectory("plugins");
 				ftpclient.changeWorkingDirectory("plugins");
@@ -95,11 +95,11 @@ public class FTPBackup {
 				MessageLogger.debug("Backuped plugins");
 			}
 			//backup other folders
-			if (!config.ftpbackupincludefolders.isEmpty()) {
+			if (!config.backupFTPOtherFolders.isEmpty()) {
 				MessageLogger.debug("Backuping other folders");
 				ftpclient.makeDirectory("others");
 				ftpclient.changeWorkingDirectory("others");
-				bo.backupOtherFolders(config.ftpbackupincludefolders);
+				bo.backupOtherFolders(config.backupFTPOtherFolders);
 				ftpclient.changeToParentDirectory();
 				MessageLogger.debug("Backuped other folders");
 			}

@@ -49,31 +49,31 @@ public class PurgeByNames {
 		MessageLogger.debug("Found "+aplist.getActivePlayersCount()+" active players");
 
 		HashSet<Integer> safeids = new HashSet<Integer>();
-		if (config.purgeweremoveunsafe) {
-			safeids.addAll(RegenOptions.parseListToIDs(config.purgeweremoveunsafesafeids));
+		if (config.purgeWERemoveUnsafe) {
+			safeids.addAll(RegenOptions.parseListToIDs(config.purgeWERemoveUnsafeSafeIDs));
 		}
 
 		PluginManager pm = plugin.getServer().getPluginManager();
 
-		if ((pm.getPlugin("WorldGuard") != null) && config.purgewg) {
+		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
 			MessageLogger.debug("WG found, purging");
 			try {
-				new WGPurge().doWGPurgeTask(aplist, config.purgewgregenrg, config.purgewgnoregenoverlap, safeids);
+				new WGPurge().doWGPurgeTask(aplist, config.purgeWGRegenRg, config.purgeWGNoregenOverlap, safeids);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
 
-		if ((pm.getPlugin("LWC") != null) && config.purgelwc) {
+		if ((pm.getPlugin("LWC") != null) && config.purgeLWC) {
 			MessageLogger.debug("LWC found, purging");
 			try {
-				new LWCPurge().doLWCPurgeTask(aplist, config.purgelwcdelprotectedblocks);
+				new LWCPurge().doLWCPurgeTask(aplist, config.purgeLWCDelProtectedBlocks);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
 
-		if ((pm.getPlugin("Multiverse-Inventories") !=null) && config.purgemvinv) {
+		if ((pm.getPlugin("Multiverse-Inventories") !=null) && config.purgeMVInv) {
 			MessageLogger.debug("Multiverse-Inventories found, purging");
 			try {
 				new MVInvPurge().doMVInvPurgeTask(aplist);
@@ -82,25 +82,25 @@ public class PurgeByNames {
 			}
 		}
 
-		if ((pm.getPlugin("Residence") !=null) && config.purgeresidence) {
+		if ((pm.getPlugin("Residence") !=null) && config.purgeResidence) {
 			MessageLogger.debug("Residence found, purging");
 			try {
-				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeresregenarena, safeids);
+				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeResidenceRegenArea, safeids);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
 
-		if (pm.getPlugin("Vault") != null && config.purgeperms) {
+		if (pm.getPlugin("Vault") != null && config.purgePerms) {
 			MessageLogger.debug("Vault found, purging permissions");
 			try {
-				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
+				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgePermsSaveCMD);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
 
-		if (pm.getPlugin("MyWarp") != null && config.purgemywarp) {
+		if (pm.getPlugin("MyWarp") != null && config.purgeMyWarp) {
 			MessageLogger.debug("MyWarp found, purging");
 			try {
 				new MyWarpPurge().doMyWarpPurgeTask(aplist);
@@ -109,7 +109,7 @@ public class PurgeByNames {
 			}
 		}
 
-		if (config.purgedat) {
+		if (config.purgeDat) {
 			MessageLogger.debug("Purging player .dat files");
 			try {
 				new DatfilePurge().doDelPlayerDatFileTask(aplist);

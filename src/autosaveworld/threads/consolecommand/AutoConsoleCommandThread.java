@@ -56,18 +56,18 @@ public class AutoConsoleCommandThread extends Thread {
 		while (run) {
 
 			//handle times mode
-			if (config.cctimeenabled) {
+			if (config.ccTimesModeEnabled) {
 				for (String ctime : getTimesToExecute()) {
 					MessageLogger.debug("Executing console commands (timesmode)");
-					executeCommands(config.cctimescommands.get(ctime));
+					executeCommands(config.ccTimesModeCommands.get(ctime));
 				}
 			}
 
 			//handle interval mode
-			if (config.ccintervalenabled) {
+			if (config.ccIntervalsModeEnabled) {
 				for (int interval : getIntervalsToExecute()) {
 					MessageLogger.debug("Executing console commands (intervalmode)");
-					executeCommands(config.ccintervalscommands.get(interval));
+					executeCommands(config.ccIntervalsModeCommands.get(interval));
 				}
 			}
 
@@ -104,7 +104,7 @@ public class AutoConsoleCommandThread extends Thread {
 		List<String> timestoexecute = new ArrayList<String>();
 		int cminute = Integer.parseInt(msdf.format(System.currentTimeMillis()));
 		String ctime = sdf.format(System.currentTimeMillis());
-		if (cminute != minute && config.cctimescommands.containsKey(ctime)) {
+		if (cminute != minute && config.ccTimesModeCommands.containsKey(ctime)) {
 			minute = cminute;
 			timestoexecute.add(ctime);
 		}
@@ -115,7 +115,7 @@ public class AutoConsoleCommandThread extends Thread {
 	private long intervalcounter = 0;
 	private List<Integer> getIntervalsToExecute() {
 		List<Integer> inttoexecute = new ArrayList<Integer>();
-		for (int interval : config.ccintervalscommands.keySet()) {
+		for (int interval : config.ccIntervalsModeCommands.keySet()) {
 			if (intervalcounter != 0 && intervalcounter % interval == 0) {
 				inttoexecute.add(interval);
 			}

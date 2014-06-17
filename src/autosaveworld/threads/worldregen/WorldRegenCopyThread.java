@@ -109,28 +109,28 @@ public class WorldRegenCopyThread extends Thread {
 		MessageLogger.debug("Saving buildings");
 
 		//save WorldGuard buildings
-		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldregensavewg) {
+		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldRegenSaveWG) {
 			new WorldGuardCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		//save Factions homes
-		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldregensavefactions) {
+		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldRegenSaveFactions) {
 			new FactionsCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		//save GriefPrevention claims
-		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldregensavegp) {
+		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldRegenSaveGP) {
 			new GPCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		//save Towny towns
-		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregensavetowny) {
+		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregenSaveTowny) {
 			new TownyCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		MessageLogger.debug("Saving finished");
 
-		if (config.worldregenremoveseeddata) {
+		if (config.worldRegenRemoveSeedData) {
 			MessageLogger.debug("Removing seed data");
 			new File(wtoregen.getWorldFolder(),"level.dat").delete();
 			new File(wtoregen.getWorldFolder(),"level.dat_old").delete();

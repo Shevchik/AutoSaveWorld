@@ -41,17 +41,17 @@ public class PurgeByUUIDs {
 
 		PluginManager pm = Bukkit.getPluginManager();
 
-		if (pm.getPlugin("Vault") != null && config.purgeperms) {
+		if (pm.getPlugin("Vault") != null && config.purgePerms) {
 			MessageLogger.debug("Vault found, purging permissions");
 			try {
-				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgepermssavemcd);
+				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgePermsSaveCMD);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
 
 		MessageLogger.debug("Purging player .dat files");
-		if (config.purgedat) {
+		if (config.purgeDat) {
 			try {
 				new DatfilePurge().doDelPlayerDatFileTask(aplist);
 			} catch (Throwable e) {

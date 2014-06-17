@@ -32,10 +32,10 @@ public class LocalFSBackup {
 	}
 
 	public void performBackup() {
-		for (String extpath : config.lfsextfolders) {
+		for (String extpath : config.backupLFSExtFolders) {
 
 			//init backup operations class
-			LFSBackupOperations bo = new LFSBackupOperations(config.lfsbackupzip, extpath, config.lfsbackupexcludefolders);
+			LFSBackupOperations bo = new LFSBackupOperations(config.backupLFSZipEnabled, extpath, config.backupLFSExcludeFolders);
 
 			//create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
@@ -43,15 +43,15 @@ public class LocalFSBackup {
 			//backup worlds
 			for (World world : Bukkit.getWorlds()) {
 				//check if we need to backup this world
-				if ((config.lfsbackupWorldsList).contains("*") || config.lfsbackupWorldsList.contains(world.getName())) {
+				if ((config.backupLFSBackupWorldsList).contains("*") || config.backupLFSBackupWorldsList.contains(world.getName())) {
 					//backup world
-					bo.backupWorld(world, config.lfsMaxNumberOfWorldsBackups, backuptimestamp);
+					bo.backupWorld(world, config.backupLFSMaxNumberOfWorldsBackups, backuptimestamp);
 				}
 			}
 
 			//backups plugins
-			if (config.lfsbackuppluginsfolder) {
-				bo.backupPlugins(config.lfsMaxNumberOfPluginsBackups, backuptimestamp );
+			if (config.backupLFSPluginsFolder) {
+				bo.backupPlugins(config.backupLFSMaxNumberOfPluginsBackups, backuptimestamp );
 			}
 
 		}

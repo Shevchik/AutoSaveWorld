@@ -136,7 +136,7 @@ public class AutoSaveThread extends Thread {
 		}
 		// structures are saved only for main world so we use this workaround
 		// only for main world
-		if (config.donotsavestructures && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName())) {
+		if (config.saveDisableStructureSaving && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName())) {
 			saveWorldDoNoSaveStructureInfo(world);
 		} else {
 			saveWorldNormal(world);

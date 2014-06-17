@@ -58,28 +58,28 @@ public class AutoRestartThread  extends Thread{
 		Thread.currentThread().setName("AutoSaveWorld AutoRestartThread");
 
 		//check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
-		if  (config.autorestarttime.contains(getCurTime()))	{try {Thread.sleep(61000);} catch (InterruptedException e) {}}
+		if  (config.autoRestartTimes.contains(getCurTime()))	{try {Thread.sleep(61000);} catch (InterruptedException e) {}}
 
 		while (run) {
-			if ((config.autorestart && config.autorestarttime.contains(getCurTime())) || command) {
+			if ((config.autoRestart && config.autoRestartTimes.contains(getCurTime())) || command) {
 				run = false;
 				command = false;
 
-				if (config.autorestartcountdown && !skipcountdown) {
-					for (int i = config.autorestartbroadcastonseconds.get(0); i>0; i--) {
-						if (config.autorestartbroadcastonseconds.contains(i)) {
+				if (config.autoRestartCountdown && !skipcountdown) {
+					for (int i = config.autoRestartCountdownSeconds.get(0); i>0; i--) {
+						if (config.autoRestartCountdownSeconds.contains(i)) {
 							MessageLogger.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)), true);
 						}
 						try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					}
 				}
 
-				MessageLogger.broadcast(configmsg.messageAutoRestart, config.autorestartBroadcast);
+				MessageLogger.broadcast(configmsg.messageAutoRestart, config.autoRestartBroadcast);
 
 				MessageLogger.debug("AutoRestarting server");
 
-				if (!config.autorestartjuststop) {
-					jvmsh.setPath(config.autorestartscriptpath);
+				if (!config.autoRestartJustStop) {
+					jvmsh.setPath(config.autoRestartScriptPath);
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 
@@ -87,7 +87,7 @@ public class AutoRestartThread  extends Thread{
 					new Runnable() {
 						@Override
 						public void run() {
-							for (String command : config.autorestartcommmands) {
+							for (String command : config.autoRestartPreStopCommmands) {
 								CommandUtils.dispatchCommandAsConsole(command);
 							}
 						}

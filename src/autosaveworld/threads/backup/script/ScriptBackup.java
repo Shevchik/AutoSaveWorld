@@ -31,7 +31,7 @@ public class ScriptBackup {
 
 
 	public void performBackup() {
-		for (String scriptpath : config.scriptbackupscriptpaths) {
+		for (String scriptpath : config.backupScriptPaths) {
 			File scriptfile = new File(scriptpath);
 			if (!scriptpath.isEmpty() && scriptfile.exists() && scriptfile.isFile()) {
 				MessageLogger.debug("Executing script "+ scriptfile.getAbsolutePath());

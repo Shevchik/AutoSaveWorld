@@ -114,19 +114,19 @@ public class AutoBackupThread extends Thread {
 
 		MessageLogger.broadcast(configmsg.messageBackupBroadcastPre, config.backupBroadcast);
 
-		if (config.localfsbackupenabled) {
+		if (config.backupLFSEnabled) {
 			MessageLogger.debug("Starting LocalFS backup");
 			new LocalFSBackup(config).performBackup();
 			MessageLogger.debug("LocalFS backup finished");
 		}
 
-		if (config.ftpbackupenabled) {
+		if (config.backupFTPEnabled) {
 			MessageLogger.debug("Starting FTP backup");
 			new FTPBackup(config).performBackup();
 			MessageLogger.debug("FTP backup finished");
 		}
 
-		if (config.scriptbackupenabled) {
+		if (config.backupScriptEnabled) {
 			MessageLogger.debug("Starting Script Backup");
 			new ScriptBackup(config).performBackup();
 			MessageLogger.debug("Script Backup Finished");

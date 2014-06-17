@@ -55,9 +55,9 @@ public class CrashRestartThread extends Thread{
 		MessageLogger.debug("CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 
-		MessageLogger.debug("Delaying crashrestart checker start for "+config.crdelay+" seconds");
+		MessageLogger.debug("Delaying crashrestart checker start for "+config.crashRestartCheckerStartDelay+" seconds");
 		//wait for configurable delay
-		try {Thread.sleep(config.crdelay*1000);} catch (InterruptedException e) {}
+		try {Thread.sleep(config.crashRestartCheckerStartDelay*1000);} catch (InterruptedException e) {}
 		//do not enable self if plugin is disabled
 		if (!run) {return;}
 
@@ -76,10 +76,10 @@ public class CrashRestartThread extends Thread{
 
 		while (run) {
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (syncticktime !=0 && (diff >= (config.crtimeout*1000L))) {
+			if (syncticktime !=0 && (diff >= (config.crashRestartTimeout*1000L))) {
 				run = false;
 
-				if (config.crashrestartenabled) {
+				if (config.crashRestartEnabled) {
 					Logger log = Bukkit.getLogger();
 					log.log(Level.SEVERE, "Server has stopped responding.");
 					log.log(Level.SEVERE, "Dumping threads info");
@@ -89,13 +89,13 @@ public class CrashRestartThread extends Thread{
 					}
 					log.log(Level.SEVERE, "Restarting Server");
 
-					if (!config.crstop) {
-						jvmsh.setPath(config.crashrestartscriptpath);
+					if (!config.crashRestartJustStop) {
+						jvmsh.setPath(config.crashRestartScriptPath);
 						Runtime.getRuntime().addShutdownHook(jvmsh);
 					}
 
 					Bukkit.shutdown();
-					if (config.crashrestartforce) {
+					if (config.crashRestartForceStop) {
 						//freeze main thread
 						bukkitMainThread.suspend();
 						//disable spigot async catcher
