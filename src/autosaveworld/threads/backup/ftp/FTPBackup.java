@@ -27,7 +27,6 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTP;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTPReply;
-import autosaveworld.threads.backup.utils.BackupFileUtils;
 
 public class FTPBackup {
 
@@ -64,9 +63,9 @@ public class FTPBackup {
 			if (config.ftpbackupmaxnumberofbackups != 0 && listnames != null && listnames.length >= config.ftpbackupmaxnumberofbackups) {
 				MessageLogger.debug("Deleting oldest backup");
 				//find oldest backup
-				String oldestBackup = BackupFileUtils.findOldestBackupNameFTP(listnames);
+				String oldestBackup = FTPUtils.findOldestBackupName(listnames);
 				//delete oldest backup
-				BackupFileUtils.deleteDirectoryFromFTP(ftpclient, oldestBackup);
+				FTPUtils.deleteDirectory(ftpclient, oldestBackup);
 			}
 			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 			ftpclient.makeDirectory(datedir);

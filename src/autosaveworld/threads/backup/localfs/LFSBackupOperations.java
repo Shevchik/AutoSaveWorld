@@ -24,7 +24,6 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.backup.utils.BackupFileUtils;
 import autosaveworld.threads.backup.utils.ZipUtils;
 import autosaveworld.utils.FileUtils;
 
@@ -62,7 +61,7 @@ public class LFSBackupOperations {
 		//check oldest backup count
 		if (maxBackupsCount != 0 && new File(destfolder).exists() && new File(destfolder).list().length >= maxBackupsCount) {
 			//find oldest backup
-			String oldestBackupName = BackupFileUtils.findOldestBackupNameLFS(destfolder);
+			String oldestBackupName = LocalFSUtils.findOldestBackupName(destfolder);
 			//delete oldest backup
 			if (oldestBackupName != null) {
 				File oldestBakup = new File(destfolder, oldestBackupName);
@@ -71,7 +70,7 @@ public class LFSBackupOperations {
 		}
 		String bfolder = destfolder + File.separator + latestbackuptimestamp;
 		if (!zip) {
-			BackupFileUtils.copyDirectory(fromfolder, new File(bfolder), excludefolders);
+			LocalFSUtils.copyDirectory(fromfolder, new File(bfolder), excludefolders);
 		} else  {
 			ZipUtils.zipFolder(fromfolder, new File(bfolder+".zip"), excludefolders);
 		}

@@ -26,7 +26,6 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
-import autosaveworld.threads.backup.utils.BackupFileUtils;
 
 public class FTPBackupOperations {
 
@@ -80,9 +79,9 @@ public class FTPBackupOperations {
 
 	private void backupFolder(File folder) throws IOException {
 		if (!zip) {
-			BackupFileUtils.uploadDirectoryToFTP(ftp, folder, excludefolders);
+			FTPUtils.uploadDirectory(ftp, folder, excludefolders);
 		} else  {
-			BackupFileUtils.zipAndUploadDirectoryToFTP(ftp, folder, excludefolders);
+			FTPUtils.zipAndUploadDirectory(ftp, folder, excludefolders);
 		}
 	}
 
