@@ -60,6 +60,7 @@ public class AutoSaveWorldConfig {
 	public boolean backupLFSPluginsFolder = false;
 	public int backupLFSMaxNumberOfPluginsBackups = 15;
 	public List<String> backupLFSOtherFolders;
+	public int backupLFSMaxNumberOfTherBackups = 15;
 	public List<String> backupLFSExcludeFolders;
 	public boolean backupLFSZipEnabled = false;
 	//ftp backup
@@ -163,6 +164,8 @@ public class AutoSaveWorldConfig {
 		if (backupLFSBackupWorldsList.size() == 0) {
 			backupLFSBackupWorldsList.add("*");
 		}
+		backupLFSOtherFolders = config.getStringList("backup.localfs.otherfolders");
+		backupLFSMaxNumberOfTherBackups = config.getInt("backup.localfs.MaxNumberOfOtherFoldersBackups", backupLFSMaxNumberOfTherBackups);
 		//ftp
 		backupFTPEnabled = config.getBoolean("backup.ftp.enabled",backupFTPEnabled);
 		backupFTPHostname = config.getString("backup.ftp.hostname",backupFTPHostname);
@@ -295,6 +298,8 @@ public class AutoSaveWorldConfig {
 		config.set("backup.localfs.pluginsfolder", backupLFSPluginsFolder);
 		config.set("backup.localfs.MaxNumberOfPluginsBackups", backupLFSMaxNumberOfPluginsBackups);
 		config.set("backup.localfs.excludefolders",backupLFSExcludeFolders);
+		config.set("backup.localfs.otherfolders", backupLFSOtherFolders);
+		config.set("backup.localfs.MaxNumberOfOtherFoldersBackups", backupLFSMaxNumberOfTherBackups);
 		//ftp
 		config.set("backup.ftp.enabled",backupFTPEnabled);
 		config.set("backup.ftp.hostname",backupFTPHostname);
