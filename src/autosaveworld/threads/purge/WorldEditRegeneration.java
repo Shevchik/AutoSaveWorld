@@ -20,6 +20,7 @@ package autosaveworld.threads.purge;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -48,10 +49,8 @@ public class WorldEditRegeneration {
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		HashMap<Vector, BaseBlock> placeBackQueue = new HashMap<Vector, BaseBlock>(500);
-		LinkedList<Vector2D> placeBackChunks = new LinkedList<Vector2D>();
 		//first save all blocks that are inside affected chunks but outside the region
 		for (Vector2D chunk : region.getChunks()) {
-			boolean chunkHasBlocksToRestore = false;
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			for (int x = 0; x < 16; ++x) {
 				for (int y = 0; y < maxy; ++y) {
@@ -59,13 +58,9 @@ public class WorldEditRegeneration {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
 							placeBackQueue.put(pt, bw.getBlock(pt));
-							chunkHasBlocksToRestore = true;
 						}
 					}
 				}
-			}
-			if (chunkHasBlocksToRestore) {
-				placeBackChunks.add(chunk);
 			}
 		}
 
@@ -96,26 +91,17 @@ public class WorldEditRegeneration {
 			}
 		}
 
-		//set block that we should paste to air to avoid random mod bugs (actually just setting the resulting block with applying physics shoud be enough, but this causes tons of other problems)
-		for (Vector2D chunk : placeBackChunks) {
-			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
-			for (int x = 0; x < 16; ++x) {
-				for (int y = 0; y < maxy; ++y) {
-					for (int z = 0; z < 16; ++z) {
-						Vector pt = min.add(x, y, z);
-						if (!region.contains(pt)) {
-							try {
-								BaseBlock block = placeBackQueue.get(pt);
-								//set block to air to fix one really weird problem
-								world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
-								//set block back
-								bw.setBlock(pt, block, false);
-							} catch (Throwable t) {
-								t.printStackTrace();
-							}
-						}
-					}
-				}
+		//set all blocks that were outside the region back
+		for (Entry<Vector, BaseBlock> placeBackEntry : placeBackQueue.entrySet()) {
+			Vector pt = placeBackEntry.getKey();
+			BaseBlock block = placeBackEntry.getValue();
+			try {
+				//set block to air to fix one really weird problem
+				world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
+				//set block back
+				bw.setBlock(pt, block, false);
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 	}
