@@ -17,9 +17,9 @@
 
 package autosaveworld.threads.purge;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -49,7 +49,7 @@ public class WorldEditRegeneration {
 		BukkitWorld bw = new BukkitWorld(world);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
-		HashMap<Vector, BaseBlock> placeBackQueue = new HashMap<Vector, BaseBlock>(500);
+		LinkedHashMap<Vector, BaseBlock> placeBackQueue = new LinkedHashMap<Vector, BaseBlock>(2000);
 		//first save all blocks that are inside affected chunks but outside the region
 		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
@@ -190,7 +190,7 @@ public class WorldEditRegeneration {
 			this.check = check;
 		}
 
-		public void processBlockPlaceBack(World world, BukkitWorld bw, HashMap<Vector, BaseBlock> placeBackQueue) {
+		public void processBlockPlaceBack(World world, BukkitWorld bw, LinkedHashMap<Vector, BaseBlock> placeBackQueue) {
 			Iterator<Entry<Vector, BaseBlock>> entryit = placeBackQueue.entrySet().iterator();
 			while (entryit.hasNext()) {
 				Entry<Vector, BaseBlock> placeBackEntry = entryit.next();
