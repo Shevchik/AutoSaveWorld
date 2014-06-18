@@ -79,7 +79,7 @@ public class WorldEditRegeneration {
 						}
 					}
 				}
-			}		
+			}
 		}
 
 		//regenerate all affected chunks
