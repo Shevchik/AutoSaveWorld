@@ -19,8 +19,7 @@ package autosaveworld.threads.purge;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -49,7 +48,7 @@ public class WorldEditRegeneration {
 		BukkitWorld bw = new BukkitWorld(world);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
-		LinkedHashMap<Vector, BaseBlock> placeBackQueue = new LinkedHashMap<Vector, BaseBlock>(2000);
+		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
 		//first save all blocks that are inside affected chunks but outside the region
 		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
@@ -58,7 +57,7 @@ public class WorldEditRegeneration {
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
-							placeBackQueue.put(pt, bw.getBlock(pt));
+							placeBackQueue.add(new BlockToPlaceBack(pt, bw.getBlock(pt)));
 						}
 					}
 				}
@@ -179,6 +178,25 @@ public class WorldEditRegeneration {
 		)
 	};
 
+	private static class BlockToPlaceBack {
+
+		private Vector position;
+		private BaseBlock block;
+		public BlockToPlaceBack(Vector position, BaseBlock block) {
+			this.position = position;
+			this.block = block;
+		}
+
+		public Vector getPosition() {
+			return position;
+		}
+
+		public BaseBlock getBlock() {
+			return block;
+		}
+
+	}
+
 	private static class PlaceBackStage {
 
 		public static interface PlaceBackCheck {
@@ -190,13 +208,13 @@ public class WorldEditRegeneration {
 			this.check = check;
 		}
 
-		public void processBlockPlaceBack(World world, BukkitWorld bw, LinkedHashMap<Vector, BaseBlock> placeBackQueue) {
-			Iterator<Entry<Vector, BaseBlock>> entryit = placeBackQueue.entrySet().iterator();
+		public void processBlockPlaceBack(World world, BukkitWorld bw, LinkedList<BlockToPlaceBack> placeBackQueue) {
+			Iterator<BlockToPlaceBack> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
-				Entry<Vector, BaseBlock> placeBackEntry = entryit.next();
-				BaseBlock block = placeBackEntry.getValue();
+				BlockToPlaceBack blockToPlaceBack = entryit.next();
+				BaseBlock block = blockToPlaceBack.getBlock();
 				if (check.shouldPlaceBack(block)) {
-					Vector pt = placeBackEntry.getKey();
+					Vector pt = blockToPlaceBack.getPosition();
 					try {
 						//set block to air to fix one really weird problem
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
