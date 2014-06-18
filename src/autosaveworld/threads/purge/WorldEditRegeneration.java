@@ -30,6 +30,7 @@ import org.bukkit.block.Block;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.blocks.BlockType;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
@@ -92,19 +93,8 @@ public class WorldEditRegeneration {
 		}
 
 		//set all blocks that were outside the region back
-		Iterator<Entry<Vector, BaseBlock>> entryit = placeBackQueue.entrySet().iterator();
-		while (entryit.hasNext()) {
-			Entry<Vector, BaseBlock> placeBackEntry = entryit.next();
-			Vector pt = placeBackEntry.getKey();
-			BaseBlock block = placeBackEntry.getValue();
-			try {
-				//set block to air to fix one really weird problem
-				world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
-				//set block back
-				bw.setBlock(pt, block, false);
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
+		for (PlaceBackStage stage : placeBackStages) {
+			stage.processBlockPlaceBack(world, bw, placeBackQueue);
 		}
 	}
 
@@ -155,6 +145,70 @@ public class WorldEditRegeneration {
 				}
 			}
 			return set;
+		}
+
+	}
+
+	private static PlaceBackStage[] placeBackStages = new PlaceBackStage[] {
+		//normal stage place back
+		new PlaceBackStage(
+			new PlaceBackStage.PlaceBackCheck() {
+				@Override
+				public boolean shouldPlaceBack(BaseBlock block) {
+					return !BlockType.shouldPlaceLast(block.getId()) && !BlockType.shouldPlaceFinal(block.getId());
+				}
+			}
+		),
+		//last stage place back
+		new PlaceBackStage(
+			new PlaceBackStage.PlaceBackCheck() {
+				@Override
+				public boolean shouldPlaceBack(BaseBlock block) {
+					return BlockType.shouldPlaceLast(block.getId());
+				}
+			}
+		),
+		//final stage place back
+		new PlaceBackStage(
+			new PlaceBackStage.PlaceBackCheck() {
+				@Override
+				public boolean shouldPlaceBack(BaseBlock block) {
+					return BlockType.shouldPlaceFinal(block.getId());
+				}
+			}
+		)
+	};
+
+	private static class PlaceBackStage {
+
+		public static interface PlaceBackCheck {
+			public boolean shouldPlaceBack(BaseBlock block);
+		}
+
+		private PlaceBackCheck check;
+		public PlaceBackStage(PlaceBackCheck check) {
+			this.check = check;
+		}
+
+		public void processBlockPlaceBack(World world, BukkitWorld bw, HashMap<Vector, BaseBlock> placeBackQueue) {
+			Iterator<Entry<Vector, BaseBlock>> entryit = placeBackQueue.entrySet().iterator();
+			while (entryit.hasNext()) {
+				Entry<Vector, BaseBlock> placeBackEntry = entryit.next();
+				BaseBlock block = placeBackEntry.getValue();
+				if (check.shouldPlaceBack(block)) {
+					Vector pt = placeBackEntry.getKey();
+					try {
+						//set block to air to fix one really weird problem
+						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
+						//set block back
+						bw.setBlock(pt, block, false);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						entryit.remove();
+					}
+				}
+			}
 		}
 
 	}
