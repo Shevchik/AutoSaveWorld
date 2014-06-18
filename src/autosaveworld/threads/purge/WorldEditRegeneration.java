@@ -19,7 +19,7 @@ package autosaveworld.threads.purge;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -92,7 +92,9 @@ public class WorldEditRegeneration {
 		}
 
 		//set all blocks that were outside the region back
-		for (Entry<Vector, BaseBlock> placeBackEntry : placeBackQueue.entrySet()) {
+		Iterator<Entry<Vector, BaseBlock>> entryit = placeBackQueue.entrySet().iterator();
+		while (entryit.hasNext()) {
+			Entry<Vector, BaseBlock> placeBackEntry = entryit.next();
 			Vector pt = placeBackEntry.getKey();
 			BaseBlock block = placeBackEntry.getValue();
 			try {
