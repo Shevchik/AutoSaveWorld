@@ -60,13 +60,6 @@ public class WorldEditRegeneration {
 						if (!region.contains(pt)) {
 							placeBackQueue.put(pt, bw.getBlock(pt));
 							chunkHasBlocksToRestore = true;
-						} else {
-							if (options.shouldRemoveUnsafeBlocks()) {
-								Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-								if (!options.isBlockSafe(block.getTypeId())) {
-									block.setType(Material.AIR);
-								}
-							}
 						}
 					}
 				}
@@ -74,6 +67,24 @@ public class WorldEditRegeneration {
 			if (chunkHasBlocksToRestore) {
 				placeBackChunks.add(chunk);
 			}
+		}
+
+		//remove all unsafe blocks
+		if (options.shouldRemoveUnsafeBlocks()) {
+			for (Vector2D chunk : region.getChunks()) {
+				Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
+				for (int x = 0; x < 16; ++x) {
+					for (int y = 0; y < maxy; ++y) {
+						for (int z = 0; z < 16; ++z) {
+							Vector pt = min.add(x, y, z);
+							Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
+							if (!options.isBlockSafe(block.getTypeId())) {
+								block.setType(Material.AIR);
+							}
+						}
+					}
+				}
+			}		
 		}
 
 		//regenerate all affected chunks
@@ -85,7 +96,7 @@ public class WorldEditRegeneration {
 			}
 		}
 
-		//then restore all blocks inside affected chunks but outside the region
+		//set block that we should paste to air to avoid random mod bugs (actually just setting the resulting block with applying physics shoud be enough, but this causes tons of other problems)
 		for (Vector2D chunk : placeBackChunks) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			for (int x = 0; x < 16; ++x) {
@@ -94,10 +105,11 @@ public class WorldEditRegeneration {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
 							try {
+								BaseBlock block = placeBackQueue.get(pt);
 								//set block to air to fix one really weird problem
 								world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
 								//set block back
-								bw.setBlock(pt, placeBackQueue.get(pt), false);
+								bw.setBlock(pt, block, false);
 							} catch (Throwable t) {
 								t.printStackTrace();
 							}
