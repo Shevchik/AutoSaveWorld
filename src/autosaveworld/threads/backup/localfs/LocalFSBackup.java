@@ -35,7 +35,7 @@ public class LocalFSBackup {
 		for (String extpath : config.backupLFSExtFolders) {
 
 			//init backup operations class
-			LFSBackupOperations bo = new LFSBackupOperations(config.backupLFSZipEnabled, extpath, config.backupLFSExcludeFolders);
+			LocalFSBackupOperations bo = new LocalFSBackupOperations(config.backupLFSZipEnabled, extpath, config.backupLFSExcludeFolders);
 
 			//create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
