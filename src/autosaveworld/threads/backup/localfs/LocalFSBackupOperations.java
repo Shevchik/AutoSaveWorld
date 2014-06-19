@@ -67,7 +67,17 @@ public class LocalFSBackupOperations {
 	}
 
 	public void backupOtherFolders(List<String> folders, int maxBackupsCount, String latestbackuptimestamp) {
-
+		for (String folder : folders) {
+			MessageLogger.debug("Backuping folder "+ folder);
+			try {
+				File fromfolder = new File(folder).getAbsoluteFile();
+				String destfolder = extpath+File.separator+"backups"+File.separator+"others"+File.separator+fromfolder.getName();
+				backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			MessageLogger.debug("Backuped folder "+ folder);
+		}
 	}
 
 	private void backupFolder(File fromfolder, String destfolder, int maxBackupsCount, String latestbackuptimestamp) {
