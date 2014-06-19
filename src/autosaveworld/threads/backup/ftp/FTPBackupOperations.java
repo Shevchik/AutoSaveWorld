@@ -63,15 +63,15 @@ public class FTPBackupOperations {
 	}
 
 	public void backupOtherFolders(List<String> folders) {
-		try {
-			for (String folder : folders) {
-				MessageLogger.debug("Backuping folder "+ folder);
+		for (String folder : folders) {
+			MessageLogger.debug("Backuping folder "+ folder);
+			try {
 				File fld = new File(folder).getAbsoluteFile();
 				backupFolder(fld);
-				MessageLogger.debug("Backuped folder "+ folder);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			MessageLogger.debug("Backuped folder "+ folder);
 		}
 	}
 
