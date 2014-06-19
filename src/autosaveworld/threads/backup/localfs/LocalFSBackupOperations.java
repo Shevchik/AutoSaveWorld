@@ -38,26 +38,39 @@ public class LocalFSBackupOperations {
 		this.excludefolders = excludefolders;
 	}
 
-	public void backupWorld(final World world, final int maxBackupsCount, final String latestbackuptimestamp) {
+	public void backupWorld(World world, int maxBackupsCount, String latestbackuptimestamp) {
 		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+
 		boolean savestatus = world.isAutoSave();
 		world.setAutoSave(false);
-		File fromfolder = world.getWorldFolder().getAbsoluteFile();
-		String destfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
-		backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
-		world.setAutoSave(savestatus);
+		try {
+			File fromfolder = world.getWorldFolder().getAbsoluteFile();
+			String destfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
+			backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
+		} catch (Exception e) {
+			e.printStackTrace();	
+		} finally {
+			world.setAutoSave(savestatus);
+		}
+
 		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
 	}
 
-	public void backupPlugins(final int maxBackupsCount, final String latestbackuptimestamp) {
-		MessageLogger.debug("Backuping plugins");
-		File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
-		String destfolder = extpath+File.separator+"backups"+File.separator+"plugins";
-		backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
-		MessageLogger.debug("Backuped plugins");
+	public void backupPlugins(int maxBackupsCount, String latestbackuptimestamp) {
+		try {
+			File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
+			String destfolder = extpath+File.separator+"backups"+File.separator+"plugins";
+			backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
+		} catch (Exception e) {
+			e.printStackTrace();	
+		}
 	}
 
-	private void backupFolder(File fromfolder, String destfolder, final int maxBackupsCount, final String latestbackuptimestamp) {
+	public void backupOtherFolders(List<String> folders, int maxBackupsCount, String latestbackuptimestamp) {
+
+	}
+
+	private void backupFolder(File fromfolder, String destfolder, int maxBackupsCount, String latestbackuptimestamp) {
 		//check oldest backup count
 		if (maxBackupsCount != 0 && new File(destfolder).exists() && new File(destfolder).list().length >= maxBackupsCount) {
 			//find oldest backup
