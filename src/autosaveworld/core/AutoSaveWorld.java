@@ -95,10 +95,9 @@ public class AutoSaveWorld extends JavaPlugin {
 		localeChanger = new LocaleChanger(this, configmsg);
 		// Register commands
 		ch = new CommandsHandler(this, config, configmsg, localeChanger);
-		getCommand("autosaveworld").setExecutor(ch);
-		getCommand("autosave").setExecutor(ch);
-		getCommand("autobackup").setExecutor(ch);
-		getCommand("autopurge").setExecutor(ch);
+		for (String commandName : getDescription().getCommands().keySet()) {
+			getCommand(commandName).setExecutor(ch);
+		}
 		// Load plugin manager
 		pluginmanager = new PluginManager();
 		// Load process manager
