@@ -38,8 +38,11 @@ import autosaveworld.threads.restart.RestartJVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
+import autosaveworld.utils.CommandUtils;
+import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.SchedulerUtils;
+import autosaveworld.utils.StringUtils;
 
 public class AutoSaveWorld extends JavaPlugin {
 
@@ -73,25 +76,33 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		// Init global constants
 		GlobalConstants.init(this);
-		SchedulerUtils.init(this);
-		ListenerUtils.init(this);
+		// Load main config
 		config = new AutoSaveWorldConfig();
 		config.load();
+		// Init logger and message utils
 		MessageLogger.init(getLogger(), config);
+		// Init other utils
+		SchedulerUtils.init(this);
+		ListenerUtils.init(this);
+		CommandUtils.init();
+		FileUtils.init();
+		StringUtils.init();
+		// Load messages
 		configmsg = new AutoSaveWorldConfigMSG();
 		configmsg.loadmsg();
 		localeChanger = new LocaleChanger(this, configmsg);
-		ch = new CommandsHandler(this,config,configmsg,localeChanger);
-		// Load plugin manager
-		pluginmanager = new PluginManager();
-		// Load process manager
-		processmanager = new ProcessManager();
-		// Register events and commands
+		// Register commands
+		ch = new CommandsHandler(this, config, configmsg, localeChanger);
 		getCommand("autosaveworld").setExecutor(ch);
 		getCommand("autosave").setExecutor(ch);
 		getCommand("autobackup").setExecutor(ch);
 		getCommand("autopurge").setExecutor(ch);
+		// Load plugin manager
+		pluginmanager = new PluginManager();
+		// Load process manager
+		processmanager = new ProcessManager();
 		// Start Threads
 		startThread(ThreadType.SAVE);
 		startThread(ThreadType.BACKUP);

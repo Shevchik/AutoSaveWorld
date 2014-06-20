@@ -19,6 +19,9 @@ package autosaveworld.utils;
 
 public class StringUtils {
 
+	public static void init() {
+	}
+
 	public static String join(String[] args, String join) {
 		if (args.length == 0) {
 			return "";

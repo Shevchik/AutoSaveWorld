@@ -22,6 +22,9 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 public class CommandUtils {
 
+	public static void init() {
+	}
+
 	public static void dispatchCommandAsConsole(String command) {
 		ServerCommandEvent event = new ServerCommandEvent(Bukkit.getConsoleSender(), command);
 		Bukkit.getPluginManager().callEvent(event);

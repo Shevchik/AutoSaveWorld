@@ -21,6 +21,9 @@ import java.io.File;
 
 public class FileUtils {
 
+	public static void init() {
+	}
+
 	public static void deleteDirectory(File file) {
 		if(!file.exists()) {return;}
 		if(file.isDirectory()) {
