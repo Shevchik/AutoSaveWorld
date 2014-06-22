@@ -172,7 +172,7 @@ public class AutoSaveWorldConfig {
 		backupLFSExcludeFolders = config.getStringList("backup.localfs.excludefolders");
 		backupLFSZipEnabled = config.getBoolean("backup.localfs.zip", backupLFSZipEnabled);
 		backupLFSBackupWorldsList = config.getStringList("backup.localfs.worlds");
-		if (backupLFSBackupWorldsList.size() == 0) {
+		if (backupLFSBackupWorldsList.isEmpty()) {
 			backupLFSBackupWorldsList.add("*");
 		}
 		backupLFSOtherFolders = config.getStringList("backup.localfs.otherfolders");
@@ -186,14 +186,14 @@ public class AutoSaveWorldConfig {
 		backupFTPPassworld = config.getString("backup.ftp.password",backupFTPPassworld);
 		backupFTPPath = config.getString("backup.ftp.path",backupFTPPath);
 		backupFTPBackupWorldsList = config.getStringList("backup.ftp.worlds");
+		if (backupFTPBackupWorldsList.isEmpty()) {
+			backupFTPBackupWorldsList.add("*");
+		}
 		backupFTPPluginsFolder = config.getBoolean("backup.ftp.pluginsfolder",backupFTPPluginsFolder);
 		backupFTPOtherFolders = config.getStringList("backup.ftp.otherfolders");
 		backupFTPExcludeFolders = config.getStringList("backup.ftp.excludefolders");
 		backupFTPMaxNumberOfBackups = config.getInt("backup.ftp.maxNumberOfBackups",backupFTPMaxNumberOfBackups);
 		backupFTPZipEnabled = config.getBoolean("backup.ftp.zip",backupFTPZipEnabled);
-		if (backupFTPBackupWorldsList.size() == 0) {
-			backupFTPBackupWorldsList.add("*");
-		}
 		//script
 		backupScriptEnabled = config.getBoolean("backup.script.enabled",backupScriptEnabled);
 		backupScriptPaths = config.getStringList("backup.script.scriptpaths");
@@ -202,6 +202,9 @@ public class AutoSaveWorldConfig {
 		backupDropboxAPPTOKEN = config.getString("backup.dropbox.token", backupDropboxAPPTOKEN);
 		backupDropboxPath = config.getString("backup.dropbox.path", backupDropboxPath);
 		backupDropboxWorldsList = config.getStringList("backup.dropbox.worlds");
+		if (backupDropboxWorldsList.isEmpty()) {
+			backupDropboxWorldsList.add("*");
+		}
 		backupDropboxPluginsFolder = config.getBoolean("backup.dropbox.pluginsfolder", backupDropboxPluginsFolder);
 		backupDropboxOtherFolders = config.getStringList("backup.dropbox.otherfolders");
 		backupDropboxExcludeFolders = config.getStringList("backup.dropbox.excludefolders");
