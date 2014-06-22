@@ -31,6 +31,7 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ftp.FTPBackup;
 import autosaveworld.threads.backup.localfs.LocalFSBackup;
 import autosaveworld.threads.backup.script.ScriptBackup;
+import autosaveworld.threads.backup.sftp.SFTPBackup;
 
 public class AutoBackupThread extends Thread {
 
@@ -121,9 +122,15 @@ public class AutoBackupThread extends Thread {
 		}
 
 		if (config.backupFTPEnabled) {
-			MessageLogger.debug("Starting FTP backup");
-			new FTPBackup(config).performBackup();
-			MessageLogger.debug("FTP backup finished");
+			if (config.backupFTPSFTP) {
+				MessageLogger.debug("Starting SFTP backup");
+				new SFTPBackup(config).performBackup();
+				MessageLogger.debug("SFTP backup finished");
+			} else {
+				MessageLogger.debug("Starting FTP backup");
+				new FTPBackup(config).performBackup();
+				MessageLogger.debug("FTP backup finished");
+			}
 		}
 
 		if (config.backupScriptEnabled) {
