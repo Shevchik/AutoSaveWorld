@@ -163,7 +163,7 @@ public class SSLConfig {
 		}
 	}
 
-	private static final String RootCertsResourceName = "trusted-certs.jks";
+	private static final String RootCertsResourceName = "trusted-certs.crt";
 
 	private static SSLSocketFactory createSSLSocketFactory() {
 		KeyStore trustedCertKeyStore = loadKeyStore(RootCertsResourceName);
