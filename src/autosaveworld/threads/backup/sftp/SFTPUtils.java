@@ -67,4 +67,14 @@ public class SFTPUtils {
 		}
 	}
 
+	public static boolean dirExists(ChannelSftp sftp, String dir) throws SftpException {
+		Vector<LsEntry> names = sftp.ls(".");
+		for (LsEntry entry : names) {
+			if (entry.getFilename().equals(dir)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

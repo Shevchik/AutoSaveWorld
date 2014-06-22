@@ -36,12 +36,16 @@ public class SFTPBackup {
 			channel.connect();
 			ChannelSftp channelSftp = (ChannelSftp) channel;
 			//create dirs
-			channelSftp.mkdir(config.backupFTPPath);
+			if (!SFTPUtils.dirExists(channelSftp, config.backupFTPPath)) {
+				channelSftp.mkdir(config.backupFTPPath);
+			}
 			channelSftp.cd(config.backupFTPPath);
-			channelSftp.mkdir("backups");
+			if (!SFTPUtils.dirExists(channelSftp, "backups")) {
+				channelSftp.mkdir("backups");
+			}
 			channelSftp.cd("backups");
 			//delete oldest backup
-			Vector<LsEntry> names = channelSftp.ls("backups");
+			Vector<LsEntry> names = channelSftp.ls(".");
 			String[] listnames = new String[names.size()];
 			for (int i = 0; i < names.size(); i++) {
 				listnames[i] = names.get(i).getFilename();
@@ -97,6 +101,5 @@ public class SFTPBackup {
 			e.printStackTrace();
 		}
 	}
-
 
 }
