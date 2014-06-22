@@ -25,7 +25,7 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.libs.org.apache.commons.net.ftp.FTPClient;
+import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPBackupOperations {
 
