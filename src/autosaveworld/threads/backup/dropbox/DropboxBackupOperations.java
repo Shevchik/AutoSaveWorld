@@ -17,6 +17,77 @@
 
 package autosaveworld.threads.backup.dropbox;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import org.bukkit.World;
+
+import autosaveworld.core.GlobalConstants;
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.zlibs.com.dropbox.core.DbxClient;
+
 public class DropboxBackupOperations {
+
+	private DbxClient client;
+	private String path;
+	private List<String> excludefolders;
+	private boolean zip;
+	public DropboxBackupOperations(DbxClient client, String path, boolean zip, List<String> excludefolders) {
+		this.client = client;
+		this.path = path;
+		this.zip = zip;
+		this.excludefolders = excludefolders;
+	}
+
+	public void backupWorld(World world) {
+		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+
+		boolean savestatus = world.isAutoSave();
+		world.setAutoSave(false);
+		try {
+			File fromfolder = world.getWorldFolder().getAbsoluteFile();
+			String destfolder = path+"/worlds/"+world.getWorldFolder().getName();
+			backupFolder(fromfolder, destfolder);
+		} catch (Exception e) {
+			e.printStackTrace();	
+		} finally {
+			world.setAutoSave(savestatus);
+		}
+
+		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
+	}
+
+	public void backupPlugins() {
+		try {
+			File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
+			String destfolder = path+"/plugins";
+			backupFolder(fromfolder, destfolder);
+		} catch (Exception e) {
+			e.printStackTrace();	
+		}
+	}
+
+	public void backupOtherFolders(List<String> folders) {
+		for (String folder : folders) {
+			MessageLogger.debug("Backuping folder "+ folder);
+			try {
+				File fromfolder = new File(folder).getAbsoluteFile();
+				String destfolder = path+"/others/"+fromfolder.getName();
+				backupFolder(fromfolder, destfolder);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			MessageLogger.debug("Backuped folder "+ folder);
+		}
+	}
+
+	private void backupFolder(File fromfolder, String destfolder) throws IOException {
+		if (!zip) {
+			DropboxUtils.uploadDirectory(client, fromfolder, excludefolders);
+		} else {
+			DropboxUtils.zipAndUploadDirectory(client, fromfolder, excludefolders);
+		}
+	}
 
 }

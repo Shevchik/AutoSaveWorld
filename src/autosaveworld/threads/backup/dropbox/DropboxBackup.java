@@ -21,6 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.BackupUtils;
@@ -42,7 +45,6 @@ public class DropboxBackup {
 			//init
 			DbxClient client = new DbxClient(dconfig, config.backupDropboxAPPTOKEN);
 			//create dirs
-			client.createFolder("/"+config.backupDropboxPath);
 			client.createFolder("/"+config.backupDropboxPath+"/backups");			
 			//delete oldest backup
 			List<DbxEntry> entries = client.getMetadataWithChildren("/"+config.backupDropboxPath+"/backups").children;
@@ -56,12 +58,36 @@ public class DropboxBackup {
 				String oldestBackup = BackupUtils.findOldestBackupName(listnames);
 				//delete oldest backup
 				if (oldestBackup != null) {
+					DropboxUtils.deleteDirectory(client, "/"+config.backupDropboxPath+"/backups/"+oldestBackup);
 				}
 			}
 			//create a dir for new backup
 			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 			client.createFolder("/"+config.backupDropboxPath+"/backups/"+datedir);
 			//load BackupOperations class
+			DropboxBackupOperations bo = new DropboxBackupOperations(client, "/"+config.backupDropboxPath+"/backups/"+datedir, config.backupDropboxZipEnabled, config.backupDropboxExcludeFolders);
+			//do worlds backup
+			if (!config.backupFTPBackupWorldsList.isEmpty()) {
+				MessageLogger.debug("Backuping Worlds");
+				for (World w : Bukkit.getWorlds()) {
+					if (config.backupFTPBackupWorldsList.contains("*") || config.backupFTPBackupWorldsList.contains(w.getWorldFolder().getName())) {
+						bo.backupWorld(w);
+					}
+				}
+				MessageLogger.debug("Backuped Worlds");
+			}
+			//do plugins backup
+			if (config.backupFTPPluginsFolder) {
+				MessageLogger.debug("Backuping plugins");
+				bo.backupPlugins();
+				MessageLogger.debug("Backuped plugins");
+			}
+			//backup other folders
+			if (!config.backupFTPOtherFolders.isEmpty()) {
+				MessageLogger.debug("Backuping other folders");
+				bo.backupOtherFolders(config.backupFTPOtherFolders);
+				MessageLogger.debug("Backuped other folders");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
