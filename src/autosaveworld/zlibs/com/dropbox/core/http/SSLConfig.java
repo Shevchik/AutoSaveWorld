@@ -282,7 +282,7 @@ public class SSLConfig {
 		} catch (LoadException ex) {
 			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
 		} catch (InitException ex) {
-			mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
+			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
 		} finally {
 			IOUtil.closeInput(in);
 		}
