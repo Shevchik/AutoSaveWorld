@@ -28,6 +28,7 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.backup.dropbox.DropboxBackup;
 import autosaveworld.threads.backup.ftp.FTPBackup;
 import autosaveworld.threads.backup.localfs.LocalFSBackup;
 import autosaveworld.threads.backup.script.ScriptBackup;
@@ -134,9 +135,15 @@ public class AutoBackupThread extends Thread {
 		}
 
 		if (config.backupScriptEnabled) {
-			MessageLogger.debug("Starting Script Backup");
+			MessageLogger.debug("Starting Script backup");
 			new ScriptBackup(config).performBackup();
 			MessageLogger.debug("Script Backup Finished");
+		}
+
+		if (config.backupDropboxEnabled) {
+			MessageLogger.debug("Starting Dropbox backup");
+			new DropboxBackup(config).performBackup();
+			MessageLogger.debug("Dropbox backup Finished");
 		}
 
 		MessageLogger.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
