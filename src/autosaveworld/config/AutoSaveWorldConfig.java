@@ -299,9 +299,9 @@ public class AutoSaveWorldConfig {
 		config.set("backup.localfs.MaxNumberOfWorldsBackups", backupLFSMaxNumberOfWorldsBackups);
 		config.set("backup.localfs.pluginsfolder", backupLFSPluginsFolder);
 		config.set("backup.localfs.MaxNumberOfPluginsBackups", backupLFSMaxNumberOfPluginsBackups);
-		config.set("backup.localfs.excludefolders",backupLFSExcludeFolders);
 		config.set("backup.localfs.otherfolders", backupLFSOtherFolders);
 		config.set("backup.localfs.MaxNumberOfOtherFoldersBackups", backupLFSMaxNumberOfOtherBackups);
+		config.set("backup.localfs.excludefolders", backupLFSExcludeFolders);
 		//ftp
 		config.set("backup.ftp.enabled",backupFTPEnabled);
 		config.set("backup.ftp.sftp",backupFTPSFTP);
