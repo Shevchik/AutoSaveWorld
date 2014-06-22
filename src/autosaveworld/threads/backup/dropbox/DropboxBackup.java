@@ -68,25 +68,25 @@ public class DropboxBackup {
 			//load BackupOperations class
 			DropboxBackupOperations bo = new DropboxBackupOperations(client, "/"+config.backupDropboxPath+"/backups/"+datedir, config.backupDropboxZipEnabled, config.backupDropboxExcludeFolders);
 			//do worlds backup
-			if (!config.backupFTPBackupWorldsList.isEmpty()) {
+			if (!config.backupDropboxWorldsList.isEmpty()) {
 				MessageLogger.debug("Backuping Worlds");
 				for (World w : Bukkit.getWorlds()) {
-					if (config.backupFTPBackupWorldsList.contains("*") || config.backupFTPBackupWorldsList.contains(w.getWorldFolder().getName())) {
+					if (config.backupDropboxWorldsList.contains("*") || config.backupDropboxWorldsList.contains(w.getWorldFolder().getName())) {
 						bo.backupWorld(w);
 					}
 				}
 				MessageLogger.debug("Backuped Worlds");
 			}
 			//do plugins backup
-			if (config.backupFTPPluginsFolder) {
+			if (config.backupDropboxPluginsFolder) {
 				MessageLogger.debug("Backuping plugins");
 				bo.backupPlugins();
 				MessageLogger.debug("Backuped plugins");
 			}
 			//backup other folders
-			if (!config.backupFTPOtherFolders.isEmpty()) {
+			if (!config.backupDropboxOtherFolders.isEmpty()) {
 				MessageLogger.debug("Backuping other folders");
-				bo.backupOtherFolders(config.backupFTPOtherFolders);
+				bo.backupOtherFolders(config.backupDropboxOtherFolders);
 				MessageLogger.debug("Backuped other folders");
 			}
 		} catch (Exception e) {
