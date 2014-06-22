@@ -18,26 +18,53 @@
 package autosaveworld.threads.backup.dropbox;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.utils.MemoryZip;
 import autosaveworld.zlibs.com.dropbox.core.DbxClient;
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
+import autosaveworld.zlibs.com.dropbox.core.DbxStreamWriter;
+import autosaveworld.zlibs.com.dropbox.core.DbxWriteMode;
 
 public class DropboxUtils {
 
-	public static void uploadDirectory(DbxClient client, File src, List<String> excludefolders) throws IOException {
+	public static void uploadDirectory(DbxClient client, File src, String path, List<String> excludefolders) throws IOException, DbxException {
+		if (src.isDirectory()) {
+			client.createFolder(path + "/" + src.getName());
+			for (File file : src.listFiles()) {
+				if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
+					uploadDirectory(client, file, path + "/" + src.getName(), excludefolders);
+				}
+			}
+		} else {
+			if (!src.getName().endsWith(".lck")) {
+				try {
+					InputStream is = new FileInputStream(src);
+					storeFile(client, is, path, src.getName());
+					is.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
-	public static void zipAndUploadDirectory(DbxClient dbx, File src, List<String> excludefolders) throws IOException {
+	public static void zipAndUploadDirectory(DbxClient dbx, File src, String path, List<String> excludefolders) throws IOException {
 		InputStream is = MemoryZip.startZIP(src, excludefolders);
-		storeFile(dbx, is, src.getName()+".zip");
+		storeFile(dbx, is, path, src.getName()+".zip");
 		is.close();
 	}
 
-	private static void storeFile(DbxClient client, InputStream is, String filename) {
+	private static void storeFile(DbxClient client, InputStream is, String path, String filename) {
+		try {
+			client.uploadFileChunked(path+"/"+filename, DbxWriteMode.force(), 1, new DbxStreamWriter.InputStreamCopier(is));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		Thread.yield();
 	}
 

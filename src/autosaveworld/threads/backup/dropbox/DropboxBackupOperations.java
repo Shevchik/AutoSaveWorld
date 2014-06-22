@@ -26,6 +26,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.zlibs.com.dropbox.core.DbxClient;
+import autosaveworld.zlibs.com.dropbox.core.DbxException;
 
 public class DropboxBackupOperations {
 
@@ -82,11 +83,11 @@ public class DropboxBackupOperations {
 		}
 	}
 
-	private void backupFolder(File fromfolder, String destfolder) throws IOException {
+	private void backupFolder(File fromfolder, String destfolder) throws IOException, DbxException {
 		if (!zip) {
-			DropboxUtils.uploadDirectory(client, fromfolder, excludefolders);
+			DropboxUtils.uploadDirectory(client, fromfolder, path, excludefolders);
 		} else {
-			DropboxUtils.zipAndUploadDirectory(client, fromfolder, excludefolders);
+			DropboxUtils.zipAndUploadDirectory(client, fromfolder, path, excludefolders);
 		}
 	}
 
