@@ -2,6 +2,7 @@ package autosaveworld.threads.backup.sftp;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Vector;
@@ -28,19 +29,28 @@ public class SFTPUtils {
 			if (!src.getName().endsWith(".lck")) {
 				try {
 					InputStream is = new FileInputStream(src);
-					sftp.put(is, src.getName());
+					storeFile(sftp, is, src.getName()+".zip");
 					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				Thread.yield();
 			}
 		}
 	}
 
-	public static void zipAndUploadDirectory(ChannelSftp sftp, File src, List<String> excludefolders) throws SftpException {
+	public static void zipAndUploadDirectory(ChannelSftp sftp, File src, List<String> excludefolders) throws IOException {
 		InputStream is = MemoryZip.startZIP(src, excludefolders);
-		sftp.put(is, src.getName()+".zip");
+		storeFile(sftp, is, src.getName()+".zip");
+		is.close();
+	}
+
+	private static void storeFile(ChannelSftp sftp, InputStream is, String filename) {
+		try {
+			sftp.put(is, filename);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Thread.yield();
 	}
 
 	public static void deleteDirectory(ChannelSftp sftp, String oldestBackup) throws SftpException {

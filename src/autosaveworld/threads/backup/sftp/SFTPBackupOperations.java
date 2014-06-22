@@ -1,6 +1,7 @@
 package autosaveworld.threads.backup.sftp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.World;
@@ -58,7 +59,7 @@ public class SFTPBackupOperations {
 		}
 	}
 
-	private void backupFolder(File folder) throws SftpException {
+	private void backupFolder(File folder) throws IOException, SftpException {
 		if (!zip) {
 			SFTPUtils.uploadDirectory(sftp, folder, excludefolders);
 		} else  {

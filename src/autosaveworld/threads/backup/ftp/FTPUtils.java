@@ -26,23 +26,28 @@ public class FTPUtils {
 			if (!src.getName().endsWith(".lck")) {
 				try {
 					InputStream is = new FileInputStream(src);
-					ftp.storeFile(src.getName(), is);
+					storeFile(ftp, is, src.getName());
 					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				Thread.yield();
 			}
 		}
 	}
 
-	public static void zipAndUploadDirectory(FTPClient ftp, File src, List<String> excludefolders) {
+	public static void zipAndUploadDirectory(FTPClient ftp, File src, List<String> excludefolders) throws IOException {
 		InputStream is = MemoryZip.startZIP(src, excludefolders);
+		storeFile(ftp, is, src.getName()+".zip");
+		is.close();
+	}
+
+	private static void storeFile(FTPClient ftp, InputStream is, String filename) {
 		try {
-			ftp.storeFile(src.getName()+".zip", is);
+			ftp.storeFile(filename, is);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		Thread.yield();
 	}
 
 	public static void deleteDirectory(FTPClient ftp, String directory) throws IOException {
