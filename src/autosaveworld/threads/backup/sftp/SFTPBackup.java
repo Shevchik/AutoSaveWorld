@@ -28,8 +28,8 @@ public class SFTPBackup {
 			//init
 			JSch jsch = new JSch();
 			//connect
-			Session session = jsch.getSession("usr", "127.0.0.1", 22);
-			session.setPassword("pass");
+			Session session = jsch.getSession(config.backupFTPUsername, config.backupFTPHostname, config.backupFTPPort);
+			session.setPassword(config.backupFTPPassworld);
 			session.connect();
 			Channel channel = session.openChannel(ChannelType.SFTP);
 			channel.connect();
