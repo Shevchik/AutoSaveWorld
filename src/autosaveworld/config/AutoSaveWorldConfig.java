@@ -65,6 +65,7 @@ public class AutoSaveWorldConfig {
 	public boolean backupLFSZipEnabled = false;
 	//ftp backup
 	public boolean backupFTPEnabled = false;
+	public boolean backupFTPSFTP = false;
 	public String backupFTPHostname = "127.0.0.1";
 	public int backupFTPPort = 21;
 	public String backupFTPUsername = "user";
@@ -168,6 +169,7 @@ public class AutoSaveWorldConfig {
 		backupLFSMaxNumberOfOtherBackups = config.getInt("backup.localfs.MaxNumberOfOtherFoldersBackups", backupLFSMaxNumberOfOtherBackups);
 		//ftp
 		backupFTPEnabled = config.getBoolean("backup.ftp.enabled",backupFTPEnabled);
+		backupFTPSFTP = config.getBoolean("backup.ftp.sftp",backupFTPSFTP);
 		backupFTPHostname = config.getString("backup.ftp.hostname",backupFTPHostname);
 		backupFTPPort = config.getInt("backup.ftp.port",backupFTPPort);
 		backupFTPUsername = config.getString("backup.ftp.login",backupFTPUsername);
@@ -302,6 +304,7 @@ public class AutoSaveWorldConfig {
 		config.set("backup.localfs.MaxNumberOfOtherFoldersBackups", backupLFSMaxNumberOfOtherBackups);
 		//ftp
 		config.set("backup.ftp.enabled",backupFTPEnabled);
+		config.set("backup.ftp.sftp",backupFTPSFTP);
 		config.set("backup.ftp.hostname",backupFTPHostname);
 		config.set("backup.ftp.port",backupFTPPort);
 		config.set("backup.ftp.login",backupFTPUsername);

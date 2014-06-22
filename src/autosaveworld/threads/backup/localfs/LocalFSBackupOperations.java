@@ -24,6 +24,7 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.backup.BackupUtils;
 import autosaveworld.threads.backup.utils.ZipUtils;
 import autosaveworld.utils.FileUtils;
 
@@ -84,7 +85,7 @@ public class LocalFSBackupOperations {
 		//check oldest backup count
 		if (maxBackupsCount != 0 && new File(destfolder).exists() && new File(destfolder).list().length >= maxBackupsCount) {
 			//find oldest backup
-			String oldestBackupName = LocalFSUtils.findOldestBackupName(destfolder);
+			String oldestBackupName = BackupUtils.findOldestBackupName(new File(destfolder).list());
 			//delete oldest backup
 			if (oldestBackupName != null) {
 				File oldestBakup = new File(destfolder, oldestBackupName);

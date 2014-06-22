@@ -24,6 +24,7 @@ import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.backup.BackupUtils;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTP;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPReply;
@@ -63,9 +64,11 @@ public class FTPBackup {
 			if (config.backupFTPMaxNumberOfBackups != 0 && listnames != null && listnames.length >= config.backupFTPMaxNumberOfBackups) {
 				MessageLogger.debug("Deleting oldest backup");
 				//find oldest backup
-				String oldestBackup = FTPUtils.findOldestBackupName(listnames);
+				String oldestBackup = BackupUtils.findOldestBackupName(listnames);
 				//delete oldest backup
-				FTPUtils.deleteDirectory(ftpclient, oldestBackup);
+				if (oldestBackup != null) {
+					FTPUtils.deleteDirectory(ftpclient, oldestBackup);
+				}
 			}
 			//create a dir for new backup
 			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());

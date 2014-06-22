@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import autosaveworld.threads.backup.ExcludeManager;
@@ -59,24 +58,6 @@ public class FTPUtils {
 		} else {
 			ftp.deleteFile(directory);
 		}
-	}
-
-	public static String findOldestBackupName(String[] timestamps) throws IOException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		String oldestBackupName = timestamps[0];
-		try {
-			long old = sdf.parse(oldestBackupName).getTime();
-			for (String timestampString : timestamps) {
-				long cur = sdf.parse(timestampString).getTime();
-				if (cur < old) {
-					old = cur;
-					oldestBackupName = timestampString;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return oldestBackupName;
 	}
 
 }
