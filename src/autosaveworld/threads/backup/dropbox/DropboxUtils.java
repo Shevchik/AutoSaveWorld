@@ -61,7 +61,7 @@ public class DropboxUtils {
 
 	private static void storeFile(DbxClient client, InputStream is, String path, String filename) {
 		try {
-			client.uploadFileChunked(path+"/"+filename, DbxWriteMode.force(), 1, new DbxStreamWriter.InputStreamCopier(is));
+			client.uploadFileChunked(path+"/"+filename, DbxWriteMode.force(), -1, new DbxStreamWriter.InputStreamCopier(is));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
