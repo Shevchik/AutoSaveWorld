@@ -80,6 +80,16 @@ public class AutoSaveWorldConfig {
 	//script
 	public boolean backupScriptEnabled = false;
 	public List<String> backupScriptPaths;
+	//dropbox backup
+	public boolean backupDropboxEnabled = false;
+	public String backupDropboxAPPTOKEN = "";
+	public String backupDropboxPath = "asw";
+	public List<String> backupDropboxWorldsList;
+	public boolean backupDropboxPluginsFolder = false;
+	public List<String> backupDropboxOtherFolders;
+	public List<String> backupDropboxExcludeFolders;
+	public int backupDropboxMaxNumberOfBackups = 4;
+	public boolean backupDropboxZipEnabled = false;
 	//purge
 	public boolean purgeEnabled = false;
 	public int purgeInterval = 60*60*24;
@@ -187,6 +197,16 @@ public class AutoSaveWorldConfig {
 		//script
 		backupScriptEnabled = config.getBoolean("backup.script.enabled",backupScriptEnabled);
 		backupScriptPaths = config.getStringList("backup.script.scriptpaths");
+		//dropbox
+		backupDropboxEnabled = config.getBoolean("backup.dropbox.enabled", backupDropboxEnabled);
+		backupDropboxAPPTOKEN = config.getString("backup.dropbox.token", backupDropboxAPPTOKEN);
+		backupDropboxPath = config.getString("backup.dropbox.path", backupDropboxPath);
+		backupDropboxWorldsList = config.getStringList("backup.dropbox.worlds");
+		backupDropboxPluginsFolder = config.getBoolean("backup.dropbox.pluginsfolder", backupDropboxPluginsFolder);
+		backupDropboxOtherFolders = config.getStringList("backup.dropbox.otherfolders");
+		backupDropboxExcludeFolders = config.getStringList("backup.dropbox.excludefolders");
+		backupDropboxMaxNumberOfBackups = config.getInt("backup.dropbox.maxNumberOfBackups", backupDropboxMaxNumberOfBackups);
+		backupDropboxZipEnabled = config.getBoolean("backup.dropbox.zip", backupDropboxZipEnabled);
 
 		//purge variables
 		purgeInterval = config.getInt("purge.interval", purgeInterval);
@@ -319,7 +339,16 @@ public class AutoSaveWorldConfig {
 		//script
 		config.set("backup.script.enabled",backupScriptEnabled);
 		config.set("backup.script.scriptpaths",backupScriptPaths);
-
+		//dropbox
+		config.set("backup.dropbox.enabled", backupDropboxEnabled);
+		config.set("backup.dropbox.token", backupDropboxAPPTOKEN);
+		config.set("backup.dropbox.path", backupDropboxPath);
+		config.set("backup.dropbox.worlds", backupDropboxWorldsList);
+		config.set("backup.dropbox.pluginsfolder", backupDropboxPluginsFolder);
+		config.set("backup.dropbox.otherfolders", backupDropboxOtherFolders);
+		config.set("backup.dropbox.excludefolders", backupDropboxExcludeFolders);
+		config.set("backup.dropbox.maxNumberOfBackups", backupDropboxMaxNumberOfBackups);
+		config.set("backup.dropbox.zip", backupDropboxZipEnabled);
 
 		//purge variables
 		config.set("purge.enabled", purgeEnabled);
