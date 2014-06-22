@@ -67,6 +67,7 @@ public class FTPBackup {
 				//delete oldest backup
 				FTPUtils.deleteDirectory(ftpclient, oldestBackup);
 			}
+			//create a dir for new backup
 			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 			ftpclient.makeDirectory(datedir);
 			ftpclient.changeWorkingDirectory(datedir);
