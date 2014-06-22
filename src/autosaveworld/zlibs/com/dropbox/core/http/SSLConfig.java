@@ -1,17 +1,19 @@
 package autosaveworld.zlibs.com.dropbox.core.http;
 
+import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.InitException;
+import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.LoadException;
 import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
 import static autosaveworld.zlibs.com.dropbox.core.util.LangUtil.mkAssert;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -260,6 +262,11 @@ public class SSLConfig {
 	}
 
 	private static KeyStore loadKeyStore(String jksFileResourceName) {
+		InputStream in = SSLConfig.class.getResourceAsStream(jksFileResourceName);
+		if (in == null) {
+			throw new AssertionError("Couldn't find resource \""+ jksFileResourceName + "\"");
+		}
+
 		KeyStore keyStore;
 		try {
 			keyStore = KeyStore.getInstance("JKS");
@@ -267,18 +274,15 @@ public class SSLConfig {
 			throw mkAssert("Couldn't initialize JKS key store", ex);
 		}
 
-		InputStream in = SSLConfig.class.getResourceAsStream(jksFileResourceName);
-		if (in == null) {
-			throw new AssertionError("Couldn't find resource \""+ jksFileResourceName + "\"");
-		}
 		try {
-			keyStore.load(in, null);
-		} catch (CertificateException ex) {
-			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
-		} catch (NoSuchAlgorithmException ex) {
-			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
+			PemLoader loader = new PemLoader();
+			loader.load(new InputStreamReader(in));
 		} catch (IOException ex) {
 			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
+		} catch (LoadException ex) {
+			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
+		} catch (InitException ex) {
+			mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
 		} finally {
 			IOUtil.closeInput(in);
 		}
