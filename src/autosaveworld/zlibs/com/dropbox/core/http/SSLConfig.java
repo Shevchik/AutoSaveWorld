@@ -268,15 +268,10 @@ public class SSLConfig {
 		}
 
 		KeyStore keyStore;
-		try {
-			keyStore = KeyStore.getInstance("JKS");
-		} catch (KeyStoreException ex) {
-			throw mkAssert("Couldn't initialize JKS key store", ex);
-		}
 
 		try {
 			PemLoader loader = new PemLoader();
-			loader.load(new InputStreamReader(in));
+			keyStore = loader.load(new InputStreamReader(in));
 		} catch (IOException ex) {
 			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
 		} catch (LoadException ex) {
