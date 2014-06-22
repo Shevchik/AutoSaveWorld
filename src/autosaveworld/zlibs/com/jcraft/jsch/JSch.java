@@ -29,7 +29,6 @@
 
 package autosaveworld.zlibs.com.jcraft.jsch;
 
-import java.io.InputStream;
 import java.util.Vector;
 
 public class JSch {
@@ -157,8 +156,6 @@ public class JSch {
 		this.configRepository = configRepository;
 	}
 
-	private HostKeyRepository known_hosts = null;
-
 	private static final Logger DEVNULL = new Logger() {
 		@Override
 		public boolean isEnabled(int level) {
@@ -255,80 +252,6 @@ public class JSch {
 		synchronized (sessionPool) {
 			return sessionPool.remove(session);
 		}
-	}
-
-	/**
-	 * Sets the hostkey repository.
-	 *
-	 * @param hkrepo
-	 *
-	 * @see autosaveworld.zlibs.com.jcraft.jsch.HostKeyRepository
-	 * @see autosaveworld.zlibs.com.jcraft.jsch.KnownHosts
-	 */
-	public void setHostKeyRepository(HostKeyRepository hkrepo) {
-		known_hosts = hkrepo;
-	}
-
-	/**
-	 * Sets the instance of <code>KnownHosts</code>, which refers to
-	 * <code>filename</code>.
-	 *
-	 * @param filename
-	 *            filename of known_hosts file.
-	 *
-	 * @throws JSchException
-	 *             if the given filename is invalid.
-	 *
-	 * @see autosaveworld.zlibs.com.jcraft.jsch.KnownHosts
-	 */
-	public void setKnownHosts(String filename) throws JSchException {
-		if (known_hosts == null) {
-			known_hosts = new KnownHosts(this);
-		}
-		if (known_hosts instanceof KnownHosts) {
-			synchronized (known_hosts) {
-				((KnownHosts) known_hosts).setKnownHosts(filename);
-			}
-		}
-	}
-
-	/**
-	 * Sets the instance of <code>KnownHosts</code> generated with
-	 * <code>stream</code>.
-	 *
-	 * @param stream
-	 *            the instance of InputStream from known_hosts file.
-	 *
-	 * @throws JSchException
-	 *             if an I/O error occurs.
-	 *
-	 * @see autosaveworld.zlibs.com.jcraft.jsch.KnownHosts
-	 */
-	public void setKnownHosts(InputStream stream) throws JSchException {
-		if (known_hosts == null) {
-			known_hosts = new KnownHosts(this);
-		}
-		if (known_hosts instanceof KnownHosts) {
-			synchronized (known_hosts) {
-				((KnownHosts) known_hosts).setKnownHosts(stream);
-			}
-		}
-	}
-
-	/**
-	 * Returns the current hostkey repository. By the default, this method will
-	 * the instance of <code>KnownHosts</code>.
-	 *
-	 * @return current hostkey repository.
-	 *
-	 * @see autosaveworld.zlibs.com.jcraft.jsch.HostKeyRepository
-	 * @see autosaveworld.zlibs.com.jcraft.jsch.KnownHosts
-	 */
-	public HostKeyRepository getHostKeyRepository() {
-		if (known_hosts == null) {
-			known_hosts = new KnownHosts(this);
-		}
-		return known_hosts;
 	}
 
 	/**

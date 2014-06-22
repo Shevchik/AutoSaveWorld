@@ -139,7 +139,6 @@ public class Session implements Runnable {
 	private int serverAliveCountMax = 1;
 
 	private IdentityRepository identityRepository = null;
-	private HostKeyRepository hostkeyRepository = null;
 
 	protected boolean daemon_thread = false;
 
@@ -342,13 +341,6 @@ public class Session implements Runnable {
 				if (kex.getState() == KeyExchange.STATE_END) {
 					break;
 				}
-			}
-
-			try {
-				checkHost(host, port, kex);
-			} catch (JSchException ee) {
-				in_kex = false;
-				throw ee;
 			}
 
 			send_newkeys();
@@ -697,166 +689,6 @@ public class Session implements Runnable {
 
 		if (JSch.getLogger().isEnabled(Logger.INFO)) {
 			JSch.getLogger().log(Logger.INFO, "SSH_MSG_NEWKEYS sent");
-		}
-	}
-
-	private void checkHost(String chost, int port, KeyExchange kex)
-			throws JSchException {
-		String shkc = getConfig("StrictHostKeyChecking");
-
-		if (hostKeyAlias != null) {
-			chost = hostKeyAlias;
-		}
-
-		// System.err.println("shkc: "+shkc);
-
-		byte[] K_S = kex.getHostKey();
-		String key_type = kex.getKeyType();
-		String key_fprint = kex.getFingerPrint();
-
-		if (hostKeyAlias == null && port != 22) {
-			chost = ("[" + chost + "]:" + port);
-		}
-
-		HostKeyRepository hkr = getHostKeyRepository();
-
-		String hkh = getConfig("HashKnownHosts");
-		if (hkh.equals("yes") && (hkr instanceof KnownHosts)) {
-			hostkey = ((KnownHosts) hkr).createHashedHostKey(chost, K_S);
-		} else {
-			hostkey = new HostKey(chost, K_S);
-		}
-
-		int i = 0;
-		synchronized (hkr) {
-			i = hkr.check(chost, K_S);
-		}
-
-		boolean insert = false;
-		if ((shkc.equals("ask") || shkc.equals("yes"))
-				&& i == HostKeyRepository.CHANGED) {
-			String file = null;
-			synchronized (hkr) {
-				file = hkr.getKnownHostsRepositoryID();
-			}
-			if (file == null) {
-				file = "known_hosts";
-			}
-
-			boolean b = false;
-
-			if (userinfo != null) {
-				String message = "WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!\n"
-						+ "IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n"
-						+ "Someone could be eavesdropping on you right now (man-in-the-middle attack)!\n"
-						+ "It is also possible that the "
-						+ key_type
-						+ " host key has just been changed.\n"
-						+ "The fingerprint for the "
-						+ key_type
-						+ " key sent by the remote host is\n"
-						+ key_fprint
-						+ ".\n"
-						+ "Please contact your system administrator.\n"
-						+ "Add correct host key in "
-						+ file
-						+ " to get rid of this message.";
-
-				if (shkc.equals("ask")) {
-					b = userinfo
-							.promptYesNo(message
-									+ "\nDo you want to delete the old key and insert the new key?");
-				} else { // shkc.equals("yes")
-					userinfo.showMessage(message);
-				}
-			}
-
-			if (!b) {
-				throw new JSchException("HostKey has been changed: " + chost);
-			}
-
-			synchronized (hkr) {
-				hkr.remove(chost, (key_type.equals("DSA") ? "ssh-dss"
-						: "ssh-rsa"), null);
-				insert = true;
-			}
-		}
-
-		if ((shkc.equals("ask") || shkc.equals("yes"))
-				&& (i != HostKeyRepository.OK) && !insert) {
-			if (shkc.equals("yes")) {
-				throw new JSchException("reject HostKey: " + host);
-			}
-			// System.err.println("finger-print: "+key_fprint);
-			if (userinfo != null) {
-				boolean foo = userinfo.promptYesNo("The authenticity of host '"
-						+ host + "' can't be established.\n" + key_type
-						+ " key fingerprint is " + key_fprint + ".\n"
-						+ "Are you sure you want to continue connecting?");
-				if (!foo) {
-					throw new JSchException("reject HostKey: " + host);
-				}
-				insert = true;
-			} else {
-				if (i == HostKeyRepository.NOT_INCLUDED) {
-					throw new JSchException("UnknownHostKey: " + host + ". "
-							+ key_type + " key fingerprint is " + key_fprint);
-				} else {
-					throw new JSchException("HostKey has been changed: " + host);
-				}
-			}
-		}
-
-		if (shkc.equals("no") && HostKeyRepository.NOT_INCLUDED == i) {
-			insert = true;
-		}
-
-		if (i == HostKeyRepository.OK) {
-			HostKey[] keys = hkr.getHostKey(chost,
-					(key_type.equals("DSA") ? "ssh-dss" : "ssh-rsa"));
-			String _key = Util.byte2str(Util.toBase64(K_S, 0, K_S.length));
-			for (int j = 0; j < keys.length; j++) {
-				if (keys[i].getKey().equals(_key)
-						&& keys[j].getMarker().equals("@revoked")) {
-					if (userinfo != null) {
-						userinfo.showMessage("The "
-								+ key_type
-								+ " host key for "
-								+ host
-								+ " is marked as revoked.\n"
-								+ "This could mean that a stolen key is being used to "
-								+ "impersonate this host.");
-					}
-					if (JSch.getLogger().isEnabled(Logger.INFO)) {
-						JSch.getLogger()
-						.log(Logger.INFO,
-								"Host '" + host
-								+ "' has provided revoked key.");
-					}
-					throw new JSchException("revoked HostKey: " + host);
-				}
-			}
-		}
-
-		if (i == HostKeyRepository.OK
-				&& JSch.getLogger().isEnabled(Logger.INFO)) {
-			JSch.getLogger().log(
-					Logger.INFO,
-					"Host '" + host + "' is known and mathces the " + key_type
-					+ " host key");
-		}
-
-		if (insert && JSch.getLogger().isEnabled(Logger.WARN)) {
-			JSch.getLogger().log(
-					Logger.WARN,
-					"Permanently added '" + host + "' (" + key_type
-					+ ") to the list of known hosts.");
-		}
-
-		if (insert) {
-			synchronized (hkr) {
-				hkr.add(hostkey, userinfo);
-			}
 		}
 	}
 
@@ -2401,29 +2233,6 @@ public class Session implements Runnable {
 		return identityRepository;
 	}
 
-	/**
-	 * Sets the hostkeyRepository, which will be referred in checking host keys.
-	 *
-	 * @param hostkeyRepository
-	 * @see #getHostKeyRepository()
-	 */
-	public void setHostKeyRepository(HostKeyRepository hostkeyRepository) {
-		this.hostkeyRepository = hostkeyRepository;
-	}
-
-	/**
-	 * Gets the hostkeyRepository. If this.hostkeyRepository is
-	 * <code>null</code>, JSch#getHostKeyRepository() will be invoked.
-	 *
-	 * @see JSch#getHostKeyRepository()
-	 */
-	public HostKeyRepository getHostKeyRepository() {
-		if (hostkeyRepository == null) {
-			return jsch.getHostKeyRepository();
-		}
-		return hostkeyRepository;
-	}
-
 	private void applyConfig() throws JSchException {
 		ConfigRepository configRepository = jsch.getConfigRepository();
 		if (configRepository == null) {
@@ -2469,13 +2278,6 @@ public class Session implements Runnable {
 		value = config.getValue("HostKeyAlias");
 		if (value != null) {
 			this.setHostKeyAlias(value);
-		}
-
-		value = config.getValue("UserKnownHostsFile");
-		if (value != null) {
-			KnownHosts kh = new KnownHosts(jsch);
-			kh.setKnownHosts(value);
-			this.setHostKeyRepository(kh);
 		}
 
 		String[] values = config.getValues("IdentityFile");
