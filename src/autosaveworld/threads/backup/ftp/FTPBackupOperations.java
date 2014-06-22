@@ -29,8 +29,8 @@ import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPBackupOperations {
 
-	final boolean zip;
-	final List<String> excludefolders;
+	private boolean zip;
+	private List<String> excludefolders;
 	private FTPClient ftp;
 	public FTPBackupOperations(FTPClient ftp, boolean zip, List<String> excludefolders) {
 		this.zip = zip;

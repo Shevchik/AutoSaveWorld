@@ -30,9 +30,9 @@ import autosaveworld.utils.FileUtils;
 
 public class LocalFSBackupOperations {
 
-	private final boolean zip;
-	private final String extpath;
-	private final List<String> excludefolders;
+	private boolean zip;
+	private String extpath;
+	private List<String> excludefolders;
 	public LocalFSBackupOperations(boolean zip, String extpath, List<String> excludefolders) {
 		this.zip = zip;
 		this.extpath = extpath;
