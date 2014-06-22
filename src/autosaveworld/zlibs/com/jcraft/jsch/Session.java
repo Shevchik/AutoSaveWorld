@@ -134,11 +134,8 @@ public class Session implements Runnable {
 	private Proxy proxy = null;
 	private UserInfo userinfo;
 
-	private String hostKeyAlias = null;
 	private int serverAliveInterval = 0;
 	private int serverAliveCountMax = 1;
-
-	private IdentityRepository identityRepository = null;
 
 	protected boolean daemon_thread = false;
 
@@ -2057,14 +2054,6 @@ public class Session implements Runnable {
 		return port;
 	}
 
-	public void setHostKeyAlias(String hostKeyAlias) {
-		this.hostKeyAlias = hostKeyAlias;
-	}
-
-	public String getHostKeyAlias() {
-		return hostKeyAlias;
-	}
-
 	/**
 	 * Sets the interval to send a keep-alive message. If zero is specified, any
 	 * keep-alive message must not be sent. The default interval is zero.
@@ -2209,30 +2198,6 @@ public class Session implements Runnable {
 		}
 	}
 
-	/**
-	 * Sets the identityRepository, which will be referred in the public key
-	 * authentication. The default value is <code>null</code>.
-	 *
-	 * @param identityRepository
-	 * @see #getIdentityRepository()
-	 */
-	public void setIdentityRepository(IdentityRepository identityRepository) {
-		this.identityRepository = identityRepository;
-	}
-
-	/**
-	 * Gets the identityRepository. If this.identityRepository is
-	 * <code>null</code>, JSch#getIdentityRepository() will be invoked.
-	 *
-	 * @see JSch#getIdentityRepository()
-	 */
-	IdentityRepository getIdentityRepository() {
-		if (identityRepository == null) {
-			return jsch.getIdentityRepository();
-		}
-		return identityRepository;
-	}
-
 	private void applyConfig() throws JSchException {
 		ConfigRepository configRepository = jsch.getConfigRepository();
 		if (configRepository == null) {
@@ -2274,45 +2239,6 @@ public class Session implements Runnable {
 		checkConfig(config, "PreferredAuthentications");
 		checkConfig(config, "MaxAuthTries");
 		checkConfig(config, "ClearAllForwardings");
-
-		value = config.getValue("HostKeyAlias");
-		if (value != null) {
-			this.setHostKeyAlias(value);
-		}
-
-		String[] values = config.getValues("IdentityFile");
-		if (values != null) {
-			String[] global = configRepository.getConfig("").getValues(
-					"IdentityFile");
-			if (global != null) {
-				for (int i = 0; i < global.length; i++) {
-					jsch.addIdentity(global[i]);
-				}
-			} else {
-				global = new String[0];
-			}
-			if (values.length - global.length > 0) {
-				IdentityRepository.Wrapper ir = new IdentityRepository.Wrapper(
-						jsch.getIdentityRepository(), true);
-				for (int i = 0; i < values.length; i++) {
-					String ifile = values[i];
-					for (int j = 0; j < global.length; j++) {
-						if (!ifile.equals(global[j])) {
-							continue;
-						}
-						ifile = null;
-						break;
-					}
-					if (ifile == null) {
-						continue;
-					}
-					Identity identity = IdentityFile.newInstance(ifile, null,
-							jsch);
-					ir.add(identity);
-				}
-				this.setIdentityRepository(ir);
-			}
-		}
 
 		value = config.getValue("ServerAliveInterval");
 		if (value != null) {

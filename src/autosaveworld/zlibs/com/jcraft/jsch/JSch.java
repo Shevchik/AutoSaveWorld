@@ -29,8 +29,6 @@
 
 package autosaveworld.zlibs.com.jcraft.jsch;
 
-import java.util.Vector;
-
 public class JSch {
 	/**
 	 * The version number.
@@ -94,10 +92,6 @@ public class JSch {
 
 		config.put("userauth.none", autosaveworld.zlibs.com.jcraft.jsch.UserAuthNone.class.getName());
 		config.put("userauth.password", autosaveworld.zlibs.com.jcraft.jsch.UserAuthPassword.class.getName());
-		config.put("userauth.keyboard-interactive", autosaveworld.zlibs.com.jcraft.jsch.UserAuthKeyboardInteractive.class.getName());
-		config.put("userauth.publickey", autosaveworld.zlibs.com.jcraft.jsch.UserAuthPublicKey.class.getName());
-		config.put("userauth.gssapi-with-mic", autosaveworld.zlibs.com.jcraft.jsch.UserAuthGSSAPIWithMIC.class.getName());
-		config.put("gssapi-with-mic.krb5", autosaveworld.zlibs.com.jcraft.jsch.jgss.GSSContextKrb5.class.getName());
 
 		config.put("zlib", autosaveworld.zlibs.com.jcraft.jsch.jcraft.Compression.class.getName());
 		config.put("zlib@openssh.com", autosaveworld.zlibs.com.jcraft.jsch.jcraft.Compression.class.getName());
@@ -118,35 +112,7 @@ public class JSch {
 
 	private java.util.Vector<Session> sessionPool = new java.util.Vector<Session>();
 
-	private IdentityRepository defaultIdentityRepository = new LocalIdentityRepository(
-			this);
-
-	private IdentityRepository identityRepository = defaultIdentityRepository;
-
 	private ConfigRepository configRepository = null;
-
-	/**
-	 * Sets the <code>identityRepository</code>, which will be referred in the
-	 * public key authentication.
-	 *
-	 * @param identityRepository
-	 *            if <code>null</code> is given, the default repository, which
-	 *            usually refers to ~/.ssh/, will be used.
-	 *
-	 * @see #getIdentityRepository()
-	 */
-	public synchronized void setIdentityRepository(
-			IdentityRepository identityRepository) {
-		if (identityRepository == null) {
-			this.identityRepository = defaultIdentityRepository;
-		} else {
-			this.identityRepository = identityRepository;
-		}
-	}
-
-	public synchronized IdentityRepository getIdentityRepository() {
-		return this.identityRepository;
-	}
 
 	public ConfigRepository getConfigRepository() {
 		return this.configRepository;
@@ -252,215 +218,6 @@ public class JSch {
 		synchronized (sessionPool) {
 			return sessionPool.remove(session);
 		}
-	}
-
-	/**
-	 * Sets the private key, which will be referred in the public key
-	 * authentication.
-	 *
-	 * @param prvkey
-	 *            filename of the private key.
-	 *
-	 * @throws JSchException
-	 *             if <code>prvkey</code> is invalid.
-	 *
-	 * @see #addIdentity(String prvkey, String passphrase)
-	 */
-	public void addIdentity(String prvkey) throws JSchException {
-		addIdentity(prvkey, (byte[]) null);
-	}
-
-	/**
-	 * Sets the private key, which will be referred in the public key
-	 * authentication. Before registering it into identityRepository, it will be
-	 * deciphered with <code>passphrase</code>.
-	 *
-	 * @param prvkey
-	 *            filename of the private key.
-	 * @param passphrase
-	 *            passphrase for <code>prvkey</code>.
-	 *
-	 * @throws JSchException
-	 *             if <code>passphrase</code> is not right.
-	 *
-	 * @see #addIdentity(String prvkey, byte[] passphrase)
-	 */
-	public void addIdentity(String prvkey, String passphrase) throws JSchException {
-		byte[] _passphrase = null;
-		if (passphrase != null) {
-			_passphrase = Util.str2byte(passphrase);
-		}
-		addIdentity(prvkey, _passphrase);
-		if (_passphrase != null) {
-			Util.bzero(_passphrase);
-		}
-	}
-
-	/**
-	 * Sets the private key, which will be referred in the public key
-	 * authentication. Before registering it into identityRepository, it will be
-	 * deciphered with <code>passphrase</code>.
-	 *
-	 * @param prvkey
-	 *            filename of the private key.
-	 * @param passphrase
-	 *            passphrase for <code>prvkey</code>.
-	 *
-	 * @throws JSchException
-	 *             if <code>passphrase</code> is not right.
-	 *
-	 * @see #addIdentity(String prvkey, String pubkey, byte[] passphrase)
-	 */
-	public void addIdentity(String prvkey, byte[] passphrase)
-			throws JSchException {
-		Identity identity = IdentityFile.newInstance(prvkey, null, this);
-		addIdentity(identity, passphrase);
-	}
-
-	/**
-	 * Sets the private key, which will be referred in the public key
-	 * authentication. Before registering it into identityRepository, it will be
-	 * deciphered with <code>passphrase</code>.
-	 *
-	 * @param prvkey
-	 *            filename of the private key.
-	 * @param pubkey
-	 *            filename of the public key.
-	 * @param passphrase
-	 *            passphrase for <code>prvkey</code>.
-	 *
-	 * @throws JSchException
-	 *             if <code>passphrase</code> is not right.
-	 */
-	public void addIdentity(String prvkey, String pubkey, byte[] passphrase)
-			throws JSchException {
-		Identity identity = IdentityFile.newInstance(prvkey, pubkey, this);
-		addIdentity(identity, passphrase);
-	}
-
-	/**
-	 * Sets the private key, which will be referred in the public key
-	 * authentication. Before registering it into identityRepository, it will be
-	 * deciphered with <code>passphrase</code>.
-	 *
-	 * @param name
-	 *            name of the identity to be used to retrieve it in the
-	 *            identityRepository.
-	 * @param prvkey
-	 *            private key in byte array.
-	 * @param pubkey
-	 *            public key in byte array.
-	 * @param passphrase
-	 *            passphrase for <code>prvkey</code>.
-	 *
-	 */
-	public void addIdentity(String name, byte[] prvkey, byte[] pubkey,
-			byte[] passphrase) throws JSchException {
-		Identity identity = IdentityFile
-				.newInstance(name, prvkey, pubkey, this);
-		addIdentity(identity, passphrase);
-	}
-
-	/**
-	 * Sets the private key, which will be referred in the public key
-	 * authentication. Before registering it into identityRepository, it will be
-	 * deciphered with <code>passphrase</code>.
-	 *
-	 * @param identity
-	 *            private key.
-	 * @param passphrase
-	 *            passphrase for <code>identity</code>.
-	 *
-	 * @throws JSchException
-	 *             if <code>passphrase</code> is not right.
-	 */
-	public void addIdentity(Identity identity, byte[] passphrase)
-			throws JSchException {
-		if (passphrase != null) {
-			try {
-				byte[] goo = new byte[passphrase.length];
-				System.arraycopy(passphrase, 0, goo, 0, passphrase.length);
-				passphrase = goo;
-				identity.setPassphrase(passphrase);
-			} finally {
-				Util.bzero(passphrase);
-			}
-		}
-
-		if (identityRepository instanceof LocalIdentityRepository) {
-			((LocalIdentityRepository) identityRepository).add(identity);
-		} else if (identity instanceof IdentityFile && !identity.isEncrypted()) {
-			identityRepository.add(((IdentityFile) identity).getKeyPair()
-					.forSSHAgent());
-		} else {
-			synchronized (this) {
-				if (!(identityRepository instanceof IdentityRepository.Wrapper)) {
-					setIdentityRepository(new IdentityRepository.Wrapper(
-							identityRepository));
-				}
-			}
-			((IdentityRepository.Wrapper) identityRepository).add(identity);
-		}
-	}
-
-	/**
-	 * @deprecated use #removeIdentity(Identity identity)
-	 */
-	@Deprecated
-	public void removeIdentity(String name) throws JSchException {
-		Vector<?> identities = identityRepository.getIdentities();
-		for (int i = 0; i < identities.size(); i++) {
-			Identity identity = (Identity) (identities.elementAt(i));
-			if (!identity.getName().equals(name)) {
-				continue;
-			}
-			if (identityRepository instanceof LocalIdentityRepository) {
-				((LocalIdentityRepository) identityRepository).remove(identity);
-			} else {
-				identityRepository.remove(identity.getPublicKeyBlob());
-			}
-		}
-	}
-
-	/**
-	 * Removes the identity from identityRepository.
-	 *
-	 * @param identity
-	 *            the indentity to be removed.
-	 *
-	 * @throws JSchException
-	 *             if <code>identity</code> is invalid.
-	 */
-	public void removeIdentity(Identity identity) throws JSchException {
-		identityRepository.remove(identity.getPublicKeyBlob());
-	}
-
-	/**
-	 * Lists names of identities included in the identityRepository.
-	 *
-	 * @return names of identities
-	 *
-	 * @throws JSchException
-	 *             if identityReposory has problems.
-	 */
-	public Vector<String> getIdentityNames() throws JSchException {
-		Vector<String> foo = new Vector<String>();
-		Vector<?> identities = identityRepository.getIdentities();
-		for (int i = 0; i < identities.size(); i++) {
-			Identity identity = (Identity) (identities.elementAt(i));
-			foo.addElement(identity.getName());
-		}
-		return foo;
-	}
-
-	/**
-	 * Removes all identities from identityRepository.
-	 *
-	 * @throws JSchException
-	 *             if identityReposory has problems.
-	 */
-	public void removeAllIdentity() throws JSchException {
-		identityRepository.removeAll();
 	}
 
 	/**
