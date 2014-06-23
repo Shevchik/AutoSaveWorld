@@ -11,9 +11,6 @@
      		<fileset file="src/plugin.yml" />
 			<fileset file="src/LICENSE" />
 		</copy>
-		<copy todir="build/classes/autosaveworld/zlibs/com/dropbox/core/http">
-			<fileset file="src/autosaveworld/zlibs/com/dropbox/core/http/trusted-certs.crt" />
-		</copy>
 		<mkdir dir="build/classes/autosaveworld/config/localefiles" />
 		<copy todir="build/classes/autosaveworld/config/localefiles">
 			<fileset dir="src/autosaveworld/config/localefiles">

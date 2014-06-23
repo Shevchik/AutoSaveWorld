@@ -136,35 +136,4 @@ public class IOUtil {
 		public static final long serialVersionUID = 0;
 	}
 
-	public static final InputStream EmptyInputStream = new InputStream() {
-		@Override
-		public int read() {
-			return -1;
-		}
-
-		@Override
-		public int read(byte[] data) {
-			return -1;
-		}
-
-		@Override
-		public int read(byte[] data, int off, int len) {
-			return -1;
-		}
-	};
-
-	public static final OutputStream BlackHoleOutputStream = new OutputStream() {
-		@Override
-		public void write(int b) {
-		}
-
-		@Override
-		public void write(byte[] data) {
-		}
-
-		@Override
-		public void write(byte[] data, int off, int len) {
-		}
-	};
-
 }

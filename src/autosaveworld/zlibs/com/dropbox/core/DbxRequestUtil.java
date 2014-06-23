@@ -149,8 +149,7 @@ public class DbxRequestUtil {
 	}
 
 	public static byte[] loadErrorBody(HttpRequestor.Response response) throws DbxException.NetworkIO {
-		// Slurp the body into memory (up to 4k; anything past that is probably
-		// not useful).
+		// Slurp the body into memory (up to 4k; anything past that is probably not useful).
 		try {
 			return IOUtil.slurp(response.body, 4096);
 		} catch (IOException ex) {
@@ -266,10 +265,9 @@ public class DbxRequestUtil {
 				return requestMaker.run();
 			} catch (DbxException ex) {
 				// If we can't retry, just let this exception through.
-				if (!isRetriableException(ex) || numTries >= maxTries)
-				 {
+				if (!isRetriableException(ex) || numTries >= maxTries) {
 					throw ex;
-				// Otherwise, run through the loop again.
+					// Otherwise, run through the loop again.
 				}
 			}
 		}
@@ -278,4 +276,5 @@ public class DbxRequestUtil {
 	private static boolean isRetriableException(DbxException ex) {
 		return ex instanceof DbxException.RetryLater || ex instanceof DbxException.ServerError;
 	}
+
 }

@@ -3,8 +3,6 @@ package autosaveworld.zlibs.com.dropbox.core.http;
 import static autosaveworld.zlibs.com.dropbox.core.util.LangUtil.mkAssert;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.KeyManagementException;
@@ -22,10 +20,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-
-import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.InitException;
-import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.LoadException;
-import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
 
 /**
  * The proper SSL configuration that should be used when connecting to Dropbox
@@ -166,10 +160,8 @@ public class SSLConfig {
 		}
 	}
 
-	private static final String RootCertsResourceName = "trusted-certs.crt";
-
 	private static SSLSocketFactory createSSLSocketFactory() {
-		KeyStore trustedCertKeyStore = loadKeyStore(RootCertsResourceName);
+		KeyStore trustedCertKeyStore = loadKeyStore();
 		TrustManager[] trustManagers = createTrustManagers(trustedCertKeyStore);
 		SSLContext sslContext = createSSLContext(trustManagers);
 		return new SSLSocketFactoryWrapper(sslContext.getSocketFactory());
@@ -262,27 +254,17 @@ public class SSLConfig {
 		return tmf.getTrustManagers();
 	}
 
-	private static KeyStore loadKeyStore(String jksFileResourceName) {
-		InputStream in = SSLConfig.class.getResourceAsStream(jksFileResourceName);
-		if (in == null) {
-			throw new AssertionError("Couldn't find resource \""+ jksFileResourceName + "\"");
-		}
-
-		KeyStore keyStore;
+	private static KeyStore loadKeyStore() {
+		KeyStore keyStore = null;
 
 		try {
 			PemLoader loader = new PemLoader();
-			keyStore = loader.load(new InputStreamReader(in));
-		} catch (IOException ex) {
-			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
-		} catch (LoadException ex) {
-			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
-		} catch (InitException ex) {
-			throw mkAssert("Error loading from \"" + jksFileResourceName + "\"", ex);
-		} finally {
-			IOUtil.closeInput(in);
+			keyStore = loader.load(TrustedCerts.getCertificatesData());
+		} catch (Exception e) {
+			throw mkAssert("Failed to load KeyStore", e);
 		}
 
 		return keyStore;
 	}
+
 }
