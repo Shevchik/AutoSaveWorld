@@ -1,6 +1,8 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.format;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
@@ -83,7 +85,7 @@ public class DataFormatMatcher {
 	/**
 	 * Accessor for getting brief textual name of matched format if any (null if
 	 * none). Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * return hasMatch() ? getMatch().getFormatName() : null;
 	 * </pre>

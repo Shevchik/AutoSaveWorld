@@ -37,7 +37,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 
 	/**
 	 * @deprecated Use variant that takes group and artifact ids
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	@Deprecated
@@ -115,12 +115,15 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == this)
+		if (o == this) {
 			return true;
-		if (o == null)
+		}
+		if (o == null) {
 			return false;
-		if (o.getClass() != getClass())
+		}
+		if (o.getClass() != getClass()) {
 			return false;
+		}
 		Version other = (Version) o;
 		return (other._majorVersion == _majorVersion)
 				&& (other._minorVersion == _minorVersion)
@@ -131,8 +134,9 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 
 	@Override
 	public int compareTo(Version other) {
-		if (other == this)
+		if (other == this) {
 			return 0;
+		}
 
 		int diff = _groupId.compareTo(other._groupId);
 		if (diff == 0) {

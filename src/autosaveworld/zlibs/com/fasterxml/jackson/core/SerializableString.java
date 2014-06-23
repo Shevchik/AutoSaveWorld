@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
  * <p>
  * Note that "quoted" in methods means quoting of 'special' characters using
  * JSON backlash notation (and not use of actual double quotes).
- * 
+ *
  * @see autosaveworld.zlibs.com.fasterxml.jackson.core.io.SerializedString
  */
 public interface SerializableString {
@@ -31,7 +31,7 @@ public interface SerializableString {
 	/**
 	 * Returns length of the (unquoted) String as characters. Functionally
 	 * equvalent to:
-	 * 
+	 *
 	 * <pre>
 	 * getValue().length();
 	 * </pre>
@@ -53,7 +53,7 @@ public interface SerializableString {
 	/**
 	 * Returns UTF-8 encoded version of unquoted String. Functionally equivalent
 	 * to (but more efficient than):
-	 * 
+	 *
 	 * <pre>
 	 * getValue().getBytes(&quot;UTF-8&quot;);
 	 * </pre>
@@ -63,7 +63,7 @@ public interface SerializableString {
 	/**
 	 * Returns UTF-8 encoded version of JSON-quoted String. Functionally
 	 * equivalent to (but more efficient than):
-	 * 
+	 *
 	 * <pre>
 	 * new String(asQuotedChars()).getBytes(&quot;UTF-8&quot;);
 	 * </pre>
@@ -80,13 +80,13 @@ public interface SerializableString {
 	 * Method that will append quoted UTF-8 bytes of this String into given
 	 * buffer, if there is enough room; if not, returns -1. Functionally
 	 * equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * byte[] bytes = str.asQuotedUTF8();
 	 * System.arraycopy(bytes, 0, buffer, offset, bytes.length);
 	 * return bytes.length;
 	 * </pre>
-	 * 
+	 *
 	 * @return Number of bytes appended, if successful, otherwise -1
 	 */
 	int appendQuotedUTF8(byte[] buffer, int offset);
@@ -94,13 +94,13 @@ public interface SerializableString {
 	/**
 	 * Method that will append quoted characters of this String into given
 	 * buffer. Functionally equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * char[] ch = str.asQuotedChars();
 	 * System.arraycopy(ch, 0, buffer, offset, ch.length);
 	 * return ch.length;
 	 * </pre>
-	 * 
+	 *
 	 * @return Number of characters appended, if successful, otherwise -1
 	 */
 	int appendQuoted(char[] buffer, int offset);
@@ -108,13 +108,13 @@ public interface SerializableString {
 	/**
 	 * Method that will append unquoted ('raw') UTF-8 bytes of this String into
 	 * given buffer. Functionally equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * byte[] bytes = str.asUnquotedUTF8();
 	 * System.arraycopy(bytes, 0, buffer, offset, bytes.length);
 	 * return bytes.length;
 	 * </pre>
-	 * 
+	 *
 	 * @return Number of bytes appended, if successful, otherwise -1
 	 */
 	int appendUnquotedUTF8(byte[] buffer, int offset);
@@ -122,13 +122,13 @@ public interface SerializableString {
 	/**
 	 * Method that will append unquoted characters of this String into given
 	 * buffer. Functionally equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * char[] ch = str.getValue().toCharArray();
 	 * System.arraycopy(bytes, 0, buffer, offset, ch.length);
 	 * return ch.length;
 	 * </pre>
-	 * 
+	 *
 	 * @return Number of characters appended, if successful, otherwise -1
 	 */
 	int appendUnquoted(char[] buffer, int offset);

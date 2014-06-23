@@ -12,7 +12,7 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core;
 public enum JsonToken {
 	/*
 	 * Some notes on implementation:
-	 * 
+	 *
 	 * - Entries are to be ordered such that start/end array/object markers come
 	 * first, then field name marker (if any), and finally scalar value tokens.
 	 * This is assumed by some typing checks.
@@ -179,7 +179,7 @@ public enum JsonToken {
 	 * Accessor that is functionally equivalent to: <code>
 	 *    this == JsonToken.START_OBJECT || this == JsonToken.START_ARRAY
 	 * </code>
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public final boolean isStructStart() {
@@ -190,7 +190,7 @@ public enum JsonToken {
 	 * Accessor that is functionally equivalent to: <code>
 	 *    this == JsonToken.END_OBJECT || this == JsonToken.END_ARRAY
 	 * </code>
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public final boolean isStructEnd() {

@@ -1,6 +1,9 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
@@ -27,7 +30,7 @@ public class SerializedString implements SerializableString,
 	 * enough to omit volatiles here, given how simple lazy initialization is.
 	 * This can be compared to how {@link String#intern} works; lazily and
 	 * without synchronization or use of volatile keyword.
-	 * 
+	 *
 	 * Change to remove volatile was a request by implementors of a
 	 * high-throughput search framework; and they believed this is an important
 	 * optimization for heaviest, multi-core deployed use cases.
@@ -61,7 +64,7 @@ public class SerializedString implements SerializableString,
 	/**
 	 * Ugly hack, to work through the requirement that _value is indeed final,
 	 * and that JDK serialization won't call ctor(s).
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected transient String _jdkSerializeValue;
@@ -268,10 +271,12 @@ public class SerializedString implements SerializableString,
 
 	@Override
 	public final boolean equals(Object o) {
-		if (o == this)
+		if (o == this) {
 			return true;
-		if (o == null || o.getClass() != getClass())
+		}
+		if (o == null || o.getClass() != getClass()) {
 			return false;
+		}
 		SerializedString other = (SerializedString) o;
 		return _value.equals(other._value);
 	}

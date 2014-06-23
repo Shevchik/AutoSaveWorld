@@ -1,10 +1,10 @@
 package autosaveworld.zlibs.com.dropbox.core.json;
 
-import autosaveworld.zlibs.com.dropbox.core.util.Collector;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
+
+import autosaveworld.zlibs.com.dropbox.core.util.Collector;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 
 public class JsonArrayReader<T, L> extends JsonReader<L> {
 	public final JsonReader<? extends T> elementReader;
@@ -24,6 +24,7 @@ public class JsonArrayReader<T, L> extends JsonReader<L> {
 		return new JsonArrayReader<T, L>(elementReader, collector);
 	}
 
+	@Override
 	public L read(JsonParser parser) throws JsonReadException, IOException {
 		return read(elementReader, collector, parser);
 	}

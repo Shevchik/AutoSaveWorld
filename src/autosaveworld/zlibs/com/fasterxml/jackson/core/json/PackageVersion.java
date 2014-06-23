@@ -8,6 +8,7 @@ public final class PackageVersion implements Versioned {
 
 	public static final Version VERSION = VersionUtil.parseVersion("2.2.3", "com.fasterxml.jackson.core", "jackson-core");
 
+	@Override
 	public Version version() {
 		return VERSION;
 	}

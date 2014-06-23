@@ -13,7 +13,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.InternCache;
  * input source). Complications arise from trying to do efficient reuse and
  * merging of symbol tables, to be able to make use of usually shared vocabulary
  * of subsequent parsing runs.
- * 
+ *
  * @author Tatu Saloranta
  */
 public final class BytesToNameCanonicalizer {
@@ -43,7 +43,7 @@ public final class BytesToNameCanonicalizer {
 	 * <p>
 	 * Also note that value was lowered from 255 (2.3 and earlier) to 100 for
 	 * 2.4
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	private final static int MAX_COLL_CHAIN_LENGTH = 100;
@@ -89,7 +89,7 @@ public final class BytesToNameCanonicalizer {
 	 * different runs, but still stable for lifetime of a single symbol table
 	 * instance. This is done for security reasons, to avoid potential DoS
 	 * attack via hash collisions.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	final private int _seed;
@@ -111,7 +111,7 @@ public final class BytesToNameCanonicalizer {
 	/**
 	 * Flag that indicates whether we should throw an exception if enough hash
 	 * collisions are detected (true); or just worked around (false).
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	protected final boolean _failOnDoS;
@@ -131,7 +131,7 @@ public final class BytesToNameCanonicalizer {
 	/**
 	 * We need to keep track of the longest collision list; this is needed both
 	 * to indicate problems with attacks and to allow flushing for other cases.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected int _longestCollisionList;
@@ -229,7 +229,7 @@ public final class BytesToNameCanonicalizer {
 	 * Lazily constructed structure that is used to keep track of collision
 	 * buckets that have overflowed once: this is used to detect likely attempts
 	 * at denial-of-service attacks that uses hash collisions.
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	protected BitSet _overflows;
@@ -243,7 +243,7 @@ public final class BytesToNameCanonicalizer {
 	/**
 	 * Constructor used for creating per-<code>JsonFactory</code> "root" symbol
 	 * tables: ones used for merging and sharing common symbols
-	 * 
+	 *
 	 * @param sz
 	 *            Initial hash area size
 	 * @param intern
@@ -460,7 +460,7 @@ public final class BytesToNameCanonicalizer {
 	 * Method mostly needed by unit tests; calculates number of entries that are
 	 * in collision list. Value can be at most ({@link #size} - 1), but should
 	 * usually be much lower, ideally 0.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public int collisionCount() {
@@ -471,7 +471,7 @@ public final class BytesToNameCanonicalizer {
 	 * Method mostly needed by unit tests; calculates length of the longest
 	 * collision chain. This should typically be a low number, but may be up to
 	 * {@link #size} - 1 in the pathological case
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public int maxCollisionLength() {
@@ -494,12 +494,12 @@ public final class BytesToNameCanonicalizer {
 	 * <p>
 	 * Note: separate methods to optimize common case of short element/attribute
 	 * names (4 or less ascii characters)
-	 * 
+	 *
 	 * @param q1
 	 *            int32 containing first 4 bytes of the name; if the whole name
 	 *            less than 4 bytes, padded with zero bytes in front (zero MSBs,
 	 *            ie. right aligned)
-	 * 
+	 *
 	 * @return Name matching the symbol passed (or constructed for it)
 	 */
 	public Name findName(int q1) {
@@ -542,14 +542,14 @@ public final class BytesToNameCanonicalizer {
 	 * <p>
 	 * Note: separate methods to optimize common case of relatively short
 	 * element/attribute names (8 or less ascii characters)
-	 * 
+	 *
 	 * @param q1
 	 *            int32 containing first 4 bytes of the name.
 	 * @param q2
 	 *            int32 containing bytes 5 through 8 of the name; if less than 8
 	 *            bytes, padded with up to 3 zero bytes in front (zero MSBs, ie.
 	 *            right aligned)
-	 * 
+	 *
 	 * @return Name matching the symbol passed (or constructed for it)
 	 */
 	public Name findName(int q1, int q2) {
@@ -594,12 +594,12 @@ public final class BytesToNameCanonicalizer {
 	 * Note: this is the general purpose method that can be called for names of
 	 * any length. However, if name is less than 9 bytes long, it is preferable
 	 * to call the version optimized for short names.
-	 * 
+	 *
 	 * @param q
 	 *            Array of int32s, each of which contain 4 bytes of encoded name
 	 * @param qlen
 	 *            Number of int32s, starting from index 0, in quads parameter
-	 * 
+	 *
 	 * @return Name matching the symbol passed (or constructed for it)
 	 */
 	public Name findName(int[] q, int qlen) {
@@ -762,17 +762,17 @@ public final class BytesToNameCanonicalizer {
 	 * StringBuilder(); sb.append("[BytesToNameCanonicalizer, size: ");
 	 * sb.append(_count); sb.append('/'); sb.append(_mainHash.length);
 	 * sb.append(", "); sb.append(_collCount); sb.append(" coll; avg length: ");
-	 * 
+	 *
 	 * // Average length: minimum of 1 for all (1 == primary hit); // and then 1
 	 * per each traversal for collisions/buckets //int maxDist = 1; int
 	 * pathCount = _count; for (int i = 0; i < _collEnd; ++i) { int spillLen =
 	 * _collList[i].length(); for (int j = 1; j <= spillLen; ++j) { pathCount +=
 	 * j; } } double avgLength;
-	 * 
+	 *
 	 * if (_count == 0) { avgLength = 0.0; } else { avgLength = (double)
 	 * pathCount / (double) _count; } // let's round up a bit (two 2 decimal
 	 * places) //avgLength -= (avgLength % 0.01);
-	 * 
+	 *
 	 * sb.append(avgLength); sb.append(']'); return sb.toString(); }
 	 */
 
@@ -1125,7 +1125,7 @@ public final class BytesToNameCanonicalizer {
 	 * Immutable value class used for sharing information as efficiently as
 	 * possible, by only require synchronization of reference manipulation but
 	 * not access to contents.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	private final static class TableInfo {

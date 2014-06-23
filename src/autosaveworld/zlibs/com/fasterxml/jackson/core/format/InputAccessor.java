@@ -1,6 +1,8 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.format;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 
@@ -82,7 +84,7 @@ public interface InputAccessor {
 		/**
 		 * Constructor used when the full input (or at least enough leading
 		 * bytes of full input) is available.
-		 * 
+		 *
 		 * @since 2.1
 		 */
 		public Std(byte[] inputDocument, int start, int len) {

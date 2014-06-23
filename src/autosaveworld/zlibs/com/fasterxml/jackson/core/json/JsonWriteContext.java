@@ -1,6 +1,8 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.json;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerationException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonProcessingException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonStreamContext;
 
 /**
  * Extension of {@link JsonStreamContext}, which implements core methods needed,
@@ -121,7 +123,7 @@ public class JsonWriteContext extends JsonStreamContext {
 
 	/**
 	 * Method that writer is to call before it writes a field name.
-	 * 
+	 *
 	 * @return Index of the field entry (0-based)
 	 */
 	public final int writeFieldName(String name) throws JsonProcessingException {

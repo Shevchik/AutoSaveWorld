@@ -1,10 +1,15 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.base;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Base64Variant;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Version;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.json.DupDetector;
@@ -196,16 +201,16 @@ public abstract class ParserBase extends ParserMinimalBase {
 	final static BigDecimal BD_MIN_INT = new BigDecimal(BI_MIN_INT);
 	final static BigDecimal BD_MAX_INT = new BigDecimal(BI_MAX_INT);
 
-	final static long MIN_INT_L = (long) Integer.MIN_VALUE;
-	final static long MAX_INT_L = (long) Integer.MAX_VALUE;
+	final static long MIN_INT_L = Integer.MIN_VALUE;
+	final static long MAX_INT_L = Integer.MAX_VALUE;
 
 	// These are not very accurate, but have to do... (for bounds checks)
 
-	final static double MIN_LONG_D = (double) Long.MIN_VALUE;
-	final static double MAX_LONG_D = (double) Long.MAX_VALUE;
+	final static double MIN_LONG_D = Long.MIN_VALUE;
+	final static double MAX_LONG_D = Long.MAX_VALUE;
 
-	final static double MIN_INT_D = (double) Integer.MIN_VALUE;
-	final static double MAX_INT_D = (double) Integer.MAX_VALUE;
+	final static double MIN_INT_D = Integer.MIN_VALUE;
+	final static double MAX_INT_D = Integer.MAX_VALUE;
 
 	// Digits, numeric
 	final protected static int INT_0 = '0';
@@ -713,7 +718,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	 * number value. Type it will parse into depends on whether it is a floating
 	 * point number, as well as its magnitude: smallest legal type (of ones
 	 * available) is used for efficiency.
-	 * 
+	 *
 	 * @param expType
 	 *            Numeric type that we will immediately need, if any; mostly
 	 *            necessary to optimize handling of floating point numbers
@@ -826,7 +831,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		if ((_numTypesValid & NR_LONG) != 0) {
 			// Let's verify it's lossless conversion by simple roundtrip
 			int result = (int) _numberLong;
-			if (((long) result) != _numberLong) {
+			if ((result) != _numberLong) {
 				_reportError("Numeric value (" + getText()
 						+ ") out of range of int");
 			}
@@ -857,7 +862,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 
 	protected void convertNumberToLong() throws IOException {
 		if ((_numTypesValid & NR_INT) != 0) {
-			_numberLong = (long) _numberInt;
+			_numberLong = _numberInt;
 		} else if ((_numTypesValid & NR_BIGINT) != 0) {
 			if (BI_MIN_LONG.compareTo(_numberBigInt) > 0
 					|| BI_MAX_LONG.compareTo(_numberBigInt) < 0) {
@@ -910,9 +915,9 @@ public abstract class ParserBase extends ParserMinimalBase {
 		} else if ((_numTypesValid & NR_BIGINT) != 0) {
 			_numberDouble = _numberBigInt.doubleValue();
 		} else if ((_numTypesValid & NR_LONG) != 0) {
-			_numberDouble = (double) _numberLong;
+			_numberDouble = _numberLong;
 		} else if ((_numTypesValid & NR_INT) != 0) {
-			_numberDouble = (double) _numberInt;
+			_numberDouble = _numberInt;
 		} else {
 			_throwInternal();
 		}

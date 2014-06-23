@@ -1,15 +1,30 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.json;
 
-import java.io.*;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_FALSE;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_FIELD_NAME;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_FLOAT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_INT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_STRING;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_TRUE;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Base64Variant;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.base.ParserBase;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharTypes;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.*;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.util.*;
-import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.Name;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 /**
  * This is a concrete implementation of {@link JsonParser}, which is based on a
@@ -466,7 +481,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				if (_inputPtr >= _inputEnd) {
 					loadMoreGuaranteed();
 				}
-				ch = (int) _inputBuffer[_inputPtr++] & 0xFF;
+				ch = _inputBuffer[_inputPtr++] & 0xFF;
 			} while (ch <= INT_SPACE);
 			int bits = b64variant.decodeBase64Char(ch);
 			if (bits < 0) { // reached the end, fair and square?
@@ -907,7 +922,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 					return i;
 				}
 			} else if (i == INT_SPACE || i == INT_TAB) {
-				i = (int) _inputBuffer[ptr++];
+				i = _inputBuffer[ptr++];
 				if (i > INT_SPACE) {
 					if (i != INT_SLASH && i != INT_HASH) {
 						_inputPtr = ptr;
@@ -929,7 +944,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 					return i;
 				}
 			} else if (i == INT_SPACE || i == INT_TAB) {
-				i = (int) _inputBuffer[ptr++];
+				i = _inputBuffer[ptr++];
 				if (i > INT_SPACE) {
 					if (i != INT_SLASH && i != INT_HASH) {
 						_inputPtr = ptr;
@@ -1207,7 +1222,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 			if (_inputPtr >= end) { // split across boundary, offline
 				return _parseNumber2(outBuf, outPtr, false, intLen);
 			}
-			c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+			c = _inputBuffer[_inputPtr++] & 0xFF;
 			if (c < INT_0 || c > INT_9) {
 				break;
 			}
@@ -1237,7 +1252,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		int c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+		int c = _inputBuffer[_inputPtr++] & 0xFF;
 		// Note: must be followed by a digit
 		if (c < INT_0 || c > INT_9) {
 			return _handleInvalidNumberStart(c, true);
@@ -1265,7 +1280,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				// Long enough to be split across boundary, so:
 				return _parseNumber2(outBuf, outPtr, true, intLen);
 			}
-			c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+			c = _inputBuffer[_inputPtr++] & 0xFF;
 			if (c < INT_0 || c > INT_9) {
 				break;
 			}
@@ -1299,7 +1314,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				_textBuffer.setCurrentLength(outPtr);
 				return resetInt(negative, intPartLength);
 			}
-			int c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+			int c = _inputBuffer[_inputPtr++] & 0xFF;
 			if (c > INT_9 || c < INT_0) {
 				if (c == INT_PERIOD || c == INT_e || c == INT_E) {
 					return _parseFloat(outBuf, outPtr, c, negative,
@@ -1378,7 +1393,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 					eof = true;
 					break fract_loop;
 				}
-				c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+				c = _inputBuffer[_inputPtr++] & 0xFF;
 				if (c < INT_0 || c > INT_9) {
 					break fract_loop;
 				}
@@ -1407,7 +1422,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 			if (_inputPtr >= _inputEnd) {
 				loadMoreGuaranteed();
 			}
-			c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+			c = _inputBuffer[_inputPtr++] & 0xFF;
 			// Sign indicator?
 			if (c == '-' || c == '+') {
 				if (outPtr >= outBuf.length) {
@@ -1419,7 +1434,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				if (_inputPtr >= _inputEnd) {
 					loadMoreGuaranteed();
 				}
-				c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+				c = _inputBuffer[_inputPtr++] & 0xFF;
 			}
 
 			exp_loop: while (c <= INT_9 && c >= INT_0) {
@@ -1433,7 +1448,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 					eof = true;
 					break exp_loop;
 				}
-				c = (int) _inputBuffer[_inputPtr++] & 0xFF;
+				c = _inputBuffer[_inputPtr++] & 0xFF;
 			}
 			// must be followed by sequence of ints, one minimum
 			if (expLen == 0) {
@@ -2158,7 +2173,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		final int max = Math.min(_inputEnd, (ptr + outBuf.length));
 		final byte[] inputBuffer = _inputBuffer;
 		while (ptr < max) {
-			int c = (int) inputBuffer[ptr] & 0xFF;
+			int c = inputBuffer[ptr] & 0xFF;
 			if (codes[c] != 0) {
 				if (c == INT_QUOTE) {
 					_inputPtr = ptr + 1;
@@ -2197,7 +2212,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				final int max = Math.min(_inputEnd,
 						(ptr + (outBuf.length - outPtr)));
 				while (ptr < max) {
-					c = (int) inputBuffer[ptr++] & 0xFF;
+					c = inputBuffer[ptr++] & 0xFF;
 					if (codes[c] != 0) {
 						_inputPtr = ptr;
 						break ascii_loop;
@@ -2280,7 +2295,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 					max = _inputEnd;
 				}
 				while (ptr < max) {
-					c = (int) inputBuffer[ptr++] & 0xFF;
+					c = inputBuffer[ptr++] & 0xFF;
 					if (codes[c] != 0) {
 						_inputPtr = ptr;
 						break ascii_loop;
@@ -2397,7 +2412,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 					}
 				}
 				while (_inputPtr < max) {
-					c = (int) inputBuffer[_inputPtr++] & 0xFF;
+					c = inputBuffer[_inputPtr++] & 0xFF;
 					if (c == '\'' || codes[c] != 0) {
 						break ascii_loop;
 					}
@@ -2695,7 +2710,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				return i;
 			}
 			if (i == INT_SPACE || i == INT_TAB) {
-				i = (int) _inputBuffer[++_inputPtr];
+				i = _inputBuffer[++_inputPtr];
 				if (i > INT_SPACE) {
 					if (i == INT_SLASH || i == INT_HASH) {
 						return _skipColon2(true);
@@ -2719,7 +2734,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				return i;
 			}
 			if (i == INT_SPACE || i == INT_TAB) {
-				i = (int) _inputBuffer[++_inputPtr];
+				i = _inputBuffer[++_inputPtr];
 				if (i > INT_SPACE) {
 					if (i == INT_SLASH || i == INT_HASH) {
 						return _skipColon2(true);
@@ -2800,7 +2815,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 
 		// Ok: need the matching '*/'
 		main_loop: while ((_inputPtr < _inputEnd) || loadMore()) {
-			int i = (int) _inputBuffer[_inputPtr++] & 0xFF;
+			int i = _inputBuffer[_inputPtr++] & 0xFF;
 			int code = codes[i];
 			if (code != 0) {
 				switch (code) {
@@ -2854,7 +2869,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		// Ok: need to find EOF or linefeed
 		final int[] codes = CharTypes.getInputCodeComment();
 		while ((_inputPtr < _inputEnd) || loadMore()) {
-			int i = (int) _inputBuffer[_inputPtr++] & 0xFF;
+			int i = _inputBuffer[_inputPtr++] & 0xFF;
 			int code = codes[i];
 			if (code != 0) {
 				switch (code) {
@@ -2893,7 +2908,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				_reportInvalidEOF(" in character escape sequence");
 			}
 		}
-		int c = (int) _inputBuffer[_inputPtr++];
+		int c = _inputBuffer[_inputPtr++];
 
 		switch (c) {
 		// First, ones that are mapped
@@ -2929,7 +2944,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 					_reportInvalidEOF(" in character escape sequence");
 				}
 			}
-			int ch = (int) _inputBuffer[_inputPtr++];
+			int ch = _inputBuffer[_inputPtr++];
 			int digit = CharTypes.charToHex(ch);
 			if (digit < 0) {
 				_reportUnexpectedChar(ch,
@@ -2995,7 +3010,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		int d = (int) _inputBuffer[_inputPtr++];
+		int d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3007,7 +3022,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 			loadMoreGuaranteed();
 		}
 		c1 &= 0x0F;
-		int d = (int) _inputBuffer[_inputPtr++];
+		int d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3015,7 +3030,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		d = (int) _inputBuffer[_inputPtr++];
+		d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3025,12 +3040,12 @@ public class UTF8StreamJsonParser extends ParserBase {
 
 	private final int _decodeUtf8_3fast(int c1) throws IOException {
 		c1 &= 0x0F;
-		int d = (int) _inputBuffer[_inputPtr++];
+		int d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
 		int c = (c1 << 6) | (d & 0x3F);
-		d = (int) _inputBuffer[_inputPtr++];
+		d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3046,7 +3061,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		int d = (int) _inputBuffer[_inputPtr++];
+		int d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3055,7 +3070,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		d = (int) _inputBuffer[_inputPtr++];
+		d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3063,7 +3078,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		d = (int) _inputBuffer[_inputPtr++];
+		d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3079,7 +3094,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		c = (int) _inputBuffer[_inputPtr++];
+		c = _inputBuffer[_inputPtr++];
 		if ((c & 0xC0) != 0x080) {
 			_reportInvalidOther(c & 0xFF, _inputPtr);
 		}
@@ -3094,14 +3109,14 @@ public class UTF8StreamJsonParser extends ParserBase {
 			loadMoreGuaranteed();
 		}
 		// c &= 0x0F;
-		c = (int) _inputBuffer[_inputPtr++];
+		c = _inputBuffer[_inputPtr++];
 		if ((c & 0xC0) != 0x080) {
 			_reportInvalidOther(c & 0xFF, _inputPtr);
 		}
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		c = (int) _inputBuffer[_inputPtr++];
+		c = _inputBuffer[_inputPtr++];
 		if ((c & 0xC0) != 0x080) {
 			_reportInvalidOther(c & 0xFF, _inputPtr);
 		}
@@ -3111,21 +3126,21 @@ public class UTF8StreamJsonParser extends ParserBase {
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		int d = (int) _inputBuffer[_inputPtr++];
+		int d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		d = (int) _inputBuffer[_inputPtr++];
+		d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
 		if (_inputPtr >= _inputEnd) {
 			loadMoreGuaranteed();
 		}
-		d = (int) _inputBuffer[_inputPtr++];
+		d = _inputBuffer[_inputPtr++];
 		if ((d & 0xC0) != 0x080) {
 			_reportInvalidOther(d & 0xFF, _inputPtr);
 		}
@@ -3181,7 +3196,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 			if (_inputPtr >= _inputEnd && !loadMore()) {
 				break;
 			}
-			int i = (int) _inputBuffer[_inputPtr++];
+			int i = _inputBuffer[_inputPtr++];
 			char c = (char) _decodeCharForError(i);
 			if (!Character.isJavaIdentifierPart(c)) {
 				break;
@@ -3241,7 +3256,7 @@ public class UTF8StreamJsonParser extends ParserBase {
 				if (_inputPtr >= _inputEnd) {
 					loadMoreGuaranteed();
 				}
-				ch = (int) _inputBuffer[_inputPtr++] & 0xFF;
+				ch = _inputBuffer[_inputPtr++] & 0xFF;
 			} while (ch <= INT_SPACE);
 			int bits = b64variant.decodeBase64Char(ch);
 			if (bits < 0) { // reached the end, fair and square?

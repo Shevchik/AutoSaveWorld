@@ -1,6 +1,8 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 
 /**
  * Handler class that can be used to decorate output destinations. Typical use
@@ -16,12 +18,12 @@ public abstract class OutputDecorator implements java.io.Serializable // since
 	 * Method called by {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory} instance
 	 * when creating generator for given {@link OutputStream}, when this
 	 * decorator has been registered.
-	 * 
+	 *
 	 * @param ctxt
 	 *            IO context in use (provides access to declared encoding)
 	 * @param out
 	 *            Original output destination
-	 * 
+	 *
 	 * @return OutputStream to use; either passed in argument, or something that
 	 *         calls it
 	 */
@@ -32,12 +34,12 @@ public abstract class OutputDecorator implements java.io.Serializable // since
 	 * Method called by {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory} instance
 	 * when creating generator for given {@link Writer}, when this decorator has
 	 * been registered.
-	 * 
+	 *
 	 * @param ctxt
 	 *            IO context in use (provides access to declared encoding)
 	 * @param w
 	 *            Original output writer
-	 * 
+	 *
 	 * @return Writer to use; either passed in argument, or something that calls
 	 *         it
 	 */

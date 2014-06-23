@@ -1,6 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Simple {@link InputStream} implementation that is used to "unwind" some data

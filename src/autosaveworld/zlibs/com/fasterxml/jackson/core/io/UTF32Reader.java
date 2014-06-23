@@ -1,6 +1,9 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.CharConversionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 /**
  * Since JDK does not come with UTF-32/UCS-4, let's implement a simple decoder
@@ -204,7 +207,7 @@ public class UTF32Reader extends Reader {
 	/**
 	 * @param available
 	 *            Number of "unused" bytes in the input buffer
-	 * 
+	 *
 	 * @return True, if enough bytes were read to allow decoding of at least one
 	 *         full character; false if EOF was encountered instead.
 	 */

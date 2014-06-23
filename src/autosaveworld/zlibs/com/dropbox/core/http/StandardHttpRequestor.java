@@ -12,7 +12,7 @@ import javax.net.ssl.HttpsURLConnection;
  * {@link HttpRequestor} implementation that uses Java's standard library
  * {@link HttpsURLConnection}. If you just want a connection with the default
  * settings, use the predefined {@link #Instance}.
- * 
+ *
  * <p>
  * If you want to customize the way the connection is configured, create a
  * subclass that overrides {@link #configureConnection}.
@@ -130,8 +130,9 @@ public class StandardHttpRequestor extends HttpRequestor {
 
 		@Override
 		public void close() {
-			if (conn == null)
+			if (conn == null) {
 				return;
+			}
 			this.conn.disconnect();
 		}
 

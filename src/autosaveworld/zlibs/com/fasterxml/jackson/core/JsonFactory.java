@@ -4,14 +4,33 @@
  */
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
-import java.io.*;
+import java.io.CharArrayReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.lang.ref.SoftReference;
 import java.net.URL;
 
 import autosaveworld.zlibs.com.fasterxml.jackson.core.format.InputAccessor;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.format.MatchStrength;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.io.*;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.json.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharacterEscapes;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.InputDecorator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.OutputDecorator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.SerializedString;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.UTF8Writer;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.ByteSourceJsonBootstrapper;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.PackageVersion;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.ReaderBasedJsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.UTF8JsonGenerator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.WriterBasedJsonGenerator;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.BufferRecycler;
@@ -32,7 +51,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
  * is no need for pluggable alternative implementations (as there is no
  * "standard" JSON processor API to implement), the default constructor is used
  * for constructing factory instances.
- * 
+ *
  * @author Tatu Saloranta
  */
 public class JsonFactory implements Versioned, java.io.Serializable {
@@ -91,7 +110,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 		 * as protective measure.
 		 * <p>
 		 * This setting is enabled by default.
-		 * 
+		 *
 		 * @since 2.4
 		 */
 		FAIL_ON_SYMBOL_HASH_OVERFLOW(true),
@@ -250,7 +269,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Separator used between root-level values, if any; null indicates
 	 * "do not add separator". Default separator is a single space character.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected SerializableString _rootValueSeparator = DEFAULT_ROOT_VALUE_SEPARATOR;
@@ -278,7 +297,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 
 	/**
 	 * Constructor used when copy()ing a factory instance.
-	 * 
+	 *
 	 * @since 2.2.1
 	 */
 	protected JsonFactory(JsonFactory src, ObjectCodec codec) {
@@ -307,7 +326,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * that the codec is used for callbacks, and assumption is that there is
 	 * strict 1-to-1 mapping between codec, factory. Caller has to, then,
 	 * explicitly set codec after making the copy.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonFactory copy() {
@@ -358,7 +377,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * require stable ordering. Formats that require ordering include positional
 	 * textual formats like <code>CSV</code>, and schema-based binary formats
 	 * like <code>Avro</code>.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean requiresPropertyOrdering() {
@@ -373,7 +392,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * Default implementation returns <code>false</code> as JSON does not
 	 * support native access: all binary content must use Base64 encoding. Most
 	 * binary formats (like Smile and Avro) support native binary content.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean canHandleBinaryNatively() {
@@ -388,7 +407,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * default implementation (suitable for JSON) alleges that optimization are
 	 * possible; and thereby is likely to try to access {@link java.lang.String}
 	 * content by first copying it into recyclable intermediate buffer.
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	public boolean canUseCharArrays() {
@@ -408,7 +427,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * (i.e. schema is for same data format as parsers and generators this
 	 * factory constructs); individual schema instances may have further usage
 	 * restrictions.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public boolean canUseSchema(FormatSchema schema) {
@@ -449,11 +468,11 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * needed for binding data parsed using {@link JsonParser} constructed by
 	 * this factory (which typically also implies the same for serialization
 	 * with {@link JsonGenerator}).
-	 * 
+	 *
 	 * @return True if custom codec is needed with parsers and generators
 	 *         created by this factory; false if a general {@link ObjectCodec}
 	 *         is enough
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public boolean requiresCustomCodec() {
@@ -647,11 +666,11 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method that allows overriding String used for separating root-level JSON
 	 * values (default is single space character)
-	 * 
+	 *
 	 * @param sep
 	 *            Separator to use, if any; null means that no separator is
 	 *            automatically added
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonFactory setRootValueSeparator(String sep) {
@@ -703,10 +722,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * Underlying input stream (needed for reading contents) will be
 	 * <b>owned</b> (and managed, i.e. closed as need be) by the parser, since
 	 * caller has no access to it.
-	 * 
+	 *
 	 * @param f
 	 *            File that contains JSON content to parse
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonParser createParser(File f) throws IOException,
@@ -725,10 +744,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * Underlying input stream (needed for reading contents) will be
 	 * <b>owned</b> (and managed, i.e. closed as need be) by the parser, since
 	 * caller has no access to it.
-	 * 
+	 *
 	 * @param url
 	 *            URL pointing to resource that contains JSON content to parse
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonParser createParser(URL url) throws IOException,
@@ -751,10 +770,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * <p>
 	 * Note: no encoding argument is taken since it can always be auto-detected
 	 * as suggested by JSON RFC.
-	 * 
+	 *
 	 * @param in
 	 *            InputStream to use for reading JSON content to parse
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonParser createParser(InputStream in) throws IOException,
@@ -772,10 +791,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * called) if (and only if)
 	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE}
 	 * is enabled.
-	 * 
+	 *
 	 * @param r
 	 *            Reader to use for reading JSON content to parse
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonParser createParser(Reader r) throws IOException,
@@ -788,7 +807,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing parser for parsing the contents of given byte
 	 * array.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonParser createParser(byte[] data) throws IOException,
@@ -807,14 +826,14 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing parser for parsing the contents of given byte
 	 * array.
-	 * 
+	 *
 	 * @param data
 	 *            Buffer that contains data to parse
 	 * @param offset
 	 *            Offset of the first data byte within buffer
 	 * @param len
 	 *            Length of contents to parse within buffer
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonParser createParser(byte[] data, int offset, int len)
@@ -832,7 +851,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 
 	/**
 	 * Method for constructing parser for parsing contents of given String.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonParser createParser(String content) throws IOException,
@@ -854,7 +873,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 
 	/**
 	 * Method for constructing parser for parsing contents of given char array.
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	public JsonParser createParser(char[] content) throws IOException {
@@ -863,7 +882,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 
 	/**
 	 * Method for constructing parser for parsing contents of given char array.
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	public JsonParser createParser(char[] content, int offset, int len)
@@ -892,10 +911,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * Underlying input stream (needed for reading contents) will be
 	 * <b>owned</b> (and managed, i.e. closed as need be) by the parser, since
 	 * caller has no access to it.
-	 * 
+	 *
 	 * @param f
 	 *            File that contains JSON content to parse
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createParser(File)} instead.
 	 */
 	@Deprecated
@@ -912,10 +931,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * Underlying input stream (needed for reading contents) will be
 	 * <b>owned</b> (and managed, i.e. closed as need be) by the parser, since
 	 * caller has no access to it.
-	 * 
+	 *
 	 * @param url
 	 *            URL pointing to resource that contains JSON content to parse
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createParser(URL)} instead.
 	 */
 	@Deprecated
@@ -936,10 +955,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * <p>
 	 * Note: no encoding argument is taken since it can always be auto-detected
 	 * as suggested by JSON RFC.
-	 * 
+	 *
 	 * @param in
 	 *            InputStream to use for reading JSON content to parse
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createParser(InputStream)} instead.
 	 */
 	@Deprecated
@@ -957,10 +976,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * called) if (and only if)
 	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE}
 	 * is enabled.
-	 * 
+	 *
 	 * @param r
 	 *            Reader to use for reading JSON content to parse
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createParser(Reader)} instead.
 	 */
 	@Deprecated
@@ -972,7 +991,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing parser for parsing the contents of given byte
 	 * array.
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createParser(byte[])} instead.
 	 */
 	@Deprecated
@@ -984,14 +1003,14 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing parser for parsing the contents of given byte
 	 * array.
-	 * 
+	 *
 	 * @param data
 	 *            Buffer that contains data to parse
 	 * @param offset
 	 *            Offset of the first data byte within buffer
 	 * @param len
 	 *            Length of contents to parse within buffer
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createParser(byte[],int,int)} instead.
 	 */
 	@Deprecated
@@ -1002,7 +1021,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 
 	/**
 	 * Method for constructing parser for parsing contents of given String.
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createParser(String)} instead.
 	 */
 	@Deprecated
@@ -1031,12 +1050,12 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * <p>
 	 * Note: there are formats that use fixed encoding (like most binary data
 	 * formats) and that ignore passed in encoding.
-	 * 
+	 *
 	 * @param out
 	 *            OutputStream to use for writing JSON content
 	 * @param enc
 	 *            Character encoding to use
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonGenerator createGenerator(OutputStream out, JsonEncoding enc)
@@ -1057,7 +1076,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * <p>
 	 * Note: there are formats that use fixed encoding (like most binary data
 	 * formats).
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonGenerator createGenerator(OutputStream out) throws IOException {
@@ -1073,9 +1092,9 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * is called (unless auto-closing feature,
 	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET}
 	 * is enabled). Using application needs to close it explicitly.
-	 * 
+	 *
 	 * @since 2.1
-	 * 
+	 *
 	 * @param w
 	 *            Writer to use for writing JSON content
 	 */
@@ -1093,12 +1112,12 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * Underlying stream <b>is owned</b> by the generator constructed, i.e.
 	 * generator will handle closing of file when {@link JsonGenerator#close} is
 	 * called.
-	 * 
+	 *
 	 * @param f
 	 *            File to write contents to
 	 * @param enc
 	 *            Character encoding to use
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonGenerator createGenerator(File f, JsonEncoding enc)
@@ -1134,12 +1153,12 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * <p>
 	 * Note: there are formats that use fixed encoding (like most binary data
 	 * formats) and that ignore passed in encoding.
-	 * 
+	 *
 	 * @param out
 	 *            OutputStream to use for writing JSON content
 	 * @param enc
 	 *            Character encoding to use
-	 * 
+	 *
 	 * @deprecated Since 2.2, use
 	 *             {@link #createGenerator(OutputStream, JsonEncoding)} instead.
 	 */
@@ -1158,10 +1177,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * is called (unless auto-closing feature,
 	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET}
 	 * is enabled). Using application needs to close it explicitly.
-	 * 
+	 *
 	 * @param out
 	 *            Writer to use for writing JSON content
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createGenerator(Writer)} instead.
 	 */
 	@Deprecated
@@ -1175,7 +1194,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * <p>
 	 * Note: there are formats that use fixed encoding (like most binary data
 	 * formats).
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createGenerator(OutputStream)}
 	 *             instead.
 	 */
@@ -1194,12 +1213,12 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * Underlying stream <b>is owned</b> by the generator constructed, i.e.
 	 * generator will handle closing of file when {@link JsonGenerator#close} is
 	 * called.
-	 * 
+	 *
 	 * @param f
 	 *            File to write contents to
 	 * @param enc
 	 *            Character encoding to use
-	 * 
+	 *
 	 * @deprecated Since 2.2, use {@link #createGenerator(File,JsonEncoding)}
 	 *             instead.
 	 */
@@ -1224,7 +1243,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * That is, it is part of official interface from sub-class perspective,
 	 * although not a public method available to users of factory
 	 * implementations.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected JsonParser _createParser(InputStream in, IOContext ctxt)
@@ -1244,7 +1263,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 * That is, it is part of official interface from sub-class perspective,
 	 * although not a public method available to users of factory
 	 * implementations.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected JsonParser _createParser(Reader r, IOContext ctxt)
@@ -1256,7 +1275,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Overridable factory method that actually instantiates parser using given
 	 * <code>char[]</code> object for accessing content.
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	protected JsonParser _createParser(char[] data, int offset, int len,

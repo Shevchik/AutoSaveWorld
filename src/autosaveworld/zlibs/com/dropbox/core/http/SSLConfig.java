@@ -1,8 +1,5 @@
 package autosaveworld.zlibs.com.dropbox.core.http;
 
-import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.InitException;
-import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.LoadException;
-import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
 import static autosaveworld.zlibs.com.dropbox.core.util.LangUtil.mkAssert;
 
 import java.io.IOException;
@@ -26,24 +23,28 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.InitException;
+import autosaveworld.zlibs.com.dropbox.core.http.PemLoader.LoadException;
+import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
+
 /**
  * The proper SSL configuration that should be used when connecting to Dropbox
  * API servers. This includes: <li>A custom set of trusted root SSL
  * certificates.</li> <li>Requiring TLS v1.0 and above (TLS v1.2 if supported)</li>
  * <li>A limited set of allowed SSL ciphersuites.</li>
- * 
+ *
  * <p>
  * {@link #getSSLSocketFactory} returns a properly configured object that you
  * can use to create sockets.
  * </p>
- * 
+ *
  * <p>
  * If you have an {@link HttpsURLConnection}, call the convenience method
  * {@link #apply(HttpsURLConnection)} (before calling
  * {@link HttpsURLConnection#connect}) to apply the appropriate security
  * settings.
  * </p>
- * 
+ *
  */
 public class SSLConfig {
 	/**

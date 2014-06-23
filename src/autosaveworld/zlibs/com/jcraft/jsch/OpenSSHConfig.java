@@ -172,7 +172,7 @@ public class OpenSSHConfig implements ConfigRepository {
 			byte[] _host = Util.str2byte(host);
 			if (hosts.size() > 1) {
 				for (int i = 1; i < hosts.size(); i++) {
-					String patterns[] = ((String) hosts.elementAt(i))
+					String patterns[] = hosts.elementAt(i)
 							.split("[ \t]");
 					for (int j = 0; j < patterns.length; j++) {
 						boolean negate = false;
@@ -197,11 +197,11 @@ public class OpenSSHConfig implements ConfigRepository {
 
 		private String find(String key) {
 			if (keymap.get(key) != null) {
-				key = (String) keymap.get(key);
+				key = keymap.get(key);
 			}
 			String value = null;
 			for (int i = 0; i < _configs.size(); i++) {
-				Vector<?> v = (Vector<?>) _configs.elementAt(i);
+				Vector<?> v = _configs.elementAt(i);
 				for (int j = 0; j < v.size(); j++) {
 					String[] kv = (String[]) v.elementAt(j);
 					if (kv[0].equals(key)) {
@@ -219,7 +219,7 @@ public class OpenSSHConfig implements ConfigRepository {
 		private String[] multiFind(String key) {
 			Vector<String> value = new Vector<String>();
 			for (int i = 0; i < _configs.size(); i++) {
-				Vector<?> v = (Vector<?>) _configs.elementAt(i);
+				Vector<?> v = _configs.elementAt(i);
 				for (int j = 0; j < v.size(); j++) {
 					String[] kv = (String[]) v.elementAt(j);
 					if (kv[0].equals(key)) {

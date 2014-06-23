@@ -125,7 +125,7 @@ public final class CharTypes {
 
 	/**
 	 * Decoding table used for skipping white space and comments.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	final static int[] sInputCodesWS;
@@ -262,10 +262,10 @@ public final class CharTypes {
 	}
 
 	public static char[] copyHexChars() {
-		return (char[]) HC.clone();
+		return HC.clone();
 	}
 
 	public static byte[] copyHexBytes() {
-		return (byte[]) HB.clone();
+		return HB.clone();
 	}
 }

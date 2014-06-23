@@ -1,6 +1,12 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -63,14 +69,14 @@ public class VersionUtil {
 	/**
 	 * Helper method that will try to load version information for specified
 	 * class. Implementation is as follows:
-	 * 
+	 *
 	 * First, tries to load version info from a class named "PackageVersion" in
 	 * the same package as the class.
-	 * 
+	 *
 	 * Next, if that fails, class loader that loaded specified class is asked to
 	 * load resource with name "VERSION" from same location (package) as class
 	 * itself had.
-	 * 
+	 *
 	 * If no version information is found, {@link Version#unknownVersion()} is
 	 * returned.
 	 */
@@ -96,7 +102,7 @@ public class VersionUtil {
 	/**
 	 * Loads version information by introspecting a class named "PackageVersion"
 	 * in the same package as the given class.
-	 * 
+	 *
 	 * If the class could not be found or does not have a public static Version
 	 * field named "VERSION", returns null.
 	 */
@@ -150,7 +156,7 @@ public class VersionUtil {
 	 * artifactId. Maven puts a pom.properties file in
 	 * META-INF/maven/groupId/artifactId, containing the groupId, artifactId and
 	 * version of the library.
-	 * 
+	 *
 	 * @param cl
 	 *            the ClassLoader to load the pom.properties file from
 	 * @param groupId
@@ -198,8 +204,9 @@ public class VersionUtil {
 		int number = 0;
 		for (int i = 0, len = s.length(); i < len; ++i) {
 			char c = s.charAt(i);
-			if (c > '9' || c < '0')
+			if (c > '9' || c < '0') {
 				break;
+			}
 			number = (number * 10) + (c - '0');
 		}
 		return number;

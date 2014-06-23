@@ -24,7 +24,7 @@ import java.util.Iterator;
  * different implementation than mutable trees. It should also be possible to
  * move actual Tree Model implementation out of databind package eventually
  * (Jackson 3?).
- * 
+ *
  * @since 2.2
  */
 public interface TreeNode {
@@ -46,7 +46,7 @@ public interface TreeNode {
 	 * If this node is a numeric type (as per {@link JsonToken#isNumeric}),
 	 * returns native type that node uses to store the numeric value; otherwise
 	 * returns null.
-	 * 
+	 *
 	 * @return Type of number contained, if any; or null if node does not
 	 *         contain numeric value.
 	 */
@@ -56,10 +56,10 @@ public interface TreeNode {
 	 * Method that returns number of child nodes this node contains: for Array
 	 * nodes, number of child elements, for Object nodes, number of fields, and
 	 * for all other nodes 0.
-	 * 
+	 *
 	 * @return For non-container nodes returns 0; for arrays number of contained
 	 *         elements, and for objects number of fields.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	int size();
@@ -72,7 +72,7 @@ public interface TreeNode {
 	 * Note: one and only one of methods {@link #isValueNode},
 	 * {@link #isContainerNode} and {@link #isMissingNode} ever returns true for
 	 * any given node.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	boolean isValueNode();
@@ -83,7 +83,7 @@ public interface TreeNode {
 	 * Note: one and only one of methods {@link #isValueNode},
 	 * {@link #isContainerNode} and {@link #isMissingNode} ever returns true for
 	 * any given node.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	boolean isContainerNode();
@@ -96,7 +96,7 @@ public interface TreeNode {
 	 * Note: one and only one of methods {@link #isValueNode},
 	 * {@link #isContainerNode} and {@link #isMissingNode} ever returns true for
 	 * any given node.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	boolean isMissingNode();
@@ -105,7 +105,7 @@ public interface TreeNode {
 	 * Method that returns true if this node is an Array node, false otherwise.
 	 * Note that if true is returned, {@link #isContainerNode} must also return
 	 * true.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	boolean isArray();
@@ -114,7 +114,7 @@ public interface TreeNode {
 	 * Method that returns true if this node is an Object node, false otherwise.
 	 * Note that if true is returned, {@link #isContainerNode} must also return
 	 * true.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	boolean isObject();
@@ -132,10 +132,10 @@ public interface TreeNode {
 	 * <p>
 	 * NOTE: handling of explicit null values may vary between implementations;
 	 * some trees may retain explicit nulls, others not.
-	 * 
+	 *
 	 * @return Node that represent value of the specified field, if this node is
 	 *         an object and has value for the specified field. Null otherwise.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	TreeNode get(String fieldName);
@@ -150,10 +150,10 @@ public interface TreeNode {
 	 * elements). If index is less than 0, or equal-or-greater than
 	 * <code>node.size()</code>, null is returned; no exception is thrown for
 	 * any index.
-	 * 
+	 *
 	 * @return Node that represent value of the specified element, if this node
 	 *         is an array and has specified element. Null otherwise.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	TreeNode get(int index);
@@ -162,11 +162,11 @@ public interface TreeNode {
 	 * Method for accessing value of the specified field of an object node. For
 	 * other nodes, a "missing node" (virtual node for which
 	 * {@link #isMissingNode} returns true) is returned.
-	 * 
+	 *
 	 * @return Node that represent value of the specified field, if this node is
 	 *         an object and has value for the specified field; otherwise
 	 *         "missing node" is returned.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	TreeNode path(String fieldName);
@@ -182,11 +182,11 @@ public interface TreeNode {
 	 * elements). If index is less than 0, or equal-or-greater than
 	 * <code>node.size()</code>, "missing node" is returned; no exception is
 	 * thrown for any index.
-	 * 
+	 *
 	 * @return Node that represent value of the specified element, if this node
 	 *         is an array and has specified element; otherwise "missing node"
 	 *         is returned.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	TreeNode path(int index);
@@ -194,7 +194,7 @@ public interface TreeNode {
 	/**
 	 * Method for accessing names of all fields for this node, iff this node is
 	 * an Object node. Number of field names accessible will be {@link #size}.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	Iterator<String> fieldNames();
@@ -203,18 +203,18 @@ public interface TreeNode {
 	 * Method for locating node specified by given JSON pointer instances.
 	 * Method will never return null; if no matching node exists, will return a
 	 * node for which {@link TreeNode#isMissingNode()} returns true.
-	 * 
+	 *
 	 * @return Node that matches given JSON Pointer: if no match exists, will
 	 *         return a node for which {@link TreeNode#isMissingNode()} returns
 	 *         true.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	TreeNode at(JsonPointer ptr);
 
 	/**
 	 * Convenience method that is functionally equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * return at(JsonPointer.valueOf(jsonPointerExpression));
 	 * </pre>
@@ -222,14 +222,14 @@ public interface TreeNode {
 	 * Note that if the same expression is used often, it is preferable to
 	 * construct {@link JsonPointer} instance once and reuse it: this method
 	 * will not perform any caching of compiled expressions.
-	 * 
+	 *
 	 * @param jsonPointerExpression
 	 *            Expression to compile as a {@link JsonPointer} instance
-	 * 
+	 *
 	 * @return Node that matches given JSON Pointer: if no match exists, will
 	 *         return a node for which {@link TreeNode#isMissingNode()} returns
 	 *         true.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	TreeNode at(String jsonPointerExpression) throws IllegalArgumentException;
@@ -253,7 +253,7 @@ public interface TreeNode {
 	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec} to use if
 	 * {@link JsonParser#readValueAs(Class)} is used (otherwise caller must call
 	 * {@link JsonParser#setCodec} on response explicitly).
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	JsonParser traverse(ObjectCodec codec);

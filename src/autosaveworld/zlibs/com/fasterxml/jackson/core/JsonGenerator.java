@@ -18,7 +18,12 @@ import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_STAR
 import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_STRING;
 import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_TRUE;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.Flushable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,7 +37,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.VersionUtil;
 /**
  * Base class that defines public API for writing JSON content. Instances are
  * created using factory methods of a {@link JsonFactory} instance.
- * 
+ *
  * @author Tatu Saloranta
  */
 public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
@@ -113,7 +118,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 		 * <p>
 		 * Feature is disabled by default, so default output mode is used; this
 		 * generally depends on how {@link BigDecimal} has been created.
-		 * 
+		 *
 		 * @since 2.3
 		 */
 		WRITE_BIGDECIMAL_AS_PLAIN(false),
@@ -151,7 +156,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 		 * <p>
 		 * Note that enabling this feature will incur performance overhead due
 		 * to having to store and check additional information.
-		 * 
+		 *
 		 * @since 2.3
 		 */
 		STRICT_DUPLICATE_DETECTION(false), ;
@@ -219,7 +224,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method that can be called to set or reset the object to use for writing
 	 * Java objects as JsonContent (using method {@link #writeObject}).
-	 * 
+	 *
 	 * @return Generator itself (this), to allow chaining
 	 */
 	public abstract JsonGenerator setCodec(ObjectCodec oc);
@@ -263,7 +268,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method for enabling specified parser features: check {@link Feature} for
 	 * list of available features.
-	 * 
+	 *
 	 * @return Generator itself (this), to allow chaining
 	 */
 	public abstract JsonGenerator enable(Feature f);
@@ -271,7 +276,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method for disabling specified features (check {@link Feature} for list
 	 * of features)
-	 * 
+	 *
 	 * @return Generator itself (this), to allow chaining
 	 */
 	public abstract JsonGenerator disable(Feature f);
@@ -279,14 +284,15 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method for enabling or disabling specified feature: check {@link Feature}
 	 * for list of available features.
-	 * 
+	 *
 	 * @return Generator itself (this), to allow chaining
 	 */
 	public final JsonGenerator configure(Feature f, boolean state) {
-		if (state)
+		if (state) {
 			enable(f);
-		else
+		} else {
 			disable(f);
+		}
 		return this;
 	}
 
@@ -298,19 +304,19 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 
 	/**
 	 * Bulk access method for getting state of all standard {@link Feature}s.
-	 * 
+	 *
 	 * @return Bit mask that defines current states of all standard
 	 *         {@link Feature}s.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public abstract int getFeatureMask();
 
 	/**
 	 * Bulk set method for (re)settting states of all standard {@link Feature}s
-	 * 
+	 *
 	 * @since 2.3
-	 * 
+	 *
 	 * @return This parser object, to allow chaining of calls
 	 */
 	public abstract JsonGenerator setFeatureMask(int mask);
@@ -330,10 +336,10 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * <p>
 	 * If generator does not support specified schema,
 	 * {@link UnsupportedOperationException} is thrown.
-	 * 
+	 *
 	 * @param schema
 	 *            Schema to use
-	 * 
+	 *
 	 * @throws UnsupportedOperationException
 	 *             if generator does not support schema
 	 */
@@ -346,7 +352,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method for accessing Schema that this parser uses, if any. Default
 	 * implementation returns null.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public FormatSchema getSchema() {
@@ -366,7 +372,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * <p>
 	 * To use the default pretty printer that comes with core Jackson
 	 * distribution, call {@link #useDefaultPrettyPrinter} instead.
-	 * 
+	 *
 	 * @return Generator itself (this), to allow chaining
 	 */
 	public JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
@@ -377,7 +383,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Accessor for checking whether this generator has a configured
 	 * {@link PrettyPrinter}; returns it if so, null if none configured.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public PrettyPrinter getPrettyPrinter() {
@@ -387,7 +393,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for enabling pretty-printing using the default pretty
 	 * printer ({@link autosaveworld.zlibs.com.fasterxml.jackson.core.util.DefaultPrettyPrinter}).
-	 * 
+	 *
 	 * @return Generator itself (this), to allow chaining
 	 */
 	public abstract JsonGenerator useDefaultPrettyPrinter();
@@ -407,7 +413,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * <p>
 	 * Default implementation does nothing; sub-classes need to redefine it
 	 * according to rules of supported data format.
-	 * 
+	 *
 	 * @param charCode
 	 *            Either -1 to indicate that no additional escaping is to be
 	 *            done; or highest code point not to escape (meaning higher ones
@@ -424,7 +430,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * that no additional escaping is in effect. Some generators may not support
 	 * additional escaping: for example, generators for binary formats that do
 	 * not use escaping should simply return 0.
-	 * 
+	 *
 	 * @return Currently active limitation for highest non-escaped character, if
 	 *         defined; or -1 to indicate no additional escaping is performed.
 	 */
@@ -455,11 +461,11 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * values (default is single space character)
 	 * <p>
 	 * Default implementation throws {@link UnsupportedOperationException}.
-	 * 
+	 *
 	 * @param sep
 	 *            Separator to use, if any; null means that no separator is
 	 *            automatically added
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonGenerator setRootValueSeparator(SerializableString sep) {
@@ -475,10 +481,10 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method that can be used to verify that given schema can be used with this
 	 * generator (using {@link #setSchema}).
-	 * 
+	 *
 	 * @param schema
 	 *            Schema to check
-	 * 
+	 *
 	 * @return True if this generator can use given schema; false if not
 	 */
 	public boolean canUseSchema(FormatSchema schema) {
@@ -495,7 +501,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * support native Object Ids. Caller is expected to either use a non-native
 	 * notation (explicit property or such), or fail, in case it can not use
 	 * native object ids.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean canWriteObjectId() {
@@ -512,7 +518,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * support native Type Ids. Caller is expected to either use a non-native
 	 * notation (explicit property or such), or fail, in case it can not use
 	 * native type ids.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean canWriteTypeId() {
@@ -526,7 +532,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * <p>
 	 * Default implementation returns false; overridden by data formats that do
 	 * support native binary content.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean canWriteBinaryNatively() {
@@ -538,7 +544,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * Object fields or not. Most formats do allow omission, but certain
 	 * positional formats (such as CSV) require output of placeholders, even if
 	 * no real values are to be emitted.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean canOmitFields() {
@@ -567,7 +573,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * written for the array before calling {@link #writeEndArray()}.
 	 * <p>
 	 * Default implementation simply calls {@link #writeStartArray()}.
-	 * 
+	 *
 	 * @param size
 	 *            Number of elements this array will have: actual number of
 	 *            values written (before matching call to
@@ -775,7 +781,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * The default implementation delegates to {@link #writeRaw(String)}; other
 	 * backends that support raw inclusion of text are encouraged to implement
 	 * it in more efficient manner (especially if they use UTF-8 encoding).
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public void writeRaw(SerializableString raw) throws IOException {
@@ -810,7 +816,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * use of linefeeds. However, all {@link JsonParser} implementations are
 	 * required to accept such "long line base64"; as do typical
 	 * production-level base64 decoders.
-	 * 
+	 *
 	 * @param bv
 	 *            Base64 variant to use: defines details such as whether padding
 	 *            is used (and if so, using which character); what is the
@@ -844,7 +850,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * Similar to {@link #writeBinary(Base64Variant,InputStream,int)}, but
 	 * assumes default to using the Jackson default Base64 variant (which is
 	 * {@link Base64Variants#MIME_NO_LINEFEEDS}).
-	 * 
+	 *
 	 * @param data
 	 *            InputStream to use for reading binary data to write. Will not
 	 *            be closed after successful write operation
@@ -863,7 +869,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * Method similar to {@link #writeBinary(Base64Variant,byte[],int,int)}, but
 	 * where input is provided through a stream, allowing for incremental writes
 	 * without holding the whole input in memory.
-	 * 
+	 *
 	 * @param bv
 	 *            Base64 variant to use
 	 * @param data
@@ -877,10 +883,10 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 *            need not support cases where length is not known in advance;
 	 *            this depends on underlying data format: JSON output does NOT
 	 *            require length, other formats may.
-	 * 
+	 *
 	 * @return Number of bytes read from <code>data</code> and written as binary
 	 *         payload
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public abstract int writeBinary(Base64Variant bv, InputStream data,
@@ -897,7 +903,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * context where a value is expected (Array value, Object field value,
 	 * root-level value). Additional white space may be added around the value
 	 * if pretty-printing is enabled.
-	 * 
+	 *
 	 * @since 2.2
 	 */
 	public void writeNumber(short v) throws IOException {
@@ -965,7 +971,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * for generator-wrappers around Java objects or Json nodes. If
 	 * implementation does not implement this method, it needs to throw
 	 * {@link UnsupportedOperationException}.
-	 * 
+	 *
 	 * @throws UnsupportedOperationException
 	 *             If underlying data format does not support numbers serialized
 	 *             textually AND if generator is not allowed to just output a
@@ -1003,7 +1009,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * support; and some may only allow them in certain positions or locations.
 	 * If output is not allowed by the data format in this position, a
 	 * {@link JsonGenerationException} will be thrown.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public void writeObjectId(Object id) throws IOException {
@@ -1031,7 +1037,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * support; and some may only allow them in certain positions or locations.
 	 * If output is not allowed by the data format in this position, a
 	 * {@link JsonGenerationException} will be thrown.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public void writeTypeId(Object id) throws IOException {
@@ -1073,7 +1079,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has a
 	 * String value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeString(value);
@@ -1090,7 +1096,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has a
 	 * boolean value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeBoolean(value);
@@ -1105,7 +1111,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has JSON
 	 * literal value null. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeNull();
@@ -1119,7 +1125,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has the
 	 * specified numeric value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeNumber(value);
@@ -1134,7 +1140,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has the
 	 * specified numeric value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeNumber(value);
@@ -1149,7 +1155,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has the
 	 * specified numeric value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeNumber(value);
@@ -1164,7 +1170,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has the
 	 * specified numeric value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeNumber(value);
@@ -1179,7 +1185,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has the
 	 * specified numeric value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeNumber(value);
@@ -1194,7 +1200,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that contains
 	 * specified data in base64-encoded form. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeBinary(value);
@@ -1209,7 +1215,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") (that will
 	 * contain a JSON Array value), and the START_ARRAY marker. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeStartArray();
@@ -1226,7 +1232,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") (that will
 	 * contain a JSON Object value), and the START_OBJECT marker. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeStartObject();
@@ -1244,7 +1250,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Convenience method for outputting a field entry ("member") that has
 	 * contents of specific Java object as its value. Equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * writeFieldName(fieldName);
 	 * writeObject(pojo);
@@ -1262,7 +1268,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * from {@link #canOmitFields()}.
 	 * <p>
 	 * Default implementation does nothing.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public void writeOmittedField(String fieldName) throws IOException {
@@ -1492,7 +1498,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * Helper method to try to call appropriate write method for given untyped
 	 * Object. At this point, no structural conversions should be done, only
 	 * simple basic types are to be coerced as necessary.
-	 * 
+	 *
 	 * @param value
 	 *            Non-null value to write
 	 */

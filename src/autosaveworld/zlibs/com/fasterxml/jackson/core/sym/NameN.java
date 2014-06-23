@@ -67,30 +67,38 @@ public final class NameN extends Name {
 		}
 
 		// Will always have >= 4 quads, can unroll
-		if (quads[0] != q1)
+		if (quads[0] != q1) {
 			return false;
-		if (quads[1] != q2)
+		}
+		if (quads[1] != q2) {
 			return false;
-		if (quads[2] != q3)
+		}
+		if (quads[2] != q3) {
 			return false;
-		if (quads[3] != q4)
+		}
+		if (quads[3] != q4) {
 			return false;
+		}
 
 		switch (len) {
 		default:
 			return _equals2(quads);
 		case 8:
-			if (quads[7] != q[3])
+			if (quads[7] != q[3]) {
 				return false;
+			}
 		case 7:
-			if (quads[6] != q[2])
+			if (quads[6] != q[2]) {
 				return false;
+			}
 		case 6:
-			if (quads[5] != q[1])
+			if (quads[5] != q[1]) {
 				return false;
+			}
 		case 5:
-			if (quads[4] != q[0])
+			if (quads[4] != q[0]) {
 				return false;
+			}
 		case 4:
 		}
 		return true;

@@ -1,11 +1,21 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.json;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.CharConversionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonEncoding;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.format.InputAccessor;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.format.MatchStrength;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.io.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.MergedStream;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.UTF32Reader;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.BytesToNameCanonicalizer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
 
@@ -361,7 +371,7 @@ public final class ByteSourceJsonBootstrapper {
 
 	private static int skipSpace(InputAccessor acc, byte b) throws IOException {
 		while (true) {
-			int ch = (int) b & 0xFF;
+			int ch = b & 0xFF;
 			if (!(ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t')) {
 				return ch;
 			}
@@ -369,7 +379,7 @@ public final class ByteSourceJsonBootstrapper {
 				return -1;
 			}
 			b = acc.nextByte();
-			ch = (int) b & 0xFF;
+			ch = b & 0xFF;
 		}
 	}
 

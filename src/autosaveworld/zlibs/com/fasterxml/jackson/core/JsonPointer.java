@@ -11,9 +11,9 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
  * implemented yet for 2.3).
  * <p>
  * Instances are fully immutable and can be shared, cached.
- * 
+ *
  * @author Tatu Saloranta
- * 
+ *
  * @since 2.3
  */
 public class JsonPointer {
@@ -75,7 +75,7 @@ public class JsonPointer {
 	 * Factory method that parses given input and construct matching pointer
 	 * instance, if it represents a valid JSON Pointer: if not, a
 	 * {@link IllegalArgumentException} is thrown.
-	 * 
+	 *
 	 * @throws IllegalArgumentException
 	 *             Thrown if the input does not present a valid JSON Pointer
 	 *             expression: currently the only such expression is one that
@@ -108,15 +108,15 @@ public class JsonPointer {
 	 * Factory method that composes a pointer instance, given a set of 'raw'
 	 * segments: raw meaning that no processing will be done, no escaping may is
 	 * present.
-	 * 
+	 *
 	 * @param segments
-	 * 
+	 *
 	 * @return Constructed path instance
 	 */
 	/*
 	 * TODO! public static JsonPointer fromSegment(String... segments) { if
 	 * (segments.length == 0) { return EMPTY; } JsonPointer prev = null;
-	 * 
+	 *
 	 * for (String segment : segments) { JsonPointer next = new JsonPointer() }
 	 * }
 	 */
@@ -186,12 +186,15 @@ public class JsonPointer {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == this)
+		if (o == this) {
 			return true;
-		if (o == null)
+		}
+		if (o == null) {
 			return false;
-		if (!(o instanceof JsonPointer))
+		}
+		if (!(o instanceof JsonPointer)) {
 			return false;
+		}
 		return _asString.equals(((JsonPointer) o)._asString);
 	}
 
@@ -246,7 +249,7 @@ public class JsonPointer {
 	/**
 	 * Method called to parse tail of pointer path, when a potentially escaped
 	 * character has been seen.
-	 * 
+	 *
 	 * @param input
 	 *            Full input for the tail being parsed
 	 * @param i

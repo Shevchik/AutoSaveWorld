@@ -51,7 +51,7 @@ public class DropboxBackupOperations {
 			String destfolder = path+"/worlds/"+world.getWorldFolder().getName();
 			backupFolder(fromfolder, destfolder);
 		} catch (Exception e) {
-			e.printStackTrace();	
+			e.printStackTrace();
 		} finally {
 			world.setAutoSave(savestatus);
 		}
@@ -65,7 +65,7 @@ public class DropboxBackupOperations {
 			String destfolder = path+"/plugins";
 			backupFolder(fromfolder, destfolder);
 		} catch (Exception e) {
-			e.printStackTrace();	
+			e.printStackTrace();
 		}
 	}
 

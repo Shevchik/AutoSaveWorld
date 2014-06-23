@@ -29,7 +29,7 @@ public class BufferRecycler {
 	/**
 	 * Buffer used for concatenating binary data that is either being encoded as
 	 * base64 output, or decoded from base64 input.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public final static int BYTE_BASE64_CODEC_BUFFER = 3;
@@ -67,7 +67,7 @@ public class BufferRecycler {
 	/**
 	 * Alternate constructor to be used by sub-classes, to allow customization
 	 * of number of low-level buffers in use.
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	protected BufferRecycler(int bbCount, int cbCount) {

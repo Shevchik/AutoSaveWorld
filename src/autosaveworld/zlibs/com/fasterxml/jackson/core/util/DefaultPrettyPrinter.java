@@ -1,9 +1,12 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Arrays;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerationException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.PrettyPrinter;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.SerializedString;
 
 /**
@@ -20,7 +23,7 @@ public class DefaultPrettyPrinter implements PrettyPrinter,
 	/**
 	 * Constant that specifies default "root-level" separator to use between
 	 * root values: a single space character.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public final static SerializedString DEFAULT_ROOT_VALUE_SEPARATOR = new SerializedString(
@@ -94,9 +97,9 @@ public class DefaultPrettyPrinter implements PrettyPrinter,
 	 * <p>
 	 * Note: simply constructs a {@link SerializedString} out of parameter,
 	 * calls {@link #DefaultPrettyPrinter(SerializableString)}
-	 * 
+	 *
 	 * @param rootSeparator
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public DefaultPrettyPrinter(String rootSeparator) {
@@ -107,9 +110,9 @@ public class DefaultPrettyPrinter implements PrettyPrinter,
 	/**
 	 * Constructor that specifies separator String to use between root values;
 	 * if null, no separator is printed.
-	 * 
+	 *
 	 * @param rootSeparator
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public DefaultPrettyPrinter(SerializableString rootSeparator) {
@@ -192,7 +195,7 @@ public class DefaultPrettyPrinter implements PrettyPrinter,
 	 * does use spaces inside object entries; if 'this' instance already does
 	 * this, it is returned; if not, a new instance will be constructed and
 	 * returned.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public DefaultPrettyPrinter withSpacesInObjectEntries() {
@@ -204,7 +207,7 @@ public class DefaultPrettyPrinter implements PrettyPrinter,
 	 * does not use spaces inside object entries; if 'this' instance already
 	 * does this, it is returned; if not, a new instance will be constructed and
 	 * returned.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public DefaultPrettyPrinter withoutSpacesInObjectEntries() {
@@ -433,7 +436,7 @@ public class DefaultPrettyPrinter implements PrettyPrinter,
 		/**
 		 * "Mutant factory" method that will return an instance that uses
 		 * specified String as linefeed.
-		 * 
+		 *
 		 * @since 2.3
 		 */
 		public Lf2SpacesIndenter withLinefeed(String lf) {

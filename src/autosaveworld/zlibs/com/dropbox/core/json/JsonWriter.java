@@ -1,11 +1,11 @@
 package autosaveworld.zlibs.com.dropbox.core.json;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
 
 public abstract class JsonWriter<T> {
 	public abstract void write(T value, JsonGenerator g) throws IOException;

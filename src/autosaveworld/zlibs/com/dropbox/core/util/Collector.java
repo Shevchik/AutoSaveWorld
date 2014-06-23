@@ -10,10 +10,12 @@ public abstract class Collector<E, L> {
 	public static final class ArrayListCollector<E> extends Collector<E, ArrayList<E>> {
 		private ArrayList<E> list = new ArrayList<E>();
 
+		@Override
 		public void add(E element) {
 			this.list.add(element);
 		}
 
+		@Override
 		public ArrayList<E> finish() {
 			ArrayList<E> list = this.list;
 			this.list = null;
@@ -32,12 +34,14 @@ public abstract class Collector<E, L> {
 			return new NullSkipper<E, L>(underlying);
 		}
 
+		@Override
 		public void add(E element) {
 			if (element != null) {
 				underlying.add(element);
 			}
 		}
 
+		@Override
 		public L finish() {
 			return underlying.finish();
 		}

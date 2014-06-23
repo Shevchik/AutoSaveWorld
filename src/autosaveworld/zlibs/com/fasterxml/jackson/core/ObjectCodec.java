@@ -172,7 +172,7 @@ public abstract class ObjectCodec extends TreeCodec // since 2.3
 	/**
 	 * Accessor for finding underlying data format factory ({@link JsonFactory})
 	 * codec will use for data binding.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public JsonFactory getFactory() {

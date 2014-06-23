@@ -125,19 +125,24 @@ public class JsonLocation implements java.io.Serializable // as per
 
 	@Override
 	public boolean equals(Object other) {
-		if (other == this)
+		if (other == this) {
 			return true;
-		if (other == null)
+		}
+		if (other == null) {
 			return false;
-		if (!(other instanceof JsonLocation))
+		}
+		if (!(other instanceof JsonLocation)) {
 			return false;
+		}
 		JsonLocation otherLoc = (JsonLocation) other;
 
 		if (_sourceRef == null) {
-			if (otherLoc._sourceRef != null)
+			if (otherLoc._sourceRef != null) {
 				return false;
-		} else if (!_sourceRef.equals(otherLoc._sourceRef))
+			}
+		} else if (!_sourceRef.equals(otherLoc._sourceRef)) {
 			return false;
+		}
 
 		return (_lineNr == otherLoc._lineNr)
 				&& (_columnNr == otherLoc._columnNr)

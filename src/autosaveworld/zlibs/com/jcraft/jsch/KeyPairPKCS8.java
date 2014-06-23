@@ -151,10 +151,10 @@ public class KeyPairPKCS8 extends KeyPair {
 					values.addElement(asn1.getContent());
 				}
 
-				byte[] P_array = (byte[]) values.elementAt(0);
-				byte[] Q_array = (byte[]) values.elementAt(1);
-				byte[] G_array = (byte[]) values.elementAt(2);
-				byte[] prv_array = (byte[]) values.elementAt(3);
+				byte[] P_array = values.elementAt(0);
+				byte[] Q_array = values.elementAt(1);
+				byte[] G_array = values.elementAt(2);
+				byte[] prv_array = values.elementAt(3);
 				// Y = g^X mode p
 				byte[] pub_array = (new BigInteger(G_array)).modPow(
 						new BigInteger(prv_array), new BigInteger(P_array))

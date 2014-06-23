@@ -23,7 +23,7 @@ public class DbxException extends Exception {
 	 * The server said that something went wrong on its end (HTTP 500 error
 	 * code). This indicates bug on the Dropbox server, but there are multiple
 	 * potential causes.
-	 * 
+	 *
 	 * <ul>
 	 * <li>Sometimes it's just a bug and there's nothing you can do about it
 	 * until its fixed. Report it on the Dropbox API forums.</li>
@@ -68,7 +68,7 @@ public class DbxException extends Exception {
 	 * library), if there's a bug in on the Dropbox server, or if Dropbox made a
 	 * change to the API that changed the behavior of something and we haven't
 	 * upgraded our SDK yet.
-	 * 
+	 *
 	 * <p>
 	 * Typically, these kinds of exceptions should be logged, so you can
 	 * investigate later.
@@ -139,7 +139,7 @@ public class DbxException extends Exception {
 	/**
 	 * This is what gets thrown when there's an IOException when reading or
 	 * writing to the network (when communicating with the Dropbox API servers).
-	 * 
+	 *
 	 * <p>
 	 * We use a separate exception class (instead of just relaying IOException)
 	 * to make it easier for you to distinguish between I/O errors communicating
@@ -160,12 +160,12 @@ public class DbxException extends Exception {
 	/**
 	 * Gets thrown when the access token you're using to make API calls is
 	 * invalid.
-	 * 
+	 *
 	 * <p>
 	 * One potential cause of the error is a programming error on your end. Make
 	 * sure the access token you are passing in to {@link DbxClient} is valid.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * A more typical situation is that your access token <em>was</em> valid,
 	 * but the user has since "unlinked" your application via the Dropbox

@@ -49,7 +49,7 @@ public class LocalFSBackupOperations {
 			String destfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
 			backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
 		} catch (Exception e) {
-			e.printStackTrace();	
+			e.printStackTrace();
 		} finally {
 			world.setAutoSave(savestatus);
 		}
@@ -63,7 +63,7 @@ public class LocalFSBackupOperations {
 			String destfolder = extpath+File.separator+"backups"+File.separator+"plugins";
 			backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
 		} catch (Exception e) {
-			e.printStackTrace();	
+			e.printStackTrace();
 		}
 	}
 

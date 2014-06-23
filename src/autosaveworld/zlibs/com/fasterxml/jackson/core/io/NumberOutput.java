@@ -8,8 +8,8 @@ public final class NumberOutput {
 	private static long TEN_BILLION_L = 10000000000L;
 	private static long THOUSAND_L = 1000L;
 
-	private static long MIN_INT_AS_LONG = (long) Integer.MIN_VALUE;
-	private static long MAX_INT_AS_LONG = (long) Integer.MAX_VALUE;
+	private static long MIN_INT_AS_LONG = Integer.MIN_VALUE;
+	private static long MAX_INT_AS_LONG = Integer.MAX_VALUE;
 
 	final static String SMALLEST_LONG = String.valueOf(Long.MIN_VALUE);
 
@@ -70,7 +70,7 @@ public final class NumberOutput {
 				 * Special case: no matching positive value within range; let's
 				 * then "upgrade" to long and output as such.
 				 */
-				return outputLong((long) v, b, off);
+				return outputLong(v, b, off);
 			}
 			b[off++] = '-';
 			v = -v;
@@ -128,7 +128,7 @@ public final class NumberOutput {
 	public static int outputInt(int v, byte[] b, int off) {
 		if (v < 0) {
 			if (v == Integer.MIN_VALUE) {
-				return outputLong((long) v, b, off);
+				return outputLong(v, b, off);
 			}
 			b[off++] = '-';
 			v = -v;

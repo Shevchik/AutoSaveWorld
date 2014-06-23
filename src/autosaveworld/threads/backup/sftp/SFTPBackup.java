@@ -27,11 +27,11 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.BackupUtils;
 import autosaveworld.zlibs.com.jcraft.jsch.Channel;
+import autosaveworld.zlibs.com.jcraft.jsch.Channel.ChannelType;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp.LsEntry;
 import autosaveworld.zlibs.com.jcraft.jsch.JSch;
 import autosaveworld.zlibs.com.jcraft.jsch.Session;
-import autosaveworld.zlibs.com.jcraft.jsch.Channel.ChannelType;
 
 public class SFTPBackup {
 

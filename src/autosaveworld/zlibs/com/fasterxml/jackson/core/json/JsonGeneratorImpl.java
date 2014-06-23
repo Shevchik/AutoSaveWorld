@@ -2,7 +2,11 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core.json;
 
 import java.io.IOException;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerationException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Version;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.base.GeneratorBase;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharTypes;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharacterEscapes;
@@ -13,7 +17,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.VersionUtil;
 /**
  * Intermediate base class shared by JSON-backed generators like
  * {@link UTF8JsonGenerator} and {@link WriterBasedJsonGenerator}.
- * 
+ *
  * @since 2.1
  */
 public abstract class JsonGeneratorImpl extends GeneratorBase {
@@ -76,7 +80,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase {
 
 	/**
 	 * Separator to use, if any, between root-level values.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected SerializableString _rootValueSeparator = DefaultPrettyPrinter.DEFAULT_ROOT_VALUE_SEPARATOR;

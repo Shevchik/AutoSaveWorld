@@ -1,5 +1,11 @@
 package autosaveworld.zlibs.com.dropbox.core.json;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+
 import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
@@ -7,18 +13,13 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-
 public abstract class JsonReader<T> {
 	public abstract T read(JsonParser parser) throws IOException, JsonReadException;
 
 	public final T readField(JsonParser parser, String fieldName, T v) throws IOException, JsonReadException {
-		if (v != null)
+		if (v != null) {
 			throw new JsonReadException("duplicate field \"" + fieldName + "\"", parser.getTokenLocation());
+		}
 		return read(parser);
 	}
 
@@ -108,12 +109,14 @@ public abstract class JsonReader<T> {
 	}
 
 	public static long readUnsignedLongField(JsonParser parser, String fieldName, long v) throws IOException, JsonReadException {
-		if (v >= 0)
+		if (v >= 0) {
 			throw new JsonReadException("duplicate field \"" + fieldName + "\"", parser.getCurrentLocation());
+		}
 		return JsonReader.readUnsignedLong(parser);
 	}
 
 	public static final JsonReader<String> StringReader = new JsonReader<String>() {
+		@Override
 		public String read(JsonParser parser) throws IOException, JsonReadException {
 			try {
 				String v = parser.getText();
@@ -126,6 +129,7 @@ public abstract class JsonReader<T> {
 	};
 
 	public static final JsonReader<Boolean> BooleanReader = new JsonReader<Boolean>() {
+		@Override
 		public Boolean read(JsonParser parser) throws IOException,
 				JsonReadException {
 			return readBoolean(parser);
@@ -168,8 +172,9 @@ public abstract class JsonReader<T> {
 
 		public int get(String fieldName) {
 			Integer i = fields.get(fieldName);
-			if (i == null)
+			if (i == null) {
 				return -1;
+			}
 			return i;
 		}
 
@@ -177,8 +182,9 @@ public abstract class JsonReader<T> {
 			private HashMap<String, Integer> fields = new HashMap<String, Integer>();
 
 			public void add(String fieldName, int expectedIndex) {
-				if (fields == null)
+				if (fields == null) {
 					throw new IllegalStateException("already called build(); can't call add() anymore");
+				}
 				int i = fields.size();
 				if (expectedIndex != i) {
 					throw new IllegalStateException("expectedIndex = " + expectedIndex + ", actual = " + i);
@@ -190,8 +196,9 @@ public abstract class JsonReader<T> {
 			}
 
 			public FieldMapping build() {
-				if (fields == null)
+				if (fields == null) {
 					throw new IllegalStateException("already called build(); can't call build() again");
+				}
 				HashMap<String, Integer> f = fields;
 				this.fields = null;
 				return new FieldMapping(f);

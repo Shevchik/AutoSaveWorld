@@ -1,9 +1,9 @@
 package autosaveworld.zlibs.com.dropbox.core.json;
 
+import java.io.File;
+
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonProcessingException;
-
-import java.io.File;
 
 public final class JsonReadException extends java.lang.Exception {
 	public static final long serialVersionUID = 0;
@@ -28,6 +28,7 @@ public final class JsonReadException extends java.lang.Exception {
 		return this;
 	}
 
+	@Override
 	public String getMessage() {
 		StringBuilder buf = new StringBuilder();
 

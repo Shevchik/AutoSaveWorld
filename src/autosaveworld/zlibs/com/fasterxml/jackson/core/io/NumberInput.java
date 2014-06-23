@@ -117,7 +117,7 @@ public final class NumberInput {
 		// Note: caller must ensure length is [10, 18]
 		int len1 = len - 9;
 		long val = parseInt(ch, off, len1) * L_BILLION;
-		return val + (long) parseInt(ch, off + len1, 9);
+		return val + parseInt(ch, off + len1, 9);
 	}
 
 	public static long parseLong(String s) {
@@ -127,7 +127,7 @@ public final class NumberInput {
 		 */
 		int length = s.length();
 		if (length <= 9) {
-			return (long) parseInt(s);
+			return parseInt(s);
 		}
 		// !!! TODO: implement efficient 2-int parsing...
 		return Long.parseLong(s);
@@ -138,7 +138,7 @@ public final class NumberInput {
 	 * integral number would fit in 64-bit Java long or not. Note that input
 	 * String must NOT contain leading minus sign (even if 'negative' is set to
 	 * true).
-	 * 
+	 *
 	 * @param negative
 	 *            Whether original number had a minus sign (which is NOT passed
 	 *            to this method) or not
@@ -147,10 +147,12 @@ public final class NumberInput {
 			boolean negative) {
 		String cmpStr = negative ? MIN_LONG_STR_NO_SIGN : MAX_LONG_STR;
 		int cmpLen = cmpStr.length();
-		if (len < cmpLen)
+		if (len < cmpLen) {
 			return true;
-		if (len > cmpLen)
+		}
+		if (len > cmpLen) {
 			return false;
+		}
 
 		for (int i = 0; i < cmpLen; ++i) {
 			int diff = ch[off + i] - cmpStr.charAt(i);
@@ -164,7 +166,7 @@ public final class NumberInput {
 	/**
 	 * Similar to {@link #inLongRange(char[],int,int,boolean)}, but with String
 	 * argument
-	 * 
+	 *
 	 * @param negative
 	 *            Whether original number had a minus sign (which is NOT passed
 	 *            to this method) or not
@@ -173,10 +175,12 @@ public final class NumberInput {
 		String cmp = negative ? MIN_LONG_STR_NO_SIGN : MAX_LONG_STR;
 		int cmpLen = cmp.length();
 		int alen = s.length();
-		if (alen < cmpLen)
+		if (alen < cmpLen) {
 			return true;
-		if (alen > cmpLen)
+		}
+		if (alen > cmpLen) {
 			return false;
+		}
 
 		// could perhaps just use String.compareTo()?
 		for (int i = 0; i < cmpLen; ++i) {

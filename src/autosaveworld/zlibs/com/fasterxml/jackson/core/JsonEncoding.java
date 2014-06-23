@@ -33,7 +33,7 @@ public enum JsonEncoding {
 
 	/**
 	 * Method for accessing encoding name that JDK will support.
-	 * 
+	 *
 	 * @return Matching encoding name that JDK will support.
 	 */
 	public String getJavaName() {
@@ -44,7 +44,7 @@ public enum JsonEncoding {
 	 * Whether encoding is big-endian (if encoding supports such notion). If no
 	 * such distinction is made (as is the case for {@link #UTF8}), return value
 	 * is undefined.
-	 * 
+	 *
 	 * @return True for big-endian encodings; false for little-endian (or if not
 	 *         applicable)
 	 */

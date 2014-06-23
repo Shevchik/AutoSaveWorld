@@ -106,13 +106,18 @@ public class PemLoader {
 		try {
 			while (true) {
 				String line = lin.readLine();
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 				String trimmed = line.trim();
 				if (trimmed.startsWith("#"))
+				 {
 					continue; // Skip comment lines.
+				}
 				if (trimmed.length() == 0)
+				 {
 					continue; // Skip empty lines.
+				}
 				if (!line.equals("-----BEGIN CERTIFICATE-----")) {
 					throw new LoadException(
 							"Expecting \"-----BEGIN CERTIFICATE-----\", blank line, or comment line starting with \"#\", got \""
@@ -189,8 +194,9 @@ public class PemLoader {
 		}
 
 		public LoadException addLineNumber(int lineNumber) {
-			if (this.lineNumber >= 0)
+			if (this.lineNumber >= 0) {
 				return this;
+			}
 			return new LoadException(lineNumber, this.getMessage());
 		}
 	}
@@ -206,8 +212,9 @@ public class PemLoader {
 
 		public String readLine() throws IOException {
 			String line = in.readLine();
-			if (line == null)
+			if (line == null) {
 				return null;
+			}
 			lastLineNumber++;
 			return line;
 		}

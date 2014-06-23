@@ -1,5 +1,7 @@
 package autosaveworld.zlibs.com.dropbox.core;
 
+import java.io.IOException;
+
 import autosaveworld.zlibs.com.dropbox.core.json.JsonReadException;
 import autosaveworld.zlibs.com.dropbox.core.json.JsonReader;
 import autosaveworld.zlibs.com.dropbox.core.json.JsonWriter;
@@ -7,8 +9,6 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
-
-import java.io.IOException;
 
 /**
  * This is for mocking things out during testing. Most of the time you won't
@@ -54,6 +54,7 @@ public final class DbxHost {
 		this.web = web;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		return getClass().equals(o.getClass()) && equals((DbxHost) o);
 	}
@@ -103,12 +104,15 @@ public final class DbxHost {
 
 				JsonReader.expectObjectEnd(parser);
 
-				if (api == null)
+				if (api == null) {
 					throw new JsonReadException("missing field \"api\"", top);
-				if (content == null)
+				}
+				if (content == null) {
 					throw new JsonReadException("missing field \"content\"", top);
-				if (web == null)
+				}
+				if (web == null) {
 					throw new JsonReadException("missing field \"web\"", top);
+				}
 
 				return new DbxHost(api, content, web);
 			} else {

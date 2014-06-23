@@ -61,7 +61,7 @@ public interface PrettyPrinter {
 	 * Default handling (without pretty-printing) will output the closing curly
 	 * bracket. Pretty-printer is to output a curly bracket as well, but can
 	 * surround that with other (white-space) decoration.
-	 * 
+	 *
 	 * @param nrOfEntries
 	 *            Number of direct members of the array that have been output
 	 */
@@ -110,7 +110,7 @@ public interface PrettyPrinter {
 	 * Default handling (without pretty-printing) will output the closing
 	 * bracket. Pretty-printer is to output a bracket as well, but can surround
 	 * that with other (white-space) decoration.
-	 * 
+	 *
 	 * @param nrOfValues
 	 *            Number of direct members of the array that have been output
 	 */

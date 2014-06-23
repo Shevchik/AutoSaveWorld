@@ -1,8 +1,14 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.base;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Base64Variant;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.TreeNode;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Version;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.json.DupDetector;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.json.JsonWriteContext;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -314,7 +320,7 @@ public abstract class GeneratorBase extends JsonGenerator {
 	 * Method called before trying to write a value (scalar or structured), to
 	 * verify that this is legal in current output state, as well as to output
 	 * separators if and as necessary.
-	 * 
+	 *
 	 * @param typeMsg
 	 *            Additional message used for generating exception message if
 	 *            value output is NOT legal in current generator output state.

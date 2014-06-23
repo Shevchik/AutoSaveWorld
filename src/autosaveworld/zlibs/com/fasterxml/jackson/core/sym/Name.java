@@ -3,7 +3,7 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core.sym;
 /**
  * Base class for tokenized names (key strings in objects) that have been
  * tokenized from byte-based input sources (like {@link java.io.InputStream}.
- * 
+ *
  * @author Tatu Saloranta
  */
 public abstract class Name {

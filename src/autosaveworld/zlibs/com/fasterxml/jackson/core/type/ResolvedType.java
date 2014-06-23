@@ -7,7 +7,7 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core.type;
  * <code>JavaType</code> from "databind" bundle -- this abstraction is only
  * needed so that types can be passed through
  * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser#readValueAs} methods.
- * 
+ *
  * @since 2.0
  */
 public abstract class ResolvedType {
@@ -80,10 +80,10 @@ public abstract class ResolvedType {
 
 	/**
 	 * Method for accessing definitions of contained ("child") types.
-	 * 
+	 *
 	 * @param index
 	 *            Index of contained type to return
-	 * 
+	 *
 	 * @return Contained type at index, or null if no such type exists (no
 	 *         exception thrown)
 	 */
@@ -93,10 +93,10 @@ public abstract class ResolvedType {
 	 * Method for accessing name of type variable in indicated position. If no
 	 * name is bound, will use placeholders (derived from 0-based index); if no
 	 * type variable or argument exists with given index, null is returned.
-	 * 
+	 *
 	 * @param index
 	 *            Index of contained type to return
-	 * 
+	 *
 	 * @return Contained type at index, or null if no such type exists (no
 	 *         exception thrown)
 	 */

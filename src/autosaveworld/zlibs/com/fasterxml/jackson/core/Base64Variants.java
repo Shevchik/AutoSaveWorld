@@ -12,7 +12,7 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core;
  * <li> {@link #PEM}
  * <li> {@link #MODIFIED_FOR_URL}
  * </ul>
- * 
+ *
  * @author Tatu Saloranta
  */
 public final class Base64Variants {

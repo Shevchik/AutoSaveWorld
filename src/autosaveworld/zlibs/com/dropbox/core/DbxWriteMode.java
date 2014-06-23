@@ -22,13 +22,13 @@ public final class DbxWriteMode {
 	 * Returns a {@link DbxWriteMode} for adding new file. If a file at the
 	 * specified path already exists, the new file will be renamed
 	 * automatically.
-	 * 
+	 *
 	 * <p>
 	 * For example, if you're trying to upload a file to "/Hello.txt", but
 	 * there's already something there, your file will be written to
 	 * "/Notes/Groceries (1).txt".
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * You can determine whether your file was renamed by checking the
 	 * {@link DbxEntry#name} returned by the API call.
@@ -60,13 +60,13 @@ public final class DbxWriteMode {
 	 * want to save your modifications back to Dropbox. You need to specify the
 	 * revision of the copy of the file you downloaded (it's in
 	 * {@link DbxEntry.File#rev}).
-	 * 
+	 *
 	 * <p>
 	 * If, when you attempt to save, the revision of the file currently on
 	 * Dropbox matches {@code revisionToReplace}, the file on Dropbox will be
 	 * overwritten with the new contents you provide.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * If the rev of the file currently on Dropbox doesn't match
 	 * {@code revisionToReplace}, Dropbox leave the original file alone and save
@@ -74,7 +74,7 @@ public final class DbxWriteMode {
 	 * {@literal "/Notes/Groceries.txt"}, the new file's path might be
 	 * {@literal "/Notes/Groceries (conflicted copy).txt"}.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * You can determine whether your file was renamed by checking the
 	 * {@link DbxEntry#name} returned by the API call.

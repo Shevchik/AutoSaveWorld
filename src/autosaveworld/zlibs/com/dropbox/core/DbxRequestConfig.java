@@ -12,7 +12,7 @@ public class DbxRequestConfig {
 	 * An identifier for the API client, typically of the form "Name/Version".
 	 * This is used to set the HTTP {@code User-Agent} header when making API
 	 * requests. Example: {@code "PhotoEditServer/1.3"}
-	 * 
+	 *
 	 * <p>
 	 * If you're the author a higher-level library on top of the basic SDK, and
 	 * the "Photo Edit" Android app is using your library to access Dropbox, you
@@ -21,13 +21,13 @@ public class DbxRequestConfig {
 	 * might set this field to:
 	 * {@code "PhotoEditAndroid/2.4 FilePicker/0.1-beta"}
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * The exact format of the {@code User-Agent} header is described in <a
 	 * href="http://tools.ietf.org/html/rfc2616#section-3.8">section 3.8 of the
 	 * HTTP specification</a>.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Note that the underlying {@link autosaveworld.zlibs.com.dropbox.core.http.HttpRequestor
 	 * HttpRequestor} may append other things to the {@code User-Agent}, such as
@@ -41,7 +41,7 @@ public class DbxRequestConfig {
 	 * The locale of the user of your app. This is used by the Dropbox server to
 	 * localize user-visible strings returned by API calls. For example,
 	 * {@link autosaveworld.zlibs.com.dropbox.core.DbxEntry.File#humanSize} is a localized string.
-	 * 
+	 *
 	 * <p>
 	 * If the value is {@code null} or some locale that Dropbox doesn't support,
 	 * the localized strings will be in English.
@@ -66,12 +66,14 @@ public class DbxRequestConfig {
 	 */
 	public DbxRequestConfig(String clientIdentifier, String userLocale,
 			HttpRequestor httpRequestor) {
-		if (clientIdentifier == null)
+		if (clientIdentifier == null) {
 			throw new IllegalArgumentException(
 					"'clientIdentifier' should not be null");
-		if (httpRequestor == null)
+		}
+		if (httpRequestor == null) {
 			throw new IllegalArgumentException(
 					"'httpRequestor' should not be null");
+		}
 
 		this.clientIdentifier = clientIdentifier;
 		this.userLocale = userLocale;

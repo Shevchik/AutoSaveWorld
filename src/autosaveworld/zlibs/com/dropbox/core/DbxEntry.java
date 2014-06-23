@@ -5,7 +5,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import autosaveworld.zlibs.com.dropbox.core.json.*;
+import autosaveworld.zlibs.com.dropbox.core.json.JsonArrayReader;
+import autosaveworld.zlibs.com.dropbox.core.json.JsonDateReader;
+import autosaveworld.zlibs.com.dropbox.core.json.JsonReadException;
+import autosaveworld.zlibs.com.dropbox.core.json.JsonReader;
 import autosaveworld.zlibs.com.dropbox.core.util.Collector;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
@@ -21,7 +24,7 @@ public abstract class DbxEntry implements Serializable {
 	/**
 	 * Just the last part of {@link #path}. Derived automatically from
 	 * {@link #path}.
-	 * 
+	 *
 	 * @see DbxPath#getName
 	 */
 	public final String name;
@@ -29,7 +32,7 @@ public abstract class DbxEntry implements Serializable {
 	/**
 	 * The path to the file or folder, relative to your application's root. The
 	 * path always starts with a {@code "/"}.
-	 * 
+	 *
 	 * <p>
 	 * For full-Dropbox apps, the path is relative to the root of the user's
 	 * Dropbox. For App Folder apps, the path is relative to your application's
@@ -96,14 +99,18 @@ public abstract class DbxEntry implements Serializable {
 	public abstract File asFile();
 
 	protected boolean partialEquals(DbxEntry o) {
-		if (!name.equals(o.name))
+		if (!name.equals(o.name)) {
 			return false;
-		if (!path.equals(o.path))
+		}
+		if (!path.equals(o.path)) {
 			return false;
-		if (!iconName.equals(o.iconName))
+		}
+		if (!iconName.equals(o.iconName)) {
 			return false;
-		if (mightHaveThumbnail != o.mightHaveThumbnail)
+		}
+		if (mightHaveThumbnail != o.mightHaveThumbnail) {
 			return false;
+		}
 		return true;
 	}
 
@@ -139,29 +146,35 @@ public abstract class DbxEntry implements Serializable {
 			return "Folder";
 		}
 
+		@Override
 		public boolean isFolder() {
 			return true;
 		}
 
+		@Override
 		public boolean isFile() {
 			return false;
 		}
 
+		@Override
 		public Folder asFolder() {
 			return this;
 		}
 
+		@Override
 		public File asFile() {
 			throw new RuntimeException("not a file");
 		}
 
 		public static final JsonReader<DbxEntry.Folder> Reader = new JsonReader<DbxEntry.Folder>() {
+			@Override
 			public final DbxEntry.Folder read(JsonParser parser)
 					throws IOException, JsonReadException {
 				JsonLocation top = parser.getCurrentLocation();
 				DbxEntry.WithChildrenC<?> ewc = DbxEntry.read(parser, null);
-				if (ewc == null)
+				if (ewc == null) {
 					return null;
+				}
 				DbxEntry e = ewc.entry;
 				if (!(e instanceof DbxEntry.Folder)) {
 					throw new JsonReadException(
@@ -172,18 +185,22 @@ public abstract class DbxEntry implements Serializable {
 
 		};
 
+		@Override
 		public boolean equals(Object o) {
-			if (!getClass().equals(o.getClass()))
+			if (!getClass().equals(o.getClass())) {
 				return false;
+			}
 			return equals((Folder) o);
 		}
 
 		public boolean equals(Folder o) {
-			if (!partialEquals(o))
+			if (!partialEquals(o)) {
 				return false;
+			}
 			return true;
 		}
 
+		@Override
 		public int hashCode() {
 			return partialHashCode();
 		}
@@ -214,7 +231,7 @@ public abstract class DbxEntry implements Serializable {
 		 * on the Dropbox server. (This probably won't match the time on the
 		 * Dropbox user's filesystem. For that the {@link #clientMtime} is a
 		 * better estimate.)
-		 * 
+		 *
 		 */
 		public final Date lastModified;
 
@@ -223,7 +240,7 @@ public abstract class DbxEntry implements Serializable {
 		 * file was added or modified. This time is based on the system clock of
 		 * the particular host that the client was running on, as opposed to the
 		 * system clock of the Dropbox servers.
-		 * 
+		 *
 		 * <p>
 		 * This field <em>should not</em> be used to determine if a file has
 		 * changed, but only as a way to sort files by date (when displaying a
@@ -273,29 +290,35 @@ public abstract class DbxEntry implements Serializable {
 			return "File";
 		}
 
+		@Override
 		public boolean isFolder() {
 			return false;
 		}
 
+		@Override
 		public boolean isFile() {
 			return true;
 		}
 
+		@Override
 		public Folder asFolder() {
 			throw new RuntimeException("not a folder");
 		}
 
+		@Override
 		public File asFile() {
 			return this;
 		}
 
 		public static final JsonReader<DbxEntry.File> Reader = new JsonReader<DbxEntry.File>() {
+			@Override
 			public final DbxEntry.File read(JsonParser parser)
 					throws IOException, JsonReadException {
 				JsonLocation top = parser.getCurrentLocation();
 				DbxEntry.WithChildrenC<?> ewc = DbxEntry.read(parser, null);
-				if (ewc == null)
+				if (ewc == null) {
 					return null;
+				}
 				DbxEntry e = ewc.entry;
 				if (!(e instanceof DbxEntry.File)) {
 					throw new JsonReadException(
@@ -306,28 +329,37 @@ public abstract class DbxEntry implements Serializable {
 
 		};
 
+		@Override
 		public boolean equals(Object o) {
-			if (!getClass().equals(o.getClass()))
+			if (!getClass().equals(o.getClass())) {
 				return false;
+			}
 			return equals((File) o);
 		}
 
 		public boolean equals(File o) {
-			if (!partialEquals(o))
+			if (!partialEquals(o)) {
 				return false;
-			if (numBytes != o.numBytes)
+			}
+			if (numBytes != o.numBytes) {
 				return false;
-			if (!humanSize.equals(o.humanSize))
+			}
+			if (!humanSize.equals(o.humanSize)) {
 				return false;
-			if (!lastModified.equals(o.lastModified))
+			}
+			if (!lastModified.equals(o.lastModified)) {
 				return false;
-			if (!clientMtime.equals(o.clientMtime))
+			}
+			if (!clientMtime.equals(o.clientMtime)) {
 				return false;
-			if (!rev.equals(o.rev))
+			}
+			if (!rev.equals(o.rev)) {
 				return false;
+			}
 			return true;
 		}
 
+		@Override
 		public int hashCode() {
 			// Not including 'humanSize' since it's mostly derivable from
 			// 'numBytes'
@@ -344,11 +376,13 @@ public abstract class DbxEntry implements Serializable {
 	// JSON parsing
 
 	public static final JsonReader<DbxEntry> Reader = new JsonReader<DbxEntry>() {
+		@Override
 		public final DbxEntry read(JsonParser parser) throws IOException,
 				JsonReadException {
 			WithChildrenC<?> wc = DbxEntry.read(parser, null);
-			if (wc == null)
+			if (wc == null) {
 				return null;
+			}
 			return wc.entry;
 		}
 	};
@@ -356,7 +390,7 @@ public abstract class DbxEntry implements Serializable {
 	/**
 	 * Holds the metadata for a file or folder; if it's a folder, we also store
 	 * the folder's hash and the metadata of its immediate children.
-	 * 
+	 *
 	 * @see DbxClient#getMetadataWithChildren
 	 * @see DbxClient#getMetadataWithChildrenIfChanged
 	 */
@@ -398,13 +432,15 @@ public abstract class DbxEntry implements Serializable {
 		}
 
 		public static final JsonReader<WithChildren> Reader = new JsonReader<WithChildren>() {
+			@Override
 			public final WithChildren read(JsonParser parser)
 					throws IOException, JsonReadException {
 				WithChildrenC<List<DbxEntry>> c = DbxEntry
 						.<List<DbxEntry>> read(parser,
 								new Collector.ArrayListCollector<DbxEntry>());
-				if (c == null)
+				if (c == null) {
 					return null;
+				}
 				return new WithChildren(c.entry, c.hash, c.children);
 			}
 		};
@@ -416,12 +452,15 @@ public abstract class DbxEntry implements Serializable {
 
 		public boolean equals(WithChildren o) {
 			if (children != null ? !children.equals(o.children)
-					: o.children != null)
+					: o.children != null) {
 				return false;
-			if (!entry.equals(o.entry))
+			}
+			if (!entry.equals(o.entry)) {
 				return false;
-			if (hash != null ? !hash.equals(o.hash) : o.hash != null)
+			}
+			if (hash != null ? !hash.equals(o.hash) : o.hash != null) {
 				return false;
+			}
 
 			return true;
 		}
@@ -485,6 +524,7 @@ public abstract class DbxEntry implements Serializable {
 				this.collector = collector;
 			}
 
+			@Override
 			public final WithChildrenC<C> read(JsonParser parser)
 					throws IOException, JsonReadException {
 				return DbxEntry.read(parser, collector);
@@ -498,12 +538,15 @@ public abstract class DbxEntry implements Serializable {
 
 		public boolean equals(WithChildren o) {
 			if (children != null ? !children.equals(o.children)
-					: o.children != null)
+					: o.children != null) {
 				return false;
-			if (!entry.equals(o.entry))
+			}
+			if (!entry.equals(o.entry)) {
 				return false;
-			if (hash != null ? !hash.equals(o.hash) : o.hash != null)
+			}
+			if (hash != null ? !hash.equals(o.hash) : o.hash != null) {
 				return false;
+			}
 
 			return true;
 		}
@@ -590,18 +633,20 @@ public abstract class DbxEntry implements Serializable {
 							fieldName, client_mtime);
 					break;
 				case FM_hash:
-					if (collector == null)
+					if (collector == null) {
 						throw new JsonReadException(
 								"not expecting \"hash\" field, since we didn't ask for children",
 								parser.getCurrentLocation());
+					}
 					hash = JsonReader.StringReader.readField(parser, fieldName,
 							hash);
 					break;
 				case FM_contents:
-					if (collector == null)
+					if (collector == null) {
 						throw new JsonReadException(
 								"not expecting \"contents\" field, since we didn't ask for children",
 								parser.getCurrentLocation());
+					}
 					contents = JsonArrayReader.mk(Reader, collector).readField(
 							parser, fieldName, contents);
 					break;
@@ -616,24 +661,31 @@ public abstract class DbxEntry implements Serializable {
 
 		JsonReader.expectObjectEnd(parser);
 
-		if (path == null)
+		if (path == null) {
 			throw new JsonReadException("missing field \"path\"", top);
-		if (icon == null)
+		}
+		if (icon == null) {
 			throw new JsonReadException("missing field \"icon\"", top);
-		if (is_deleted == null)
+		}
+		if (is_deleted == null) {
 			is_deleted = Boolean.FALSE;
-		if (is_dir == null)
+		}
+		if (is_dir == null) {
 			is_dir = Boolean.FALSE;
-		if (thumb_exists == null)
+		}
+		if (thumb_exists == null) {
 			thumb_exists = Boolean.FALSE;
+		}
 
 		if (is_dir && (contents != null || hash != null)) {
-			if (hash == null)
+			if (hash == null) {
 				throw new JsonReadException(
 						"missing \"hash\", when we asked for children", top);
-			if (contents == null)
+			}
+			if (contents == null) {
 				throw new JsonReadException(
 						"missing \"contents\", when we asked for children", top);
+			}
 		}
 
 		DbxEntry e;
@@ -641,27 +693,33 @@ public abstract class DbxEntry implements Serializable {
 			e = new Folder(path, icon, thumb_exists);
 		} else {
 			// Normal File
-			if (size == null)
+			if (size == null) {
 				throw new JsonReadException(
 						"missing \"size\" for a file entry", top);
-			if (bytes == -1)
+			}
+			if (bytes == -1) {
 				throw new JsonReadException(
 						"missing \"bytes\" for a file entry", top);
-			if (modified == null)
+			}
+			if (modified == null) {
 				throw new JsonReadException(
 						"missing \"modified\" for a file entry", top);
-			if (client_mtime == null)
+			}
+			if (client_mtime == null) {
 				throw new JsonReadException(
 						"missing \"client_mtime\" for a file entry", top);
-			if (rev == null)
+			}
+			if (rev == null) {
 				throw new JsonReadException("missing \"rev\" for a file entry",
 						top);
+			}
 			e = new File(path, icon, thumb_exists, bytes, size, modified,
 					client_mtime, rev);
 		}
 
-		if (is_deleted)
+		if (is_deleted) {
 			return null;
+		}
 		return new WithChildrenC<C>(e, hash, contents);
 	}
 

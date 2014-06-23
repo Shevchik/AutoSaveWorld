@@ -171,14 +171,18 @@ public class DbxRequestUtil {
 		byte[] body = loadErrorBody(response);
 		String message = parseErrorBody(response.statusCode, body);
 
-		if (response.statusCode == 400)
+		if (response.statusCode == 400) {
 			return new DbxException.BadRequest(message);
-		if (response.statusCode == 401)
+		}
+		if (response.statusCode == 401) {
 			return new DbxException.InvalidAccessToken(message);
-		if (response.statusCode == 500)
+		}
+		if (response.statusCode == 500) {
 			return new DbxException.ServerError(message);
-		if (response.statusCode == 503)
+		}
+		if (response.statusCode == 503) {
 			return new DbxException.RetryLater(message);
+		}
 
 		return new DbxException.BadResponseCode("unexpected HTTP status code: " + response.statusCode + ": " + message, response.statusCode);
 	}
@@ -263,8 +267,10 @@ public class DbxRequestUtil {
 			} catch (DbxException ex) {
 				// If we can't retry, just let this exception through.
 				if (!isRetriableException(ex) || numTries >= maxTries)
+				 {
 					throw ex;
 				// Otherwise, run through the loop again.
+				}
 			}
 		}
 	}

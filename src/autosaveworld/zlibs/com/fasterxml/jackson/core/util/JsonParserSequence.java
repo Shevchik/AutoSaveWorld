@@ -1,9 +1,12 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
 
 /**
  * Helper class that can be used to sequence multiple physical
@@ -91,12 +94,14 @@ public class JsonParserSequence extends JsonParserDelegate {
 	@Override
 	public JsonToken nextToken() throws IOException, JsonParseException {
 		JsonToken t = delegate.nextToken();
-		if (t != null)
+		if (t != null) {
 			return t;
+		}
 		while (switchToNext()) {
 			t = delegate.nextToken();
-			if (t != null)
+			if (t != null) {
 				return t;
+			}
 		}
 		return null;
 	}
@@ -124,7 +129,7 @@ public class JsonParserSequence extends JsonParserDelegate {
 	 * Method that will switch active parser from the current one to next parser
 	 * in sequence, if there is another parser left, making this the new
 	 * delegate. Old delegate is returned if switch succeeds.
-	 * 
+	 *
 	 * @return True if switch succeeded; false otherwise
 	 */
 	protected boolean switchToNext() {

@@ -38,7 +38,7 @@ public abstract class CharacterEscapes implements java.io.Serializable // since
 	 * handling for first 128 characters of Unicode (ASCII characters. Caller is
 	 * not to modify contents of this array, since this is expected to be a
 	 * shared copy.
-	 * 
+	 *
 	 * @return Array with size of at least 128, where first 128 entries have
 	 *         either one of <code>ESCAPE_xxx</code> constants, or non-zero
 	 *         positive integer (meaning of which is data format specific; for

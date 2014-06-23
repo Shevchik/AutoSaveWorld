@@ -1,9 +1,10 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.format;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 
 /**
  * Simple helper class that allows data format (content type) auto-detection,
@@ -115,7 +116,7 @@ public class DataFormatDetector {
 	 * Method to call to find format that content (accessible via given
 	 * {@link InputStream}) given has, as per configuration of this detector
 	 * instance.
-	 * 
+	 *
 	 * @return Matcher object which contains result; never null, even in cases
 	 *         where no match (with specified minimal match strength) is found.
 	 */
@@ -127,7 +128,7 @@ public class DataFormatDetector {
 	/**
 	 * Method to call to find format that given content (full document) has, as
 	 * per configuration of this detector instance.
-	 * 
+	 *
 	 * @return Matcher object which contains result; never null, even in cases
 	 *         where no match (with specified minimal match strength) is found.
 	 */
@@ -139,10 +140,10 @@ public class DataFormatDetector {
 	/**
 	 * Method to call to find format that given content (full document) has, as
 	 * per configuration of this detector instance.
-	 * 
+	 *
 	 * @return Matcher object which contains result; never null, even in cases
 	 *         where no match (with specified minimal match strength) is found.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public DataFormatMatcher findFormat(byte[] fullInputData, int offset,

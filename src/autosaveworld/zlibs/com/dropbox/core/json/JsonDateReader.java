@@ -1,13 +1,13 @@
 package autosaveworld.zlibs.com.dropbox.core.json;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 
 public class JsonDateReader {
 	/**
@@ -59,32 +59,45 @@ public class JsonDateReader {
 				| b[i + 22] != ':' | b[i + 25] != ' ' | b[i + 26] != '+'
 				| b[i + 27] != '0' | b[i + 28] != '0' | b[i + 29] != '0'
 				| b[i + 30] != '0') {
-			if (b[i + 3] != ',')
+			if (b[i + 3] != ',') {
 				throw new java.text.ParseException("expecting ','", 3);
-			if (b[i + 4] != ' ')
+			}
+			if (b[i + 4] != ' ') {
 				throw new java.text.ParseException("expecting ' '", 4);
-			if (b[i + 7] != ' ')
+			}
+			if (b[i + 7] != ' ') {
 				throw new java.text.ParseException("expecting ' '", 7);
-			if (b[i + 11] != ' ')
+			}
+			if (b[i + 11] != ' ') {
 				throw new java.text.ParseException("expecting ' '", 11);
-			if (b[i + 16] != ' ')
+			}
+			if (b[i + 16] != ' ') {
 				throw new java.text.ParseException("expecting ' '", 16);
-			if (b[i + 19] != ':')
+			}
+			if (b[i + 19] != ':') {
 				throw new java.text.ParseException("expecting ':'", 19);
-			if (b[i + 22] != ':')
+			}
+			if (b[i + 22] != ':') {
 				throw new java.text.ParseException("expecting ':'", 22);
-			if (b[i + 25] != ' ')
+			}
+			if (b[i + 25] != ' ') {
 				throw new java.text.ParseException("expecting ' '", 25);
-			if (b[i + 26] != '+')
+			}
+			if (b[i + 26] != '+') {
 				throw new java.text.ParseException("expecting '+'", 26);
-			if (b[i + 27] != '0')
+			}
+			if (b[i + 27] != '0') {
 				throw new java.text.ParseException("expecting '0'", 27);
-			if (b[i + 28] != '0')
+			}
+			if (b[i + 28] != '0') {
 				throw new java.text.ParseException("expecting '0'", 28);
-			if (b[i + 29] != '0')
+			}
+			if (b[i + 29] != '0') {
 				throw new java.text.ParseException("expecting '0'", 29);
-			if (b[i + 30] != '0')
+			}
+			if (b[i + 30] != '0') {
 				throw new java.text.ParseException("expecting '0'", 30);
+			}
 			throw new AssertionError("unreachable");
 		}
 
@@ -169,28 +182,35 @@ public class JsonDateReader {
 		// of the values being correct.
 		switch (a) {
 		case 'S':
-			if (b == 'u' & c == 'n')
+			if (b == 'u' & c == 'n') {
 				return true;
-			if (b == 'a' & c == 't')
+			}
+			if (b == 'a' & c == 't') {
 				return true;
+			}
 			return false;
 		case 'M':
-			if (b == 'o' & c == 'n')
+			if (b == 'o' & c == 'n') {
 				return true;
+			}
 			return false;
 		case 'T':
-			if (b == 'u' & c == 'e')
+			if (b == 'u' & c == 'e') {
 				return true;
-			if (b == 'h' & c == 'u')
+			}
+			if (b == 'h' & c == 'u') {
 				return true;
+			}
 			return false;
 		case 'W':
-			if (b == 'e' & c == 'd')
+			if (b == 'e' & c == 'd') {
 				return true;
+			}
 			return false;
 		case 'F':
-			if (b == 'r' & c == 'i')
+			if (b == 'r' & c == 'i') {
 				return true;
+			}
 			return false;
 		default:
 			return false;
@@ -200,50 +220,62 @@ public class JsonDateReader {
 	public static int getMonthIndex(char a, char b, char c) {
 		switch (a) {
 		case 'J':
-			if (b == 'a' & c == 'n')
+			if (b == 'a' & c == 'n') {
 				return 0;
+			}
 			if (b == 'u') {
-				if (c == 'n')
+				if (c == 'n') {
 					return 5;
-				if (c == 'l')
+				}
+				if (c == 'l') {
 					return 6;
+				}
 				return -1;
 			}
 			return -1;
 		case 'F':
-			if (b == 'e' & c == 'b')
+			if (b == 'e' & c == 'b') {
 				return 1;
+			}
 			return 0;
 		case 'M':
 			if (b == 'a') {
-				if (c == 'r')
+				if (c == 'r') {
 					return 2;
-				if (c == 'y')
+				}
+				if (c == 'y') {
 					return 4;
+				}
 				return -1;
 			}
 			return -1;
 		case 'A':
-			if (b == 'p' & c == 'r')
+			if (b == 'p' & c == 'r') {
 				return 3;
-			if (b == 'u' & c == 'g')
+			}
+			if (b == 'u' & c == 'g') {
 				return 7;
+			}
 			return -1;
 		case 'S':
-			if (b == 'e' & c == 'p')
+			if (b == 'e' & c == 'p') {
 				return 8;
+			}
 			return -1;
 		case 'O':
-			if (b == 'c' & c == 't')
+			if (b == 'c' & c == 't') {
 				return 9;
+			}
 			return -1;
 		case 'N':
-			if (b == 'o' & c == 'v')
+			if (b == 'o' & c == 'v') {
 				return 10;
+			}
 			return -1;
 		case 'D':
-			if (b == 'e' & c == 'c')
+			if (b == 'e' & c == 'c') {
 				return 11;
+			}
 			return -1;
 		default:
 			return -1;

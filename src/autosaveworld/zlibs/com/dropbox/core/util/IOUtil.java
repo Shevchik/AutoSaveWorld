@@ -1,6 +1,10 @@
 package autosaveworld.zlibs.com.dropbox.core.util;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 
 public class IOUtil {
 
@@ -19,8 +23,9 @@ public class IOUtil {
 				throw new ReadException(ex);
 			}
 
-			if (count == -1)
+			if (count == -1) {
 				break;
+			}
 
 			try {
 				out.write(copyBuffer, 0, count);
@@ -35,6 +40,7 @@ public class IOUtil {
 	}
 
 	private static final ThreadLocal<byte[]> slurpBuffer = new ThreadLocal<byte[]>() {
+		@Override
 		protected byte[] initialValue() {
 			return new byte[4096];
 		}
@@ -93,10 +99,11 @@ public class IOUtil {
 		@Override
 		public String getMessage() {
 			String m = underlying.getMessage();
-			if (m == null)
+			if (m == null) {
 				return "";
-			else
+			} else {
 				return m;
+			}
 		}
 
 		@Override
@@ -130,26 +137,32 @@ public class IOUtil {
 	}
 
 	public static final InputStream EmptyInputStream = new InputStream() {
+		@Override
 		public int read() {
 			return -1;
 		}
 
+		@Override
 		public int read(byte[] data) {
 			return -1;
 		}
 
+		@Override
 		public int read(byte[] data, int off, int len) {
 			return -1;
 		}
 	};
 
 	public static final OutputStream BlackHoleOutputStream = new OutputStream() {
+		@Override
 		public void write(int b) {
 		}
 
+		@Override
 		public void write(byte[] data) {
 		}
 
+		@Override
 		public void write(byte[] data, int off, int len) {
 		}
 	};

@@ -1,6 +1,9 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.FilterReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 /**
  * Handler class that can be used to decorate input sources. Typical use is to
@@ -16,7 +19,7 @@ public abstract class InputDecorator implements java.io.Serializable // since
 	 * Method called by {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory} instance
 	 * when creating parser given an {@link InputStream}, when this decorator
 	 * has been registered.
-	 * 
+	 *
 	 * @param ctxt
 	 *            IO context in use (provides access to declared encoding).
 	 *            NOTE: at this point context may not have all information
@@ -25,7 +28,7 @@ public abstract class InputDecorator implements java.io.Serializable // since
 	 *            method is called.
 	 * @param in
 	 *            Original input source
-	 * 
+	 *
 	 * @return InputStream to use; either 'in' as is, or decorator version that
 	 *         typically delogates to 'in'
 	 */
@@ -37,7 +40,7 @@ public abstract class InputDecorator implements java.io.Serializable // since
 	 * when creating parser on given "raw" byte source. Method can either
 	 * construct a {@link InputStream} for reading; or return null to indicate
 	 * that no wrapping should occur.
-	 * 
+	 *
 	 * @param ctxt
 	 *            IO context in use (provides access to declared encoding) NOTE:
 	 *            at this point context may not have all information
@@ -50,7 +53,7 @@ public abstract class InputDecorator implements java.io.Serializable // since
 	 *            Offset of the first available byte in the input buffer
 	 * @param length
 	 *            Number of bytes available in the input buffer
-	 * 
+	 *
 	 * @return Either {@link InputStream} to use as input source; or null to
 	 *         indicate that contents are to be processed as-is by caller
 	 */
@@ -61,7 +64,7 @@ public abstract class InputDecorator implements java.io.Serializable // since
 	 * Method called by {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory} instance
 	 * when creating parser given an {@link Reader}, when this decorator has
 	 * been registered.
-	 * 
+	 *
 	 * @param ctxt
 	 *            IO context in use (provides access to declared encoding) NOTE:
 	 *            at this point context may not have all information
@@ -70,7 +73,7 @@ public abstract class InputDecorator implements java.io.Serializable // since
 	 *            method is called.
 	 * @param r
 	 *            Original reader
-	 * 
+	 *
 	 * @return Reader to use; either passed in argument, or something that calls
 	 *         it (for example, a {@link FilterReader})
 	 */

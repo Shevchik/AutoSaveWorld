@@ -1,6 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.StringWriter;
+import java.io.Writer;
 
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.BufferRecycler;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;

@@ -42,9 +42,11 @@ public final class Maybe<T> {
 		return new Maybe<T>(true, value);
 	}
 
+	@Override
 	public boolean equals(Object other) {
-		if (other.getClass() != this.getClass())
+		if (other.getClass() != this.getClass()) {
 			return false;
+		}
 		return equals((Maybe<?>) other);
 	}
 
@@ -53,13 +55,16 @@ public final class Maybe<T> {
 	}
 
 	private static boolean eq(Object a, Object b) {
-		if (a == null)
+		if (a == null) {
 			return (b == null);
-		if (b == null)
+		}
+		if (b == null) {
 			return false;
+		}
 		return a.equals(b);
 	}
 
+	@Override
 	public String toString() {
 		if (isJust) {
 			return "Just(" + value + ")";
@@ -68,6 +73,7 @@ public final class Maybe<T> {
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		if (!isJust) {
 			return 0;

@@ -115,8 +115,9 @@ public class StringUtil {
 	 * regular {@code String.equals} is not secure.
 	 */
 	public static boolean secureStringEquals(String a, String b) {
-		if (a.length() != b.length())
+		if (a.length() != b.length()) {
 			return false;
+		}
 
 		// Prevent timing attacks by making sure the running time of this loop
 		// doesn't
@@ -146,12 +147,15 @@ public class StringUtil {
 	}
 
 	public static String base64EncodeGeneric(String digits, byte[] data) {
-		if (data == null)
+		if (data == null) {
 			throw new IllegalArgumentException("'data' can't be null");
-		if (digits == null)
+		}
+		if (digits == null) {
 			throw new IllegalArgumentException("'digits' can't be null");
-		if (digits.length() != 64)
+		}
+		if (digits.length() != 64) {
 			throw new IllegalArgumentException("'digits' must be 64 characters long: " + jq(digits));
+		}
 
 		int numGroupsOfThreeInputBytes = (data.length + 2) / 3;
 		int numOutputChars = numGroupsOfThreeInputBytes * 4;
@@ -160,9 +164,9 @@ public class StringUtil {
 		// Do chunks of three bytes at a time.
 		int i = 0;
 		while ((i + 3) <= data.length) {
-			int b1 = ((int) data[i++]) & 0xff;
-			int b2 = ((int) data[i++]) & 0xff;
-			int b3 = ((int) data[i++]) & 0xff;
+			int b1 = (data[i++]) & 0xff;
+			int b2 = (data[i++]) & 0xff;
+			int b3 = (data[i++]) & 0xff;
 
 			int d1 = b1 >>> 2;
 			int d2 = ((b1 & 0x3) << 4) | (b2 >>> 4);
@@ -180,7 +184,7 @@ public class StringUtil {
 		if (remaining == 0) {
 			// All done.
 		} else if (remaining == 1) {
-			int b1 = ((int) data[i++]) & 0xff;
+			int b1 = (data[i++]) & 0xff;
 
 			int d1 = b1 >>> 2;
 			int d2 = (b1 & 0x3) << 4;
@@ -189,8 +193,8 @@ public class StringUtil {
 			buf.append(digits.charAt(d2));
 			buf.append("==");
 		} else if (remaining == 2) {
-			int b1 = ((int) data[i++]) & 0xff;
-			int b2 = ((int) data[i++]) & 0xff;
+			int b1 = (data[i++]) & 0xff;
+			int b2 = (data[i++]) & 0xff;
 
 			int d1 = b1 >>> 2;
 			int d2 = ((b1 & 0x3) << 4) | (b2 >>> 4);

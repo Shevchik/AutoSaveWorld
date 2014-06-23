@@ -275,26 +275,31 @@ public final class TextBuffer {
 	 */
 	public boolean hasTextAsCharacters() {
 		// if we have array in some form, sure
-		if (_inputStart >= 0 || _resultArray != null)
+		if (_inputStart >= 0 || _resultArray != null) {
 			return true;
+		}
 		// not if we have String as value
-		if (_resultString != null)
+		if (_resultString != null) {
 			return false;
+		}
 		return true;
 	}
 
 	public char[] getTextBuffer() {
 		// Are we just using shared input buffer?
-		if (_inputStart >= 0)
+		if (_inputStart >= 0) {
 			return _inputBuffer;
-		if (_resultArray != null)
+		}
+		if (_resultArray != null) {
 			return _resultArray;
+		}
 		if (_resultString != null) {
 			return (_resultArray = _resultString.toCharArray());
 		}
 		// Nope; but does it fit in just one segment?
-		if (!_hasSegments)
+		if (!_hasSegments) {
 			return _currentSegment;
+		}
 		// Nope, need to have/create a non-segmented array and return it
 		return contentsAsArray();
 	}
@@ -585,16 +590,17 @@ public final class TextBuffer {
 	 * Method called to expand size of the current segment, to accommodate for
 	 * more contiguous content. Usually only used when parsing tokens like names
 	 * if even then.
-	 * 
+	 *
 	 * @param minSize
 	 *            Required minimum strength of the current segment
-	 * 
+	 *
 	 * @since 2.4.0
 	 */
 	public char[] expandCurrentSegment(int minSize) {
 		char[] curr = _currentSegment;
-		if (curr.length >= minSize)
+		if (curr.length >= minSize) {
 			return curr;
+		}
 		_currentSegment = curr = Arrays.copyOf(curr, minSize);
 		return curr;
 	}

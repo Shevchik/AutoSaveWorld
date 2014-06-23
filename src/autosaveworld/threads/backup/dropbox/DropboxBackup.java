@@ -46,7 +46,7 @@ public class DropboxBackup {
 			DbxClient client = new DbxClient(dconfig, config.backupDropboxAPPTOKEN);
 			//create dirs
 			client.createFolder("/"+config.backupDropboxPath);
-			client.createFolder("/"+config.backupDropboxPath+"/backups");			
+			client.createFolder("/"+config.backupDropboxPath+"/backups");
 			//delete oldest backup
 			List<DbxEntry> entries = client.getMetadataWithChildren("/"+config.backupDropboxPath+"/backups").children;
 			String[] listnames = new String[entries.size()];

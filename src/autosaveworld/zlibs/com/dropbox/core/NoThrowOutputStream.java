@@ -8,13 +8,13 @@ import java.io.OutputStream;
  * {@code IOException}s to our own {@link HiddenException}, which is a subclass
  * of {@code RuntimeException}. This means that the methods don't have
  * {@code IOException} in their {@code throws} clauses.
- * 
+ *
  * <p>
  * NOTE: The name is slightly misleading in that these methods still might throw
  * an {@code IOException} wrapped in a {@code HiddenException}, just not an
  * {@code IOException} directly.
  * </p>
- * 
+ *
  * <p>
  * Also, it does have {@code IOException} in the {@code throws} clause of
  * {@link #close}, but you're not supposed to call that method.

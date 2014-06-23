@@ -5,7 +5,12 @@
 
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -15,16 +20,16 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.type.TypeReference;
 /**
  * Base class that defines public API for reading JSON content. Instances are
  * created using factory methods of a {@link JsonFactory} instance.
- * 
+ *
  * @author Tatu Saloranta
  */
 public abstract class JsonParser implements Closeable, Versioned {
-	private final static int MIN_BYTE_I = (int) Byte.MIN_VALUE;
+	private final static int MIN_BYTE_I = Byte.MIN_VALUE;
 	// as per [JACKSON-804], allow range up to and including 255
-	private final static int MAX_BYTE_I = (int) 255;
+	private final static int MAX_BYTE_I = 255;
 
-	private final static int MIN_SHORT_I = (int) Short.MIN_VALUE;
-	private final static int MAX_SHORT_I = (int) Short.MAX_VALUE;
+	private final static int MIN_SHORT_I = Short.MIN_VALUE;
+	private final static int MAX_SHORT_I = Short.MAX_VALUE;
 
 	/**
 	 * Enumeration of possible "native" (optimal) types that can be used for
@@ -171,7 +176,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 		 * Note that enabling this feature will incur performance overhead due
 		 * to having to store and check additional information: this typically
 		 * adds 20-30% to execution time for basic parsing.
-		 * 
+		 *
 		 * @since 2.3
 		 */
 		STRICT_DUPLICATE_DETECTION(false), ;
@@ -287,10 +292,10 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * <p>
 	 * If parser does not support specified schema,
 	 * {@link UnsupportedOperationException} is thrown.
-	 * 
+	 *
 	 * @param schema
 	 *            Schema to use
-	 * 
+	 *
 	 * @throws UnsupportedOperationException
 	 *             if parser does not support schema
 	 */
@@ -303,7 +308,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	/**
 	 * Method for accessing Schema that this parser uses, if any. Default
 	 * implementation returns null.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public FormatSchema getSchema() {
@@ -313,10 +318,10 @@ public abstract class JsonParser implements Closeable, Versioned {
 	/**
 	 * Method that can be used to verify that given schema can be used with this
 	 * parser (using {@link #setSchema}).
-	 * 
+	 *
 	 * @param schema
 	 *            Schema to check
-	 * 
+	 *
 	 * @return True if this parser can use given schema; false if not
 	 */
 	public boolean canUseSchema(FormatSchema schema) {
@@ -333,11 +338,11 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * needed for binding data parsed using {@link JsonParser} constructed by
 	 * this factory (which typically also implies the same for serialization
 	 * with {@link JsonGenerator}).
-	 * 
+	 *
 	 * @return True if custom codec is needed with parsers and generators
 	 *         created by this factory; false if a general {@link ObjectCodec}
 	 *         is enough
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public boolean requiresCustomCodec() {
@@ -389,11 +394,11 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * content of interest using parser. Content is released by writing it to
 	 * given stream if possible; if underlying input is byte-based it can
 	 * released, if not (char-based) it can not.
-	 * 
+	 *
 	 * @return -1 if the underlying content source is not byte based (that is,
 	 *         input can not be sent to {@link OutputStream}; otherwise number
 	 *         of bytes released (0 if there was nothing to release)
-	 * 
+	 *
 	 * @throws IOException
 	 *             if write to stream threw exception
 	 */
@@ -407,11 +412,11 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * content of interest using parser. Content is released by writing it to
 	 * given writer if possible; if underlying input is char-based it can
 	 * released, if not (byte-based) it can not.
-	 * 
+	 *
 	 * @return -1 if the underlying content source is not char-based (that is,
 	 *         input can not be sent to {@link Writer}; otherwise number of
 	 *         chars released (0 if there was nothing to release)
-	 * 
+	 *
 	 * @throws IOException
 	 *             if write using Writer threw exception
 	 */
@@ -447,10 +452,11 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * for list of features)
 	 */
 	public JsonParser configure(Feature f, boolean state) {
-		if (state)
+		if (state) {
 			enable(f);
-		else
+		} else {
 			disable(f);
+		}
 		return this;
 	}
 
@@ -463,10 +469,10 @@ public abstract class JsonParser implements Closeable, Versioned {
 
 	/**
 	 * Bulk access method for getting state of all standard {@link Feature}s.
-	 * 
+	 *
 	 * @return Bit mask that defines current states of all standard
 	 *         {@link Feature}s.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public int getFeatureMask() {
@@ -475,9 +481,9 @@ public abstract class JsonParser implements Closeable, Versioned {
 
 	/**
 	 * Bulk set method for (re)settting states of all standard {@link Feature}s
-	 * 
+	 *
 	 * @since 2.3
-	 * 
+	 *
 	 * @return This parser object, to allow chaining of calls
 	 */
 	public JsonParser setFeatureMask(int mask) {
@@ -495,7 +501,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * Main iteration method, which will advance stream enough to determine type
 	 * of the next token, if any. If none remaining (stream has no content other
 	 * than possible white space before ending), null will be returned.
-	 * 
+	 *
 	 * @return Next token from the stream, if any found, or null to indicate
 	 *         end-of-input
 	 */
@@ -510,7 +516,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * value for the field. Method is most useful for iterating over value
 	 * entries of JSON objects; field name will still be available by calling
 	 * {@link #getCurrentName} when parser points to the value.
-	 * 
+	 *
 	 * @return Next non-field-name token from the stream, if any found, or null
 	 *         to indicate end-of-input (or, for non-blocking parsers,
 	 *         {@link JsonToken#NOT_AVAILABLE} if no tokens were available yet)
@@ -522,15 +528,15 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * Method that fetches next token (as if calling {@link #nextToken}) and
 	 * verifies whether it is {@link JsonToken#FIELD_NAME} with specified name
 	 * and returns result of that comparison. It is functionally equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * return (nextToken() == JsonToken.FIELD_NAME)
 	 * 		&amp;&amp; str.getValue().equals(getCurrentName());
 	 * </pre>
-	 * 
+	 *
 	 * but may be faster for parser to verify, and can therefore be used if
 	 * caller expects to get such a property name from input next.
-	 * 
+	 *
 	 * @param str
 	 *            Property name to compare next token to (if next token is
 	 *            <code>JsonToken.FIELD_NAME<code>)
@@ -545,11 +551,11 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * Method that fetches next token (as if calling {@link #nextToken}) and if
 	 * it is {@link JsonToken#VALUE_STRING} returns contained String value;
 	 * otherwise returns null. It is functionally equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * return (nextToken() == JsonToken.VALUE_STRING) ? getText() : null;
 	 * </pre>
-	 * 
+	 *
 	 * but may be faster for parser to process, and can therefore be used if
 	 * caller expects to get a String value next from input.
 	 */
@@ -562,12 +568,12 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * it is {@link JsonToken#VALUE_NUMBER_INT} returns 32-bit int value;
 	 * otherwise returns specified default value It is functionally equivalent
 	 * to:
-	 * 
+	 *
 	 * <pre>
 	 * return (nextToken() == JsonToken.VALUE_NUMBER_INT) ? getIntValue()
 	 * 		: defaultValue;
 	 * </pre>
-	 * 
+	 *
 	 * but may be faster for parser to process, and can therefore be used if
 	 * caller expects to get a String value next from input.
 	 */
@@ -582,12 +588,12 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * it is {@link JsonToken#VALUE_NUMBER_INT} returns 64-bit long value;
 	 * otherwise returns specified default value It is functionally equivalent
 	 * to:
-	 * 
+	 *
 	 * <pre>
 	 * return (nextToken() == JsonToken.VALUE_NUMBER_INT) ? getLongValue()
 	 * 		: defaultValue;
 	 * </pre>
-	 * 
+	 *
 	 * but may be faster for parser to process, and can therefore be used if
 	 * caller expects to get a String value next from input.
 	 */
@@ -602,7 +608,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * it is {@link JsonToken#VALUE_TRUE} or {@link JsonToken#VALUE_FALSE}
 	 * returns matching Boolean value; otherwise return null. It is functionally
 	 * equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * JsonToken t = nextToken();
 	 * if (t == JsonToken.VALUE_TRUE)
@@ -611,7 +617,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * 	return Boolean.FALSE;
 	 * return null;
 	 * </pre>
-	 * 
+	 *
 	 * but may be faster for parser to process, and can therefore be used if
 	 * caller expects to get a String value next from input.
 	 */
@@ -658,7 +664,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * Accessor to find which token parser currently points to, if any; null
 	 * will be returned if none. If return value is non-null, data associated
 	 * with the token is available via other accessor methods.
-	 * 
+	 *
 	 * @return Type of the token this parser currently points to, if any: null
 	 *         before any tokens have been read, and after end-of-input has been
 	 *         encountered, as well as if the current token has been explicitly
@@ -674,9 +680,9 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * this method may be useful when building low-overhead codecs. Note,
 	 * however, that effect may not be big enough to matter: make sure to
 	 * profile performance before deciding to use this method.
-	 * 
+	 *
 	 * @since 2.3
-	 * 
+	 *
 	 * @return <code>int</code> matching one of constants from
 	 *         {@link JsonTokenId}.
 	 */
@@ -686,7 +692,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * Method for checking whether parser currently points to a token (and data
 	 * for that token is available). Equivalent to check for
 	 * <code>parser.getCurrentToken() != null</code>.
-	 * 
+	 *
 	 * @return True if the parser just returned a valid token via
 	 *         {@link #nextToken}; false otherwise (parser was just constructed,
 	 *         encountered end-of-input and returned null from
@@ -734,13 +740,13 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * usually done to emulate arrays.
 	 * <p>
 	 * Default implementation is equivalent to:
-	 * 
+	 *
 	 * <pre>
 	 * getCurrentToken() == JsonToken.START_ARRAY
 	 * </pre>
-	 * 
+	 *
 	 * but may be overridden by custom parser implementations.
-	 * 
+	 *
 	 * @return True if the current token can be considered as a start-array
 	 *         marker (such {@link JsonToken#START_ARRAY}); false if not.
 	 */
@@ -782,7 +788,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * <p>
 	 * Note that use of this method should only be done as sort of last resort,
 	 * as it is a work-around for regular operation.
-	 * 
+	 *
 	 * @param name
 	 *            Name to use as the current name; may be null.
 	 */
@@ -827,7 +833,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	/**
 	 * Accessor used with {@link #getTextCharacters}, to know length of String
 	 * stored in returned buffer.
-	 * 
+	 *
 	 * @return Number of characters within buffer returned by
 	 *         {@link #getTextCharacters} that are part of textual content of
 	 *         the current token.
@@ -837,7 +843,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	/**
 	 * Accessor used with {@link #getTextCharacters}, to know offset of the
 	 * first text content character within buffer.
-	 * 
+	 *
 	 * @return Offset of the first character within buffer returned by
 	 *         {@link #getTextCharacters} that is part of textual content of the
 	 *         current token.
@@ -853,7 +859,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * implementation class has knowledge of its internal buffering state.
 	 * Implementations are strongly encouraged to properly override this method,
 	 * to allow efficient copying of content by other code.
-	 * 
+	 *
 	 * @return True if parser currently has character array that can be
 	 *         efficiently returned via {@link #getTextCharacters}; false means
 	 *         that it may or may not exist
@@ -1017,10 +1023,12 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 */
 	public boolean getBooleanValue() throws IOException {
 		JsonToken t = getCurrentToken();
-		if (t == JsonToken.VALUE_TRUE)
+		if (t == JsonToken.VALUE_TRUE) {
 			return true;
-		if (t == JsonToken.VALUE_FALSE)
+		}
+		if (t == JsonToken.VALUE_FALSE) {
 			return false;
+		}
 		throw new JsonParseException("Current token (" + t
 				+ ") not of boolean type", getCurrentLocation());
 	}
@@ -1054,12 +1062,12 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * implementation, for example, clears up textual content during decoding.
 	 * Decoded binary content, however, will be retained until parser is
 	 * advanced to the next event.
-	 * 
+	 *
 	 * @param bv
 	 *            Expected variant of base64 encoded content (see
 	 *            {@link Base64Variants} for definitions of "standard"
 	 *            variants).
-	 * 
+	 *
 	 * @return Decoded binary data
 	 */
 	public abstract byte[] getBinaryValue(Base64Variant bv) throws IOException;
@@ -1081,13 +1089,13 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * remain accessible after method returns: any content processed will be
 	 * consumed and is not buffered in any way. If caller needs buffering, it
 	 * has to implement it.
-	 * 
+	 *
 	 * @param out
 	 *            Output stream to use for passing decoded binary data
-	 * 
+	 *
 	 * @return Number of bytes that were decoded and written via
 	 *         {@link OutputStream}
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public int readBinaryValue(OutputStream out) throws IOException {
@@ -1097,15 +1105,15 @@ public abstract class JsonParser implements Closeable, Versioned {
 	/**
 	 * Similar to {@link #readBinaryValue(OutputStream)} but allows explicitly
 	 * specifying base64 variant to use.
-	 * 
+	 *
 	 * @param bv
 	 *            base64 variant to use
 	 * @param out
 	 *            Output stream to use for passing decoded binary data
-	 * 
+	 *
 	 * @return Number of bytes that were decoded and written via
 	 *         {@link OutputStream}
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public int readBinaryValue(Base64Variant bv, OutputStream out)
@@ -1239,7 +1247,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * converted to a String value (including structured types like Objects and
 	 * Arrays and null token), default value of <b>null</b> will be returned; no
 	 * exceptions are thrown.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public String getValueAsString() throws IOException {
@@ -1253,7 +1261,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * converted to a String value (including structured types like Objects and
 	 * Arrays and null token), specified default value will be returned; no
 	 * exceptions are thrown.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public abstract String getValueAsString(String def) throws IOException;
@@ -1273,7 +1281,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * support native Object Ids. Caller is expected to either use a non-native
 	 * notation (explicit property or such), or fail, in case it can not use
 	 * native object ids.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean canReadObjectId() {
@@ -1289,7 +1297,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * support native Type Ids. Caller is expected to either use a non-native
 	 * notation (explicit property or such), or fail, in case it can not use
 	 * native type ids.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public boolean canReadTypeId() {
@@ -1305,7 +1313,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * code.
 	 * <p>
 	 * Default implementation will simply return null.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public Object getObjectId() throws IOException {
@@ -1320,7 +1328,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	 * if so, it will return null. This may be used to simplify calling code.
 	 * <p>
 	 * Default implementation will simply return null.
-	 * 
+	 *
 	 * @since 2.3
 	 */
 	public Object getTypeId() throws IOException {
@@ -1429,7 +1437,7 @@ public abstract class JsonParser implements Closeable, Versioned {
 	/**
 	 * Helper method to call for operations that are not supported by parser
 	 * implementation.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected void _reportUnsupportedOperation() {

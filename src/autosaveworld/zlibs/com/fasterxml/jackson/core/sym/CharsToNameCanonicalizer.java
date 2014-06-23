@@ -83,7 +83,7 @@ public final class CharsToNameCanonicalizer {
 	 * <p>
 	 * Also note that value was lowered from 255 (2.3 and earlier) to 100 for
 	 * 2.4
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	final static int MAX_COLL_CHAIN_LENGTH = 100;
@@ -108,7 +108,7 @@ public final class CharsToNameCanonicalizer {
 	 * different runs, but still stable for lifetime of a single symbol table
 	 * instance. This is done for security reasons, to avoid potential DoS
 	 * attack via hash collisions.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	final private int _hashSeed;
@@ -161,7 +161,7 @@ public final class CharsToNameCanonicalizer {
 	/**
 	 * We need to keep track of the longest collision list; this is needed both
 	 * to indicate problems with attacks and to allow flushing for other cases.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	protected int _longestCollisionList;
@@ -190,7 +190,7 @@ public final class CharsToNameCanonicalizer {
 	 * Lazily constructed structure that is used to keep track of collision
 	 * buckets that have overflowed once: this is used to detect likely attempts
 	 * at denial-of-service attacks that uses hash collisions.
-	 * 
+	 *
 	 * @since 2.4
 	 */
 	protected BitSet _overflows;
@@ -396,7 +396,7 @@ public final class CharsToNameCanonicalizer {
 	/**
 	 * Method for checking number of primary hash buckets this symbol table
 	 * uses.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public int bucketCount() {
@@ -415,7 +415,7 @@ public final class CharsToNameCanonicalizer {
 	 * Method mostly needed by unit tests; calculates number of entries that are
 	 * in collision list. Value can be at most ({@link #size} - 1), but should
 	 * usually be much lower, ideally 0.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public int collisionCount() {
@@ -433,7 +433,7 @@ public final class CharsToNameCanonicalizer {
 	 * Method mostly needed by unit tests; calculates length of the longest
 	 * collision chain. This should typically be a low number, but may be up to
 	 * {@link #size} - 1 in the pathological case
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public int maxCollisionLength() {
@@ -585,7 +585,7 @@ public final class CharsToNameCanonicalizer {
 	 * the time intention is that this calculation is done by caller during
 	 * parsing, not here; however, sometimes it needs to be done for parsed
 	 * "String" too.
-	 * 
+	 *
 	 * @param len
 	 *            Length of String; has to be at least 1 (caller guarantees this
 	 *            pre-condition)
@@ -593,7 +593,7 @@ public final class CharsToNameCanonicalizer {
 	public int calcHash(char[] buffer, int start, int len) {
 		int hash = _hashSeed;
 		for (int i = start, end = start + len; i < end; ++i) {
-			hash = (hash * HASH_MULT) + (int) buffer[i];
+			hash = (hash * HASH_MULT) + buffer[i];
 		}
 		// NOTE: shuffling, if any, is done in 'findSymbol()', not here:
 		return (hash == 0) ? 1 : hash;
@@ -604,7 +604,7 @@ public final class CharsToNameCanonicalizer {
 
 		int hash = _hashSeed;
 		for (int i = 0; i < len; ++i) {
-			hash = (hash * HASH_MULT) + (int) key.charAt(i);
+			hash = (hash * HASH_MULT) + key.charAt(i);
 		}
 		// NOTE: shuffling, if any, is done in 'findSymbol()', not here:
 		return (hash == 0) ? 1 : hash;
@@ -730,22 +730,22 @@ public final class CharsToNameCanonicalizer {
 	 * @Override public String toString() { StringBuilder sb = new
 	 * StringBuilder(); int primaryCount = 0; for (String s : _symbols) { if (s
 	 * != null) ++primaryCount; }
-	 * 
+	 *
 	 * sb.append("[BytesToNameCanonicalizer, size: "); sb.append(_size);
 	 * sb.append('/'); sb.append(_symbols.length); sb.append(", ");
 	 * sb.append(primaryCount); sb.append('/'); sb.append(_size - primaryCount);
 	 * sb.append(" coll; avg length: ");
-	 * 
+	 *
 	 * // Average length: minimum of 1 for all (1 == primary hit); // and then 1
 	 * per each traversal for collisions/buckets //int maxDist = 1; int
 	 * pathCount = _size; for (Bucket b : _buckets) { if (b != null) { int
 	 * spillLen = b.length; for (int j = 1; j <= spillLen; ++j) { pathCount +=
 	 * j; } } } double avgLength;
-	 * 
+	 *
 	 * if (_size == 0) { avgLength = 0.0; } else { avgLength = (double)
 	 * pathCount / (double) _size; } // let's round up a bit (two 2 decimal
 	 * places) //avgLength -= (avgLength % 0.01);
-	 * 
+	 *
 	 * sb.append(avgLength); sb.append(']'); return sb.toString(); }
 	 */
 

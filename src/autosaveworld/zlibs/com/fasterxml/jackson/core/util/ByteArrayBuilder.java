@@ -6,7 +6,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
 import java.io.OutputStream;
-import java.util.*;
+import java.util.LinkedList;
 
 /**
  * Helper class that is similar to {@link java.io.ByteArrayOutputStream} in
@@ -173,10 +173,10 @@ public final class ByteArrayBuilder extends OutputStream {
 	/**
 	 * Method that will complete "manual" output process, coalesce content (if
 	 * necessary) and return results as a contiguous buffer.
-	 * 
+	 *
 	 * @param lastBlockLength
 	 *            Amount of content in the current segment buffer.
-	 * 
+	 *
 	 * @return Coalesced contents
 	 */
 	public byte[] completeAndCoalesce(int lastBlockLength) {
@@ -218,8 +218,9 @@ public final class ByteArrayBuilder extends OutputStream {
 				_currBlockPtr += toCopy;
 				len -= toCopy;
 			}
-			if (len <= 0)
+			if (len <= 0) {
 				break;
+			}
 			_allocMore();
 		}
 	}
