@@ -1,6 +1,7 @@
 package autosaveworld.zlibs.com.dropbox.core.util;
 
 public final class Maybe<T> {
+
 	private final boolean isJust;
 	private final T value;
 
@@ -24,10 +25,12 @@ public final class Maybe<T> {
 	}
 
 	public T get(T def) {
-		if (isJust)
+		if (isJust) {
 			return value;
-		else
+		}
+		else {
 			return def;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,10 +69,13 @@ public final class Maybe<T> {
 	}
 
 	public int hashCode() {
-		if (!isJust)
+		if (!isJust) {
 			return 0;
-		if (value == null)
+		}
+		if (value == null) {
 			return 1;
+		}
 		return value.hashCode();
 	}
+
 }

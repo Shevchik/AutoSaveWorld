@@ -2036,12 +2036,6 @@ public class Session implements Runnable {
 		write(packet);
 	}
 
-	private HostKey hostkey = null;
-
-	public HostKey getHostKey() {
-		return hostkey;
-	}
-
 	public String getHost() {
 		return host;
 	}

@@ -37,20 +37,17 @@ public class DbxPath {
 
 	public static void checkArg(String argName, String value) {
 		if (value == null) {
-			throw new IllegalArgumentException("'" + argName
-					+ "' should not be null");
+			throw new IllegalArgumentException("'" + argName + "' should not be null");
 		}
 		String error = findError(value);
 		if (error != null) {
-			throw new IllegalArgumentException("'" + argName + "': bad path: "
-					+ error + ": " + jq(value));
+			throw new IllegalArgumentException("'" + argName + "': bad path: " + error + ": " + jq(value));
 		}
 	}
 
 	public static void checkArgNonRoot(String argName, String value) {
 		if ("/".equals(value)) {
-			throw new IllegalArgumentException("'" + argName
-					+ "' should not be the root path (\"/\")");
+			throw new IllegalArgumentException("'" + argName + "' should not be the root path (\"/\")");
 		}
 		checkArg(argName, value);
 	}
@@ -67,12 +64,9 @@ public class DbxPath {
 		if (path == null)
 			throw new IllegalArgumentException("'path' can't be null");
 		if (!path.startsWith("/"))
-			throw new IllegalArgumentException(
-					"Not a valid path.  Doesn't start with a \"/\": \"" + path
-							+ "\"");
+			throw new IllegalArgumentException("Not a valid path.  Doesn't start with a \"/\": \"" + path + "\"");
 		if (path.length() > 1 && path.endsWith("/"))
-			throw new IllegalArgumentException(
-					"Not a valid path.  Ends with a \"/\": \"" + path + "\"");
+			throw new IllegalArgumentException("Not a valid path.  Ends with a \"/\": \"" + path + "\"");
 
 		int start = path.length() - 1;
 		while (path.charAt(start) != '/') {
@@ -85,12 +79,9 @@ public class DbxPath {
 		if (path == null)
 			throw new IllegalArgumentException("'path' can't be null");
 		if (!path.startsWith("/"))
-			throw new IllegalArgumentException(
-					"Not a valid path.  Doesn't start with a \"/\": \"" + path
-							+ "\"");
+			throw new IllegalArgumentException("Not a valid path.  Doesn't start with a \"/\": \"" + path + "\"");
 		if (path.length() > 1 && path.endsWith("/"))
-			throw new IllegalArgumentException(
-					"Not a valid path.  Ends with a \"/\": \"" + path + "\"");
+			throw new IllegalArgumentException("Not a valid path.  Ends with a \"/\": \"" + path + "\"");
 
 		if (path.length() == 1)
 			return new String[0];
@@ -111,12 +102,9 @@ public class DbxPath {
 		if (path == null)
 			throw new IllegalArgumentException("'path' can't be null");
 		if (!path.startsWith("/"))
-			throw new IllegalArgumentException(
-					"Not a valid path.  Doesn't start with a \"/\": \"" + path
-							+ "\"");
+			throw new IllegalArgumentException("Not a valid path.  Doesn't start with a \"/\": \"" + path + "\"");
 		if (path.length() > 1 && path.endsWith("/"))
-			throw new IllegalArgumentException(
-					"Not a valid path.  Ends with a \"/\": \"" + path + "\"");
+			throw new IllegalArgumentException("Not a valid path.  Ends with a \"/\": \"" + path + "\"");
 
 		int lastSlash = path.lastIndexOf("/");
 		if (path.length() == 1)

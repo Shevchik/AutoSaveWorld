@@ -8,12 +8,11 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
 public class StringUtil {
-	public static final Charset UTF8 = Charset.forName("UTF-8");
-	public static final char[] HexDigits = { '0', '1', '2', '3', '4', '5', '6',
-			'7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', };
 
-	public static String utf8ToString(byte[] utf8data)
-			throws CharacterCodingException {
+	public static final Charset UTF8 = Charset.forName("UTF-8");
+	public static final char[] HexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', };
+
+	public static String utf8ToString(byte[] utf8data) throws CharacterCodingException {
 		CharsetDecoder decoder = UTF8.newDecoder();
 		CharBuffer result = decoder.decode(ByteBuffer.wrap(utf8data));
 		return result.toString();
@@ -94,11 +93,9 @@ public class StringUtil {
 	 * input.
 	 */
 	public static String binaryToHex(byte[] data, int offset, int length) {
-		assert offset < data.length && offset >= 0 : offset + ", "
-				+ data.length;
+		assert offset < data.length && offset >= 0 : offset + ", " + data.length;
 		int end = offset + length;
-		assert end <= data.length && end >= 0 : offset + ", " + length + ", "
-				+ data.length;
+		assert end <= data.length && end >= 0 : offset + ", " + length + ", " + data.length;
 
 		char[] chars = new char[length * 2];
 		int j = 0;
@@ -137,8 +134,7 @@ public class StringUtil {
 	public static final String UrlSafeBase64Digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 	static {
 		assert Base64Digits.length() == 64 : Base64Digits.length();
-		assert UrlSafeBase64Digits.length() == 64 : UrlSafeBase64Digits
-				.length();
+		assert UrlSafeBase64Digits.length() == 64 : UrlSafeBase64Digits.length();
 	}
 
 	public static String base64Encode(byte[] data) {
@@ -155,8 +151,7 @@ public class StringUtil {
 		if (digits == null)
 			throw new IllegalArgumentException("'digits' can't be null");
 		if (digits.length() != 64)
-			throw new IllegalArgumentException(
-					"'digits' must be 64 characters long: " + jq(digits));
+			throw new IllegalArgumentException("'digits' must be 64 characters long: " + jq(digits));
 
 		int numGroupsOfThreeInputBytes = (data.length + 2) / 3;
 		int numOutputChars = numGroupsOfThreeInputBytes * 4;
@@ -206,8 +201,7 @@ public class StringUtil {
 			buf.append(digits.charAt(d3));
 			buf.append('=');
 		} else {
-			throw new AssertionError("data.length: " + data.length + ", i: "
-					+ i);
+			throw new AssertionError("data.length: " + data.length + ", i: " + i);
 		}
 
 		return buf.toString();

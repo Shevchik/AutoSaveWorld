@@ -20,8 +20,7 @@ public final class DbxHost {
 	 * The standard Dropbox hosts: "api.dropbox.com", "api-content.dropbox.com",
 	 * and "www.dropbox.com"
 	 */
-	public static final DbxHost Default = new DbxHost("api.dropbox.com",
-			"api-content.dropbox.com", "www.dropbox.com");
+	public static final DbxHost Default = new DbxHost("api.dropbox.com", "api-content.dropbox.com", "www.dropbox.com");
 
 	/**
 	 * The host name of the main Dropbox API server. The default is
@@ -60,8 +59,7 @@ public final class DbxHost {
 	}
 
 	public boolean equals(DbxHost o) {
-		return api.equals(o.api) && content.equals(o.content)
-				&& web.equals(o.web);
+		return api.equals(o.api) && content.equals(o.content) && web.equals(o.web);
 	}
 
 	private static DbxHost fromBaseHost(String s) {
@@ -70,8 +68,7 @@ public final class DbxHost {
 
 	public static final JsonReader<DbxHost> Reader = new JsonReader<DbxHost>() {
 		@Override
-		public DbxHost read(JsonParser parser) throws IOException,
-				JsonReadException {
+		public DbxHost read(JsonParser parser) throws IOException, JsonReadException {
 			JsonToken t = parser.getCurrentToken();
 			if (t == JsonToken.VALUE_STRING) {
 				String s = parser.getText();
@@ -91,17 +88,13 @@ public final class DbxHost {
 
 					try {
 						if (fieldName.equals("api")) {
-							api = JsonReader.StringReader.readField(parser,
-									fieldName, api);
+							api = JsonReader.StringReader.readField(parser, fieldName, api);
 						} else if (fieldName.equals("content")) {
-							content = JsonReader.StringReader.readField(parser,
-									fieldName, content);
+							content = JsonReader.StringReader.readField(parser, fieldName, content);
 						} else if (fieldName.equals("web")) {
-							web = JsonReader.StringReader.readField(parser,
-									fieldName, web);
+							web = JsonReader.StringReader.readField(parser, fieldName, web);
 						} else {
-							throw new JsonReadException("unknown field",
-									parser.getCurrentLocation());
+							throw new JsonReadException("unknown field", parser.getCurrentLocation());
 						}
 					} catch (JsonReadException ex) {
 						throw ex.addFieldContext(fieldName);
@@ -113,22 +106,19 @@ public final class DbxHost {
 				if (api == null)
 					throw new JsonReadException("missing field \"api\"", top);
 				if (content == null)
-					throw new JsonReadException("missing field \"content\"",
-							top);
+					throw new JsonReadException("missing field \"content\"", top);
 				if (web == null)
 					throw new JsonReadException("missing field \"web\"", top);
 
 				return new DbxHost(api, content, web);
 			} else {
-				throw new JsonReadException("expecting a string or an object",
-						parser.getTokenLocation());
+				throw new JsonReadException("expecting a string or an object", parser.getTokenLocation());
 			}
 		}
 	};
 
 	private String inferBaseHost() {
-		if (web.startsWith("meta-") && api.startsWith("api-")
-				&& content.startsWith("api-content-")) {
+		if (web.startsWith("meta-") && api.startsWith("api-") && content.startsWith("api-content-")) {
 			String webBase = web.substring("meta-".length());
 			String apiBase = web.substring("api-".length());
 			String contentBase = web.substring("api-content-".length());

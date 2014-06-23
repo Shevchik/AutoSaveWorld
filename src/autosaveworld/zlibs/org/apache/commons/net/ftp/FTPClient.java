@@ -16,7 +16,6 @@
  */
 package autosaveworld.zlibs.org.apache.commons.net.ftp;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -522,8 +521,7 @@ public class FTPClient extends FTP {
 		return false;
 	}
 
-	public boolean setFileType(int fileType, int formatOrByteSize)
-			throws IOException {
+	public boolean setFileType(int fileType, int formatOrByteSize) throws IOException {
 		if (FTPReply.isPositiveCompletion(type(fileType, formatOrByteSize))) {
 			return true;
 		}
@@ -587,47 +585,6 @@ public class FTPClient extends FTP {
 		return FTPReply.isPositiveCompletion(getReply());
 	}
 
-	public boolean retrieveFile(String remote, OutputStream local) throws IOException {
-		return _retrieveFile(FTPCmd.RETR.getCommand(), remote, local);
-	}
-
-	protected boolean _retrieveFile(String command, String remote, OutputStream local) throws IOException {
-		Socket socket = _openDataConnection_(command, remote);
-
-		if (socket == null) {
-			return false;
-		}
-
-		InputStream input = getBufferedInputStream(socket.getInputStream());
-
-		try {
-			Util.copyStream(input, local);
-		} finally {
-			Util.closeQuietly(input);
-			Util.closeQuietly(socket);
-		}
-
-		boolean ok = completePendingCommand();
-		return ok;
-	}
-
-	public InputStream retrieveFileStream(String remote) throws IOException {
-		return _retrieveFileStream(FTPCmd.RETR.getCommand(), remote);
-	}
-
-	protected InputStream _retrieveFileStream(String command, String remote) throws IOException {
-		Socket socket = _openDataConnection_(command, remote);
-
-		if (socket == null) {
-			return null;
-		}
-
-		InputStream input = socket.getInputStream();
-
-		return new autosaveworld.zlibs.org.apache.commons.net.io.SocketInputStream(
-				socket, input);
-	}
-
 	public boolean storeFile(String remote, InputStream local) throws IOException {
 		return __storeFile(FTPCmd.STOR, remote, local);
 	}
@@ -668,8 +625,7 @@ public class FTPClient extends FTP {
 		if (!initFeatureMap()) {
 			return null;
 		}
-		Set<String> entries = __featuresMap.get(feature
-				.toUpperCase(Locale.ENGLISH));
+		Set<String> entries = __featuresMap.get(feature.toUpperCase(Locale.ENGLISH));
 		if (entries != null) {
 			return entries.toArray(new String[entries.size()]);
 		}
@@ -695,8 +651,7 @@ public class FTPClient extends FTP {
 		if (!initFeatureMap()) {
 			return false;
 		}
-		Set<String> entries = __featuresMap.get(feature
-				.toUpperCase(Locale.ENGLISH));
+		Set<String> entries = __featuresMap.get(feature.toUpperCase(Locale.ENGLISH));
 		if (entries != null) {
 			return entries.contains(value);
 		}
@@ -879,8 +834,7 @@ public class FTPClient extends FTP {
 		return null;
 	}
 
-	public boolean setModificationTime(String pathname, String timeval)
-			throws IOException {
+	public boolean setModificationTime(String pathname, String timeval) throws IOException {
 		return (FTPReply.isPositiveCompletion(mfmt(pathname, timeval)));
 	}
 
@@ -933,13 +887,6 @@ public class FTPClient extends FTP {
 			return new BufferedOutputStream(outputStream, __bufferSize);
 		}
 		return new BufferedOutputStream(outputStream);
-	}
-
-	private InputStream getBufferedInputStream(InputStream inputStream) {
-		if (__bufferSize > 0) {
-			return new BufferedInputStream(inputStream, __bufferSize);
-		}
-		return new BufferedInputStream(inputStream);
 	}
 
 	public void setAutodetectUTF8(boolean autodetect) {

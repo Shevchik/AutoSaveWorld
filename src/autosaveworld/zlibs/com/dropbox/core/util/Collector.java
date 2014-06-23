@@ -7,8 +7,7 @@ public abstract class Collector<E, L> {
 
 	public abstract L finish();
 
-	public static final class ArrayListCollector<E> extends
-			Collector<E, ArrayList<E>> {
+	public static final class ArrayListCollector<E> extends Collector<E, ArrayList<E>> {
 		private ArrayList<E> list = new ArrayList<E>();
 
 		public void add(E element) {
