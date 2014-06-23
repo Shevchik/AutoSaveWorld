@@ -83,7 +83,7 @@ public class RunningProcess {
 	public void supplyInput(CommandSender sender, String line) {
 		sender.sendMessage("Sending line to the process");
 		try {
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), "UTF-8"));
 			writer.write(line);
 			writer.newLine();
 			writer.flush();
