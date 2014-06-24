@@ -114,6 +114,7 @@ public class AutoSaveWorldConfig {
 	//crashrestart
 	public boolean crashRestartEnabled = false;
 	public boolean crashRestartForceStop = false;
+	public boolean crashRestartFeezeMainThread = true;
 	public String crashRestartScriptPath= "";
 	public boolean crashRestartJustStop = false;
 	public long crashRestartTimeout = 60;
@@ -238,7 +239,8 @@ public class AutoSaveWorldConfig {
 
 		//crashrestart variables
 		crashRestartEnabled = config.getBoolean("crashrestart.enabled", crashRestartEnabled);
-		crashRestartForceStop = config.getBoolean("crashrestart.forcestop", crashRestartForceStop);
+		crashRestartForceStop = config.getBoolean("crashrestart.forcestop.enabled", crashRestartForceStop);
+		crashRestartFeezeMainThread = config.getBoolean("crashrestart.forcestop.freezemainthread", crashRestartFeezeMainThread);
 		crashRestartCheckerStartDelay = config.getInt("crashrestart.startdelay",crashRestartCheckerStartDelay);
 		crashRestartScriptPath = config.getString("crashrestart.scriptpath",crashRestartScriptPath);
 		crashRestartTimeout = config.getLong("crashrestart.timeout",crashRestartTimeout);
@@ -377,7 +379,8 @@ public class AutoSaveWorldConfig {
 
 		//crashrestart variables
 		config.set("crashrestart.enabled",crashRestartEnabled);
-		config.set("crashrestart.forcestop", crashRestartForceStop);
+		config.set("crashrestart.forcestop.enabled", crashRestartForceStop);
+		config.set("crashrestart.forcestop.freezemainthread", crashRestartFeezeMainThread);
 		config.set("crashrestart.startdelay",crashRestartCheckerStartDelay);
 		config.set("crashrestart.scriptpath",crashRestartScriptPath);
 		config.set("crashrestart.timeout",crashRestartTimeout);

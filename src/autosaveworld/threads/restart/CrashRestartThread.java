@@ -97,7 +97,9 @@ public class CrashRestartThread extends Thread{
 					Bukkit.shutdown();
 					if (config.crashRestartForceStop) {
 						//freeze main thread
-						bukkitMainThread.suspend();
+						if (config.crashRestartFeezeMainThread) {
+							bukkitMainThread.suspend();
+						}
 						//disable spigot async catcher
 						try {
 							AsyncCatcher.enabled = false;
@@ -128,7 +130,9 @@ public class CrashRestartThread extends Thread{
 							}
 						}
 						//resume main thread
-						bukkitMainThread.resume();
+						if (config.crashRestartFeezeMainThread) {
+							bukkitMainThread.resume();
+						}
 						//shutdown jvm
 						System.exit(0);
 					}
