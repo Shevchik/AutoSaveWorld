@@ -165,9 +165,8 @@ public class AutoSaveThread extends Thread {
 			worldDataField.setAccessible(true);
 			Object worldData = worldDataField.get(worldserver);
 			boolean methodfound = false;
-			for (Method method : dataManager.getClass().getSuperclass().getDeclaredMethods()) {
+			for (Method method : dataManager.getClass().getMethods()) {
 				if (method.getName().equals("saveWorldData") && method.getParameterTypes().length == 2) {
-					method.setAccessible(true);
 					method.invoke(dataManager, worldData, null);
 					methodfound = true;
 					break;
@@ -181,9 +180,8 @@ public class AutoSaveThread extends Thread {
 			Field chunkProviderField = worldserver.getClass().getSuperclass().getDeclaredField("chunkProvider");
 			chunkProviderField.setAccessible(true);
 			Object chunkProvider = chunkProviderField.get(worldserver);
-			for (Method method : chunkProvider.getClass().getDeclaredMethods()) {
+			for (Method method : chunkProvider.getClass().getMethods()) {
 				if (method.getName().equals("saveChunks") && method.getParameterTypes().length == 2) {
-					method.setAccessible(true);
 					method.invoke(chunkProvider, true, null);
 					methodfound = true;
 					break;
