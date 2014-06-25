@@ -64,13 +64,12 @@ public class AutoPurgeThread extends Thread {
 			}
 
 			if (run && (config.purgeEnabled || command)) {
-				plugin.lock.lock();
+				command = false;
 				try {
 					performPurge();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				plugin.lock.unlock();
 			}
 		}
 
@@ -82,8 +81,6 @@ public class AutoPurgeThread extends Thread {
 
 
 	public void performPurge() {
-
-		command = false;
 
 		MessageLogger.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
 

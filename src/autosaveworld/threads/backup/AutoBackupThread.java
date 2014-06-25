@@ -89,13 +89,12 @@ public class AutoBackupThread extends Thread {
 
 			counter = 0;
 			if (run && (config.backupEnabled || command)) {
-				plugin.lock.lock();
+				command = false;
 				try {
 					performBackup();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				plugin.lock.unlock();
 			}
 
 		}
@@ -105,8 +104,6 @@ public class AutoBackupThread extends Thread {
 
 
 	public void performBackup() {
-
-		command = false;
 
 		if (config.backupsaveBefore) {
 			plugin.saveThread.performSave();

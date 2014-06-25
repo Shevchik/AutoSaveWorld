@@ -68,13 +68,11 @@ public class AutoSaveThread extends Thread {
 			// save
 			if (run && (config.saveEnabled || command)) {
 				command = false;
-				plugin.lock.lock();
 				try {
 					performSave();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				plugin.lock.unlock();
 			}
 		}
 

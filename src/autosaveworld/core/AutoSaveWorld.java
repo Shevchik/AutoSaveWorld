@@ -17,8 +17,6 @@
 
 package autosaveworld.core;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
@@ -71,8 +69,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	public LocaleChanger localeChanger;
 	//command executor
 	public CommandsHandler ch;
-	//operation lock
-	public ReentrantLock lock = new ReentrantLock();
 
 	@Override
 	public void onEnable() {
