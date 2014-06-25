@@ -97,6 +97,7 @@ public class AutoSaveWorldConfig {
 	public boolean purgeBroadcast = true;
 	public boolean purgeWERemoveUnsafe = false;
 	public Set<String> purgeWERemoveUnsafeSafeIDs;
+	public boolean purgeUseOldAPI = false;
 	public boolean purgeWG = true;
 	public boolean purgeWGRegenRg = false;
 	public boolean purgeWGNoregenOverlap = true;
@@ -220,6 +221,7 @@ public class AutoSaveWorldConfig {
 			purgeWERemoveUnsafeSafeIDs.add("0-255");
 		}
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
+		purgeUseOldAPI = config.getBoolean("purge.useoldpluginsapi", purgeUseOldAPI);
 		purgeWG = config.getBoolean("purge.wg.enabled", purgeWG);
 		purgeWGRegenRg = config.getBoolean("purge.wg.regenpurgedregion", purgeWGRegenRg);
 		purgeWGNoregenOverlap = config.getBoolean("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);
@@ -358,6 +360,7 @@ public class AutoSaveWorldConfig {
 		config.set("purge.broadcast", purgeBroadcast);
 		config.set("purge.weregen.removeunsafeids", purgeWERemoveUnsafe);
 		config.set("purge.weregen.safeids", new ArrayList<String>(purgeWERemoveUnsafeSafeIDs));
+		config.set("purge.useoldpluginsapi", purgeUseOldAPI);
 		config.set("purge.wg.enabled", purgeWG);
 		config.set("purge.wg.regenpurgedregion", purgeWGRegenRg);
 		config.set("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);
