@@ -47,7 +47,9 @@ public class ActivePlayersList {
 			//fill list
 			//add online players
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				plactive.add(player.getUniqueId().toString().replace("-", ""));
+				String uuidstring = player.getUniqueId().toString().replace("-", "");
+				MessageLogger.debug("Adding online player "+uuidstring+" to active list");
+				plactive.add(uuidstring);
 			}
 			//add offline players that were away not for that long
 			//getOfflinePlayer caches the offline player instance and we don't wan't it so we have to construct it manually
@@ -61,10 +63,10 @@ public class ActivePlayersList {
 				if (file.endsWith(".dat")) {
 					UUID uuid = UUID.fromString(file.substring(0, file.length() - 4));
 					String uuidstring = uuid.toString().replace("-", "");
-					MessageLogger.debug("Checking player "+uuid);
+					MessageLogger.debug("Checking player "+uuidstring);
 					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server, new GameProfile(uuid, null));
 					if (System.currentTimeMillis() - offplayer .getLastPlayed() < awaytime) {
-						MessageLogger.debug("Adding player "+uuid+" to active list");
+						MessageLogger.debug("Adding player "+uuidstring+" to active list");
 						plactive.add(uuidstring);
 					}
 				}
@@ -72,12 +74,15 @@ public class ActivePlayersList {
 			//add players from ignored list
 			for (String name : config.purgeIgnoredNicks) {
 				try {
-					config.purgeIgnoredUUIDs.add(Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", ""));
+					String uuidstring = Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", "");
+					MessageLogger.debug("Adding ignored player "+uuidstring+" to active list");
+					config.purgeIgnoredUUIDs.add(uuidstring);
 				} catch (Exception e) {
 				}
 			}
 			config.purgeIgnoredNicks.clear();
 			for (String listuuid : config.purgeIgnoredUUIDs) {
+				MessageLogger.debug("Adding ignored player "+listuuid.replace("-", "")+" to active list");
 				plactive.add(listuuid.replace("-", ""));
 			}
 		} catch (Exception e) {

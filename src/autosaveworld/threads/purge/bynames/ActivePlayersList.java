@@ -45,6 +45,7 @@ public class ActivePlayersList {
 			//fill lists
 			//add online players
 			for (Player player : Bukkit.getOnlinePlayers()) {
+				MessageLogger.debug("Adding online player "+player.getName()+" to active list");
 				plactivecs.add(player.getName());
 				plactivencs.add(player.getName().toLowerCase());
 			}
@@ -69,6 +70,7 @@ public class ActivePlayersList {
 			}
 			//add players from ignored list
 			for (String ignorednick : config.purgeIgnoredNicks) {
+				MessageLogger.debug("Adding ignored player "+ignorednick+" to active list");
 				plactivecs.add(ignorednick);
 				plactivencs.add(ignorednick.toLowerCase());
 			}
