@@ -36,8 +36,6 @@ import autosaveworld.core.GlobalConstants;
 
 public class AutoSaveWorldConfig {
 
-	private FileConfiguration config;
-
 	// some global variables
 	public boolean varDebug = false;
 	public boolean commandOnlyFromConsole = false;
@@ -141,7 +139,7 @@ public class AutoSaveWorldConfig {
 
 	public void load() {
 
-		config = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
+		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
 
 		//variables
 		varDebug = config.getBoolean("var.debug", varDebug);
@@ -293,8 +291,8 @@ public class AutoSaveWorldConfig {
 	}
 
 	public void save() {
-		config = new YamlConfiguration();
 
+		FileConfiguration config = new YamlConfiguration();
 
 		// Variables
 		config.set("var.debug", varDebug);
