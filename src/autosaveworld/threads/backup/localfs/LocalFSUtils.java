@@ -2,6 +2,7 @@ package autosaveworld.threads.backup.localfs;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import autosaveworld.threads.backup.ExcludeManager;
@@ -21,7 +22,7 @@ public class LocalFSUtils {
 		} else {
 			if (!sourceLocation.getName().endsWith(".lck")) {
 				try {
-					Files.copy(sourceLocation.toPath(), targetLocation.toPath());
+					Files.copy(sourceLocation.toPath(), targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
