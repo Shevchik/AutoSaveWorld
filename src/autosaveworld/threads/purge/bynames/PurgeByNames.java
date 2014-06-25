@@ -91,19 +91,19 @@ public class PurgeByNames {
 			}
 		}
 
-		if (pm.getPlugin("Vault") != null && config.purgePerms) {
-			MessageLogger.debug("Vault found, purging permissions");
+		if (pm.getPlugin("MyWarp") != null && config.purgeMyWarp) {
+			MessageLogger.debug("MyWarp found, purging");
 			try {
-				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgePermsSaveCMD);
+				new MyWarpPurge().doMyWarpPurgeTask(aplist);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}
 
-		if (pm.getPlugin("MyWarp") != null && config.purgeMyWarp) {
-			MessageLogger.debug("MyWarp found, purging");
+		if (pm.getPlugin("Vault") != null && config.purgePerms) {
+			MessageLogger.debug("Vault found, purging permissions");
 			try {
-				new MyWarpPurge().doMyWarpPurgeTask(aplist);
+				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgePermsSaveCMD);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
