@@ -75,6 +75,7 @@ public class ActivePlayersList {
 				plactivencs.add(ignorednick.toLowerCase());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("Failed to gather active players list. "+e.getMessage());
 		}
 	}

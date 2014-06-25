@@ -99,6 +99,7 @@ public class ActivePlayersList {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("Failed to gather active players list. "+e.getMessage());
 		}
 	}
