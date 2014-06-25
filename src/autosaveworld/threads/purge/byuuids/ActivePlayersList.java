@@ -21,6 +21,7 @@ import java.util.HashSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
@@ -36,6 +37,12 @@ public class ActivePlayersList {
 
 	@SuppressWarnings("deprecation")
 	public void gatherActivePlayersList(long awaytime) {
+		//fill list
+		//add online players
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			plactive.add(player.getUniqueId().toString().replace("-", ""));
+		}
+		//add offline players that were away not for that long
 		for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 			String uuid = player.getUniqueId().toString().replace("-", "");
 			MessageLogger.debug("Checking player "+uuid);
@@ -43,16 +50,17 @@ public class ActivePlayersList {
 				MessageLogger.debug("Adding player "+uuid+" to active list");
 				plactive.add(uuid);
 			}
-			for (String name : config.purgeIgnoredNicks) {
-				try {
-					config.purgeIgnoredUUIDs.add(Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", ""));
-				} catch (Exception e) {
-				}
+		}
+		//add players from ignored list
+		for (String name : config.purgeIgnoredNicks) {
+			try {
+				config.purgeIgnoredUUIDs.add(Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", ""));
+			} catch (Exception e) {
 			}
-			config.purgeIgnoredNicks.clear();
-			for (String listuuid : config.purgeIgnoredUUIDs) {
-				plactive.add(listuuid.replace("-", ""));
-			}
+		}
+		config.purgeIgnoredNicks.clear();
+		for (String listuuid : config.purgeIgnoredUUIDs) {
+			plactive.add(listuuid.replace("-", ""));
 		}
 	}
 

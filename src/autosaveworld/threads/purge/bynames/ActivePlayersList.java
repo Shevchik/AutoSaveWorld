@@ -24,6 +24,7 @@ import java.util.HashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
@@ -42,6 +43,12 @@ public class ActivePlayersList {
 	public void gatherActivePlayersList(long awaytime) {
 		try {
 			//fill lists
+			//add online players
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				plactivecs.add(player.getName());
+				plactivencs.add(player.getName().toLowerCase());
+			}
+			//add offline players that were away not for that long
 			//due to bukkit fucks up itself when we have two player files with different case (test.dat and Test.dat), i had to write this...
 			Server server = Bukkit.getServer();
 			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
@@ -60,6 +67,7 @@ public class ActivePlayersList {
 					}
 				}
 			}
+			//add players from ignored list
 			for (String ignorednick : config.purgeIgnoredNicks) {
 				plactivecs.add(ignorednick);
 				plactivencs.add(ignorednick.toLowerCase());
