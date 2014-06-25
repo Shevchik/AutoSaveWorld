@@ -25,6 +25,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
 
@@ -42,7 +43,7 @@ public class MVInvPurge {
 
 		try {
 			MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
-			File mcinvpfld = new File("plugins" + File.separator + "Multiverse-Inventories" +File.separator+ "players" + File.separator);
+			File mcinvpfld = new File(GlobalConstants.getPluginsFolder(), "Multiverse-Inventories" +File.separator+ "players" + File.separator);
 			Server server = Bukkit.getServer();
 			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
 			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(), String.class);
