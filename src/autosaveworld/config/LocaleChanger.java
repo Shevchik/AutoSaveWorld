@@ -62,7 +62,7 @@ public class LocaleChanger {
 	//load needed locale file
 	private void loadLocaleFile(String locale) {
 		try {
-			InputStream is = getClass().getResourceAsStream("localefiles/configmsg_"+locale+".yml");
+			InputStream is = LocaleFiles.class.getResourceAsStream("configmsg_"+locale+".yml");
 			Path file = new File(GlobalConstants.getConfigMSGPath()).toPath();
 			Files.copy(is, file);
 		} catch (Exception e) {
