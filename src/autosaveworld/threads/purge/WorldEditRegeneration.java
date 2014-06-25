@@ -26,6 +26,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.blocks.BaseBlock;
@@ -92,8 +93,10 @@ public class WorldEditRegeneration {
 		}
 
 		//set all blocks that were outside the region back
+		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
+		es.setFastMode(true);
 		for (PlaceBackStage stage : placeBackStages) {
-			stage.processBlockPlaceBack(world, bw, placeBackQueue);
+			stage.processBlockPlaceBack(world, bw, es, placeBackQueue);
 		}
 	}
 
@@ -208,7 +211,7 @@ public class WorldEditRegeneration {
 			this.check = check;
 		}
 
-		public void processBlockPlaceBack(World world, BukkitWorld bw, LinkedList<BlockToPlaceBack> placeBackQueue) {
+		public void processBlockPlaceBack(World world, BukkitWorld bw, EditSession es, LinkedList<BlockToPlaceBack> placeBackQueue) {
 			Iterator<BlockToPlaceBack> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
 				BlockToPlaceBack blockToPlaceBack = entryit.next();
@@ -219,7 +222,7 @@ public class WorldEditRegeneration {
 						//set block to air to fix one really weird problem
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
 						//set block back
-						bw.setBlock(pt, block, false);
+						es.rawSetBlock(pt, block);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
