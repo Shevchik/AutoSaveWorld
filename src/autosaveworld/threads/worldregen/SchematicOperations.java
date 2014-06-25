@@ -37,6 +37,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
+@SuppressWarnings("deprecation")
 public class SchematicOperations {
 
 	public static void saveToSchematic(final World world, final LinkedList<SchematicToSave> schematicdatas) {
