@@ -57,8 +57,9 @@ public class ActivePlayersList {
 					plactiveNamesNCS.add(player.getName().toLowerCase());
 				}
 			}
+			OfflinePlayer[] offplayers = Bukkit.getOfflinePlayers();
 			//add offline players that were away not for that long
-			for (OfflinePlayer offplayer : Bukkit.getOfflinePlayers()) {
+			for (OfflinePlayer offplayer : offplayers) {
 				String uuidstring = offplayer.getUniqueId().toString().replace("-", "");
 				MessageLogger.debug("Checking player "+uuidstring);
 				if (System.currentTimeMillis() - offplayer .getLastPlayed() < awaytime) {
@@ -76,11 +77,12 @@ public class ActivePlayersList {
 			}
 			//add players from ignored list
 			for (String name : config.purgeIgnoredNicks) {
-				try {
-					String uuidstring = Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", "");
-					MessageLogger.debug("Adding ignored player "+uuidstring+" to active list");
-					config.purgeIgnoredUUIDs.add(uuidstring);
-				} catch (Exception e) {
+				for (OfflinePlayer offplayer : offplayers) {
+					if (offplayer.getName() != null && offplayer.getName().equalsIgnoreCase(name)) {
+						String uuidstring = offplayer.getUniqueId().toString().replace("-", "");
+						MessageLogger.debug("Adding ignored player "+uuidstring+" to active list");
+						config.purgeIgnoredUUIDs.add(uuidstring);
+					}
 				}
 			}
 			config.purgeIgnoredNicks.clear();
