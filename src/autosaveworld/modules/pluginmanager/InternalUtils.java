@@ -70,12 +70,10 @@ public class InternalUtils {
 			if (cmd instanceof PluginIdentifiableCommand) {
 				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
 				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName())) {
-					cmd.unregister(commandMap);
-					removeCommand(commands, cmd);
+					removeCommand(commandMap, commands, cmd);
 				}
 			} else  if (cmd.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
-				cmd.unregister(commandMap);
-				removeCommand(commands, cmd);
+				removeCommand(commandMap, commands, cmd);
 			}
 		}
 		//close file in url classloader
@@ -89,20 +87,17 @@ public class InternalUtils {
 		System.gc();
 	}
 
-	private void removeCommand(Collection<Command> commands, Command cmd) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	private void removeCommand(CommandMap commandMap, Collection<Command> commands, Command cmd) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		cmd.unregister(commandMap);
 		if (commands.getClass().getSimpleName().equals("UnmodifiableCollection")) {
-			removeFromUnmodifiableCollection(commands, cmd);
+			Field originalField = commands.getClass().getDeclaredField("c");
+			originalField.setAccessible(true);
+			@SuppressWarnings("unchecked")
+			Collection<Command> original = (Collection<Command>) originalField.get(commands);
+			original.remove(cmd);
 		} else {
 			commands.remove(cmd);
 		}
-	}
-
-	private void removeFromUnmodifiableCollection(Collection<?> collection, Object toremove) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Field originalField = collection.getClass().getDeclaredField("c");
-		originalField.setAccessible(true);
-		@SuppressWarnings("unchecked")
-		Collection<Command> original = (Collection<Command>) originalField.get(collection);
-		original.remove(toremove);
 	}
 
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException {
