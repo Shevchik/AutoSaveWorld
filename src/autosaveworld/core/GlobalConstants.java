@@ -27,7 +27,7 @@ public class GlobalConstants {
 
 	//main
 	private static String pluginfolder;
-	public static String getPluginFolder() {
+	public static String getAutoSaveWorldFolder() {
 		return pluginfolder;
 	}
 
@@ -38,17 +38,17 @@ public class GlobalConstants {
 	//config
 	private static String configfile = "config.yml";
 	public static String getConfigPath() {
-		return getPluginFolder()+configfile;
+		return getAutoSaveWorldFolder()+configfile;
 	}
 	private static String configmsgfile = "configmsg.yml";
 	public static String getConfigMSGPath() {
-		return getPluginFolder()+configmsgfile;
+		return getAutoSaveWorldFolder()+configmsgfile;
 	}
 
 	//counter preserve files
 	private static String backuppreserverfile = "backupintervalpreserve.yml";
 	public static String getBackupIntervalPreservePath() {
-		return getPluginFolder()+backuppreserverfile;
+		return getAutoSaveWorldFolder()+backuppreserverfile;
 	}
 
 	//worldregen
@@ -59,7 +59,7 @@ public class GlobalConstants {
 	private static String griefpreventiontempfolder = "GP"+File.separator;
 	private static String townytempfolder = "Towny"+File.separator;
 	public static String getWorldRegenTempFolder() {
-		return getPluginFolder()+worldregentempfolder;
+		return getAutoSaveWorldFolder()+worldregentempfolder;
 	}
 	public static String getWorldnameFile() {
 		return getWorldRegenTempFolder()+worldnamefile;
