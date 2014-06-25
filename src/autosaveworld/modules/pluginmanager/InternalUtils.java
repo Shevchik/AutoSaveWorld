@@ -45,10 +45,7 @@ public class InternalUtils {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
 		//disable plugin
-		try {
-			pluginmanager.disablePlugin(plugin);
-		} catch (Exception e) {
-		}
+		pluginmanager.disablePlugin(plugin);
 		//remove from plugins field
 		Field pluginsField = managerclass.getDeclaredField("plugins");
 		pluginsField.setAccessible(true);
