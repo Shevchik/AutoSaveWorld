@@ -66,9 +66,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	//configs
 	public AutoSaveWorldConfigMSG configmsg;
 	public AutoSaveWorldConfig config;
-	public LocaleChanger localeChanger;
-	//command executor
-	public CommandsHandler ch;
 
 	@Override
 	public void onEnable() {
@@ -88,9 +85,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Load messages
 		configmsg = new AutoSaveWorldConfigMSG();
 		configmsg.loadmsg();
-		localeChanger = new LocaleChanger(this, configmsg);
 		// Register commands
-		ch = new CommandsHandler(this, config, configmsg, localeChanger);
+		CommandsHandler ch = new CommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
 		for (String commandName : getDescription().getCommands().keySet()) {
 			getCommand(commandName).setExecutor(ch);
 		}
@@ -132,15 +128,11 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.CONSOLECOMMAND);
 		stopThread(ThreadType.WORLDREGENCOPY);
 		stopThread(ThreadType.WORLDREGENPASTE);
-		//null plugin manager
+		//null some variables
 		pluginmanager = null;
-		//null process manager
 		processmanager = null;
-		//null values
 		configmsg = null;
 		config = null;
-		localeChanger = null;
-		ch = null;
 	}
 
 
