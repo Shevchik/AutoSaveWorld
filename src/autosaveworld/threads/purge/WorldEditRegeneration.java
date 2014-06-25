@@ -47,6 +47,8 @@ public class WorldEditRegeneration {
 	@SuppressWarnings("deprecation")
 	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options) {
 		BukkitWorld bw = new BukkitWorld(world);
+		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
+		es.setFastMode(true);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
@@ -58,7 +60,7 @@ public class WorldEditRegeneration {
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
-							placeBackQueue.add(new BlockToPlaceBack(pt, bw.getBlock(pt)));
+							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
 						}
 					}
 				}
@@ -93,10 +95,8 @@ public class WorldEditRegeneration {
 		}
 
 		//set all blocks that were outside the region back
-		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
-		es.setFastMode(true);
 		for (PlaceBackStage stage : placeBackStages) {
-			stage.processBlockPlaceBack(world, bw, es, placeBackQueue);
+			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
 	}
 
@@ -211,7 +211,7 @@ public class WorldEditRegeneration {
 			this.check = check;
 		}
 
-		public void processBlockPlaceBack(World world, BukkitWorld bw, EditSession es, LinkedList<BlockToPlaceBack> placeBackQueue) {
+		public void processBlockPlaceBack(World world, EditSession es, LinkedList<BlockToPlaceBack> placeBackQueue) {
 			Iterator<BlockToPlaceBack> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
 				BlockToPlaceBack blockToPlaceBack = entryit.next();
