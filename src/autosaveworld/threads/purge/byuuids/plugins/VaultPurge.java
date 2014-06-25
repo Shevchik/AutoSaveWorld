@@ -47,7 +47,7 @@ public class VaultPurge {
 		for (String playerfile : playersdatfolder.list()) {
 			if (playerfile.endsWith(".dat")) {
 				String playerUUID = playerfile.substring(0, playerfile.length() - 4);
-				if (!pacheck.isActive(playerUUID)) {
+				if (!pacheck.isActiveUUID(playerUUID)) {
 					//add player to delete batch
 					playerstopurgeperms.add(playerUUID);
 					//delete permissions if maximum batch size reached
