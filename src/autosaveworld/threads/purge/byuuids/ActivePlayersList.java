@@ -17,10 +17,16 @@
 
 package autosaveworld.threads.purge.byuuids;
 
+import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.HashSet;
+import java.util.UUID;
+
+import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import autosaveworld.config.AutoSaveWorldConfig;
@@ -37,30 +43,45 @@ public class ActivePlayersList {
 
 	@SuppressWarnings("deprecation")
 	public void gatherActivePlayersList(long awaytime) {
-		//fill list
-		//add online players
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			plactive.add(player.getUniqueId().toString().replace("-", ""));
-		}
-		//add offline players that were away not for that long
-		for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-			String uuid = player.getUniqueId().toString().replace("-", "");
-			MessageLogger.debug("Checking player "+uuid);
-			if (System.currentTimeMillis() - player.getLastPlayed() < awaytime) {
-				MessageLogger.debug("Adding player "+uuid+" to active list");
-				plactive.add(uuid);
+		try {
+			//fill list
+			//add online players
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				plactive.add(player.getUniqueId().toString().replace("-", ""));
 			}
-		}
-		//add players from ignored list
-		for (String name : config.purgeIgnoredNicks) {
-			try {
-				config.purgeIgnoredUUIDs.add(Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", ""));
-			} catch (Exception e) {
+			//add offline players that were away not for that long
+			//getOfflinePlayer caches the offline player instance and we don't wan't it so we have to construct it manually
+			Server server = Bukkit.getServer();
+			Class<?> craftserver = server.getClass();
+			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer(UUID.randomUUID()).getClass();
+			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(craftserver, net.minecraft.util.com.mojang.authlib.GameProfile.class);
+			ctor.setAccessible(true);
+			File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "playerdata");
+			for (String file : playersdir.list()) {
+				if (file.endsWith(".dat")) {
+					UUID uuid = UUID.fromString(file.substring(0, file.length() - 4));
+					String uuidstring = uuid.toString().replace("-", "");
+					MessageLogger.debug("Checking player "+uuid);
+					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server, new GameProfile(uuid, null));
+					if (System.currentTimeMillis() - offplayer .getLastPlayed() < awaytime) {
+						MessageLogger.debug("Adding player "+uuid+" to active list");
+						plactive.add(uuidstring);
+					}
+				}
 			}
-		}
-		config.purgeIgnoredNicks.clear();
-		for (String listuuid : config.purgeIgnoredUUIDs) {
-			plactive.add(listuuid.replace("-", ""));
+			//add players from ignored list
+			for (String name : config.purgeIgnoredNicks) {
+				try {
+					config.purgeIgnoredUUIDs.add(Bukkit.getOfflinePlayer(name).getUniqueId().toString().replace("-", ""));
+				} catch (Exception e) {
+				}
+			}
+			config.purgeIgnoredNicks.clear();
+			for (String listuuid : config.purgeIgnoredUUIDs) {
+				plactive.add(listuuid.replace("-", ""));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to gather active players list");
 		}
 	}
 
