@@ -18,7 +18,6 @@
 package autosaveworld.modules.pluginmanager;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -32,12 +31,6 @@ import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 
 public class PluginManager {
-
-	public PluginManager() {
-		if (ManagementFactory.getRuntimeMXBean().getInputArguments().contains("-XX:+DisableExplicitGC")) {
-			MessageLogger.warn("Your JVM is configured to ignore GC calls, plugin manager may not work as expected");
-		}
-	}
 
 	private InternalUtils iutils = new InternalUtils();
 
