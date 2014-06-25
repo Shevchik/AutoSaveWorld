@@ -17,16 +17,11 @@
 
 package autosaveworld.threads.purge.byuuids;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.UUID;
 
-import net.minecraft.util.com.mojang.authlib.GameProfile;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import autosaveworld.config.AutoSaveWorldConfig;
@@ -39,7 +34,13 @@ public class ActivePlayersList {
 		this.config = config;
 	}
 
-	private HashSet<String> plactive = new HashSet<String>();
+	private HashSet<String> plactiveUUID = new HashSet<String>();
+
+	//TODO: remove name storage as soon as all plugins update to UUID
+
+	//storage to support checking by names
+	private HashSet<String> plactiveNamesCS = new HashSet<String>();
+	private HashSet<String> plactiveNamesNCS = new HashSet<String>();
 
 	@SuppressWarnings("deprecation")
 	public void gatherActivePlayersList(long awaytime) {
@@ -49,25 +50,23 @@ public class ActivePlayersList {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				String uuidstring = player.getUniqueId().toString().replace("-", "");
 				MessageLogger.debug("Adding online player "+uuidstring+" to active list");
-				plactive.add(uuidstring);
+				plactiveUUID.add(uuidstring);
+				//old api storage
+				plactiveNamesCS.add(player.getName());
+				plactiveNamesNCS.add(player.getName().toLowerCase());
 			}
 			//add offline players that were away not for that long
-			//getOfflinePlayer caches the offline player instance and we don't wan't it so we have to construct it manually
-			Server server = Bukkit.getServer();
-			Class<?> craftserver = server.getClass();
-			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer(UUID.randomUUID()).getClass();
-			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(craftserver, net.minecraft.util.com.mojang.authlib.GameProfile.class);
-			ctor.setAccessible(true);
-			File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "playerdata");
-			for (String file : playersdir.list()) {
-				if (file.endsWith(".dat")) {
-					UUID uuid = UUID.fromString(file.substring(0, file.length() - 4));
-					String uuidstring = uuid.toString().replace("-", "");
-					MessageLogger.debug("Checking player "+uuidstring);
-					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server, new GameProfile(uuid, null));
-					if (System.currentTimeMillis() - offplayer .getLastPlayed() < awaytime) {
-						MessageLogger.debug("Adding player "+uuidstring+" to active list");
-						plactive.add(uuidstring);
+			for (OfflinePlayer offplayer : Bukkit.getOfflinePlayers()) {
+				String uuidstring = offplayer.getUniqueId().toString().replace("-", "");
+				MessageLogger.debug("Checking player "+uuidstring);
+				if (System.currentTimeMillis() - offplayer .getLastPlayed() < awaytime) {
+					MessageLogger.debug("Adding player "+uuidstring+" to active list");
+					plactiveUUID.add(uuidstring);
+					//old api storage
+					String name = offplayer.getName();
+					if (name != null) {
+						plactiveNamesCS.add(name);
+						plactiveNamesNCS.add(name.toLowerCase());
 					}
 				}
 			}
@@ -83,7 +82,14 @@ public class ActivePlayersList {
 			config.purgeIgnoredNicks.clear();
 			for (String listuuid : config.purgeIgnoredUUIDs) {
 				MessageLogger.debug("Adding ignored player "+listuuid.replace("-", "")+" to active list");
-				plactive.add(listuuid.replace("-", ""));
+				plactiveUUID.add(listuuid.replace("-", ""));
+				//old api storage
+				OfflinePlayer offplayer = Bukkit.getOfflinePlayer(UUID.fromString(listuuid));
+				String name = offplayer.getName();
+				if (name != null) {
+					plactiveNamesCS.add(name);
+					plactiveNamesNCS.add(name.toLowerCase());
+				}
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to gather active players list");
@@ -91,12 +97,22 @@ public class ActivePlayersList {
 	}
 
 	public int getActivePlayersCount() {
-		return plactive.size();
+		return plactiveUUID.size();
 	}
 
 	public boolean isActiveUUID(String uuid) {
 		uuid = uuid.replace("-", "");
-		return plactive.contains(uuid);
+		return plactiveUUID.contains(uuid);
+	}
+
+	//old api
+
+	public boolean isActiveNameCS(String name) {
+		return plactiveNamesCS.contains(name);
+	}
+
+	public boolean isActiveNameNCS(String name) {
+		return plactiveNamesNCS.contains(name.toLowerCase());
 	}
 
 }
