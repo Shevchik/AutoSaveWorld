@@ -94,48 +94,44 @@ public class CrashRestartThread extends Thread{
 						Runtime.getRuntime().addShutdownHook(jvmsh);
 					}
 
+					//freeze main thread
+					bukkitMainThread.suspend();
+					//make sure that server won't attempt to do next tick
 					Bukkit.shutdown();
-					if (config.crashRestartForceStop) {
-						//freeze main thread
-						if (config.crashRestartFeezeMainThread) {
-							bukkitMainThread.suspend();
-						}
-						//disable spigot async catcher
+					//disable spigot async catcher
+					try {
+						AsyncCatcher.enabled = false;
+					} catch (Throwable t) {
+					}
+					//unload plugins
+					for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 						try {
-							AsyncCatcher.enabled = false;
-						} catch (Throwable t) {
+							Bukkit.getPluginManager().disablePlugin(plugin);
+						} catch (Throwable e) {
+							e.printStackTrace();
 						}
-						//unload plugins
-						for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+					}
+					//save players
+					try {
+						Bukkit.savePlayers();
+					} catch (Throwable e) {
+						e.printStackTrace();
+					}
+					//save worlds
+					for (World w : Bukkit.getWorlds()) {
+						if (w.isAutoSave()) {
 							try {
-								Bukkit.getPluginManager().disablePlugin(plugin);
+								w.save();
 							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
-						//save players
-						try {
-							Bukkit.savePlayers();
-						} catch (Throwable e) {
-							e.printStackTrace();
-						}
-						//save worlds
-						for (World w : Bukkit.getWorlds()) {
-							if (w.isAutoSave()) {
-								try {
-									w.save();
-								} catch (Throwable e) {
-									e.printStackTrace();
-								}
-							}
-						}
-						//resume main thread
-						if (config.crashRestartFeezeMainThread) {
-							bukkitMainThread.resume();
-						}
-						//shutdown jvm
-						System.exit(0);
 					}
+					//resume main thread
+					bukkitMainThread.resume();
+					//shutdown JVM
+					System.exit(0);
+
 				}
 
 			}
