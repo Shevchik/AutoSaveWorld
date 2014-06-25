@@ -58,7 +58,7 @@ public class InternalUtils {
 		Field lookupNamesField = managerclass.getDeclaredField("lookupNames");
 		lookupNamesField.setAccessible(true);
 		Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
-		lookupNames.remove(plugin.getName());
+		lookupNames.values().remove(plugin);
 		//remove from commands field
 		Field commandMapField = managerclass.getDeclaredField("commandMap");
 		commandMapField.setAccessible(true);
