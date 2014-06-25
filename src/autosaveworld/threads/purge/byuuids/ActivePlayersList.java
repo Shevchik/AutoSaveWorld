@@ -78,8 +78,8 @@ public class ActivePlayersList {
 			for (String name : config.purgeIgnoredNicks) {
 				for (OfflinePlayer offplayer : offplayers) {
 					if (offplayer.getName() != null && offplayer.getName().equalsIgnoreCase(name)) {
-						String uuidstring = offplayer.getUniqueId().toString().replace("-", "");
-						MessageLogger.debug("Adding ignored player "+uuidstring+" to active list");
+						String uuidstring = offplayer.getUniqueId().toString();
+						MessageLogger.debug("Adding ignored player "+uuidstring.replace("-", "")+" to active list");
 						config.purgeIgnoredUUIDs.add(uuidstring);
 					}
 				}
