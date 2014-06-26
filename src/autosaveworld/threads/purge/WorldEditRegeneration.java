@@ -75,11 +75,9 @@ public class WorldEditRegeneration {
 					for (int y = 0; y < maxy; ++y) {
 						for (int z = 0; z < 16; ++z) {
 							Vector pt = min.add(x, y, z);
-							if (region.contains(pt)) {
-								Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-								if (!options.isBlockSafe(block.getTypeId())) {
-									block.setType(Material.AIR);
-								}
+							Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
+							if (!options.isBlockSafe(block.getTypeId())) {
+								block.setType(Material.AIR);
 							}
 						}
 					}
