@@ -1,27 +1,10 @@
-/**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- */
-
 package autosaveworld.threads.purge.weregen;
 
 import java.util.LinkedList;
 
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R3.util.LongHash;
 
 import autosaveworld.threads.purge.weregen.UtilClasses.BlockToPlaceBack;
 import autosaveworld.threads.purge.weregen.UtilClasses.PlaceBackStage;
@@ -35,7 +18,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
-public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInterface {
+public class NMS179WorldEditRegeneration implements WorldEditRegenrationInterface {
 
 	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
 		Vector minbpoint = BukkitUtil.toVector(minpoint);
@@ -51,49 +34,42 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
-		//first save all blocks that are inside affected chunks but outside the region
+
+		//get all new chunk data
 		for (Vector2D chunk : region.getChunks()) {
+			net.minecraft.server.v1_7_R3.WorldServer nmsWorld = ((CraftWorld)world).getHandle();
+			int cx = chunk.getBlockX();
+			int cz = chunk.getBlockZ();
+			//load chunk to ensure that it is in the map
+			world.getChunkAt(cx, cz).load();
+			//save old chunk
+			net.minecraft.server.v1_7_R3.Chunk oldnsmchunk = nmsWorld.chunkProviderServer.chunks.get(LongHash.toLong(cx, cz));
+			//generate nms chunk
+			net.minecraft.server.v1_7_R3.Chunk nmschunk = null;
+			if (nmsWorld.chunkProviderServer.chunkProvider == null) {
+				nmschunk = nmsWorld.chunkProviderServer.emptyChunk;
+			} else {
+				nmschunk = nmsWorld.chunkProviderServer.chunkProvider.getOrCreateChunk(cx, cz);
+			}
+			//put new chunk to map so worldedit can copy blocks from it
+			nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), nmschunk);
+		    //save all generated data inside the region
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			for (int x = 0; x < 16; ++x) {
 				for (int y = 0; y < maxy; ++y) {
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
-						if (!region.contains(pt)) {
+						if (region.contains(pt)) {
 							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
 						}
 					}
 				}
 			}
+			//put old chunk to map
+			nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), oldnsmchunk);
 		}
 
-		//remove all unsafe blocks
-		if (options.shouldRemoveUnsafeBlocks()) {
-			for (Vector2D chunk : region.getChunks()) {
-				Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
-				for (int x = 0; x < 16; ++x) {
-					for (int y = 0; y < maxy; ++y) {
-						for (int z = 0; z < 16; ++z) {
-							Vector pt = min.add(x, y, z);
-							Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-							if (!options.isBlockSafe(block.getTypeId())) {
-								block.setType(Material.AIR);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		//regenerate all affected chunks
-		for (Vector2D chunk : region.getChunks()) {
-			try {
-				world.regenerateChunk(chunk.getBlockX(), chunk.getBlockZ());
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-		}
-
-		//set all blocks that were outside the region back
+		//set all blocks that were inside the region back
 		for (PlaceBackStage stage : UtilClasses.placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
