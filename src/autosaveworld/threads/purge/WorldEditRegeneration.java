@@ -119,7 +119,7 @@ public class WorldEditRegeneration {
 			}
 		}
 
-		//set all blocks that were inside the region back in not full chunks
+		//set all blocks that were inside the region in not full chunks back 
 		for (PlaceBackStage stage : placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
