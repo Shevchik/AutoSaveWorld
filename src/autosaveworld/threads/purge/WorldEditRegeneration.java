@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -52,8 +51,21 @@ public class WorldEditRegeneration {
 		es.setFastMode(true);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
-		HashSet<Vector2D> notfullchunks = new HashSet<Vector2D>();
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
+		//first save all blocks that are inside affected chunks but outside the region
+		for (Vector2D chunk : region.getChunks()) {
+			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
+			for (int x = 0; x < 16; ++x) {
+				for (int y = 0; y < maxy; ++y) {
+					for (int z = 0; z < 16; ++z) {
+						Vector pt = min.add(x, y, z);
+						if (!region.contains(pt)) {
+							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
+						}
+					}
+				}
+			}
+		}
 
 		//remove all unsafe blocks
 		if (options.shouldRemoveUnsafeBlocks()) {
@@ -75,53 +87,16 @@ public class WorldEditRegeneration {
 			}
 		}
 
-		//find all chunks that contains parts that are outside regions
-		for (Vector2D chunk : region.getChunks()) {
-			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
-			notfull:
-			for (int x = 0; x < 16; ++x) {
-				for (int y = 0; y < maxy; ++y) {
-					for (int z = 0; z < 16; ++z) {
-						Vector pt = min.add(x, y, z);
-						if (!region.contains(pt)) {
-							notfullchunks.add(chunk);
-							break notfull;
-						}
-					}
-				}
-			}
-		}
-
-		//regen full chunk or copy data from not full
+		//regenerate all affected chunks
 		for (Vector2D chunk : region.getChunks()) {
 			try {
-				//regen chunk
 				world.regenerateChunk(chunk.getBlockX(), chunk.getBlockZ());
-				//if chunks wasn't full than we just copy regenerated data and load old chunk copy
-				if (notfullchunks.contains(chunk)) {
-					//copy all chunk data that is inside region
-					Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
-					for (int x = 0; x < 16; ++x) {
-						for (int y = 0; y < maxy; ++y) {
-							for (int z = 0; z < 16; ++z) {
-								Vector pt = min.add(x, y, z);
-								if (region.contains(pt)) {
-									placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
-								}
-							}
-						}
-					}
-					//load old chunk
-					Chunk bchunk = world.getChunkAt(chunk.getBlockX(), chunk.getBlockZ());
-					bchunk.unload(false);
-					bchunk.load();
-				}
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
 		}
 
-		//set all blocks that were inside the region in not full chunks back 
+		//set all blocks that were outside the region back
 		for (PlaceBackStage stage : placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
