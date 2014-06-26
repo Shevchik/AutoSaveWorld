@@ -9,9 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.util.Vector;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.WorldEditRegeneration;
-import autosaveworld.threads.purge.WorldEditRegeneration.RegenOptions;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.threads.purge.weregen.RegenOptions;
+import autosaveworld.threads.purge.weregen.WorldEditRegeneration;
 import autosaveworld.utils.SchedulerUtils;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -45,7 +45,7 @@ public class ResidencePurge {
 							@Override
 							public void run() {
 								MessageLogger.debug("Regenerating residence "+res+" cuboid area");
-								WorldEditRegeneration.regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint, new RegenOptions(safeids));
+								WorldEditRegeneration.get().regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint, new RegenOptions(safeids));
 							}
 						};
 						SchedulerUtils.callSyncTaskAndWait(caregen);

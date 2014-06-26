@@ -24,7 +24,6 @@ import org.bukkit.plugin.PluginManager;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.WorldEditRegeneration.RegenOptions;
 import autosaveworld.threads.purge.bynames.plugins.DatfilePurge;
 import autosaveworld.threads.purge.bynames.plugins.LWCPurge;
 import autosaveworld.threads.purge.bynames.plugins.MVInvPurge;
@@ -32,6 +31,7 @@ import autosaveworld.threads.purge.bynames.plugins.MyWarpPurge;
 import autosaveworld.threads.purge.bynames.plugins.ResidencePurge;
 import autosaveworld.threads.purge.bynames.plugins.VaultPurge;
 import autosaveworld.threads.purge.bynames.plugins.WGPurge;
+import autosaveworld.threads.purge.weregen.RegenOptions;
 
 public class PurgeByNames {
 

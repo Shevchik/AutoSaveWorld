@@ -15,16 +15,16 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.threads.purge.weregen;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
@@ -36,16 +36,16 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
-public class WorldEditRegeneration {
+public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInterface {
 
-	public static void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
+	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
 		Vector minbpoint = BukkitUtil.toVector(minpoint);
 		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
 		regenerateRegion(world, minbpoint, maxbpoint, options);
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options) {
+	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options) {
 		BukkitWorld bw = new BukkitWorld(world);
 		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
 		es.setFastMode(true);
@@ -98,57 +98,6 @@ public class WorldEditRegeneration {
 		for (PlaceBackStage stage : placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
-	}
-
-	public static class RegenOptions {
-
-		private boolean removeunsafeblocks = false;
-		private boolean[] safelist = new boolean[4096];
-
-		public RegenOptions() {
-		}
-
-		public RegenOptions(Set<Integer> safeblocks) {
-			if (safeblocks.isEmpty()) {
-				return;
-			}
-			removeunsafeblocks = true;
-			for (int safeblockid : safeblocks) {
-				safelist[safeblockid] = true;
-			}
-		}
-
-		public boolean shouldRemoveUnsafeBlocks() {
-			return removeunsafeblocks;
-		}
-
-		public boolean isBlockSafe(int id) {
-			return safelist[id];
-		}
-
-		public static HashSet<Integer> parseListToIDs(Set<String> list) {
-			HashSet<Integer> set = new HashSet<Integer>();
-			for (String element : list) {
-				if (element.contains("-")) {
-					try {
-						String[] split = element.split("[-]");
-						int start = Integer.parseInt(split[0]);
-						int end = Integer.parseInt(split[1]);
-						for (int i = start; i <= end; i++) {
-							set.add(i);
-						}
-					} catch (Exception e) {
-					}
-				} else {
-					try {
-						set.add(Integer.parseInt(element));
-					} catch (Exception e) {
-					}
-				}
-			}
-			return set;
-		}
-
 	}
 
 	private static PlaceBackStage[] placeBackStages = new PlaceBackStage[] {

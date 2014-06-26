@@ -25,9 +25,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.WorldEditRegeneration;
-import autosaveworld.threads.purge.WorldEditRegeneration.RegenOptions;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
+import autosaveworld.threads.purge.weregen.RegenOptions;
+import autosaveworld.threads.purge.weregen.WorldEditRegeneration;
 import autosaveworld.utils.SchedulerUtils;
 
 import com.sk89q.worldedit.BlockVector;
@@ -103,7 +103,7 @@ public class WGPurge {
 				try {
 					if (!(noregenoverlap && m.getApplicableRegions(rg).size() > 1)) {
 						MessageLogger.debug("Regenerating region " + rg.getId());
-						WorldEditRegeneration.regenerateRegion(w, minpoint, maxpoint, new RegenOptions(safeids));
+						WorldEditRegeneration.get().regenerateRegion(w, minpoint, maxpoint, new RegenOptions(safeids));
 					}
 					MessageLogger.debug("Deleting region " + rg.getId());
 					m.removeRegion(rg.getId());
