@@ -100,8 +100,10 @@ public class UtilClasses {
 					try {
 						//set block to air to fix one really weird problem
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
-						//set block back
-						es.rawSetBlock(pt, block);
+						//set block back if it is not air
+						if (block.getId() != BlockType.AIR.getID()) {
+							es.rawSetBlock(pt, block);
+						}
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {

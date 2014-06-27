@@ -65,6 +65,22 @@ public class NMS17R2WorldEditRegeneration implements WorldEditRegenrationInterfa
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			int cx = chunk.getBlockX();
 			int cz = chunk.getBlockZ();
+			//save old chunk
+			net.minecraft.server.v1_7_R2.Chunk oldnsmchunk = nmsWorld.chunkProviderServer.chunks.get(LongHash.toLong(cx, cz));
+			//remove unsafe blocks
+			if (options.shouldRemoveUnsafeBlocks()) {
+				for (int x = 0; x < 16; ++x) {
+					for (int y = 0; y < maxy; ++y) {
+						for (int z = 0; z < 16; ++z) {
+							Vector pt = min.add(x, y, z);
+							Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
+							if (!options.isBlockSafe(block.getTypeId())) {
+								block.setType(Material.AIR);
+							}
+						}
+					}
+				}
+			}
 			//check if chunk is fully inside the region
 			boolean fullyinside = true;
 			insidecheck:
@@ -79,41 +95,10 @@ public class NMS17R2WorldEditRegeneration implements WorldEditRegenrationInterfa
 					}
 				}
 			}
-			//generate nms chunk
-			net.minecraft.server.v1_7_R2.Chunk nmschunk = null;
-			if (nmsWorld.chunkProviderServer.chunkProvider == null) {
-				nmschunk = nmsWorld.chunkProviderServer.emptyChunk;
-			} else {
-				nmschunk = nmsWorld.chunkProviderServer.chunkProvider.getOrCreateChunk(cx, cz);
-			}
-			if (fullyinside) {//if chunk is fully inside the region than we just update it
-				//remove unsafe blocks
-				if (options.shouldRemoveUnsafeBlocks()) {
-					for (int x = 0; x < 16; ++x) {
-						for (int y = 0; y < maxy; ++y) {
-							for (int z = 0; z < 16; ++z) {
-								Vector pt = min.add(x, y, z);
-								Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-								if (!options.isBlockSafe(block.getTypeId())) {
-									block.setType(Material.AIR);
-								}
-							}
-						}
-					}
-				}
-				//remove entities from old chunk
-				nmsWorld.chunkProviderServer.chunks.get(LongHash.toLong(cx, cz)).removeEntities();
-				//put new chunk to map
-				nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), nmschunk);
-				//add entities to new chunks
-				nmschunk.addEntities();
-				//update chunk to players
-				world.refreshChunk(cx, cz);
-			} else {//else copy generated block data and paste it later
-				//save old chunk
-				net.minecraft.server.v1_7_R2.Chunk oldnsmchunk = nmsWorld.chunkProviderServer.chunks.get(LongHash.toLong(cx, cz));
-				//put new chunk to map so worldedit can copy blocks from it
-				nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), nmschunk);
+			//regenerate chunk
+			world.regenerateChunk(cx, cz);
+			//if chunk is not fully inside the region than copy needed data and then put old chunk
+			if (!fullyinside) {
 			    //save all generated data inside the region
 				for (int x = 0; x < 16; ++x) {
 					for (int y = 0; y < maxy; ++y) {
@@ -127,6 +112,8 @@ public class NMS17R2WorldEditRegeneration implements WorldEditRegenrationInterfa
 				}
 				//put old chunk to map
 				nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), oldnsmchunk);
+				//update chunk
+				world.refreshChunk(cx, cz);
 			}
 		}
 

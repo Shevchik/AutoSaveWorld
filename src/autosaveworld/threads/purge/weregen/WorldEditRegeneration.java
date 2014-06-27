@@ -29,26 +29,30 @@ public class WorldEditRegeneration {
 	private static WorldEditRegenrationInterface instance;
 	public static WorldEditRegenrationInterface get() {
 		if (instance == null) {
-			/*String packageName = Bukkit.getServer().getClass().getPackage().getName();
+			String packageName = Bukkit.getServer().getClass().getPackage().getName();
 			String nmspackageversion = packageName.substring(packageName.lastIndexOf('.') + 1);
 			switch (nmspackageversion) {
 				case "v1_7_R3": {
 					instance = new NMS17R3WorldEditRegeneration();
 					MessageLogger.debug("Using NMS17R3 WorldEdit regeneration");
+					break;
 				}
 				case "v1_7_R2": {
 					instance = new NMS17R2WorldEditRegeneration();
 					MessageLogger.debug("Using NMS17R2 WorldEdit regeneration");
+					break;
 				}
 				case "v1_7_R1": {
 					instance = new NMS17R1WorldEditRegeneration();
 					MessageLogger.debug("Using NMS17R1 WorldEdit regeneration");
+					break;
 				}
 				case "v1_6_R3": {
 					instance = new NMS16R3WorldEditRegeneration();
 					MessageLogger.debug("Using NMS16R3 WorldEdit regeneration");
+					break;
 				}
-			}*/
+			}
 			if (instance == null) {
 				instance = new BukkitAPIWorldEditRegeneration();
 				MessageLogger.debug("Using BukkitAPI WorldEdit regeneration");
