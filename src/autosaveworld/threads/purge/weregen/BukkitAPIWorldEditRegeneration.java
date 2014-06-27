@@ -95,7 +95,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 
 		//set all blocks that were outside the region back
 		for (PlaceBackStage stage : UtilClasses.placeBackStages) {
-			stage.processBlockPlaceBack(world, es, true, placeBackQueue);
+			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
 	}
 

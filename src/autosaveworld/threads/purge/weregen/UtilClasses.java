@@ -90,7 +90,7 @@ public class UtilClasses {
 			this.check = check;
 		}
 
-		public void processBlockPlaceBack(World world, EditSession es, boolean settoairfirst, LinkedList<BlockToPlaceBack> placeBackQueue) {
+		public void processBlockPlaceBack(World world, EditSession es, LinkedList<BlockToPlaceBack> placeBackQueue) {
 			Iterator<BlockToPlaceBack> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
 				BlockToPlaceBack blockToPlaceBack = entryit.next();
@@ -98,10 +98,8 @@ public class UtilClasses {
 				if (check.shouldPlaceBack(block)) {
 					Vector pt = blockToPlaceBack.getPosition();
 					try {
-						if (settoairfirst) {
-							//set block to air to fix one really weird problem
-							world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
-						}
+						//set block to air to fix one really weird problem
+						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
 						//set block back
 						es.rawSetBlock(pt, block);
 					} catch (Throwable t) {

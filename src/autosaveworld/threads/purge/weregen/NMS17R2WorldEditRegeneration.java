@@ -132,7 +132,7 @@ public class NMS17R2WorldEditRegeneration implements WorldEditRegenrationInterfa
 
 		//set all blocks that were inside the region back
 		for (PlaceBackStage stage : UtilClasses.placeBackStages) {
-			stage.processBlockPlaceBack(world, es, false, placeBackQueue);
+			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
 	}
 
