@@ -101,7 +101,7 @@ public class UtilClasses {
 						//set block to air to fix one really weird problem
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
 						//set block back if it is not air
-						if (block.getId() != BlockType.AIR.getID()) {
+						if (!block.isAir()) {
 							es.rawSetBlock(pt, block);
 						}
 					} catch (Throwable t) {
