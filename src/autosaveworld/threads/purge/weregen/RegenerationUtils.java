@@ -22,7 +22,6 @@ import java.util.LinkedList;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
