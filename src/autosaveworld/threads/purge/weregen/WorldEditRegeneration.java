@@ -21,6 +21,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.purge.weregen.nms.NMS16R3Access;
+import autosaveworld.threads.purge.weregen.nms.NMS17R1Access;
+import autosaveworld.threads.purge.weregen.nms.NMS17R2Access;
+import autosaveworld.threads.purge.weregen.nms.NMS17R3Access;
 
 import com.sk89q.worldedit.Vector;
 
@@ -33,22 +37,22 @@ public class WorldEditRegeneration {
 			String nmspackageversion = packageName.substring(packageName.lastIndexOf('.') + 1);
 			switch (nmspackageversion) {
 				case "v1_7_R3": {
-					instance = new NMS17R3WorldEditRegeneration();
+					instance = new NMSWorldEditRegeneration(new NMS17R3Access());
 					MessageLogger.debug("Using NMS17R3 WorldEdit regeneration");
 					break;
 				}
 				case "v1_7_R2": {
-					instance = new NMS17R2WorldEditRegeneration();
+					instance = new NMSWorldEditRegeneration(new NMS17R2Access());
 					MessageLogger.debug("Using NMS17R2 WorldEdit regeneration");
 					break;
 				}
 				case "v1_7_R1": {
-					instance = new NMS17R1WorldEditRegeneration();
+					instance = new NMSWorldEditRegeneration(new NMS17R1Access());
 					MessageLogger.debug("Using NMS17R1 WorldEdit regeneration");
 					break;
 				}
 				case "v1_6_R3": {
-					instance = new NMS16R3WorldEditRegeneration();
+					instance = new NMSWorldEditRegeneration(new NMS16R3Access());
 					MessageLogger.debug("Using NMS16R3 WorldEdit regeneration");
 					break;
 				}

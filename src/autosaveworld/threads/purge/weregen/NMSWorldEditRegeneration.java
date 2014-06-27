@@ -22,12 +22,6 @@ import java.util.LinkedList;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R3.util.LongHash;
-
-import autosaveworld.threads.purge.weregen.RegenerationUtils.BlockToPlaceBack;
-import autosaveworld.threads.purge.weregen.RegenerationUtils.PlaceBackStage;
-import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
@@ -37,7 +31,17 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
-public class NMS17R3WorldEditRegeneration implements WorldEditRegenrationInterface {
+import autosaveworld.threads.purge.weregen.RegenerationUtils.BlockToPlaceBack;
+import autosaveworld.threads.purge.weregen.RegenerationUtils.PlaceBackStage;
+import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
+import autosaveworld.threads.purge.weregen.nms.NMSAccess;
+
+public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
+
+	private NMSAccess nms;
+	public NMSWorldEditRegeneration(NMSAccess nms) {
+		this.nms = nms;
+	}
 
 	@Override
 	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
@@ -63,12 +67,11 @@ public class NMS17R3WorldEditRegeneration implements WorldEditRegenrationInterfa
 
 		//now operate with them
 		for (Vector2D chunk : region.getChunks()) {
-			net.minecraft.server.v1_7_R3.WorldServer nmsWorld = ((CraftWorld)world).getHandle();
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			int cx = chunk.getBlockX();
 			int cz = chunk.getBlockZ();
 			//save old chunk
-			net.minecraft.server.v1_7_R3.Chunk oldnsmchunk = nmsWorld.chunkProviderServer.chunks.get(LongHash.toLong(cx, cz));
+			Object oldNMSChunk = nms.getNMSChunk(world, cx, cz);
 			//remove unsafe blocks
 			if (options.shouldRemoveUnsafeBlocks()) {
 				for (int x = 0; x < 16; ++x) {
@@ -113,7 +116,7 @@ public class NMS17R3WorldEditRegeneration implements WorldEditRegenrationInterfa
 					}
 				}
 				//put old chunk to map
-				nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), oldnsmchunk);
+				nms.setNMSChunk(world, cx, cz, oldNMSChunk);
 				//update chunk
 				world.refreshChunk(cx, cz);
 			}
