@@ -44,6 +44,10 @@ public class WorldEditRegeneration {
 					instance = new NMS17R1WorldEditRegeneration();
 					MessageLogger.debug("Using NMS17R1 WorldEdit regeneration");
 				}
+				case "v1_6_R3": {
+					instance = new NMS16R3WorldEditRegeneration();
+					MessageLogger.debug("Using NMS16R3 WorldEdit regeneration");
+				}
 			}
 			if (instance == null) {
 				instance = new BukkitAPIWorldEditRegeneration();
