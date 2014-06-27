@@ -23,8 +23,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import autosaveworld.threads.purge.weregen.UtilClasses.BlockToPlaceBack;
-import autosaveworld.threads.purge.weregen.UtilClasses.PlaceBackStage;
+import autosaveworld.threads.purge.weregen.RegenerationUtils.BlockToPlaceBack;
+import autosaveworld.threads.purge.weregen.RegenerationUtils.PlaceBackStage;
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 
 import com.sk89q.worldedit.EditSession;
@@ -59,7 +59,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
-							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
+							placeBackQueue.add(new BlockToPlaceBack(pt, RegenerationUtils.getBlock(world, es, pt)));
 						}
 					}
 				}
@@ -94,7 +94,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		}
 
 		//set all blocks that were outside the region back
-		for (PlaceBackStage stage : UtilClasses.placeBackStages) {
+		for (PlaceBackStage stage : RegenerationUtils.placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
 	}

@@ -22,13 +22,14 @@ import java.util.LinkedList;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.blocks.BlockType;
 
-public class UtilClasses {
+public class RegenerationUtils {
 
 	protected static PlaceBackStage[] placeBackStages = new PlaceBackStage[] {
 		//normal stage place back
@@ -113,6 +114,10 @@ public class UtilClasses {
 			}
 		}
 
+	}
+
+	public static BaseBlock getBlock(World world, EditSession es, Vector pt) {
+		return es.getBlock(pt);
 	}
 
 }

@@ -25,8 +25,8 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R3.util.LongHash;
 
-import autosaveworld.threads.purge.weregen.UtilClasses.BlockToPlaceBack;
-import autosaveworld.threads.purge.weregen.UtilClasses.PlaceBackStage;
+import autosaveworld.threads.purge.weregen.RegenerationUtils.BlockToPlaceBack;
+import autosaveworld.threads.purge.weregen.RegenerationUtils.PlaceBackStage;
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 
 import com.sk89q.worldedit.EditSession;
@@ -105,7 +105,7 @@ public class NMS17R3WorldEditRegeneration implements WorldEditRegenrationInterfa
 						for (int z = 0; z < 16; ++z) {
 							Vector pt = min.add(x, y, z);
 							if (region.contains(pt)) {
-								placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
+								placeBackQueue.add(new BlockToPlaceBack(pt, RegenerationUtils.getBlock(world, es, pt)));
 							}
 						}
 					}
@@ -118,7 +118,7 @@ public class NMS17R3WorldEditRegeneration implements WorldEditRegenrationInterfa
 		}
 
 		//set all blocks that were inside the region back
-		for (PlaceBackStage stage : UtilClasses.placeBackStages) {
+		for (PlaceBackStage stage : RegenerationUtils.placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
 	}
