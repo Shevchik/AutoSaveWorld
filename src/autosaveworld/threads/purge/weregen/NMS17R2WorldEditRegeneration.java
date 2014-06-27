@@ -39,12 +39,14 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class NMS17R2WorldEditRegeneration implements WorldEditRegenrationInterface {
 
+	@Override
 	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
 		Vector minbpoint = BukkitUtil.toVector(minpoint);
 		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
 		regenerateRegion(world, minbpoint, maxbpoint, options);
 	}
 
+	@Override
 	@SuppressWarnings("deprecation")
 	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options) {
 		BukkitWorld bw = new BukkitWorld(world);
