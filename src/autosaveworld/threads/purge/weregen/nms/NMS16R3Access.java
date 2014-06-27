@@ -18,24 +18,38 @@
 package autosaveworld.threads.purge.weregen.nms;
 
 import net.minecraft.server.v1_6_R3.Chunk;
+import net.minecraft.server.v1_6_R3.TileEntity;
 import net.minecraft.server.v1_6_R3.WorldServer;
 
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.util.LongHash;
+
+import autosaveworld.threads.purge.weregen.NMSWorldEditRegeneration.NMSBlock;
+
+import com.sk89q.worldedit.Vector;
 
 public class NMS16R3Access implements NMSAccess {
 
 	@Override
-	public Object getNMSChunk(World world, int cx, int cz) {
+	public Object generateNMSChunk(World world, int cx, int cz) {
 		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
-		return nmsWorld.chunkProviderServer.chunks.get(LongHash.toLong(cx, cz));
+		return nmsWorld.chunkProviderServer.chunkProvider.getOrCreateChunk(cx, cz);
 	}
 
 	@Override
-	public void setNMSChunk(World world, int cx, int cz, Object nmsChunk) {
+	public void setTileEntity(World world, Vector pt, Object tileEntity) {
 		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
-		nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), (Chunk) nmsChunk);
+		nmsWorld.setTileEntity(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ(), (TileEntity) tileEntity);
+	}
+
+	@Override
+	public NMSBlock getBlock(Object nmsChunk, Vector pt) {
+		Chunk chunk = (Chunk) nmsChunk;
+		return new NMSBlock(
+			chunk.getTypeId(pt.getBlockX() & 0xF, pt.getBlockY(), pt.getBlockZ() & 0xF),
+			(byte) chunk.getData(pt.getBlockX() & 0xF, pt.getBlockY(), pt.getBlockZ() & 0xF),
+			chunk.world.getTileEntity(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ())
+		);
 	}
 
 }
