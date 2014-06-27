@@ -117,6 +117,11 @@ public class NMS17R2WorldEditRegeneration implements WorldEditRegenrationInterfa
 				//update chunk
 				world.refreshChunk(cx, cz);
 			}
+			//unload and load chunk
+			world.unloadChunk(cx, cz, true, false);
+			world.loadChunk(cx, cz);
+			//refresh chunk
+			world.refreshChunk(cx, cz);
 		}
 
 		//set all blocks that were inside the region back

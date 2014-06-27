@@ -114,9 +114,12 @@ public class NMS16R3WorldEditRegeneration implements WorldEditRegenrationInterfa
 				}
 				//put old chunk to map
 				nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), oldnsmchunk);
-				//update chunk
-				world.refreshChunk(cx, cz);
 			}
+			//unload and load chunk
+			world.unloadChunk(cx, cz, true, false);
+			world.loadChunk(cx, cz);
+			//refresh chunk
+			world.refreshChunk(cx, cz);
 		}
 
 		//set all blocks that were inside the region back
