@@ -27,6 +27,8 @@ public interface NMSAccess {
 
 	public Object generateNMSChunk(World world, int cx, int cz);
 
+	public void loadChunk(World world, int cx, int cz, Object nmsChunk);
+
 	public NMSBlock getBlock(Object nmsChunk, Vector pt);
 
 	public void setTileEntity(World world, Vector pt, Object tileEntity);

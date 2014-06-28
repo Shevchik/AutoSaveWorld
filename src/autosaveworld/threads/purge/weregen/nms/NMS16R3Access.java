@@ -23,6 +23,7 @@ import net.minecraft.server.v1_6_R3.WorldServer;
 
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R3.util.LongHash;
 
 import autosaveworld.threads.purge.weregen.NMSWorldEditRegeneration.NMSBlock;
 
@@ -34,6 +35,13 @@ public class NMS16R3Access implements NMSAccess {
 	public Object generateNMSChunk(World world, int cx, int cz) {
 		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
 		return nmsWorld.chunkProviderServer.chunkProvider.getOrCreateChunk(cx, cz);
+	}
+
+	@Override
+	public void loadChunk(World world, int cx, int cz, Object nmsChunk) {
+		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
+		nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), (Chunk) nmsChunk);
+		world.refreshChunk(cx, cz);
 	}
 
 	@Override
