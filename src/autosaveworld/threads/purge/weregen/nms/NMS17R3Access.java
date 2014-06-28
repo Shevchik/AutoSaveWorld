@@ -18,12 +18,11 @@
 package autosaveworld.threads.purge.weregen.nms;
 
 import net.minecraft.server.v1_7_R3.Block;
-import net.minecraft.server.v1_7_R3.TileEntity;
 import net.minecraft.server.v1_7_R3.Chunk;
+import net.minecraft.server.v1_7_R3.TileEntity;
 import net.minecraft.server.v1_7_R3.WorldServer;
 
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R3.util.LongHash;
 import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 
 import autosaveworld.threads.purge.weregen.NMSWorldEditRegeneration.NMSBlock;
@@ -36,12 +35,6 @@ public class NMS17R3Access implements NMSAccess {
 	public Object generateNMSChunk(World world, int cx, int cz) {
 		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
 		return nmsWorld.chunkProviderServer.chunkProvider.getOrCreateChunk(cx, cz);
-	}
-
-	@Override
-	public void loadChunk(World world, int cx, int cz, Object nmsChunk) {
-		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
-		nmsWorld.chunkProviderServer.chunks.put(LongHash.toLong(cx, cz), (Chunk) nmsChunk);
 	}
 
 	@Override

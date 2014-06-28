@@ -24,6 +24,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
+import autosaveworld.threads.purge.weregen.nms.NMSAccess;
+
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
@@ -32,9 +35,6 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
-
-import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
-import autosaveworld.threads.purge.weregen.nms.NMSAccess;
 
 public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 
@@ -54,8 +54,6 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 	@SuppressWarnings("deprecation")
 	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options) {
 		BukkitWorld bw = new BukkitWorld(world);
-		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
-		es.setFastMode(true);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
@@ -115,7 +113,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 
 		//set all blocks that were inside the region back
 		for (PlaceBackStage stage : placeBackStages) {
-			stage.processBlockPlaceBack(world, es, placeBackQueue);
+			stage.processBlockPlaceBack(world, placeBackQueue);
 		}
 
 	}
@@ -181,7 +179,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 		}
 
 		@SuppressWarnings("deprecation")
-		public void processBlockPlaceBack(World world, EditSession es, LinkedList<BlockToPlaceBack> placeBackQueue) {
+		public void processBlockPlaceBack(World world, LinkedList<BlockToPlaceBack> placeBackQueue) {
 			Iterator<BlockToPlaceBack> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
 				BlockToPlaceBack blockToPlaceBack = entryit.next();

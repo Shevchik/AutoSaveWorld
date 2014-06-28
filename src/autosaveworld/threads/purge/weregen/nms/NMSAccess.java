@@ -19,15 +19,13 @@ package autosaveworld.threads.purge.weregen.nms;
 
 import org.bukkit.World;
 
-import com.sk89q.worldedit.Vector;
-
 import autosaveworld.threads.purge.weregen.NMSWorldEditRegeneration.NMSBlock;
+
+import com.sk89q.worldedit.Vector;
 
 public interface NMSAccess {
 
 	public Object generateNMSChunk(World world, int cx, int cz);
-
-	public void loadChunk(World world, int cx, int cz, Object nmsChunk);
 
 	public NMSBlock getBlock(Object nmsChunk, Vector pt);
 
