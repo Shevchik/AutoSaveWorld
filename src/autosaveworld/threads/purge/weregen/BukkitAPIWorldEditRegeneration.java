@@ -24,6 +24,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import autosaveworld.threads.purge.weregen.UtilClasses.BlockToPlaceBack;
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 
 import com.sk89q.worldedit.EditSession;
@@ -54,6 +55,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
+
 		//first save all blocks that are inside affected chunks but outside the region
 		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
@@ -132,24 +134,6 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		)
 	};
 
-	private static class BlockToPlaceBack {
-
-		private Vector position;
-		private BaseBlock block;
-		public BlockToPlaceBack(Vector position, BaseBlock block) {
-			this.position = position;
-			this.block = block;
-		}
-
-		public Vector getPosition() {
-			return position;
-		}
-
-		public BaseBlock getBlock() {
-			return block;
-		}
-
-	}
 
 	private static class PlaceBackStage {
 
