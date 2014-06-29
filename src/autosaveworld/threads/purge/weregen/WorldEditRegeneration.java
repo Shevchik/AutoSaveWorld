@@ -33,7 +33,7 @@ public class WorldEditRegeneration {
 	private static WorldEditRegenrationInterface instance;
 	public static WorldEditRegenrationInterface get() {
 		if (instance == null) {
-			String packageName = Bukkit.getServer().getClass().getPackage().getName();
+			/*String packageName = Bukkit.getServer().getClass().getPackage().getName();
 			String nmspackageversion = packageName.substring(packageName.lastIndexOf('.') + 1);
 			switch (nmspackageversion) {
 				case "v1_7_R3": {
@@ -56,7 +56,7 @@ public class WorldEditRegeneration {
 					MessageLogger.debug("Using NMS16R3 WorldEdit regeneration");
 					break;
 				}
-			}
+			}*/
 			if (instance == null) {
 				instance = new BukkitAPIWorldEditRegeneration();
 				MessageLogger.debug("Using BukkitAPI WorldEdit regeneration");
