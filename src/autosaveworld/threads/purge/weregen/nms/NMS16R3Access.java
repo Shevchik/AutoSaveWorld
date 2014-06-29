@@ -18,6 +18,7 @@
 package autosaveworld.threads.purge.weregen.nms;
 
 import net.minecraft.server.v1_6_R3.Chunk;
+import net.minecraft.server.v1_6_R3.NBTTagCompound;
 import net.minecraft.server.v1_6_R3.TileEntity;
 import net.minecraft.server.v1_6_R3.WorldServer;
 
@@ -42,7 +43,9 @@ public class NMS16R3Access implements NMSAccess {
 		int y = pt.getBlockY();
 		int z = pt.getBlockZ();
 		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
-		nmsWorld.setTileEntity(x, y, z, (TileEntity) tileEntity);
+		NBTTagCompound tag = new NBTTagCompound();
+		((TileEntity) tileEntity).b(tag);
+		nmsWorld.getTileEntity(x, y, z).a(tag);
 	}
 
 	@Override
