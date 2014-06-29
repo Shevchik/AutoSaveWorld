@@ -37,16 +37,13 @@ public class NMS17R2Access implements NMSAccess {
 		return nmsWorld.chunkProviderServer.chunkProvider.getOrCreateChunk(cx, cz);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void setBlock(World world, Vector pt, NMSBlock block) {
+	public void setBlockTileEntity(World world, Vector pt, Object tileEntity) {
 		int x = pt.getBlockX();
 		int y = pt.getBlockY();
 		int z = pt.getBlockZ();
-		world.getBlockAt(x, y, z).setTypeIdAndData(block.getTypeId(), block.getData(), false);
 		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
-		nmsWorld.setTileEntity(x, y, z, (TileEntity) block.getTileEntitiy());
-		nmsWorld.notify(x, x, z);
+		nmsWorld.setTileEntity(x, y, z, (TileEntity) tileEntity);
 	}
 
 	@Override

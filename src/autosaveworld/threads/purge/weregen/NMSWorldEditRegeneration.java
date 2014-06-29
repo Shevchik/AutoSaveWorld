@@ -133,13 +133,18 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 			this.check = check;
 		}
 
+		@SuppressWarnings("deprecation")
 		public void processBlockPlaceBack(World world, LinkedList<NMSBlock> placeBackQueue) {
 			Iterator<NMSBlock> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
 				NMSBlock block = entryit.next();
 				if (check.shouldPlaceBack(block)) {
 					try {
-						nms.setBlock(world, block.getLocation(), block);
+						Vector pt = block.getLocation();
+						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setTypeIdAndData(block.getTypeId(), block.getData(), false);
+						if (block.hasTileEntity()) {
+							nms.setBlockTileEntity(world, pt, block.getTileEntitiy());
+						}
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -187,6 +192,10 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 
 		public byte getData() {
 			return data;
+		}
+
+		public boolean hasTileEntity() {
+			return tileEntity != null;
 		}
 
 		public Object getTileEntitiy() {

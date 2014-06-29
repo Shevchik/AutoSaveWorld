@@ -29,6 +29,6 @@ public interface NMSAccess {
 
 	public NMSBlock getBlock(Object nmsChunk, Vector pt);
 
-	public void setBlock(World world, Vector pt, NMSBlock block);
+	public void setBlockTileEntity(World world, Vector pt, Object tileEntity);
 
 }
