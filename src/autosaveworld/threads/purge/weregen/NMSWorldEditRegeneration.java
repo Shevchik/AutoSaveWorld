@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.bukkit.World;
+import org.bukkit.entity.Item;
 
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 import autosaveworld.threads.purge.weregen.nms.NMSAccess;
@@ -77,6 +78,13 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 		//set all blocks that were inside the region back
 		for (PlaceBackStage stage : placeBackStages) {
 			stage.processBlockPlaceBack(world, placeBackQueue);
+		}
+
+		//remove any drop from region
+		for (Item item : world.getEntitiesByClass(Item.class)) {
+			if (region.contains(BukkitUtil.toVector(item.getLocation()))) {
+				item.remove();
+			}
 		}
 
 	}
