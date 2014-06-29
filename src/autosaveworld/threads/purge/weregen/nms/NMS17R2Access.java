@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.purge.weregen.nms;
 
+import net.minecraft.server.v1_7_R2.ChunkPosition;
 import net.minecraft.server.v1_7_R2.NBTTagCompound;
 import net.minecraft.server.v1_7_R2.Block;
 import net.minecraft.server.v1_7_R2.Chunk;
@@ -52,10 +53,13 @@ public class NMS17R2Access implements NMSAccess {
 	@Override
 	public NMSBlock getBlock(Object nmsChunk, Vector pt) {
 		Chunk chunk = (Chunk) nmsChunk;
+		int x = pt.getBlockX();
+		int y = pt.getBlockY();
+		int z = pt.getBlockZ();
 		return new NMSBlock(
-			Block.b(chunk.getType(pt.getBlockX() & 0xF, pt.getBlockY(), pt.getBlockZ() & 0xF)),
-			(byte) chunk.getData(pt.getBlockX() & 0xF, pt.getBlockY(), pt.getBlockZ() & 0xF),
-			chunk.world.getTileEntity(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ())
+			Block.b(chunk.getType(x & 0xF, y, z & 0xF)),
+			(byte) chunk.getData(x & 0xF, y, z & 0xF),
+			chunk.tileEntities.get(new ChunkPosition(x & 0xF, y, z & 0xF))
 		);
 	}
 

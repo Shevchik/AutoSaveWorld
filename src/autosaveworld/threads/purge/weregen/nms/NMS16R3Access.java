@@ -18,6 +18,7 @@
 package autosaveworld.threads.purge.weregen.nms;
 
 import net.minecraft.server.v1_6_R3.Chunk;
+import net.minecraft.server.v1_6_R3.ChunkPosition;
 import net.minecraft.server.v1_6_R3.NBTTagCompound;
 import net.minecraft.server.v1_6_R3.TileEntity;
 import net.minecraft.server.v1_6_R3.WorldServer;
@@ -45,16 +46,20 @@ public class NMS16R3Access implements NMSAccess {
 		WorldServer nmsWorld = ((CraftWorld)world).getHandle();
 		NBTTagCompound tag = new NBTTagCompound();
 		((TileEntity) tileEntity).b(tag);
-		nmsWorld.getTileEntity(x, y, z).a(tag);
+		TileEntity existing = nmsWorld.getTileEntity(x, y, z);
+		existing.a(tag);
 	}
 
 	@Override
 	public NMSBlock getBlock(Object nmsChunk, Vector pt) {
 		Chunk chunk = (Chunk) nmsChunk;
+		int x = pt.getBlockX();
+		int y = pt.getBlockY();
+		int z = pt.getBlockZ();
 		return new NMSBlock(
-			chunk.getTypeId(pt.getBlockX() & 0xF, pt.getBlockY(), pt.getBlockZ() & 0xF),
-			(byte) chunk.getData(pt.getBlockX() & 0xF, pt.getBlockY(), pt.getBlockZ() & 0xF),
-			chunk.world.getTileEntity(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ())
+			chunk.getTypeId(x & 0xF, y, z & 0xF),
+			(byte) chunk.getData(x & 0xF, y, z & 0xF),
+			chunk.tileEntities.get(new ChunkPosition(x & 0xF, y, z & 0xF))
 		);
 	}
 
