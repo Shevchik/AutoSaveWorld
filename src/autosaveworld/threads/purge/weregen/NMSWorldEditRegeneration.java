@@ -21,10 +21,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.bukkit.World;
-import org.bukkit.entity.Item;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ItemSpawnEvent;
 
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 import autosaveworld.threads.purge.weregen.nms.NMSAccess;
+import autosaveworld.utils.ListenerUtils;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
@@ -40,6 +43,8 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 	public NMSWorldEditRegeneration(NMSAccess nms) {
 		this.nms = nms;
 	}
+
+	private ItemSpawnListener listener = new ItemSpawnListener();
 
 	@Override
 	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
@@ -75,18 +80,16 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 			}
 		}
 
+		//register listener that will prevent block drop from spawning
+		ListenerUtils.registerListener(listener);
+
 		//set all blocks that were inside the region back
 		for (PlaceBackStage stage : placeBackStages) {
 			stage.processBlockPlaceBack(world, placeQueue);
 		}
 
-		//remove any drop from region
-		for (Item item : world.getEntitiesByClass(Item.class)) {
-			if (region.contains(BukkitUtil.toVector(item.getLocation()))) {
-				item.remove();
-			}
-		}
-
+		//unregister listener
+		ListenerUtils.unregisterListener(listener);
 	}
 
 	private PlaceBackStage[] placeBackStages = new PlaceBackStage[] {
@@ -144,6 +147,15 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 					}
 				}
 			}
+		}
+
+	}
+
+	private class ItemSpawnListener implements Listener {
+
+		@EventHandler
+		public void onItemSpawn(ItemSpawnEvent event) {
+			event.setCancelled(true);
 		}
 
 	}
