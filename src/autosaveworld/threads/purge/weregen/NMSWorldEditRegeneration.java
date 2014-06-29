@@ -60,6 +60,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		LinkedList<NMSBlock> placeQueue = new LinkedList<NMSBlock>();
+		LinkedList<NMSBlock> tileEntityQueue = new LinkedList<NMSBlock>();
 
 		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
@@ -85,7 +86,16 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 
 		//set all blocks that were inside the region back
 		for (PlaceBackStage stage : placeBackStages) {
-			stage.processBlockPlaceBack(world, placeQueue);
+			stage.processBlockPlaceBack(world, placeQueue, tileEntityQueue);
+		}
+
+		//update tile entities for those blocks
+		for (NMSBlock block : tileEntityQueue) {
+			try {
+				nms.setBlockTileEntity(world, block.getLocation(), block.getTileEntitiy());
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
 		}
 
 		//unregister listener
@@ -134,7 +144,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 		}
 
 		@SuppressWarnings("deprecation")
-		public void processBlockPlaceBack(World world, LinkedList<NMSBlock> placeBackQueue) {
+		public void processBlockPlaceBack(World world, LinkedList<NMSBlock> placeBackQueue, LinkedList<NMSBlock> tileEntityQueue) {
 			Iterator<NMSBlock> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
 				NMSBlock block = entryit.next();
@@ -143,7 +153,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 						Vector pt = block.getLocation();
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setTypeIdAndData(block.getTypeId(), block.getData(), false);
 						if (block.hasTileEntity()) {
-							nms.setBlockTileEntity(world, pt, block.getTileEntitiy());
+							tileEntityQueue.add(block);
 						}
 					} catch (Throwable t) {
 						t.printStackTrace();
