@@ -54,7 +54,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 		BukkitWorld bw = new BukkitWorld(world);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
-		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
+		LinkedList<NMSBlock> placeQueue = new LinkedList<NMSBlock>();
 
 		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
@@ -68,7 +68,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						if (region.contains(pt)) {
-							placeBackQueue.add(new BlockToPlaceBack(pt, nms.getBlock(generatedNMSChunk, pt)));
+							placeQueue.add(nms.getBlock(generatedNMSChunk, pt).addLocationInfo(pt));
 						}
 					}
 				}
@@ -77,7 +77,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 
 		//set all blocks that were inside the region back
 		for (PlaceBackStage stage : placeBackStages) {
-			stage.processBlockPlaceBack(world, placeBackQueue);
+			stage.processBlockPlaceBack(world, placeQueue);
 		}
 
 		//remove any drop from region
@@ -85,25 +85,6 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 			if (region.contains(BukkitUtil.toVector(item.getLocation()))) {
 				item.remove();
 			}
-		}
-
-	}
-
-	private static class BlockToPlaceBack {
-
-		private Vector position;
-		private NMSBlock block;
-		public BlockToPlaceBack(Vector position, NMSBlock block) {
-			this.position = position;
-			this.block = block;
-		}
-
-		public Vector getPosition() {
-			return position;
-		}
-
-		public NMSBlock getBlock() {
-			return block;
 		}
 
 	}
@@ -149,15 +130,13 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 			this.check = check;
 		}
 
-		public void processBlockPlaceBack(World world, LinkedList<BlockToPlaceBack> placeBackQueue) {
-			Iterator<BlockToPlaceBack> entryit = placeBackQueue.iterator();
+		public void processBlockPlaceBack(World world, LinkedList<NMSBlock> placeBackQueue) {
+			Iterator<NMSBlock> entryit = placeBackQueue.iterator();
 			while (entryit.hasNext()) {
-				BlockToPlaceBack blockToPlaceBack = entryit.next();
-				NMSBlock block = blockToPlaceBack.getBlock();
+				NMSBlock block = entryit.next();
 				if (check.shouldPlaceBack(block)) {
-					Vector pt = blockToPlaceBack.getPosition();
 					try {
-						nms.setBlock(world, pt, block);
+						nms.setBlock(world, block.getLocation(), block);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -171,6 +150,7 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 
 	public static class NMSBlock {
 
+		private Vector location;
 		private int id;
 		private byte data;
 		private Object tileEntity;
@@ -178,6 +158,15 @@ public class NMSWorldEditRegeneration implements WorldEditRegenrationInterface {
 			this.id = id;
 			this.data = data;
 			this.tileEntity = tileEntity;
+		}
+
+		public NMSBlock addLocationInfo(Vector location) {
+			this.location = location;
+			return this;
+		}
+
+		public Vector getLocation() {
+			return location;
 		}
 
 		public int getTypeId() {
