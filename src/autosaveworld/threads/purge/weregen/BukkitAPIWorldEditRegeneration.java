@@ -25,7 +25,9 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import autosaveworld.threads.purge.weregen.UtilClasses.BlockToPlaceBack;
+import autosaveworld.threads.purge.weregen.UtilClasses.ItemSpawnListener;
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
+import autosaveworld.utils.ListenerUtils;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
@@ -38,6 +40,8 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInterface {
+
+	private ItemSpawnListener itemremover = new ItemSpawnListener();
 
 	@Override
 	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
@@ -55,6 +59,9 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
+
+		//register listener that will prevent trash items from spawning
+		ListenerUtils.registerListener(itemremover);
 
 		//first save all blocks that are inside affected chunks but outside the region
 		for (Vector2D chunk : region.getChunks()) {
@@ -102,6 +109,9 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		for (PlaceBackStage stage : placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
+
+		//unregister listener that prevents item drop
+		ListenerUtils.unregisterListener(itemremover);
 	}
 
 	private static PlaceBackStage[] placeBackStages = new PlaceBackStage[] {
