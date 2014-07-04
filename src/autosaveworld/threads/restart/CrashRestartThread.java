@@ -20,6 +20,8 @@ package autosaveworld.threads.restart;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,7 +132,19 @@ public class CrashRestartThread extends Thread{
 					//resume main thread
 					bukkitMainThread.resume();
 					//shutdown JVM
-					System.exit(0);
+					try {
+						System.exit(0);
+					} catch (Throwable t) {
+						//fuck you forge
+						try {
+							Class<?> shutdownclass = Class.forName("java.lang.Shutdown", false, ClassLoader.getSystemClassLoader());
+							Method shutdownmethod = shutdownclass.getDeclaredMethod("exit", int.class);
+							shutdownmethod.setAccessible(true);
+							shutdownmethod.invoke(null, 0);
+						} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							//well, fuck
+						}
+					}
 
 				}
 
