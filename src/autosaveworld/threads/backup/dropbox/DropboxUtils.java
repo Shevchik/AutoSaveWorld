@@ -65,7 +65,7 @@ public class DropboxUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Thread.yield();
+		try {Thread.sleep(0);} catch (InterruptedException e) {}
 	}
 
 	public static void deleteDirectory(DbxClient client, String directory) throws DbxException {

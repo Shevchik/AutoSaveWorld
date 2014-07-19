@@ -67,7 +67,7 @@ public class SFTPUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Thread.yield();
+		try {Thread.sleep(0);} catch (InterruptedException e) {}
 	}
 
 	public static void deleteDirectory(ChannelSftp sftp, String oldestBackup) throws SftpException {

@@ -26,7 +26,7 @@ public class LocalFSUtils {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				Thread.yield();
+				try {Thread.sleep(0);} catch (InterruptedException e) {}
 			}
 		}
 	}
