@@ -44,7 +44,7 @@ public class AutoSaveWorldConfig {
 	public boolean saveBroadcast = true;
 	public boolean saveEnabled = true;
 	public boolean saveDisableStructureSaving = false;
-	public boolean saveDumpRegionCache = false;
+	public boolean saveDumpRegionCache = true;
 	public boolean saveOnASWDisable = true;
 	//backup
 	public boolean backupEnabled = false;
