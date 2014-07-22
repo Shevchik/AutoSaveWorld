@@ -26,7 +26,6 @@ import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.SchedulerUtils;
 
@@ -144,7 +143,7 @@ public class AutoSaveThread extends Thread {
 			try {
 				Object worldserver = getNMSWorld(world);
 				//invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
-				worldserver.getClass().getMethod("saveLevel").invoke(worldserver);				
+				worldserver.getClass().getMethod("saveLevel").invoke(worldserver);
 			} catch (Exception e) {
 				MessageLogger.warn("Could not dump RegionFileCache");
 				e.printStackTrace();
