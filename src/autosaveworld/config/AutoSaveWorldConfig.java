@@ -44,6 +44,7 @@ public class AutoSaveWorldConfig {
 	public boolean saveBroadcast = true;
 	public boolean saveEnabled = true;
 	public boolean saveDisableStructureSaving = false;
+	public boolean saveDumpRegionCache = false;
 	public boolean saveOnASWDisable = true;
 	//backup
 	public boolean backupEnabled = false;
@@ -149,6 +150,7 @@ public class AutoSaveWorldConfig {
 		//save variables
 		saveEnabled = config.getBoolean("save.enabled",saveEnabled);
 		saveDisableStructureSaving = config.getBoolean("save.disablestructuresaving", saveDisableStructureSaving);
+		saveDumpRegionCache = config.getBoolean("save.forceregioncachedump", saveDumpRegionCache);
 		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
 		saveInterval = config.getInt("save.interval", saveInterval);
 		saveOnASWDisable = config.getBoolean("save.onplugindisable", saveOnASWDisable);
@@ -303,6 +305,7 @@ public class AutoSaveWorldConfig {
 		//save variables
 		config.set("save.enabled", saveEnabled);
 		config.set("save.disablestructuresaving", saveDisableStructureSaving);
+		config.set("save.forceregioncachedump", saveDumpRegionCache);
 		config.set("save.interval", saveInterval);
 		config.set("save.broadcast", saveBroadcast);
 		config.set("save.onplugindisable", saveOnASWDisable);

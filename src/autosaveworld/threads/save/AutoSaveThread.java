@@ -18,6 +18,7 @@
 package autosaveworld.threads.save;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
@@ -31,12 +32,10 @@ import autosaveworld.utils.SchedulerUtils;
 
 public class AutoSaveThread extends Thread {
 
-	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 
-	public AutoSaveThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
-		this.plugin = plugin;
+	public AutoSaveThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
 		this.config = config;
 		this.configmsg = configmsg;
 	}
@@ -84,10 +83,10 @@ public class AutoSaveThread extends Thread {
 		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
 		MessageLogger.debug("Saving players");
-		plugin.getServer().savePlayers();
+		Bukkit.savePlayers();
 		MessageLogger.debug("Saved Players");
 		MessageLogger.debug("Saving worlds");
-		for (World w : plugin.getServer().getWorlds()) {
+		for (World w : Bukkit.getWorlds()) {
 			saveWorld(w);
 		}
 		MessageLogger.debug("Saved Worlds");
@@ -97,6 +96,7 @@ public class AutoSaveThread extends Thread {
 
 	public void performSave() {
 		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
+
 		// Save the players
 		MessageLogger.debug("Saving players");
 		if (run) {
@@ -104,15 +104,16 @@ public class AutoSaveThread extends Thread {
 				new Runnable() {
 					@Override
 					public void run() {
-						plugin.getServer().savePlayers();
+						Bukkit.savePlayers();
 					}
 				}
 			);
 		}
 		MessageLogger.debug("Saved Players");
+
 		// Save the worlds
 		MessageLogger.debug("Saving worlds");
-		for (final World world : plugin.getServer().getWorlds()) {
+		for (final World world : Bukkit.getWorlds()) {
 			if (run) {
 				SchedulerUtils.callSyncTaskAndWait(
 					new Runnable() {
@@ -125,15 +126,37 @@ public class AutoSaveThread extends Thread {
 			}
 		}
 		MessageLogger.debug("Saved Worlds");
+
+		// Dump region cache
+		if (config.saveDumpRegionCache) {
+			MessageLogger.debug("Dumping cache");
+			for (World world : Bukkit.getWorlds()) {
+				dumpRegionCache(world);
+			}
+			MessageLogger.debug("Dumped cache");
+		}
+
 		MessageLogger.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
+	}
+
+	private void dumpRegionCache(World world) {
+		if (world.isAutoSave()) {
+			try {
+				Object worldserver = getNMSWorld(world);
+				//invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
+				worldserver.getClass().getMethod("saveLevel").invoke(worldserver);				
+			} catch (Exception e) {
+				MessageLogger.warn("Could not dump RegionFileCache");
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void saveWorld(World world) {
 		if (!world.isAutoSave()) {
 			return;
 		}
-		// structures are saved only for main world so we use this workaround
-		// only for main world
+		// structures are saved only for main world so we use this workaround only for main world
 		if (config.saveDisableStructureSaving && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName())) {
 			saveWorldDoNoSaveStructureInfo(world);
 		} else {
@@ -148,9 +171,7 @@ public class AutoSaveThread extends Thread {
 	private void saveWorldDoNoSaveStructureInfo(World world) {
 		try {
 			// get worldserver and dataManager
-			Field worldField = world.getClass().getDeclaredField("world");
-			worldField.setAccessible(true);
-			Object worldserver = worldField.get(world);
+			Object worldserver = getNMSWorld(world);
 			Field dataManagerField = worldserver.getClass().getSuperclass().getDeclaredField("dataManager");
 			dataManagerField.setAccessible(true);
 			Object dataManager = dataManagerField.get(worldserver);
@@ -189,11 +210,18 @@ public class AutoSaveThread extends Thread {
 				throw new RuntimeException("Cannot find method saveChunks");
 			}
 		} catch (Exception e) {
+			MessageLogger.warn("failed to workaround stucture saving, saving world using normal methods");
 			e.printStackTrace();
 			// failed to save using reflections, save world normal
-			MessageLogger.debug("failed to workaround stucture saving, saving world using normal methods");
 			saveWorldNormal(world);
 		}
+	}
+
+	private Object getNMSWorld(World world) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method getHandleMethod = world.getClass().getDeclaredMethod("getHandle");
+		getHandleMethod.setAccessible(true);
+		Object nmsWorld = getHandleMethod.invoke(world);
+		return nmsWorld;
 	}
 
 }

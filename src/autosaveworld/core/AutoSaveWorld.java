@@ -141,7 +141,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		switch (type) {
 			case SAVE: {
 				if (saveThread == null || !saveThread.isAlive()) {
-					saveThread = new AutoSaveThread(this, config, configmsg);
+					saveThread = new AutoSaveThread(config, configmsg);
 					saveThread.start();
 				}
 				return;
