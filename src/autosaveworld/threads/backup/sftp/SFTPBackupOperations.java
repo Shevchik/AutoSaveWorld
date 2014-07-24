@@ -39,10 +39,12 @@ public class SFTPBackupOperations {
 		this.excludefolders = excludeFolders;
 	}
 
-	public void backupWorld(World world) {
+	public void backupWorld(World world, boolean disableWorldSaving) {
 		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
 		boolean savestaus = world.isAutoSave();
-		world.setAutoSave(false);
+		if (disableWorldSaving) {
+			world.setAutoSave(false);
+		}
 		try {
 			File worldfolder = world.getWorldFolder().getAbsoluteFile();
 			backupFolder(worldfolder);

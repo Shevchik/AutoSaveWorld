@@ -27,6 +27,7 @@ import org.bukkit.World;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.utils.SchedulerUtils;
 
 public class AutoSaveThread extends Thread {
@@ -94,6 +95,12 @@ public class AutoSaveThread extends Thread {
 	}
 
 	public void performSave() {
+
+		if (!config.backupDisableWorldSaving && AutoBackupThread.backupRunning) {
+			MessageLogger.debug("Backup is running with world saving enabled, skipping autosave");
+			return;
+		}
+		
 		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
 		// Save the players

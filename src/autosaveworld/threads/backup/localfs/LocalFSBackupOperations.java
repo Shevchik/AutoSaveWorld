@@ -39,11 +39,13 @@ public class LocalFSBackupOperations {
 		this.excludefolders = excludefolders;
 	}
 
-	public void backupWorld(World world, int maxBackupsCount, String latestbackuptimestamp) {
+	public void backupWorld(World world, int maxBackupsCount, String latestbackuptimestamp, boolean disableWorldSaving) {
 		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
 
 		boolean savestatus = world.isAutoSave();
-		world.setAutoSave(false);
+		if (disableWorldSaving) {
+			world.setAutoSave(false);
+		}
 		try {
 			File fromfolder = world.getWorldFolder().getAbsoluteFile();
 			String destfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();

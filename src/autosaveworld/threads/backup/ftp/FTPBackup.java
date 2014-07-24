@@ -83,7 +83,7 @@ public class FTPBackup {
 				ftpclient.changeWorkingDirectory("worlds");
 				for (World w : Bukkit.getWorlds()) {
 					if (config.backupFTPBackupWorldsList.contains("*") || config.backupFTPBackupWorldsList.contains(w.getWorldFolder().getName())) {
-						bo.backupWorld(w);
+						bo.backupWorld(w, config.backupDisableWorldSaving);
 					}
 				}
 				ftpclient.changeToParentDirectory();

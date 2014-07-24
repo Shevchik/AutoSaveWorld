@@ -45,7 +45,6 @@ public class AutoBackupThread extends Thread {
 		this.configmsg = configmsg;
 	}
 
-
 	public void stopThread() {
 		//save counter on disable
 		if (config.backupEnabled) {
@@ -91,10 +90,12 @@ public class AutoBackupThread extends Thread {
 			if (run && (config.backupEnabled || command)) {
 				command = false;
 				try {
+					backupRunning = true;
 					performBackup();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				backupRunning = false;
 			}
 
 		}
@@ -102,6 +103,7 @@ public class AutoBackupThread extends Thread {
 
 	}
 
+	public static boolean backupRunning = false;
 
 	public void performBackup() {
 

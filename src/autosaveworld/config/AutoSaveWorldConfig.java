@@ -51,6 +51,7 @@ public class AutoSaveWorldConfig {
 	public int backupInterval =  60*60*6;
 	public boolean backupBroadcast = true;
 	public boolean backupsaveBefore = true;
+	public boolean backupDisableWorldSaving = true;
 	//localfs backup
 	public boolean backupLFSEnabled = true;
 	public List<String> backupLFSExtFolders;
@@ -160,6 +161,7 @@ public class AutoSaveWorldConfig {
 		backupInterval = config.getInt("backup.interval", backupInterval);
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
 		backupsaveBefore = config.getBoolean("backup.savebefore", backupsaveBefore);
+		backupDisableWorldSaving = config.getBoolean("backup.disableworldsaving", backupDisableWorldSaving);
 		//localfs
 		backupLFSEnabled = config.getBoolean("backup.localfs.enabled", backupLFSEnabled);
 		backupLFSMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", backupLFSMaxNumberOfWorldsBackups);
@@ -314,6 +316,7 @@ public class AutoSaveWorldConfig {
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
 		config.set("backup.savebefore",backupsaveBefore);
+		 config.set("backup.disableworldsaving", backupDisableWorldSaving);
 		config.set("backup.broadcast", backupBroadcast);
 		//localfs
 		config.set("backup.localfs.enabled", backupLFSEnabled);

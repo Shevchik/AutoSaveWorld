@@ -72,7 +72,7 @@ public class DropboxBackup {
 				MessageLogger.debug("Backuping Worlds");
 				for (World w : Bukkit.getWorlds()) {
 					if (config.backupDropboxWorldsList.contains("*") || config.backupDropboxWorldsList.contains(w.getWorldFolder().getName())) {
-						bo.backupWorld(w);
+						bo.backupWorld(w, config.backupDisableWorldSaving);
 					}
 				}
 				MessageLogger.debug("Backuped Worlds");

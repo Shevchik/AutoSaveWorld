@@ -44,7 +44,7 @@ public class LocalFSBackup {
 				if ((config.backupLFSBackupWorldsList).contains("*") || config.backupLFSBackupWorldsList.contains(world.getName())) {
 					//backup world
 					MessageLogger.debug("Backuping Worlds");
-					bo.backupWorld(world, config.backupLFSMaxNumberOfWorldsBackups, backuptimestamp);
+					bo.backupWorld(world, config.backupLFSMaxNumberOfWorldsBackups, backuptimestamp, config.backupDisableWorldSaving);
 					MessageLogger.debug("Backuped Worlds");
 				}
 			}
