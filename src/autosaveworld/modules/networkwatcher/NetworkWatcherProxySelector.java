@@ -57,6 +57,7 @@ public class NetworkWatcherProxySelector extends ProxySelector {
 
 	@Override
 	public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+		defaultSelector.connectFailed(uri, sa, ioe);
 	}
 
 	@CallerSensitive
