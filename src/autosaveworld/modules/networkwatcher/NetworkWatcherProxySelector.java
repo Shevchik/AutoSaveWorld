@@ -41,15 +41,13 @@ public class NetworkWatcherProxySelector extends ProxySelector {
 
 	@Override
 	public List<Proxy> select(URI uri) {
-		if (uri.getScheme().equalsIgnoreCase("http")) {
-			if (Bukkit.isPrimaryThread()) {
-				Plugin plugin = getRequestingPlugin();
-				if (plugin != null) {
-					MessageLogger.warn("Plugin "+plugin.getName()+" attempted to access "+uri+" in main server thread");
-				} else {
-					MessageLogger.warn("Something attempted to access "+uri+" in main server thread, printing stack trace");
-					Thread.dumpStack();
-				}
+		if (Bukkit.isPrimaryThread()) {
+			Plugin plugin = getRequestingPlugin();
+			if (plugin != null) {
+				MessageLogger.warn("Plugin "+plugin.getName()+" attempted to access "+uri+" in main server thread");
+			} else {
+				MessageLogger.warn("Something attempted to access "+uri+" in main server thread, printing stack trace");
+				Thread.dumpStack();
 			}
 		}
 		return defaultSelector.select(uri);
