@@ -24,6 +24,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.modules.networkwatcher.NetworkWatcher;
 import autosaveworld.modules.pluginmanager.PluginManager;
 import autosaveworld.modules.processmanager.ProcessManager;
 import autosaveworld.threads.ThreadType;
@@ -94,6 +95,9 @@ public class AutoSaveWorld extends JavaPlugin {
 		pluginmanager = new PluginManager();
 		// Load process manager
 		processmanager = new ProcessManager();
+		// Load network watcher
+		NetworkWatcher watcher = new NetworkWatcher();
+		watcher.register();
 		// Start Threads
 		startThread(ThreadType.SAVE);
 		startThread(ThreadType.BACKUP);
