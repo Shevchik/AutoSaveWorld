@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.worldregen.pstones;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -45,6 +46,8 @@ public class PStonesCopy {
 		MessageLogger.debug("Saving PreciousStones regions to schematics");
 
 		PreciousStones pstones = PreciousStones.getInstance();
+
+		new File(GlobalConstants.getPStonesTempFolder()).mkdirs();
 
 		for (Field field : pstones.getForceFieldManager().getFields("*", wtoregen)) {
 			MessageLogger.debug("Saving PreciousStones Region "+field.getId()+" to schematic");
