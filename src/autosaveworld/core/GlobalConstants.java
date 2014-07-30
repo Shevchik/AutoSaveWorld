@@ -58,6 +58,7 @@ public class GlobalConstants {
 	private static String factionstempfolder = "Factions"+File.separator;
 	private static String griefpreventiontempfolder = "GP"+File.separator;
 	private static String townytempfolder = "Towny"+File.separator;
+	private static String pstonestempfolder = "PStones"+File.separator;
 	public static String getWorldRegenTempFolder() {
 		return getAutoSaveWorldFolder()+worldregentempfolder;
 	}
@@ -75,6 +76,9 @@ public class GlobalConstants {
 	}
 	public static String getTownyTempFolder() {
 		return getWorldRegenTempFolder()+townytempfolder;
+	}
+	public static String getPStonesTempFolder() {
+		return getWorldRegenTempFolder()+pstonestempfolder;
 	}
 
 }

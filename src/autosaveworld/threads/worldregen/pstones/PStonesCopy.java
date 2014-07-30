@@ -17,15 +17,23 @@
 
 package autosaveworld.threads.worldregen.pstones;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import net.sacredlabyrinth.Phaed.PreciousStones.PreciousStones;
 import net.sacredlabyrinth.Phaed.PreciousStones.vectors.Field;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.worldregen.SchematicOperations;
+import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
 
 public class PStonesCopy {
 
@@ -35,7 +43,7 @@ public class PStonesCopy {
 	}
 
 	public void copyAllToSchematics() {
-		MessageLogger.debug("Saving preciousstones regions to schematics");
+		MessageLogger.debug("Saving PreciousStones regions to schematics");
 
 		PreciousStones pstones = PreciousStones.getInstance();
 
@@ -46,7 +54,13 @@ public class PStonesCopy {
 			}
 		}
 
-		for (@SuppressWarnings("unused") Field field : fields) {
+		for (Field field : fields) {
+			MessageLogger.debug("Saving PreciousStones Region "+field.getId()+" to schematic");
+			Vector min = new Vector(field.getMinx(), field.getMiny(), field.getMinz());
+			Vector max = new Vector(field.getMaxx(), field.getMaxy(), field.getMaxz());
+			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getPStonesTempFolder()+field.getId(), BukkitUtil.toVector(min), BukkitUtil.toVector(max));
+			SchematicOperations.saveToSchematic(wtoregen, new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
+			MessageLogger.debug("PreciousStones Region "+field.getId()+" saved");
 		}
 
 	}
