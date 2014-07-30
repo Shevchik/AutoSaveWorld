@@ -33,6 +33,7 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.restart.RestartWaiter;
 import autosaveworld.threads.worldregen.factions.FactionsCopy;
 import autosaveworld.threads.worldregen.griefprevention.GPCopy;
+import autosaveworld.threads.worldregen.pstones.PStonesCopy;
 import autosaveworld.threads.worldregen.towny.TownyCopy;
 import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
 import autosaveworld.utils.ListenerUtils;
@@ -126,6 +127,11 @@ public class WorldRegenCopyThread extends Thread {
 		//save Towny towns
 		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregenSaveTowny) {
 			new TownyCopy(worldtoregen).copyAllToSchematics();
+		}
+
+		//save PStones regions
+		if (Bukkit.getPluginManager().getPlugin("PreciousStones") != null && config.worldregenSavePStones) {
+			new PStonesCopy(worldtoregen).copyAllToSchematics();
 		}
 
 		MessageLogger.debug("Saving finished");

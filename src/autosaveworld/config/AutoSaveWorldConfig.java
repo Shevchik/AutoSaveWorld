@@ -138,6 +138,7 @@ public class AutoSaveWorldConfig {
 	public boolean worldRegenSaveFactions = true;
 	public boolean worldRegenSaveGP = true;
 	public boolean worldregenSaveTowny = true;
+	public boolean worldregenSavePStones = true;
 
 
 	public void load() {
@@ -292,6 +293,7 @@ public class AutoSaveWorldConfig {
 		worldRegenSaveFactions = config.getBoolean("worldregen.savefactions", worldRegenSaveFactions);
 		worldRegenSaveGP = config.getBoolean("worldregen.savegp", worldRegenSaveGP);
 		worldregenSaveTowny = config.getBoolean("worldregen.savetowny", worldregenSaveTowny);
+		worldregenSavePStones = config.getBoolean("worldregen.savepstones", worldregenSavePStones);
 
 		save();
 	}
@@ -420,6 +422,7 @@ public class AutoSaveWorldConfig {
 		config.set("worldregen.savefactions", worldRegenSaveFactions);
 		config.set("worldregen.savegp", worldRegenSaveGP);
 		config.set("worldregen.savetowny", worldregenSaveTowny);
+		config.set("worldregen.savepstones", worldregenSavePStones);
 
 		try {
 			config.save(new File(GlobalConstants.getConfigPath()));

@@ -30,6 +30,7 @@ import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.factions.FactionsPaste;
 import autosaveworld.threads.worldregen.griefprevention.GPPaste;
+import autosaveworld.threads.worldregen.pstones.PStonesPaste;
 import autosaveworld.threads.worldregen.towny.TownyPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
 import autosaveworld.utils.FileUtils;
@@ -117,6 +118,11 @@ public class WorldRegenPasteThread extends Thread {
 		//paste Towny towns
 		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregenSaveTowny) {
 			new TownyPaste(worldtopasteto).pasteAllFromSchematics();
+		}
+
+		//paste PStones regions
+		if (Bukkit.getPluginManager().getPlugin("PreciousStones") != null && config.worldregenSavePStones) {
+			new PStonesPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
 		//clear temp folder
