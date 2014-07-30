@@ -132,6 +132,7 @@ public class WorldRegenPasteThread extends Thread {
 		FileUtils.deleteDirectory(new File(GlobalConstants.getFactionsTempFolder()));
 		FileUtils.deleteDirectory(new File(GlobalConstants.getGPTempFolder()));
 		FileUtils.deleteDirectory(new File(GlobalConstants.getTownyTempFolder()));
+		FileUtils.deleteDirectory(new File(GlobalConstants.getPStonesTempFolder()));
 		new File(GlobalConstants.getWorldnameFile()).delete();
 		new File(GlobalConstants.getWorldRegenTempFolder()).delete();
 

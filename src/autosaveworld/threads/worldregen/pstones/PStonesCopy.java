@@ -18,7 +18,6 @@
 package autosaveworld.threads.worldregen.pstones;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import net.sacredlabyrinth.Phaed.PreciousStones.PreciousStones;
@@ -47,14 +46,7 @@ public class PStonesCopy {
 
 		PreciousStones pstones = PreciousStones.getInstance();
 
-		HashSet<Field> fields = new HashSet<Field>();
 		for (Field field : pstones.getForceFieldManager().getFields("*", wtoregen)) {
-			if (field.isParent()) {
-				fields.add(field);
-			}
-		}
-
-		for (Field field : fields) {
 			MessageLogger.debug("Saving PreciousStones Region "+field.getId()+" to schematic");
 			Vector min = new Vector(field.getMinx(), field.getMiny(), field.getMinz());
 			Vector max = new Vector(field.getMaxx(), field.getMaxy(), field.getMaxz());

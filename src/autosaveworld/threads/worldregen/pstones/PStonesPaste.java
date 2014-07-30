@@ -18,7 +18,6 @@
 package autosaveworld.threads.worldregen.pstones;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import net.sacredlabyrinth.Phaed.PreciousStones.PreciousStones;
@@ -45,15 +44,8 @@ public class PStonesPaste {
 
 		PreciousStones pstones = PreciousStones.getInstance();
 
-		HashSet<Field> fields = new HashSet<Field>();
-		for (Field field : pstones.getForceFieldManager().getFields("*", wtopaste)) {
-			if (field.isParent()) {
-				fields.add(field);
-			}
-		}
-
 		String schemfolder = GlobalConstants.getPStonesTempFolder();
-		for (Field field : fields) {
+		for (Field field : pstones.getForceFieldManager().getFields("*", wtopaste)) {
 			MessageLogger.debug("Pasting PreciousStones region "+field.getId()+" from schematic");
 			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+field.getId());
 			SchematicOperations.pasteFromSchematic(wtopaste, new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
