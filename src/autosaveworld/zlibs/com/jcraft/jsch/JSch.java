@@ -40,11 +40,11 @@ public class JSch {
 		config.put("kex", "diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1");
 		config.put("server_host_key", "ssh-rsa,ssh-dss");
 
-		config.put("cipher.s2c","aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc");
-		config.put("cipher.c2s","aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc");
+		config.put("cipher.s2c", "aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc");
+		config.put("cipher.c2s", "aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc");
 
-		config.put("mac.s2c","hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96");
-		config.put("mac.c2s","hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96");
+		config.put("mac.s2c", "hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96");
+		config.put("mac.c2s", "hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96");
 		config.put("compression.s2c", "none");
 		config.put("compression.c2s", "none");
 
@@ -135,9 +135,8 @@ public class JSch {
 	static Logger logger = DEVNULL;
 
 	/**
-	 * Instantiates the <code>Session</code> object with <code>host</code>. The
-	 * user name and port number will be retrieved from ConfigRepository. If
-	 * user name is not given, the system property "user.name" will be referred.
+	 * Instantiates the <code>Session</code> object with <code>host</code>. The user name and port number will be retrieved from ConfigRepository. If user name is not given, the system property
+	 * "user.name" will be referred.
 	 *
 	 * @param host
 	 *            hostname
@@ -156,10 +155,8 @@ public class JSch {
 	}
 
 	/**
-	 * Instantiates the <code>Session</code> object with <code>username</code>
-	 * and <code>host</code>. The TCP port 22 will be used in making the
-	 * connection. Note that the TCP connection must not be established until
-	 * Session#connect().
+	 * Instantiates the <code>Session</code> object with <code>username</code> and <code>host</code>. The TCP port 22 will be used in making the connection. Note that the TCP connection must not be
+	 * established until Session#connect().
 	 *
 	 * @param username
 	 *            user name
@@ -174,15 +171,13 @@ public class JSch {
 	 * @see #getSession(String username, String host, int port)
 	 * @see autosaveworld.zlibs.com.jcraft.jsch.Session
 	 */
-	public Session getSession(String username, String host)
-			throws JSchException {
+	public Session getSession(String username, String host) throws JSchException {
 		return getSession(username, host, 22);
 	}
 
 	/**
-	 * Instantiates the <code>Session</code> object with given
-	 * <code>username</code>, <code>host</code> and <code>port</code>. Note that
-	 * the TCP connection must not be established until Session#connect().
+	 * Instantiates the <code>Session</code> object with given <code>username</code>, <code>host</code> and <code>port</code>. Note that the TCP connection must not be established until
+	 * Session#connect().
 	 *
 	 * @param username
 	 *            user name
@@ -199,8 +194,7 @@ public class JSch {
 	 * @see #getSession(String username, String host, int port)
 	 * @see autosaveworld.zlibs.com.jcraft.jsch.Session
 	 */
-	public Session getSession(String username, String host, int port)
-			throws JSchException {
+	public Session getSession(String username, String host, int port) throws JSchException {
 		if (host == null) {
 			throw new JSchException("host must not be null.");
 		}

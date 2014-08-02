@@ -48,8 +48,7 @@ public class DefaultSocketFactory extends SocketFactory {
 	}
 
 	@Override
-	public Socket createSocket(String host, int port)
-			throws UnknownHostException, IOException {
+	public Socket createSocket(String host, int port) throws UnknownHostException, IOException {
 		if (connProxy != null) {
 			Socket s = new Socket(connProxy);
 			s.connect(new InetSocketAddress(host, port));
@@ -59,8 +58,7 @@ public class DefaultSocketFactory extends SocketFactory {
 	}
 
 	@Override
-	public Socket createSocket(InetAddress address, int port)
-			throws IOException {
+	public Socket createSocket(InetAddress address, int port) throws IOException {
 		if (connProxy != null) {
 			Socket s = new Socket(connProxy);
 			s.connect(new InetSocketAddress(address, port));
@@ -95,8 +93,7 @@ public class DefaultSocketFactory extends SocketFactory {
 		return new ServerSocket(port);
 	}
 
-	public ServerSocket createServerSocket(int port, int backlog)
-			throws IOException {
+	public ServerSocket createServerSocket(int port, int backlog) throws IOException {
 		return new ServerSocket(port, backlog);
 	}
 

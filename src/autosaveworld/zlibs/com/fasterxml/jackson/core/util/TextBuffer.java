@@ -7,16 +7,11 @@ import java.util.Arrays;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
 
 /**
- * TextBuffer is a class similar to {@link StringBuffer}, with following
- * differences:
+ * TextBuffer is a class similar to {@link StringBuffer}, with following differences:
  * <ul>
- * <li>TextBuffer uses segments character arrays, to avoid having to do
- * additional array copies when array is not big enough. This means that only
- * reallocating that is necessary is done only once: if and when caller wants to
- * access contents in a linear array (char[], String).</li>
- * <li>TextBuffer can also be initialized in "shared mode", in which it will
- * just act as a wrapper to a single char array managed by another object (like
- * parser that owns it)</li>
+ * <li>TextBuffer uses segments character arrays, to avoid having to do additional array copies when array is not big enough. This means that only reallocating that is necessary is done only once: if
+ * and when caller wants to access contents in a linear array (char[], String).</li>
+ * <li>TextBuffer can also be initialized in "shared mode", in which it will just act as a wrapper to a single char array managed by another object (like parser that owns it)</li>
  * <li>TextBuffer is not synchronized.</li>
  * </ul>
  */
@@ -34,37 +29,29 @@ public final class TextBuffer {
 	final static int MAX_SEGMENT_LEN = 0x40000;
 
 	/*
-	 * /********************************************************** /*
-	 * Configuration:
-	 * /**********************************************************
+	 * /********************************************************** /* Configuration: /**********************************************************
 	 */
 
 	private final BufferRecycler _allocator;
 
 	/*
-	 * /********************************************************** /* Shared
-	 * input buffers /**********************************************************
+	 * /********************************************************** /* Shared input buffers /**********************************************************
 	 */
 
 	/**
-	 * Shared input buffer; stored here in case some input can be returned as
-	 * is, without being copied to collector's own buffers. Note that this is
-	 * read-only for this Object.
+	 * Shared input buffer; stored here in case some input can be returned as is, without being copied to collector's own buffers. Note that this is read-only for this Object.
 	 */
 	private char[] _inputBuffer;
 
 	/**
-	 * Character offset of first char in input buffer; -1 to indicate that input
-	 * buffer currently does not contain any useful char data
+	 * Character offset of first char in input buffer; -1 to indicate that input buffer currently does not contain any useful char data
 	 */
 	private int _inputStart;
 
 	private int _inputLen;
 
 	/*
-	 * /********************************************************** /*
-	 * Aggregation segments (when not using input buf)
-	 * /**********************************************************
+	 * /********************************************************** /* Aggregation segments (when not using input buf) /**********************************************************
 	 */
 
 	/**
@@ -92,21 +79,18 @@ public final class TextBuffer {
 	private int _currentSize;
 
 	/*
-	 * /********************************************************** /* Caching of
-	 * results /**********************************************************
+	 * /********************************************************** /* Caching of results /**********************************************************
 	 */
 
 	/**
-	 * String that will be constructed when the whole contents are needed; will
-	 * be temporarily stored in case asked for again.
+	 * String that will be constructed when the whole contents are needed; will be temporarily stored in case asked for again.
 	 */
 	private String _resultString;
 
 	private char[] _resultArray;
 
 	/*
-	 * /********************************************************** /* Life-cycle
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle /**********************************************************
 	 */
 
 	public TextBuffer(BufferRecycler allocator) {
@@ -114,12 +98,8 @@ public final class TextBuffer {
 	}
 
 	/**
-	 * Method called to indicate that the underlying buffers should now be
-	 * recycled if they haven't yet been recycled. Although caller can still use
-	 * this text buffer, it is not advisable to call this method if that is
-	 * likely, since next time a buffer is needed, buffers need to reallocated.
-	 * Note: calling this method automatically also clears contents of the
-	 * buffer.
+	 * Method called to indicate that the underlying buffers should now be recycled if they haven't yet been recycled. Although caller can still use this text buffer, it is not advisable to call this
+	 * method if that is likely, since next time a buffer is needed, buffers need to reallocated. Note: calling this method automatically also clears contents of the buffer.
 	 */
 	public void releaseBuffers() {
 		if (_allocator == null) {
@@ -131,15 +111,13 @@ public final class TextBuffer {
 				// And then return that array
 				char[] buf = _currentSegment;
 				_currentSegment = null;
-				_allocator.releaseCharBuffer(BufferRecycler.CHAR_TEXT_BUFFER,
-						buf);
+				_allocator.releaseCharBuffer(BufferRecycler.CHAR_TEXT_BUFFER, buf);
 			}
 		}
 	}
 
 	/**
-	 * Method called to clear out any content text buffer may have, and
-	 * initializes buffer to use non-shared data.
+	 * Method called to clear out any content text buffer may have, and initializes buffer to use non-shared data.
 	 */
 	public void resetWithEmpty() {
 		_inputStart = -1; // indicates shared buffer not used
@@ -157,10 +135,8 @@ public final class TextBuffer {
 	}
 
 	/**
-	 * Method called to initialize the buffer with a shared copy of data; this
-	 * means that buffer will just have pointers to actual data. It also means
-	 * that if anything is to be appended to the buffer, it will first have to
-	 * unshare it (make a local copy).
+	 * Method called to initialize the buffer with a shared copy of data; this means that buffer will just have pointers to actual data. It also means that if anything is to be appended to the buffer,
+	 * it will first have to unshare it (make a local copy).
 	 */
 	public void resetWithShared(char[] buf, int start, int len) {
 		// First, let's clear intermediate values, if any:
@@ -216,8 +192,7 @@ public final class TextBuffer {
 	 */
 	private char[] buf(int needed) {
 		if (_allocator != null) {
-			return _allocator.allocCharBuffer(BufferRecycler.CHAR_TEXT_BUFFER,
-					needed);
+			return _allocator.allocCharBuffer(BufferRecycler.CHAR_TEXT_BUFFER, needed);
 		}
 		return new char[Math.max(needed, MIN_SEGMENT_LEN)];
 	}
@@ -225,12 +200,10 @@ public final class TextBuffer {
 	private void clearSegments() {
 		_hasSegments = false;
 		/*
-		 * Let's start using _last_ segment from list; for one, it's the biggest
-		 * one, and it's also most likely to be cached
+		 * Let's start using _last_ segment from list; for one, it's the biggest one, and it's also most likely to be cached
 		 */
 		/*
-		 * 28-Aug-2009, tatu: Actually, the current segment should be the
-		 * biggest one, already
+		 * 28-Aug-2009, tatu: Actually, the current segment should be the biggest one, already
 		 */
 		// _currentSegment = _segments.get(_segments.size() - 1);
 		_segments.clear();
@@ -238,9 +211,7 @@ public final class TextBuffer {
 	}
 
 	/*
-	 * /********************************************************** /* Accessors
-	 * for implementing public interface
-	 * /**********************************************************
+	 * /********************************************************** /* Accessors for implementing public interface /**********************************************************
 	 */
 
 	/**
@@ -262,16 +233,13 @@ public final class TextBuffer {
 
 	public int getTextOffset() {
 		/*
-		 * Only shared input buffer can have non-zero offset; buffer segments
-		 * start at 0, and if we have to create a combo buffer, that too will
-		 * start from beginning of the buffer
+		 * Only shared input buffer can have non-zero offset; buffer segments start at 0, and if we have to create a combo buffer, that too will start from beginning of the buffer
 		 */
 		return (_inputStart >= 0) ? _inputStart : 0;
 	}
 
 	/**
-	 * Method that can be used to check whether textual contents can be
-	 * efficiently accessed using {@link #getTextBuffer}.
+	 * Method that can be used to check whether textual contents can be efficiently accessed using {@link #getTextBuffer}.
 	 */
 	public boolean hasTextAsCharacters() {
 		// if we have array in some form, sure
@@ -305,8 +273,7 @@ public final class TextBuffer {
 	}
 
 	/*
-	 * /********************************************************** /* Other
-	 * accessors: /**********************************************************
+	 * /********************************************************** /* Other accessors: /**********************************************************
 	 */
 
 	public String contentsAsString() {
@@ -320,16 +287,14 @@ public final class TextBuffer {
 					if (_inputLen < 1) {
 						return (_resultString = "");
 					}
-					_resultString = new String(_inputBuffer, _inputStart,
-							_inputLen);
+					_resultString = new String(_inputBuffer, _inputStart, _inputLen);
 				} else { // nope... need to copy
 					// But first, let's see if we have just one buffer
 					int segLen = _segmentSize;
 					int currLen = _currentSize;
 
 					if (segLen == 0) { // yup
-						_resultString = (currLen == 0) ? "" : new String(
-								_currentSegment, 0, currLen);
+						_resultString = (currLen == 0) ? "" : new String(_currentSegment, 0, currLen);
 					} else { // no, need to combine
 						StringBuilder sb = new StringBuilder(segLen + currLen);
 						// First stored segments
@@ -358,8 +323,7 @@ public final class TextBuffer {
 	}
 
 	/**
-	 * Convenience method for converting contents of the buffer into a
-	 * {@link BigDecimal}.
+	 * Convenience method for converting contents of the buffer into a {@link BigDecimal}.
 	 */
 	public BigDecimal contentsAsDecimal() throws NumberFormatException {
 		// Already got a pre-cut array?
@@ -368,34 +332,29 @@ public final class TextBuffer {
 		}
 		// Or a shared buffer?
 		if ((_inputStart >= 0) && (_inputBuffer != null)) {
-			return NumberInput.parseBigDecimal(_inputBuffer, _inputStart,
-					_inputLen);
+			return NumberInput.parseBigDecimal(_inputBuffer, _inputStart, _inputLen);
 		}
 		// Or if not, just a single buffer (the usual case)
 		if ((_segmentSize == 0) && (_currentSegment != null)) {
-			return NumberInput
-					.parseBigDecimal(_currentSegment, 0, _currentSize);
+			return NumberInput.parseBigDecimal(_currentSegment, 0, _currentSize);
 		}
 		// If not, let's just get it aggregated...
 		return NumberInput.parseBigDecimal(contentsAsArray());
 	}
 
 	/**
-	 * Convenience method for converting contents of the buffer into a Double
-	 * value.
+	 * Convenience method for converting contents of the buffer into a Double value.
 	 */
 	public double contentsAsDouble() throws NumberFormatException {
 		return NumberInput.parseDouble(contentsAsString());
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * mutators: /**********************************************************
+	 * /********************************************************** /* Public mutators: /**********************************************************
 	 */
 
 	/**
-	 * Method called to make sure that buffer is not using shared input buffer;
-	 * if it is, it will copy such contents to private buffer.
+	 * Method called to make sure that buffer is not using shared input buffer; if it is, it will copy such contents to private buffer.
 	 */
 	public void ensureNotShared() {
 		if (_inputStart >= 0) {
@@ -443,8 +402,7 @@ public final class TextBuffer {
 			len -= max;
 		}
 		/*
-		 * And then allocate new segment; we are guaranteed to now have enough
-		 * room in segment.
+		 * And then allocate new segment; we are guaranteed to now have enough room in segment.
 		 */
 		// Except, as per [Issue-24], not for HUGE appends... so:
 		do {
@@ -480,8 +438,7 @@ public final class TextBuffer {
 			offset += max;
 		}
 		/*
-		 * And then allocate new segment; we are guaranteed to now have enough
-		 * room in segment.
+		 * And then allocate new segment; we are guaranteed to now have enough room in segment.
 		 */
 		// Except, as per [Issue-24], not for HUGE appends... so:
 		do {
@@ -495,16 +452,12 @@ public final class TextBuffer {
 	}
 
 	/*
-	 * /********************************************************** /* Raw
-	 * access, for high-performance use:
-	 * /**********************************************************
+	 * /********************************************************** /* Raw access, for high-performance use: /**********************************************************
 	 */
 
 	public char[] getCurrentSegment() {
 		/*
-		 * Since the intention of the caller is to directly add stuff into
-		 * buffers, we should NOT have anything in shared buffer... ie. may need
-		 * to unshare contents.
+		 * Since the intention of the caller is to directly add stuff into buffers, we should NOT have anything in shared buffer... ie. may need to unshare contents.
 		 */
 		if (_inputStart >= 0) {
 			unshare(1);
@@ -572,24 +525,19 @@ public final class TextBuffer {
 	}
 
 	/**
-	 * Method called to expand size of the current segment, to accommodate for
-	 * more contiguous content. Usually only used when parsing tokens like names
-	 * if even then.
+	 * Method called to expand size of the current segment, to accommodate for more contiguous content. Usually only used when parsing tokens like names if even then.
 	 */
 	public char[] expandCurrentSegment() {
 		final char[] curr = _currentSegment;
 		// Let's grow by 50%
 		final int len = curr.length;
 		// Must grow by at least 1 char, no matter what
-		int newLen = (len == MAX_SEGMENT_LEN) ? (MAX_SEGMENT_LEN + 1) : Math
-				.min(MAX_SEGMENT_LEN, len + (len >> 1));
+		int newLen = (len == MAX_SEGMENT_LEN) ? (MAX_SEGMENT_LEN + 1) : Math.min(MAX_SEGMENT_LEN, len + (len >> 1));
 		return (_currentSegment = Arrays.copyOf(curr, newLen));
 	}
 
 	/**
-	 * Method called to expand size of the current segment, to accommodate for
-	 * more contiguous content. Usually only used when parsing tokens like names
-	 * if even then.
+	 * Method called to expand size of the current segment, to accommodate for more contiguous content. Usually only used when parsing tokens like names if even then.
 	 *
 	 * @param minSize
 	 *            Required minimum strength of the current segment
@@ -606,14 +554,11 @@ public final class TextBuffer {
 	}
 
 	/*
-	 * /********************************************************** /* Standard
-	 * methods: /**********************************************************
+	 * /********************************************************** /* Standard methods: /**********************************************************
 	 */
 
 	/**
-	 * Note: calling this method may not be as efficient as calling
-	 * {@link #contentsAsString}, since it's not guaranteed that resulting
-	 * String is cached.
+	 * Note: calling this method may not be as efficient as calling {@link #contentsAsString}, since it's not guaranteed that resulting String is cached.
 	 */
 	@Override
 	public String toString() {
@@ -621,13 +566,11 @@ public final class TextBuffer {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods: /**********************************************************
+	 * /********************************************************** /* Internal methods: /**********************************************************
 	 */
 
 	/**
-	 * Method called if/when we need to append content when we have been
-	 * initialized to use shared buffer.
+	 * Method called if/when we need to append content when we have been initialized to use shared buffer.
 	 */
 	private void unshare(int needExtra) {
 		int sharedLen = _inputLen;

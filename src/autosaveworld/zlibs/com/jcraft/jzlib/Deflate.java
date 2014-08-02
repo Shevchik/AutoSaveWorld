@@ -50,8 +50,7 @@ public final class Deflate implements Cloneable {
 		int max_chain;
 		int func;
 
-		Config(int good_length, int max_lazy, int nice_length, int max_chain,
-				int func) {
+		Config(int good_length, int max_lazy, int nice_length, int max_chain, int func) {
 			this.good_length = good_length;
 			this.max_lazy = max_lazy;
 			this.nice_length = nice_length;
@@ -81,16 +80,16 @@ public final class Deflate implements Cloneable {
 	}
 
 	static final private String[] z_errmsg = { "need dictionary", // Z_NEED_DICT
-		// 2
-		"stream end", // Z_STREAM_END 1
-		"", // Z_OK 0
-		"file error", // Z_ERRNO (-1)
-		"stream error", // Z_STREAM_ERROR (-2)
-		"data error", // Z_DATA_ERROR (-3)
-		"insufficient memory", // Z_MEM_ERROR (-4)
-		"buffer error", // Z_BUF_ERROR (-5)
-		"incompatible version",// Z_VERSION_ERROR (-6)
-	"" };
+			// 2
+			"stream end", // Z_STREAM_END 1
+			"", // Z_OK 0
+			"file error", // Z_ERRNO (-1)
+			"stream error", // Z_STREAM_ERROR (-2)
+			"data error", // Z_DATA_ERROR (-3)
+			"insufficient memory", // Z_MEM_ERROR (-4)
+			"buffer error", // Z_BUF_ERROR (-5)
+			"incompatible version",// Z_VERSION_ERROR (-6)
+			"" };
 
 	// block not completed, need more input or more output
 	static final private int NeedMore = 0;
@@ -389,7 +388,7 @@ public final class Deflate implements Cloneable {
 	// two sons).
 	void pqdownheap(short[] tree, // the tree to restore
 			int k // node to move down
-			) {
+	) {
 		int v = heap[k];
 		int j = k << 1; // left son of k
 		while (j <= heap_len) {
@@ -421,7 +420,7 @@ public final class Deflate implements Cloneable {
 	// in the bit length tree.
 	void scan_tree(short[] tree,// the tree to be scanned
 			int max_code // and its largest code of non zero frequency
-			) {
+	) {
 		int n; // iterates over all tree elements
 		int prevlen = -1; // last emitted length
 		int curlen; // length of current code
@@ -517,7 +516,7 @@ public final class Deflate implements Cloneable {
 	// bl_tree.
 	void send_tree(short[] tree,// the tree to be sent
 			int max_code // and its largest code of non zero frequency
-			) {
+	) {
 		int n; // iterates over all tree elements
 		int prevlen = -1; // last emitted length
 		int curlen; // length of current code
@@ -642,7 +641,7 @@ public final class Deflate implements Cloneable {
 	// the current block must be flushed.
 	boolean _tr_tally(int dist, // distance of matched string
 			int lc // match length-MIN_MATCH or unmatched char (if dist==0)
-			) {
+	) {
 
 		pending_buf[d_buf + last_lit * 2] = (byte) (dist >>> 8);
 		pending_buf[d_buf + last_lit * 2 + 1] = (byte) dist;
@@ -667,13 +666,12 @@ public final class Deflate implements Cloneable {
 			int in_length = strstart - block_start;
 			int dcode;
 			for (dcode = 0; dcode < D_CODES; dcode++) {
-				out_length += dyn_dtree[dcode * 2]
-						* (5L + Tree.extra_dbits[dcode]);
+				out_length += dyn_dtree[dcode * 2] * (5L + Tree.extra_dbits[dcode]);
 			}
 			out_length >>>= 3;
-		if ((matches < (last_lit / 2)) && out_length < in_length / 2) {
-			return true;
-		}
+			if ((matches < (last_lit / 2)) && out_length < in_length / 2) {
+				return true;
+			}
 		}
 
 		return (last_lit == lit_bufsize - 1);
@@ -692,8 +690,7 @@ public final class Deflate implements Cloneable {
 
 		if (last_lit != 0) {
 			do {
-				dist = ((pending_buf[d_buf + lx * 2] << 8) & 0xff00)
-						| (pending_buf[d_buf + lx * 2 + 1] & 0xff);
+				dist = ((pending_buf[d_buf + lx * 2] << 8) & 0xff00) | (pending_buf[d_buf + lx * 2 + 1] & 0xff);
 				lc = (l_buf[lx]) & 0xff;
 				lx++;
 
@@ -762,7 +759,7 @@ public final class Deflate implements Cloneable {
 		} else if (bi_valid >= 8) {
 			put_byte((byte) bi_buf);
 			bi_buf >>>= 8;
-		bi_valid -= 8;
+			bi_valid -= 8;
 		}
 	}
 
@@ -782,7 +779,7 @@ public final class Deflate implements Cloneable {
 	void copy_block(int buf, // the input data
 			int len, // its length
 			boolean header // true if block header must be written
-			) {
+	) {
 		bi_windup(); // align on byte boundary
 		last_eob_len = 8; // enough lookahead for inflate
 
@@ -799,8 +796,7 @@ public final class Deflate implements Cloneable {
 	}
 
 	void flush_block_only(boolean eof) {
-		_tr_flush_block(block_start >= 0 ? block_start : -1, strstart
-				- block_start, eof);
+		_tr_flush_block(block_start >= 0 ? block_start : -1, strstart - block_start, eof);
 		block_start = strstart;
 		strm.flush_pending();
 	}
@@ -832,8 +828,7 @@ public final class Deflate implements Cloneable {
 				if (lookahead == 0 && flush == Z_NO_FLUSH) {
 					return NeedMore;
 				}
-				if (lookahead == 0)
-				{
+				if (lookahead == 0) {
 					break; // flush the current block
 				}
 			}
@@ -877,7 +872,7 @@ public final class Deflate implements Cloneable {
 	void _tr_stored_block(int buf, // input block
 			int stored_len, // length of input block
 			boolean eof // true if this is the last block for a file
-			) {
+	) {
 		send_bits((STORED_BLOCK << 1) + (eof ? 1 : 0), 3); // send block type
 		copy_block(buf, stored_len, true); // with header
 	}
@@ -887,7 +882,7 @@ public final class Deflate implements Cloneable {
 	void _tr_flush_block(int buf, // input block, or NULL if too old
 			int stored_len, // length of input block
 			boolean eof // true if this is the last block for a file
-			) {
+	) {
 		int opt_lenb, static_lenb;// opt_len and static_len in bytes
 		int max_blindex = 0; // index of last bit length code of non zero freq
 
@@ -917,9 +912,9 @@ public final class Deflate implements Cloneable {
 			opt_lenb = (opt_len + 3 + 7) >>> 3;
 			static_lenb = (static_len + 3 + 7) >>> 3;
 
-		if (static_lenb <= opt_lenb) {
-			opt_lenb = static_lenb;
-		}
+			if (static_lenb <= opt_lenb) {
+				opt_lenb = static_lenb;
+			}
 		} else {
 			opt_lenb = static_lenb = stored_len + 5; // force a stored block
 		}
@@ -938,8 +933,7 @@ public final class Deflate implements Cloneable {
 			compress_block(StaticTree.static_ltree, StaticTree.static_dtree);
 		} else {
 			send_bits((DYN_TREES << 1) + (eof ? 1 : 0), 3);
-			send_all_trees(l_desc.max_code + 1, d_desc.max_code + 1,
-					max_blindex + 1);
+			send_all_trees(l_desc.max_code + 1, d_desc.max_code + 1, max_blindex + 1);
 			compress_block(dyn_ltree, dyn_dtree);
 		}
 
@@ -1035,8 +1029,7 @@ public final class Deflate implements Cloneable {
 			// Initialize the hash value now that we have some input:
 			if (lookahead >= MIN_MATCH) {
 				ins_h = window[strstart] & 0xff;
-				ins_h = (((ins_h) << hash_shift) ^ (window[strstart + 1] & 0xff))
-						& hash_mask;
+				ins_h = (((ins_h) << hash_shift) ^ (window[strstart + 1] & 0xff)) & hash_mask;
 			}
 			// If the whole input has less than MIN_MATCH bytes, ins_h is
 			// garbage,
@@ -1065,8 +1058,7 @@ public final class Deflate implements Cloneable {
 				if (lookahead < MIN_LOOKAHEAD && flush == Z_NO_FLUSH) {
 					return NeedMore;
 				}
-				if (lookahead == 0)
-				{
+				if (lookahead == 0) {
 					break; // flush the current block
 				}
 			}
@@ -1074,9 +1066,7 @@ public final class Deflate implements Cloneable {
 			// Insert the string window[strstart .. strstart+2] in the
 			// dictionary, and set hash_head to the head of the hash chain:
 			if (lookahead >= MIN_MATCH) {
-				ins_h = (((ins_h) << hash_shift) ^ (window[(strstart)
-				                                           + (MIN_MATCH - 1)] & 0xff))
-				                                           & hash_mask;
+				ins_h = (((ins_h) << hash_shift) ^ (window[(strstart) + (MIN_MATCH - 1)] & 0xff)) & hash_mask;
 
 				// prev[strstart&w_mask]=hash_head=head[ins_h];
 				hash_head = (head[ins_h] & 0xffff);
@@ -1087,9 +1077,7 @@ public final class Deflate implements Cloneable {
 			// Find the longest match, discarding those <= prev_length.
 			// At this point we have always match_length < MIN_MATCH
 
-			if (hash_head != 0L
-					&& ((strstart - hash_head) & 0xffff) <= w_size
-					- MIN_LOOKAHEAD) {
+			if (hash_head != 0L && ((strstart - hash_head) & 0xffff) <= w_size - MIN_LOOKAHEAD) {
 				// To simplify the code, we prevent matches with the string
 				// of window index 0 (in particular we have to avoid a match
 				// of the string with itself at the start of the input file).
@@ -1101,8 +1089,7 @@ public final class Deflate implements Cloneable {
 			if (match_length >= MIN_MATCH) {
 				// check_match(strstart, match_start, match_length);
 
-				bflush = _tr_tally(strstart - match_start, match_length
-						- MIN_MATCH);
+				bflush = _tr_tally(strstart - match_start, match_length - MIN_MATCH);
 
 				lookahead -= match_length;
 
@@ -1113,9 +1100,7 @@ public final class Deflate implements Cloneable {
 					do {
 						strstart++;
 
-						ins_h = ((ins_h << hash_shift) ^ (window[(strstart)
-						                                         + (MIN_MATCH - 1)] & 0xff))
-						                                         & hash_mask;
+						ins_h = ((ins_h << hash_shift) ^ (window[(strstart) + (MIN_MATCH - 1)] & 0xff)) & hash_mask;
 						// prev[strstart&w_mask]=hash_head=head[ins_h];
 						hash_head = (head[ins_h] & 0xffff);
 						prev[strstart & w_mask] = head[ins_h];
@@ -1130,8 +1115,7 @@ public final class Deflate implements Cloneable {
 					match_length = 0;
 					ins_h = window[strstart] & 0xff;
 
-					ins_h = (((ins_h) << hash_shift) ^ (window[strstart + 1] & 0xff))
-							& hash_mask;
+					ins_h = (((ins_h) << hash_shift) ^ (window[strstart + 1] & 0xff)) & hash_mask;
 					// If lookahead < MIN_MATCH, ins_h is garbage, but it does
 					// not
 					// matter since it will be recomputed at next deflate call.
@@ -1183,8 +1167,7 @@ public final class Deflate implements Cloneable {
 				if (lookahead < MIN_LOOKAHEAD && flush == Z_NO_FLUSH) {
 					return NeedMore;
 				}
-				if (lookahead == 0)
-				{
+				if (lookahead == 0) {
 					break; // flush the current block
 				}
 			}
@@ -1193,9 +1176,7 @@ public final class Deflate implements Cloneable {
 			// dictionary, and set hash_head to the head of the hash chain:
 
 			if (lookahead >= MIN_MATCH) {
-				ins_h = (((ins_h) << hash_shift) ^ (window[(strstart)
-				                                           + (MIN_MATCH - 1)] & 0xff))
-				                                           & hash_mask;
+				ins_h = (((ins_h) << hash_shift) ^ (window[(strstart) + (MIN_MATCH - 1)] & 0xff)) & hash_mask;
 				// prev[strstart&w_mask]=hash_head=head[ins_h];
 				hash_head = (head[ins_h] & 0xffff);
 				prev[strstart & w_mask] = head[ins_h];
@@ -1207,10 +1188,7 @@ public final class Deflate implements Cloneable {
 			prev_match = match_start;
 			match_length = MIN_MATCH - 1;
 
-			if (hash_head != 0
-					&& prev_length < max_lazy_match
-					&& ((strstart - hash_head) & 0xffff) <= w_size
-					- MIN_LOOKAHEAD) {
+			if (hash_head != 0 && prev_length < max_lazy_match && ((strstart - hash_head) & 0xffff) <= w_size - MIN_LOOKAHEAD) {
 				// To simplify the code, we prevent matches with the string
 				// of window index 0 (in particular we have to avoid a match
 				// of the string with itself at the start of the input file).
@@ -1220,9 +1198,7 @@ public final class Deflate implements Cloneable {
 				}
 				// longest_match() sets match_start
 
-				if (match_length <= 5
-						&& (strategy == Z_FILTERED || (match_length == MIN_MATCH && strstart
-						- match_start > 4096))) {
+				if (match_length <= 5 && (strategy == Z_FILTERED || (match_length == MIN_MATCH && strstart - match_start > 4096))) {
 
 					// If prev_match is also MIN_MATCH, match_start is garbage
 					// but we will ignore the current match anyway.
@@ -1238,8 +1214,7 @@ public final class Deflate implements Cloneable {
 
 				// check_match(strstart-1, prev_match, prev_length);
 
-				bflush = _tr_tally(strstart - 1 - prev_match, prev_length
-						- MIN_MATCH);
+				bflush = _tr_tally(strstart - 1 - prev_match, prev_length - MIN_MATCH);
 
 				// Insert in hash table all strings up to the end of the match.
 				// strstart-1 and strstart are already inserted. If there is not
@@ -1249,9 +1224,7 @@ public final class Deflate implements Cloneable {
 				prev_length -= 2;
 				do {
 					if (++strstart <= max_insert) {
-						ins_h = (((ins_h) << hash_shift) ^ (window[(strstart)
-						                                           + (MIN_MATCH - 1)] & 0xff))
-						                                           & hash_mask;
+						ins_h = (((ins_h) << hash_shift) ^ (window[(strstart) + (MIN_MATCH - 1)] & 0xff)) & hash_mask;
 						// prev[strstart&w_mask]=hash_head=head[ins_h];
 						hash_head = (head[ins_h] & 0xffff);
 						prev[strstart & w_mask] = head[ins_h];
@@ -1317,105 +1290,91 @@ public final class Deflate implements Cloneable {
 		int match; // matched string
 		int len; // length of current match
 		int best_len = prev_length; // best match length so far
-		int limit = strstart > (w_size - MIN_LOOKAHEAD) ? strstart
-				- (w_size - MIN_LOOKAHEAD) : 0;
-				int nice_match = this.nice_match;
+		int limit = strstart > (w_size - MIN_LOOKAHEAD) ? strstart - (w_size - MIN_LOOKAHEAD) : 0;
+		int nice_match = this.nice_match;
 
-				// Stop when cur_match becomes <= limit. To simplify the code,
-				// we prevent matches with the string of window index 0.
+		// Stop when cur_match becomes <= limit. To simplify the code,
+		// we prevent matches with the string of window index 0.
 
-				int wmask = w_mask;
+		int wmask = w_mask;
 
-				int strend = strstart + MAX_MATCH;
-				byte scan_end1 = window[scan + best_len - 1];
-				byte scan_end = window[scan + best_len];
+		int strend = strstart + MAX_MATCH;
+		byte scan_end1 = window[scan + best_len - 1];
+		byte scan_end = window[scan + best_len];
 
-				// The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of
-				// 16.
-				// It is easy to get rid of this optimization if necessary.
+		// The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of
+		// 16.
+		// It is easy to get rid of this optimization if necessary.
 
-				// Do not waste too much time if we already have a good match:
-				if (prev_length >= good_match) {
-					chain_length >>= 2;
+		// Do not waste too much time if we already have a good match:
+		if (prev_length >= good_match) {
+			chain_length >>= 2;
+		}
+
+		// Do not look for matches beyond the end of the input. This is
+		// necessary
+		// to make deflate deterministic.
+		if (nice_match > lookahead) {
+			nice_match = lookahead;
+		}
+
+		do {
+			match = cur_match;
+
+			// Skip to next match if the match length cannot increase
+			// or if the match length is less than 2:
+			if (window[match + best_len] != scan_end || window[match + best_len - 1] != scan_end1 || window[match] != window[scan] || window[++match] != window[scan + 1]) {
+				continue;
+			}
+
+			// The check at best_len-1 can be removed because it will be made
+			// again later. (This heuristic is not always a win.)
+			// It is not necessary to compare scan[2] and match[2] since they
+			// are always equal when the other bytes match, given that
+			// the hash keys are equal and that HASH_BITS >= 8.
+			scan += 2;
+			match++;
+
+			// We check for insufficient lookahead only every 8th comparison;
+			// the 256th check will be made at strstart+258.
+			do {
+			} while (window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match]
+					&& window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && scan < strend);
+
+			len = MAX_MATCH - (strend - scan);
+			scan = strend - MAX_MATCH;
+
+			if (len > best_len) {
+				match_start = cur_match;
+				best_len = len;
+				if (len >= nice_match) {
+					break;
 				}
+				scan_end1 = window[scan + best_len - 1];
+				scan_end = window[scan + best_len];
+			}
 
-				// Do not look for matches beyond the end of the input. This is
-				// necessary
-				// to make deflate deterministic.
-				if (nice_match > lookahead) {
-					nice_match = lookahead;
-				}
+		} while ((cur_match = (prev[cur_match & wmask] & 0xffff)) > limit && --chain_length != 0);
 
-				do {
-					match = cur_match;
-
-					// Skip to next match if the match length cannot increase
-					// or if the match length is less than 2:
-					if (window[match + best_len] != scan_end
-							|| window[match + best_len - 1] != scan_end1
-							|| window[match] != window[scan]
-									|| window[++match] != window[scan + 1]) {
-						continue;
-					}
-
-					// The check at best_len-1 can be removed because it will be made
-					// again later. (This heuristic is not always a win.)
-					// It is not necessary to compare scan[2] and match[2] since they
-					// are always equal when the other bytes match, given that
-					// the hash keys are equal and that HASH_BITS >= 8.
-					scan += 2;
-					match++;
-
-					// We check for insufficient lookahead only every 8th comparison;
-					// the 256th check will be made at strstart+258.
-					do {
-					} while (window[++scan] == window[++match]
-							&& window[++scan] == window[++match]
-									&& window[++scan] == window[++match]
-											&& window[++scan] == window[++match]
-													&& window[++scan] == window[++match]
-															&& window[++scan] == window[++match]
-																	&& window[++scan] == window[++match]
-																			&& window[++scan] == window[++match] && scan < strend);
-
-					len = MAX_MATCH - (strend - scan);
-					scan = strend - MAX_MATCH;
-
-					if (len > best_len) {
-						match_start = cur_match;
-						best_len = len;
-						if (len >= nice_match) {
-							break;
-						}
-						scan_end1 = window[scan + best_len - 1];
-						scan_end = window[scan + best_len];
-					}
-
-				} while ((cur_match = (prev[cur_match & wmask] & 0xffff)) > limit
-						&& --chain_length != 0);
-
-				if (best_len <= lookahead) {
-					return best_len;
-				}
-				return lookahead;
+		if (best_len <= lookahead) {
+			return best_len;
+		}
+		return lookahead;
 	}
 
 	int deflateInit(int level, int bits, int memlevel) {
-		return deflateInit(level, Z_DEFLATED, bits, memlevel,
-				Z_DEFAULT_STRATEGY);
+		return deflateInit(level, Z_DEFLATED, bits, memlevel, Z_DEFAULT_STRATEGY);
 	}
 
 	int deflateInit(int level, int bits) {
-		return deflateInit(level, Z_DEFLATED, bits, DEF_MEM_LEVEL,
-				Z_DEFAULT_STRATEGY);
+		return deflateInit(level, Z_DEFLATED, bits, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY);
 	}
 
 	int deflateInit(int level) {
 		return deflateInit(level, MAX_WBITS);
 	}
 
-	private int deflateInit(int level, int method, int windowBits,
-			int memLevel, int strategy) {
+	private int deflateInit(int level, int method, int windowBits, int memLevel, int strategy) {
 		int wrap = 1;
 		// byte[] my_version=ZLIB_VERSION;
 
@@ -1440,9 +1399,7 @@ public final class Deflate implements Cloneable {
 			strm.adler = new CRC32();
 		}
 
-		if (memLevel < 1 || memLevel > MAX_MEM_LEVEL || method != Z_DEFLATED
-				|| windowBits < 9 || windowBits > 15 || level < 0 || level > 9
-				|| strategy < 0 || strategy > Z_HUFFMAN_ONLY) {
+		if (memLevel < 1 || memLevel > MAX_MEM_LEVEL || method != Z_DEFLATED || windowBits < 9 || windowBits > 15 || level < 0 || level > 9 || strategy < 0 || strategy > Z_HUFFMAN_ONLY) {
 			return Z_STREAM_ERROR;
 		}
 
@@ -1502,8 +1459,7 @@ public final class Deflate implements Cloneable {
 	}
 
 	int deflateEnd() {
-		if (status != INIT_STATE && status != BUSY_STATE
-				&& status != FINISH_STATE) {
+		if (status != INIT_STATE && status != BUSY_STATE && status != FINISH_STATE) {
 			return Z_STREAM_ERROR;
 		}
 		// Deallocate in reverse order of allocations:
@@ -1523,13 +1479,11 @@ public final class Deflate implements Cloneable {
 		if (_level == Z_DEFAULT_COMPRESSION) {
 			_level = 6;
 		}
-		if (_level < 0 || _level > 9 || _strategy < 0
-				|| _strategy > Z_HUFFMAN_ONLY) {
+		if (_level < 0 || _level > 9 || _strategy < 0 || _strategy > Z_HUFFMAN_ONLY) {
 			return Z_STREAM_ERROR;
 		}
 
-		if (config_table[level].func != config_table[_level].func
-				&& strm.total_in != 0) {
+		if (config_table[level].func != config_table[_level].func && strm.total_in != 0) {
 			// Flush the last buffer:
 			err = strm.deflate(Z_PARTIAL_FLUSH);
 		}
@@ -1574,8 +1528,7 @@ public final class Deflate implements Cloneable {
 		ins_h = (((ins_h) << hash_shift) ^ (window[1] & 0xff)) & hash_mask;
 
 		for (int n = 0; n <= length - MIN_MATCH; n++) {
-			ins_h = (((ins_h) << hash_shift) ^ (window[(n) + (MIN_MATCH - 1)] & 0xff))
-					& hash_mask;
+			ins_h = (((ins_h) << hash_shift) ^ (window[(n) + (MIN_MATCH - 1)] & 0xff)) & hash_mask;
 			prev[n & w_mask] = head[ins_h];
 			head[ins_h] = (short) n;
 		}
@@ -1589,9 +1542,7 @@ public final class Deflate implements Cloneable {
 			return Z_STREAM_ERROR;
 		}
 
-		if (strm.next_out == null
-				|| (strm.next_in == null && strm.avail_in != 0)
-				|| (status == FINISH_STATE && flush != Z_FINISH)) {
+		if (strm.next_out == null || (strm.next_in == null && strm.avail_in != 0) || (status == FINISH_STATE && flush != Z_FINISH)) {
 			strm.msg = z_errmsg[Z_NEED_DICT - (Z_STREAM_ERROR)];
 			return Z_STREAM_ERROR;
 		}
@@ -1652,8 +1603,7 @@ public final class Deflate implements Cloneable {
 			// consecutive
 			// flushes. For repeated and useless calls with Z_FINISH, we keep
 			// returning Z_STREAM_END instead of Z_BUFF_ERROR.
-		} else if (strm.avail_in == 0 && flush <= old_flush
-				&& flush != Z_FINISH) {
+		} else if (strm.avail_in == 0 && flush <= old_flush && flush != Z_FINISH) {
 			strm.msg = z_errmsg[Z_NEED_DICT - (Z_BUF_ERROR)];
 			return Z_BUF_ERROR;
 		}
@@ -1665,20 +1615,19 @@ public final class Deflate implements Cloneable {
 		}
 
 		// Start a new block or continue the current one.
-		if (strm.avail_in != 0 || lookahead != 0
-				|| (flush != Z_NO_FLUSH && status != FINISH_STATE)) {
+		if (strm.avail_in != 0 || lookahead != 0 || (flush != Z_NO_FLUSH && status != FINISH_STATE)) {
 			int bstate = -1;
 			switch (config_table[level].func) {
-			case STORED:
-				bstate = deflate_stored(flush);
-				break;
-			case FAST:
-				bstate = deflate_fast(flush);
-				break;
-			case SLOW:
-				bstate = deflate_slow(flush);
-				break;
-			default:
+				case STORED:
+					bstate = deflate_stored(flush);
+					break;
+				case FAST:
+					bstate = deflate_fast(flush);
+					break;
+				case SLOW:
+					bstate = deflate_slow(flush);
+					break;
+				default:
 			}
 
 			if (bstate == FinishStarted || bstate == FinishDone) {
@@ -1751,8 +1700,7 @@ public final class Deflate implements Cloneable {
 		// If avail_out is zero, the application will call deflate again
 		// to flush the rest.
 
-		if (wrap > 0)
-		{
+		if (wrap > 0) {
 			wrap = -wrap; // write the trailer only once!
 		}
 		return pending != 0 ? Z_OK : Z_STREAM_END;
@@ -1766,8 +1714,7 @@ public final class Deflate implements Cloneable {
 
 		if (src.next_in != null) {
 			dest.next_in = new byte[src.next_in.length];
-			System.arraycopy(src.next_in, 0, dest.next_in, 0,
-					src.next_in.length);
+			System.arraycopy(src.next_in, 0, dest.next_in, 0, src.next_in.length);
 		}
 		dest.next_in_index = src.next_in_index;
 		dest.avail_in = src.avail_in;
@@ -1775,8 +1722,7 @@ public final class Deflate implements Cloneable {
 
 		if (src.next_out != null) {
 			dest.next_out = new byte[src.next_out.length];
-			System.arraycopy(src.next_out, 0, dest.next_out, 0,
-					src.next_out.length);
+			System.arraycopy(src.next_out, 0, dest.next_out, 0, src.next_out.length);
 		}
 
 		dest.next_out_index = src.next_out_index;
@@ -1821,9 +1767,7 @@ public final class Deflate implements Cloneable {
 		dest.bl_desc.dyn_tree = dest.bl_tree;
 
 		/*
-		 * dest.l_desc.stat_desc = StaticTree.static_l_desc;
-		 * dest.d_desc.stat_desc = StaticTree.static_d_desc;
-		 * dest.bl_desc.stat_desc = StaticTree.static_bl_desc;
+		 * dest.l_desc.stat_desc = StaticTree.static_l_desc; dest.d_desc.stat_desc = StaticTree.static_d_desc; dest.bl_desc.stat_desc = StaticTree.static_bl_desc;
 		 */
 
 		if (dest.gheader != null) {

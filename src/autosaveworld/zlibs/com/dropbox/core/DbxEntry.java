@@ -15,46 +15,36 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
 
 /**
- * Holds the metadata for a Dropbox file system entry. Can either be a regular
- * file or a folder.
+ * Holds the metadata for a Dropbox file system entry. Can either be a regular file or a folder.
  */
 public abstract class DbxEntry implements Serializable {
 	public static final long serialVersionUID = 0;
 
 	/**
-	 * Just the last part of {@link #path}. Derived automatically from
-	 * {@link #path}.
+	 * Just the last part of {@link #path}. Derived automatically from {@link #path}.
 	 *
 	 * @see DbxPath#getName
 	 */
 	public final String name;
 
 	/**
-	 * The path to the file or folder, relative to your application's root. The
-	 * path always starts with a {@code "/"}.
+	 * The path to the file or folder, relative to your application's root. The path always starts with a {@code "/"}.
 	 *
 	 * <p>
-	 * For full-Dropbox apps, the path is relative to the root of the user's
-	 * Dropbox. For App Folder apps, the path is relative to your application's
-	 * App Folder within the user's Dropbox.
+	 * For full-Dropbox apps, the path is relative to the root of the user's Dropbox. For App Folder apps, the path is relative to your application's App Folder within the user's Dropbox.
 	 * </p>
 	 */
 	public final String path;
 
 	/**
-	 * The name of the icon to use for this file. The set of names returned by
-	 * this call match up with icons in a set of icons provided by Dropbox. Read
-	 * more about the <em>icon</em> field in <a
-	 * href="https://www.dropbox.com/developers/reference/api#metadata">
-	 * Dropbox's documentation for the {@code /metadata} HTTP endpoint</a>.
+	 * The name of the icon to use for this file. The set of names returned by this call match up with icons in a set of icons provided by Dropbox. Read more about the <em>icon</em> field in <a
+	 * href="https://www.dropbox.com/developers/reference/api#metadata"> Dropbox's documentation for the {@code /metadata} HTTP endpoint</a>.
 	 */
 	public final String iconName;
 
 	/**
-	 * Whether this file or folder might have a thumbnail image you can retrieve
-	 * via the {@link DbxClient#getThumbnail DbxClient.getThumbnail} call. If
-	 * this is {@code true}, there might be a thumbnail available. If this is
-	 * {@code false}, there is definitely no thumbnail available.
+	 * Whether this file or folder might have a thumbnail image you can retrieve via the {@link DbxClient#getThumbnail DbxClient.getThumbnail} call. If this is {@code true}, there might be a thumbnail
+	 * available. If this is {@code false}, there is definitely no thumbnail available.
 	 */
 	public final boolean mightHaveThumbnail;
 
@@ -74,27 +64,22 @@ public abstract class DbxEntry implements Serializable {
 	}
 
 	/**
-	 * Whether this metadata is for a folder, which can be cast to type
-	 * {@link Folder}. (Every metadata object is either for a file or a folder.)
+	 * Whether this metadata is for a folder, which can be cast to type {@link Folder}. (Every metadata object is either for a file or a folder.)
 	 */
 	public abstract boolean isFolder();
 
 	/**
-	 * Whether this metadata is for a file, which can be cast to type
-	 * {@link File}. (Every metadata object is either for a file or a folder.)
+	 * Whether this metadata is for a file, which can be cast to type {@link File}. (Every metadata object is either for a file or a folder.)
 	 */
 	public abstract boolean isFile();
 
 	/**
-	 * If this metadata entry is a folder, return it as a
-	 * {@code DbxEntry.Folder} instance. If it's not a folder, return
-	 * {@code null}.
+	 * If this metadata entry is a folder, return it as a {@code DbxEntry.Folder} instance. If it's not a folder, return {@code null}.
 	 */
 	public abstract Folder asFolder();
 
 	/**
-	 * If this metadata entry is a file, return it as a {@code DbxEntry.File}
-	 * instance. If it's not a file, return {@code null}.
+	 * If this metadata entry is a file, return it as a {@code DbxEntry.File} instance. If it's not a file, return {@code null}.
 	 */
 	public abstract File asFile();
 
@@ -124,8 +109,7 @@ public abstract class DbxEntry implements Serializable {
 	}
 
 	/**
-	 * The subclass of {@link DbxEntry} used to represent folder metadata.
-	 * Folders actually only have the same set of fields as {@link DbxEntry}.
+	 * The subclass of {@link DbxEntry} used to represent folder metadata. Folders actually only have the same set of fields as {@link DbxEntry}.
 	 */
 	public static final class Folder extends DbxEntry {
 		public static final long serialVersionUID = 0;
@@ -168,8 +152,7 @@ public abstract class DbxEntry implements Serializable {
 
 		public static final JsonReader<DbxEntry.Folder> Reader = new JsonReader<DbxEntry.Folder>() {
 			@Override
-			public final DbxEntry.Folder read(JsonParser parser)
-					throws IOException, JsonReadException {
+			public final DbxEntry.Folder read(JsonParser parser) throws IOException, JsonReadException {
 				JsonLocation top = parser.getCurrentLocation();
 				DbxEntry.WithChildrenC<?> ewc = DbxEntry.read(parser, null);
 				if (ewc == null) {
@@ -177,8 +160,7 @@ public abstract class DbxEntry implements Serializable {
 				}
 				DbxEntry e = ewc.entry;
 				if (!(e instanceof DbxEntry.Folder)) {
-					throw new JsonReadException(
-							"Expecting a file entry, got a folder entry", top);
+					throw new JsonReadException("Expecting a file entry, got a folder entry", top);
 				}
 				return (DbxEntry.Folder) e;
 			}
@@ -210,8 +192,7 @@ public abstract class DbxEntry implements Serializable {
 	}
 
 	/**
-	 * The subclass of {@link DbxEntry} used to represent file metadata (as
-	 * opposed to folder metadata).
+	 * The subclass of {@link DbxEntry} used to represent file metadata (as opposed to folder metadata).
 	 */
 	public static final class File extends DbxEntry {
 		public static final long serialVersionUID = 0;
@@ -222,41 +203,31 @@ public abstract class DbxEntry implements Serializable {
 		public final long numBytes;
 
 		/**
-		 * A human-readable string version of the file size (ex: "13 kb"). This
-		 * string will be localized based on the {@link java.util.Locale Locale}
-		 * in {@link DbxRequestConfig#userLocale} (passed in to the
-		 * {@link DbxClient} constructor).
+		 * A human-readable string version of the file size (ex: "13 kb"). This string will be localized based on the {@link java.util.Locale Locale} in {@link DbxRequestConfig#userLocale} (passed in
+		 * to the {@link DbxClient} constructor).
 		 */
 		public final String humanSize;
 
 		/**
-		 * The time the file was added, moved, or last had it's contents changed
-		 * on the Dropbox server. (This probably won't match the time on the
-		 * Dropbox user's filesystem. For that the {@link #clientMtime} is a
-		 * better estimate.)
+		 * The time the file was added, moved, or last had it's contents changed on the Dropbox server. (This probably won't match the time on the Dropbox user's filesystem. For that the
+		 * {@link #clientMtime} is a better estimate.)
 		 *
 		 */
 		public final Date lastModified;
 
 		/**
-		 * The modification time sent up by the Dropbox desktop client when the
-		 * file was added or modified. This time is based on the system clock of
-		 * the particular host that the client was running on, as opposed to the
-		 * system clock of the Dropbox servers.
+		 * The modification time sent up by the Dropbox desktop client when the file was added or modified. This time is based on the system clock of the particular host that the client was running
+		 * on, as opposed to the system clock of the Dropbox servers.
 		 *
 		 * <p>
-		 * This field <em>should not</em> be used to determine if a file has
-		 * changed, but only as a way to sort files by date (when displaying a
-		 * list of files to the user).
+		 * This field <em>should not</em> be used to determine if a file has changed, but only as a way to sort files by date (when displaying a list of files to the user).
 		 * </p>
 		 */
 		public final Date clientMtime;
 
 		/**
-		 * The revision of the file at this path. This can be used with
-		 * {@link DbxClient#uploadFile} and the {@link DbxWriteMode#update} mode
-		 * to make sure you're overwriting the revision of the file you think
-		 * you're overwriting.
+		 * The revision of the file at this path. This can be used with {@link DbxClient#uploadFile} and the {@link DbxWriteMode#update} mode to make sure you're overwriting the revision of the file
+		 * you think you're overwriting.
 		 */
 		public final String rev;
 
@@ -278,9 +249,7 @@ public abstract class DbxEntry implements Serializable {
 		 * @param rev
 		 *            {@link #rev}
 		 */
-		public File(String path, String iconName, boolean mightHaveThumbnail,
-				long numBytes, String humanSize, Date lastModified,
-				Date clientMtime, String rev) {
+		public File(String path, String iconName, boolean mightHaveThumbnail, long numBytes, String humanSize, Date lastModified, Date clientMtime, String rev) {
 			super(path, iconName, mightHaveThumbnail);
 			this.numBytes = numBytes;
 			this.humanSize = humanSize;
@@ -315,8 +284,7 @@ public abstract class DbxEntry implements Serializable {
 
 		public static final JsonReader<DbxEntry.File> Reader = new JsonReader<DbxEntry.File>() {
 			@Override
-			public final DbxEntry.File read(JsonParser parser)
-					throws IOException, JsonReadException {
+			public final DbxEntry.File read(JsonParser parser) throws IOException, JsonReadException {
 				JsonLocation top = parser.getCurrentLocation();
 				DbxEntry.WithChildrenC<?> ewc = DbxEntry.read(parser, null);
 				if (ewc == null) {
@@ -324,8 +292,7 @@ public abstract class DbxEntry implements Serializable {
 				}
 				DbxEntry e = ewc.entry;
 				if (!(e instanceof DbxEntry.File)) {
-					throw new JsonReadException(
-							"Expecting a file entry, got a folder entry", top);
+					throw new JsonReadException("Expecting a file entry, got a folder entry", top);
 				}
 				return (DbxEntry.File) e;
 			}
@@ -393,8 +360,7 @@ public abstract class DbxEntry implements Serializable {
 	};
 
 	/**
-	 * Holds the metadata for a file or folder; if it's a folder, we also store
-	 * the folder's hash and the metadata of its immediate children.
+	 * Holds the metadata for a file or folder; if it's a folder, we also store the folder's hash and the metadata of its immediate children.
 	 *
 	 * @see DbxClient#getMetadataWithChildren
 	 * @see DbxClient#getMetadataWithChildrenIfChanged
@@ -408,17 +374,13 @@ public abstract class DbxEntry implements Serializable {
 		public final DbxEntry entry;
 
 		/**
-		 * If {@link #entry} is a folder, this will contain a hash that
-		 * identifies the folder's contents. This value can be used with
-		 * {@link DbxClient#getMetadataWithChildrenIfChanged} to void
+		 * If {@link #entry} is a folder, this will contain a hash that identifies the folder's contents. This value can be used with {@link DbxClient#getMetadataWithChildrenIfChanged} to void
 		 * downloading the folder contents if they havne't changed.
 		 */
 		public final String hash;
 
 		/**
-		 * If {@link #entry} is a folder, this will contain the metadata of the
-		 * folder's immediate children. If it's not a folder, this will be
-		 * {@code null}.
+		 * If {@link #entry} is a folder, this will contain the metadata of the folder's immediate children. If it's not a folder, this will be {@code null}.
 		 */
 		public final List<DbxEntry> children;
 
@@ -456,8 +418,7 @@ public abstract class DbxEntry implements Serializable {
 		}
 
 		public boolean equals(WithChildren o) {
-			if (children != null ? !children.equals(o.children)
-					: o.children != null) {
+			if (children != null ? !children.equals(o.children) : o.children != null) {
 				return false;
 			}
 			if (!entry.equals(o.entry)) {
@@ -481,12 +442,8 @@ public abstract class DbxEntry implements Serializable {
 	}
 
 	/**
-	 * The more general case of {@link WithChildren}. It's used in the {@code C}
-	 * -suffixed variants ({@link DbxClient#getMetadataWithChildrenC} and
-	 * {@link DbxClient#getMetadataWithChildrenIfChanged} to allow you to
-	 * process the {@link DbxEntry} values as the come in and aggregate them
-	 * into your own object (instead of the default {@link List}) using a custom
-	 * {@link Collector}.
+	 * The more general case of {@link WithChildren}. It's used in the {@code C} -suffixed variants ({@link DbxClient#getMetadataWithChildrenC} and {@link DbxClient#getMetadataWithChildrenIfChanged}
+	 * to allow you to process the {@link DbxEntry} values as the come in and aggregate them into your own object (instead of the default {@link List}) using a custom {@link Collector}.
 	 */
 	public static final class WithChildrenC<C> implements Serializable {
 		public static final long serialVersionUID = 0;
@@ -494,17 +451,13 @@ public abstract class DbxEntry implements Serializable {
 		public final DbxEntry entry;
 
 		/**
-		 * If {@link #entry} is a folder, this will contain a hash that
-		 * identifies the folder's contents. This value can be used with
-		 * {@link DbxClient#getMetadataWithChildrenIfChanged} to void
+		 * If {@link #entry} is a folder, this will contain a hash that identifies the folder's contents. This value can be used with {@link DbxClient#getMetadataWithChildrenIfChanged} to void
 		 * downloading the folder contents if they havne't changed.
 		 */
 		public final String hash;
 
 		/**
-		 * If {@link #entry} is a folder, this will contain the metadata of the
-		 * folder's immediate children. If it's not a folder, this will be
-		 * {@code null}.
+		 * If {@link #entry} is a folder, this will contain the metadata of the folder's immediate children. If it's not a folder, this will be {@code null}.
 		 */
 		public final C children;
 
@@ -530,8 +483,7 @@ public abstract class DbxEntry implements Serializable {
 			}
 
 			@Override
-			public final WithChildrenC<C> read(JsonParser parser)
-					throws IOException, JsonReadException {
+			public final WithChildrenC<C> read(JsonParser parser) throws IOException, JsonReadException {
 				return DbxEntry.read(parser, collector);
 			}
 		}
@@ -594,65 +546,53 @@ public abstract class DbxEntry implements Serializable {
 			int fi = FM.get(fieldName);
 			try {
 				switch (fi) {
-				case -1:
-					JsonReader.skipValue(parser);
-					break;
-				case FM_size:
-					size = JsonReader.StringReader.readField(parser, fieldName,
-							size);
-					break;
-				case FM_bytes:
-					bytes = JsonReader.readUnsignedLongField(parser, fieldName,
-							bytes);
-					break;
-				case FM_path:
-					path = JsonReader.StringReader.readField(parser, fieldName,
-							path);
-					break;
-				case FM_is_dir:
-					is_dir = JsonReader.BooleanReader.readField(parser,
-							fieldName, is_dir);
-					break;
-				case FM_is_deleted:
-					is_deleted = JsonReader.BooleanReader.readField(parser,
-							fieldName, is_deleted);
-					break;
-				case FM_rev:
-					rev = JsonReader.StringReader.readField(parser, fieldName,
-							rev);
-					break;
-				case FM_thumb_exists:
-					thumb_exists = JsonReader.BooleanReader.readField(parser,
-							fieldName, thumb_exists);
-					break;
-				case FM_icon:
-					icon = JsonReader.StringReader.readField(parser, fieldName,
-							icon);
-					break;
-				case FM_modified:
-					modified = JsonDateReader.Dropbox.readField(parser,
-							fieldName, modified);
-					break;
-				case FM_client_mtime:
-					client_mtime = JsonDateReader.Dropbox.readField(parser,
-							fieldName, client_mtime);
-					break;
-				case FM_hash:
-					if (collector == null) {
-						throw new JsonReadException("not expecting \"hash\" field, since we didn't ask for children", parser.getCurrentLocation());
-					}
-					hash = JsonReader.StringReader.readField(parser, fieldName, hash);
-					break;
-				case FM_contents:
-					if (collector == null) {
-						throw new JsonReadException(
-								"not expecting \"contents\" field, since we didn't ask for children",
-								parser.getCurrentLocation());
-					}
-					contents = JsonArrayReader.mk(Reader, collector).readField(parser, fieldName, contents);
-					break;
-				default:
-					throw new AssertionError("bad index: " + fi + ", field = \"" + fieldName + "\"");
+					case -1:
+						JsonReader.skipValue(parser);
+						break;
+					case FM_size:
+						size = JsonReader.StringReader.readField(parser, fieldName, size);
+						break;
+					case FM_bytes:
+						bytes = JsonReader.readUnsignedLongField(parser, fieldName, bytes);
+						break;
+					case FM_path:
+						path = JsonReader.StringReader.readField(parser, fieldName, path);
+						break;
+					case FM_is_dir:
+						is_dir = JsonReader.BooleanReader.readField(parser, fieldName, is_dir);
+						break;
+					case FM_is_deleted:
+						is_deleted = JsonReader.BooleanReader.readField(parser, fieldName, is_deleted);
+						break;
+					case FM_rev:
+						rev = JsonReader.StringReader.readField(parser, fieldName, rev);
+						break;
+					case FM_thumb_exists:
+						thumb_exists = JsonReader.BooleanReader.readField(parser, fieldName, thumb_exists);
+						break;
+					case FM_icon:
+						icon = JsonReader.StringReader.readField(parser, fieldName, icon);
+						break;
+					case FM_modified:
+						modified = JsonDateReader.Dropbox.readField(parser, fieldName, modified);
+						break;
+					case FM_client_mtime:
+						client_mtime = JsonDateReader.Dropbox.readField(parser, fieldName, client_mtime);
+						break;
+					case FM_hash:
+						if (collector == null) {
+							throw new JsonReadException("not expecting \"hash\" field, since we didn't ask for children", parser.getCurrentLocation());
+						}
+						hash = JsonReader.StringReader.readField(parser, fieldName, hash);
+						break;
+					case FM_contents:
+						if (collector == null) {
+							throw new JsonReadException("not expecting \"contents\" field, since we didn't ask for children", parser.getCurrentLocation());
+						}
+						contents = JsonArrayReader.mk(Reader, collector).readField(parser, fieldName, contents);
+						break;
+					default:
+						throw new AssertionError("bad index: " + fi + ", field = \"" + fieldName + "\"");
 				}
 			} catch (JsonReadException ex) {
 				throw ex.addFieldContext(fieldName);
@@ -679,12 +619,10 @@ public abstract class DbxEntry implements Serializable {
 
 		if (is_dir && (contents != null || hash != null)) {
 			if (hash == null) {
-				throw new JsonReadException(
-						"missing \"hash\", when we asked for children", top);
+				throw new JsonReadException("missing \"hash\", when we asked for children", top);
 			}
 			if (contents == null) {
-				throw new JsonReadException(
-						"missing \"contents\", when we asked for children", top);
+				throw new JsonReadException("missing \"contents\", when we asked for children", top);
 			}
 		}
 
@@ -694,27 +632,21 @@ public abstract class DbxEntry implements Serializable {
 		} else {
 			// Normal File
 			if (size == null) {
-				throw new JsonReadException(
-						"missing \"size\" for a file entry", top);
+				throw new JsonReadException("missing \"size\" for a file entry", top);
 			}
 			if (bytes == -1) {
-				throw new JsonReadException(
-						"missing \"bytes\" for a file entry", top);
+				throw new JsonReadException("missing \"bytes\" for a file entry", top);
 			}
 			if (modified == null) {
-				throw new JsonReadException(
-						"missing \"modified\" for a file entry", top);
+				throw new JsonReadException("missing \"modified\" for a file entry", top);
 			}
 			if (client_mtime == null) {
-				throw new JsonReadException(
-						"missing \"client_mtime\" for a file entry", top);
+				throw new JsonReadException("missing \"client_mtime\" for a file entry", top);
 			}
 			if (rev == null) {
-				throw new JsonReadException("missing \"rev\" for a file entry",
-						top);
+				throw new JsonReadException("missing \"rev\" for a file entry", top);
 			}
-			e = new File(path, icon, thumb_exists, bytes, size, modified,
-					client_mtime, rev);
+			e = new File(path, icon, thumb_exists, bytes, size, modified, client_mtime, rev);
 		}
 
 		if (is_deleted) {

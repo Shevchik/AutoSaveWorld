@@ -42,10 +42,7 @@ public interface Logger {
 	public void log(int level, String message);
 
 	/*
-	 * public final Logger SIMPLE_LOGGER=new Logger(){ public boolean
-	 * isEnabled(int level){return true;} public void log(int level, String
-	 * message){System.err.println(message);} }; final Logger DEVNULL=new
-	 * Logger(){ public boolean isEnabled(int level){return false;} public void
-	 * log(int level, String message){} };
+	 * public final Logger SIMPLE_LOGGER=new Logger(){ public boolean isEnabled(int level){return true;} public void log(int level, String message){System.err.println(message);} }; final Logger
+	 * DEVNULL=new Logger(){ public boolean isEnabled(int level){return false;} public void log(int level, String message){} };
 	 */
 }

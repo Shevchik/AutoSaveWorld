@@ -17,11 +17,8 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.Version;
 
 /**
- * Helper class that implements <a
- * href="http://en.wikipedia.org/wiki/Delegation_pattern">delegation pattern</a>
- * for {@link JsonParser}, to allow for simple overridability of basic parsing
- * functionality. The idea is that any functionality to be modified can be
- * simply overridden; and anything else will be delegated by default.
+ * Helper class that implements <a href="http://en.wikipedia.org/wiki/Delegation_pattern">delegation pattern</a> for {@link JsonParser}, to allow for simple overridability of basic parsing
+ * functionality. The idea is that any functionality to be modified can be simply overridden; and anything else will be delegated by default.
  */
 public class JsonParserDelegate extends JsonParser {
 	/**
@@ -34,9 +31,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, configuration
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, configuration /**********************************************************
 	 */
 
 	@Override
@@ -103,8 +98,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Capability
-	 * introspection /**********************************************************
+	 * /********************************************************** /* Capability introspection /**********************************************************
 	 */
 
 	@Override
@@ -113,8 +107,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Closeable
-	 * impl /**********************************************************
+	 * /********************************************************** /* Closeable impl /**********************************************************
 	 */
 
 	@Override
@@ -128,9 +121,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, token accessors
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, token accessors /**********************************************************
 	 */
 
 	@Override
@@ -169,9 +160,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, token state overrides
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, token state overrides /**********************************************************
 	 */
 
 	@Override
@@ -190,9 +179,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access to token information, text
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access to token information, text /**********************************************************
 	 */
 
 	@Override
@@ -221,14 +208,11 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access to token information, numeric
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access to token information, numeric /**********************************************************
 	 */
 
 	@Override
-	public BigInteger getBigIntegerValue() throws IOException,
-			JsonParseException {
+	public BigInteger getBigIntegerValue() throws IOException, JsonParseException {
 		return delegate.getBigIntegerValue();
 	}
 
@@ -283,9 +267,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access to token information, coercion/conversion
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access to token information, coercion/conversion /**********************************************************
 	 */
 
 	@Override
@@ -294,8 +276,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	@Override
-	public int getValueAsInt(int defaultValue) throws IOException,
-			JsonParseException {
+	public int getValueAsInt(int defaultValue) throws IOException, JsonParseException {
 		return delegate.getValueAsInt(defaultValue);
 	}
 
@@ -305,8 +286,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	@Override
-	public long getValueAsLong(long defaultValue) throws IOException,
-			JsonParseException {
+	public long getValueAsLong(long defaultValue) throws IOException, JsonParseException {
 		return delegate.getValueAsLong(defaultValue);
 	}
 
@@ -316,8 +296,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	@Override
-	public double getValueAsDouble(double defaultValue) throws IOException,
-			JsonParseException {
+	public double getValueAsDouble(double defaultValue) throws IOException, JsonParseException {
 		return delegate.getValueAsDouble(defaultValue);
 	}
 
@@ -327,8 +306,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	@Override
-	public boolean getValueAsBoolean(boolean defaultValue) throws IOException,
-			JsonParseException {
+	public boolean getValueAsBoolean(boolean defaultValue) throws IOException, JsonParseException {
 		return delegate.getValueAsBoolean(defaultValue);
 	}
 
@@ -338,15 +316,12 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	@Override
-	public String getValueAsString(String defaultValue) throws IOException,
-			JsonParseException {
+	public String getValueAsString(String defaultValue) throws IOException, JsonParseException {
 		return delegate.getValueAsString(defaultValue);
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access to token values, other
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access to token values, other /**********************************************************
 	 */
 
 	@Override
@@ -355,14 +330,12 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	@Override
-	public byte[] getBinaryValue(Base64Variant b64variant) throws IOException,
-			JsonParseException {
+	public byte[] getBinaryValue(Base64Variant b64variant) throws IOException, JsonParseException {
 		return delegate.getBinaryValue(b64variant);
 	}
 
 	@Override
-	public int readBinaryValue(Base64Variant b64variant, OutputStream out)
-			throws IOException, JsonParseException {
+	public int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException, JsonParseException {
 		return delegate.readBinaryValue(b64variant, out);
 	}
 
@@ -390,9 +363,7 @@ public class JsonParserDelegate extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, Native Ids (type, object)
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, Native Ids (type, object) /**********************************************************
 	 */
 
 	@Override

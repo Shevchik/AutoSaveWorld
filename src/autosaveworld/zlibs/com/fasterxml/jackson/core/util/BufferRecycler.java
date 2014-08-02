@@ -1,12 +1,8 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
 /**
- * This is a small utility class, whose main functionality is to allow simple
- * reuse of raw byte/char buffers. It is usually used through
- * <code>ThreadLocal</code> member of the owning class pointing to instance of
- * this class through a <code>SoftReference</code>. The end result is a
- * low-overhead GC-cleanable recycling: hopefully ideal for use by stream
- * readers.
+ * This is a small utility class, whose main functionality is to allow simple reuse of raw byte/char buffers. It is usually used through <code>ThreadLocal</code> member of the owning class pointing to
+ * instance of this class through a <code>SoftReference</code>. The end result is a low-overhead GC-cleanable recycling: hopefully ideal for use by stream readers.
  */
 public class BufferRecycler {
 	/**
@@ -15,20 +11,17 @@ public class BufferRecycler {
 	public final static int BYTE_READ_IO_BUFFER = 0;
 
 	/**
-	 * Buffer used for temporarily storing encoded content; used for example by
-	 * UTF-8 encoding writer
+	 * Buffer used for temporarily storing encoded content; used for example by UTF-8 encoding writer
 	 */
 	public final static int BYTE_WRITE_ENCODING_BUFFER = 1;
 
 	/**
-	 * Buffer used for temporarily concatenating output; used for example when
-	 * requesting output as byte array.
+	 * Buffer used for temporarily concatenating output; used for example when requesting output as byte array.
 	 */
 	public final static int BYTE_WRITE_CONCAT_BUFFER = 2;
 
 	/**
-	 * Buffer used for concatenating binary data that is either being encoded as
-	 * base64 output, or decoded from base64 input.
+	 * Buffer used for concatenating binary data that is either being encoded as base64 output, or decoded from base64 input.
 	 *
 	 * @since 2.1
 	 */
@@ -43,30 +36,25 @@ public class BufferRecycler {
 
 	// Buffer lengths, defined in 2.4 (smaller before that)
 
-	private final static int[] BYTE_BUFFER_LENGTHS = new int[] { 8000, 8000,
-			2000, 2000 };
-	private final static int[] CHAR_BUFFER_LENGTHS = new int[] { 4000, 4000,
-			200, 200 };
+	private final static int[] BYTE_BUFFER_LENGTHS = new int[] { 8000, 8000, 2000, 2000 };
+	private final static int[] CHAR_BUFFER_LENGTHS = new int[] { 4000, 4000, 200, 200 };
 
 	final protected byte[][] _byteBuffers;
 	final protected char[][] _charBuffers;
 
 	/*
-	 * /********************************************************** /*
-	 * Construction /**********************************************************
+	 * /********************************************************** /* Construction /**********************************************************
 	 */
 
 	/**
-	 * Default constructor used for creating instances of this default
-	 * implementation.
+	 * Default constructor used for creating instances of this default implementation.
 	 */
 	public BufferRecycler() {
 		this(4, 4);
 	}
 
 	/**
-	 * Alternate constructor to be used by sub-classes, to allow customization
-	 * of number of low-level buffers in use.
+	 * Alternate constructor to be used by sub-classes, to allow customization of number of low-level buffers in use.
 	 *
 	 * @since 2.4
 	 */
@@ -76,9 +64,7 @@ public class BufferRecycler {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, byte buffers
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, byte buffers /**********************************************************
 	 */
 
 	/**
@@ -108,9 +94,7 @@ public class BufferRecycler {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, char buffers
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, char buffers /**********************************************************
 	 */
 
 	public final char[] allocCharBuffer(int ix) {
@@ -136,9 +120,7 @@ public class BufferRecycler {
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * Overridable helper methods
-	 * /**********************************************************
+	 * /********************************************************** /* Overridable helper methods /**********************************************************
 	 */
 
 	protected int byteBufferLength(int ix) {
@@ -150,9 +132,7 @@ public class BufferRecycler {
 	}
 
 	/*
-	 * /********************************************************** /* Actual
-	 * allocations separated for easier debugging/profiling
-	 * /**********************************************************
+	 * /********************************************************** /* Actual allocations separated for easier debugging/profiling /**********************************************************
 	 */
 
 	protected byte[] balloc(int size) {

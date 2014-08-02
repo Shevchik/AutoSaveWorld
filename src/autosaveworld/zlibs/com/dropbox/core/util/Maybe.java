@@ -27,8 +27,7 @@ public final class Maybe<T> {
 	public T get(T def) {
 		if (isJust) {
 			return value;
-		}
-		else {
+		} else {
 			return def;
 		}
 	}

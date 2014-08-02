@@ -42,6 +42,7 @@ final public class Inflater extends ZStream {
 	static final private int Z_OK = 0;
 	static final private int Z_STREAM_END = 1;
 	static final private int Z_STREAM_ERROR = -2;
+
 	public Inflater() {
 		super();
 		init();

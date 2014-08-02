@@ -18,8 +18,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberOutput;
 
 /**
- * {@link JsonGenerator} that outputs JSON content using a
- * {@link java.io.Writer} which handles character encoding.
+ * {@link JsonGenerator} that outputs JSON content using a {@link java.io.Writer} which handles character encoding.
  */
 public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	final protected static int SHORT_WRITE = 32;
@@ -27,15 +26,13 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	final protected static char[] HEX_CHARS = CharTypes.copyHexChars();
 
 	/*
-	 * /********************************************************** /* Output
-	 * buffering /**********************************************************
+	 * /********************************************************** /* Output buffering /**********************************************************
 	 */
 
 	final protected Writer _writer;
 
 	/**
-	 * Intermediate buffer in which contents are buffered before being written
-	 * using {@link #_writer}.
+	 * Intermediate buffer in which contents are buffered before being written using {@link #_writer}.
 	 */
 	protected char[] _outputBuffer;
 
@@ -45,36 +42,30 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	protected int _outputHead = 0;
 
 	/**
-	 * Pointer to the position right beyond the last character to output (end
-	 * marker; may point to position right beyond the end of the buffer)
+	 * Pointer to the position right beyond the last character to output (end marker; may point to position right beyond the end of the buffer)
 	 */
 	protected int _outputTail = 0;
 
 	/**
-	 * End marker of the output buffer; one past the last valid position within
-	 * the buffer.
+	 * End marker of the output buffer; one past the last valid position within the buffer.
 	 */
 	protected int _outputEnd;
 
 	/**
-	 * Short (14 char) temporary buffer allocated if needed, for constructing
-	 * escape sequences
+	 * Short (14 char) temporary buffer allocated if needed, for constructing escape sequences
 	 */
 	protected char[] _entityBuffer;
 
 	/**
-	 * When custom escapes are used, this member variable is used internally to
-	 * hold a reference to currently used escape
+	 * When custom escapes are used, this member variable is used internally to hold a reference to currently used escape
 	 */
 	protected SerializableString _currentEscape;
 
 	/*
-	 * /********************************************************** /* Life-cycle
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle /**********************************************************
 	 */
 
-	public WriterBasedJsonGenerator(IOContext ctxt, int features,
-			ObjectCodec codec, Writer w) {
+	public WriterBasedJsonGenerator(IOContext ctxt, int features, ObjectCodec codec, Writer w) {
 		super(ctxt, features, codec);
 		_writer = w;
 		_outputBuffer = ctxt.allocConcatBuffer();
@@ -82,9 +73,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Overridden
-	 * configuration methods
-	 * /**********************************************************
+	 * /********************************************************** /* Overridden configuration methods /**********************************************************
 	 */
 
 	@Override
@@ -93,8 +82,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Overridden
-	 * methods /**********************************************************
+	 * /********************************************************** /* Overridden methods /**********************************************************
 	 */
 
 	@Override
@@ -103,8 +91,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		if (status == JsonWriteContext.STATUS_EXPECT_VALUE) {
 			_reportError("Can not write a field name, expecting a value");
 		}
-		_writeFieldName(name,
-				(status == JsonWriteContext.STATUS_OK_AFTER_COMMA));
+		_writeFieldName(name, (status == JsonWriteContext.STATUS_OK_AFTER_COMMA));
 	}
 
 	@Override
@@ -114,14 +101,11 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		if (status == JsonWriteContext.STATUS_EXPECT_VALUE) {
 			_reportError("Can not write a field name, expecting a value");
 		}
-		_writeFieldName(name,
-				(status == JsonWriteContext.STATUS_OK_AFTER_COMMA));
+		_writeFieldName(name, (status == JsonWriteContext.STATUS_OK_AFTER_COMMA));
 	}
 
 	/*
-	 * /********************************************************** /* Output
-	 * method implementations, structural
-	 * /**********************************************************
+	 * /********************************************************** /* Output method implementations, structural /**********************************************************
 	 */
 
 	@Override
@@ -141,12 +125,10 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	@Override
 	public void writeEndArray() throws IOException, JsonGenerationException {
 		if (!_writeContext.inArray()) {
-			_reportError("Current context not an ARRAY but "
-					+ _writeContext.getTypeDesc());
+			_reportError("Current context not an ARRAY but " + _writeContext.getTypeDesc());
 		}
 		if (_cfgPrettyPrinter != null) {
-			_cfgPrettyPrinter
-					.writeEndArray(this, _writeContext.getEntryCount());
+			_cfgPrettyPrinter.writeEndArray(this, _writeContext.getEntryCount());
 		} else {
 			if (_outputTail >= _outputEnd) {
 				_flushBuffer();
@@ -173,12 +155,10 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	@Override
 	public void writeEndObject() throws IOException, JsonGenerationException {
 		if (!_writeContext.inObject()) {
-			_reportError("Current context not an object but "
-					+ _writeContext.getTypeDesc());
+			_reportError("Current context not an object but " + _writeContext.getTypeDesc());
 		}
 		if (_cfgPrettyPrinter != null) {
-			_cfgPrettyPrinter.writeEndObject(this,
-					_writeContext.getEntryCount());
+			_cfgPrettyPrinter.writeEndObject(this, _writeContext.getEntryCount());
 		} else {
 			if (_outputTail >= _outputEnd) {
 				_flushBuffer();
@@ -188,8 +168,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		_writeContext = _writeContext.getParent();
 	}
 
-	protected void _writeFieldName(String name, boolean commaBefore)
-			throws IOException {
+	protected void _writeFieldName(String name, boolean commaBefore) throws IOException {
 		if (_cfgPrettyPrinter != null) {
 			_writePPFieldName(name, commaBefore);
 			return;
@@ -203,8 +182,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		}
 
 		/*
-		 * To support [JACKSON-46], we'll do this: (Question: should quoting of
-		 * spaces (etc) still be enabled?)
+		 * To support [JACKSON-46], we'll do this: (Question: should quoting of spaces (etc) still be enabled?)
 		 */
 		if (!isEnabled(Feature.QUOTE_FIELD_NAMES)) {
 			_writeString(name);
@@ -222,8 +200,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		_outputBuffer[_outputTail++] = '"';
 	}
 
-	protected void _writeFieldName(SerializableString name, boolean commaBefore)
-			throws IOException {
+	protected void _writeFieldName(SerializableString name, boolean commaBefore) throws IOException {
 		if (_cfgPrettyPrinter != null) {
 			_writePPFieldName(name, commaBefore);
 			return;
@@ -236,8 +213,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			_outputBuffer[_outputTail++] = ',';
 		}
 		/*
-		 * To support [JACKSON-46], we'll do this: (Question: should quoting of
-		 * spaces (etc) still be enabled?)
+		 * To support [JACKSON-46], we'll do this: (Question: should quoting of spaces (etc) still be enabled?)
 		 */
 		final char[] quoted = name.asQuotedChars();
 		if (!isEnabled(Feature.QUOTE_FIELD_NAMES)) {
@@ -263,11 +239,9 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/**
-	 * Specialized version of <code>_writeFieldName</code>, off-lined to keep
-	 * the "fast path" as simple (and hopefully fast) as possible.
+	 * Specialized version of <code>_writeFieldName</code>, off-lined to keep the "fast path" as simple (and hopefully fast) as possible.
 	 */
-	protected void _writePPFieldName(String name, boolean commaBefore)
-			throws IOException, JsonGenerationException {
+	protected void _writePPFieldName(String name, boolean commaBefore) throws IOException, JsonGenerationException {
 		if (commaBefore) {
 			_cfgPrettyPrinter.writeObjectEntrySeparator(this);
 		} else {
@@ -289,8 +263,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		}
 	}
 
-	protected void _writePPFieldName(SerializableString name,
-			boolean commaBefore) throws IOException, JsonGenerationException {
+	protected void _writePPFieldName(SerializableString name, boolean commaBefore) throws IOException, JsonGenerationException {
 		if (commaBefore) {
 			_cfgPrettyPrinter.writeObjectEntrySeparator(this);
 		} else {
@@ -314,9 +287,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Output
-	 * method implementations, textual
-	 * /**********************************************************
+	 * /********************************************************** /* Output method implementations, textual /**********************************************************
 	 */
 
 	@Override
@@ -339,8 +310,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	@Override
-	public void writeString(char[] text, int offset, int len)
-			throws IOException {
+	public void writeString(char[] text, int offset, int len) throws IOException {
 		_verifyValueWrite("write text value");
 		if (_outputTail >= _outputEnd) {
 			_flushBuffer();
@@ -384,23 +354,19 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	@Override
-	public void writeRawUTF8String(byte[] text, int offset, int length)
-			throws IOException {
+	public void writeRawUTF8String(byte[] text, int offset, int length) throws IOException {
 		// could add support for buffering if we really want it...
 		_reportUnsupportedOperation();
 	}
 
 	@Override
-	public void writeUTF8String(byte[] text, int offset, int length)
-			throws IOException {
+	public void writeUTF8String(byte[] text, int offset, int length) throws IOException {
 		// could add support for buffering if we really want it...
 		_reportUnsupportedOperation();
 	}
 
 	/*
-	 * /********************************************************** /* Output
-	 * method implementations, unprocessed ("raw")
-	 * /**********************************************************
+	 * /********************************************************** /* Output method implementations, unprocessed ("raw") /**********************************************************
 	 */
 
 	@Override
@@ -496,14 +462,11 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Output
-	 * method implementations, base64-encoded binary
-	 * /**********************************************************
+	 * /********************************************************** /* Output method implementations, base64-encoded binary /**********************************************************
 	 */
 
 	@Override
-	public void writeBinary(Base64Variant b64variant, byte[] data, int offset,
-			int len) throws IOException, JsonGenerationException {
+	public void writeBinary(Base64Variant b64variant, byte[] data, int offset, int len) throws IOException, JsonGenerationException {
 		_verifyValueWrite("write binary value");
 		// Starting quotes
 		if (_outputTail >= _outputEnd) {
@@ -519,8 +482,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	@Override
-	public int writeBinary(Base64Variant b64variant, InputStream data,
-			int dataLength) throws IOException, JsonGenerationException {
+	public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException, JsonGenerationException {
 		_verifyValueWrite("write binary value");
 		// Starting quotes
 		if (_outputTail >= _outputEnd) {
@@ -533,11 +495,9 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			if (dataLength < 0) { // length unknown
 				bytes = _writeBinary(b64variant, data, encodingBuffer);
 			} else {
-				int missing = _writeBinary(b64variant, data, encodingBuffer,
-						dataLength);
+				int missing = _writeBinary(b64variant, data, encodingBuffer, dataLength);
 				if (missing > 0) {
-					_reportError("Too few bytes available: missing " + missing
-							+ " bytes (out of " + dataLength + ")");
+					_reportError("Too few bytes available: missing " + missing + " bytes (out of " + dataLength + ")");
 				}
 				bytes = dataLength;
 			}
@@ -553,9 +513,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Output
-	 * method implementations, primitive
-	 * /**********************************************************
+	 * /********************************************************** /* Output method implementations, primitive /**********************************************************
 	 */
 
 	@Override
@@ -645,8 +603,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	public void writeNumber(double d) throws IOException {
 		if (_cfgNumbersAsStrings ||
 		// [JACKSON-139]
-				(isEnabled(Feature.QUOTE_NON_NUMERIC_NUMBERS) && ((Double
-						.isNaN(d) || Double.isInfinite(d))))) {
+				(isEnabled(Feature.QUOTE_NON_NUMERIC_NUMBERS) && ((Double.isNaN(d) || Double.isInfinite(d))))) {
 			writeString(String.valueOf(d));
 			return;
 		}
@@ -659,8 +616,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	public void writeNumber(float f) throws IOException {
 		if (_cfgNumbersAsStrings ||
 		// [JACKSON-139]
-				(isEnabled(Feature.QUOTE_NON_NUMERIC_NUMBERS) && ((Float
-						.isNaN(f) || Float.isInfinite(f))))) {
+				(isEnabled(Feature.QUOTE_NON_NUMERIC_NUMBERS) && ((Float.isNaN(f) || Float.isInfinite(f))))) {
 			writeString(String.valueOf(f));
 			return;
 		}
@@ -736,9 +692,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * Implementations for other methods
-	 * /**********************************************************
+	 * /********************************************************** /* Implementations for other methods /**********************************************************
 	 */
 
 	@Override
@@ -754,20 +708,20 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			_reportError("Can not " + typeMsg + ", expecting field name");
 		}
 		switch (status) {
-		case JsonWriteContext.STATUS_OK_AFTER_COMMA:
-			c = ',';
-			break;
-		case JsonWriteContext.STATUS_OK_AFTER_COLON:
-			c = ':';
-			break;
-		case JsonWriteContext.STATUS_OK_AFTER_SPACE: // root-value separator
-			if (_rootValueSeparator != null) {
-				writeRaw(_rootValueSeparator.getValue());
-			}
-			return;
-		case JsonWriteContext.STATUS_OK_AS_IS:
-		default:
-			return;
+			case JsonWriteContext.STATUS_OK_AFTER_COMMA:
+				c = ',';
+				break;
+			case JsonWriteContext.STATUS_OK_AFTER_COLON:
+				c = ':';
+				break;
+			case JsonWriteContext.STATUS_OK_AFTER_SPACE: // root-value separator
+				if (_rootValueSeparator != null) {
+					writeRaw(_rootValueSeparator.getValue());
+				}
+				return;
+			case JsonWriteContext.STATUS_OK_AS_IS:
+			default:
+				return;
 		}
 		if (_outputTail >= _outputEnd) {
 			_flushBuffer();
@@ -784,33 +738,31 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 
 		// If we have a pretty printer, it knows what to do:
 		switch (status) {
-		case JsonWriteContext.STATUS_OK_AFTER_COMMA: // array
-			_cfgPrettyPrinter.writeArrayValueSeparator(this);
-			break;
-		case JsonWriteContext.STATUS_OK_AFTER_COLON:
-			_cfgPrettyPrinter.writeObjectFieldValueSeparator(this);
-			break;
-		case JsonWriteContext.STATUS_OK_AFTER_SPACE:
-			_cfgPrettyPrinter.writeRootValueSeparator(this);
-			break;
-		case JsonWriteContext.STATUS_OK_AS_IS:
-			// First entry, but of which context?
-			if (_writeContext.inArray()) {
-				_cfgPrettyPrinter.beforeArrayValues(this);
-			} else if (_writeContext.inObject()) {
-				_cfgPrettyPrinter.beforeObjectEntries(this);
-			}
-			break;
-		default:
-			_throwInternal();
-			break;
+			case JsonWriteContext.STATUS_OK_AFTER_COMMA: // array
+				_cfgPrettyPrinter.writeArrayValueSeparator(this);
+				break;
+			case JsonWriteContext.STATUS_OK_AFTER_COLON:
+				_cfgPrettyPrinter.writeObjectFieldValueSeparator(this);
+				break;
+			case JsonWriteContext.STATUS_OK_AFTER_SPACE:
+				_cfgPrettyPrinter.writeRootValueSeparator(this);
+				break;
+			case JsonWriteContext.STATUS_OK_AS_IS:
+				// First entry, but of which context?
+				if (_writeContext.inArray()) {
+					_cfgPrettyPrinter.beforeArrayValues(this);
+				} else if (_writeContext.inObject()) {
+					_cfgPrettyPrinter.beforeObjectEntries(this);
+				}
+				break;
+			default:
+				_throwInternal();
+				break;
 		}
 	}
 
 	/*
-	 * /********************************************************** /* Low-level
-	 * output handling
-	 * /**********************************************************
+	 * /********************************************************** /* Low-level output handling /**********************************************************
 	 */
 
 	@Override
@@ -846,14 +798,11 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		_flushBuffer();
 
 		/*
-		 * 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close() on
-		 * the underlying Reader, unless we "own" it, or auto-closing feature is
-		 * enabled. One downside: when using UTF8Writer, underlying buffer(s)
-		 * may not be properly recycled if we don't close the writer.
+		 * 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close() on the underlying Reader, unless we "own" it, or auto-closing feature is enabled. One downside: when using UTF8Writer,
+		 * underlying buffer(s) may not be properly recycled if we don't close the writer.
 		 */
 		if (_writer != null) {
-			if (_ioContext.isResourceManaged()
-					|| isEnabled(Feature.AUTO_CLOSE_TARGET)) {
+			if (_ioContext.isResourceManaged() || isEnabled(Feature.AUTO_CLOSE_TARGET)) {
 				_writer.close();
 			} else if (isEnabled(Feature.FLUSH_PASSED_TO_STREAM)) {
 				// If we can't close it, we should at least flush
@@ -874,16 +823,13 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods, low-level writing; text, default
-	 * /**********************************************************
+	 * /********************************************************** /* Internal methods, low-level writing; text, default /**********************************************************
 	 */
 
 	private void _writeString(String text) throws IOException {
 		/*
-		 * One check first: if String won't fit in the buffer, let's segment
-		 * writes. No point in extending buffer to huge sizes (like if someone
-		 * wants to include multi-megabyte base64 encoded stuff or such)
+		 * One check first: if String won't fit in the buffer, let's segment writes. No point in extending buffer to huge sizes (like if someone wants to include multi-megabyte base64 encoded stuff or
+		 * such)
 		 */
 		final int len = text.length();
 		if (len > _outputEnd) { // Let's reserve space for entity at begin/end
@@ -927,16 +873,14 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 
 			// Ok, bumped into something that needs escaping.
 			/*
-			 * First things first: need to flush the buffer. Inlined, as we
-			 * don't want to lose tail pointer
+			 * First things first: need to flush the buffer. Inlined, as we don't want to lose tail pointer
 			 */
 			int flushLen = (_outputTail - _outputHead);
 			if (flushLen > 0) {
 				_writer.write(_outputBuffer, _outputHead, flushLen);
 			}
 			/*
-			 * In any case, tail will be the new start, so hopefully we have
-			 * room now.
+			 * In any case, tail will be the new start, so hopefully we have room now.
 			 */
 			char c = _outputBuffer[_outputTail++];
 			_prependOrWriteCharacterEscape(c, escCodes[c]);
@@ -944,8 +888,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/**
-	 * Method called to write "long strings", strings whose length exceeds
-	 * output buffer length.
+	 * Method called to write "long strings", strings whose length exceeds output buffer length.
 	 */
 	private void _writeLongString(String text) throws IOException {
 		// First things first: let's flush the buffer to get some more room
@@ -956,8 +899,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		int offset = 0;
 		do {
 			int max = _outputEnd;
-			int segmentLen = ((offset + max) > textLen) ? (textLen - offset)
-					: max;
+			int segmentLen = ((offset + max) > textLen) ? (textLen - offset) : max;
 			text.getChars(offset, offset + segmentLen, _outputBuffer, 0);
 			if (_characterEscapes != null) {
 				_writeSegmentCustom(segmentLen);
@@ -971,13 +913,9 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/**
-	 * Method called to output textual context which has been copied to the
-	 * output buffer prior to call. If any escaping is needed, it will also be
-	 * handled by the method.
+	 * Method called to output textual context which has been copied to the output buffer prior to call. If any escaping is needed, it will also be handled by the method.
 	 * <p>
-	 * Note: when called, textual content to write is within output buffer,
-	 * right after buffered content (if any). That's why only length of that
-	 * text is passed, as buffer and offset are implied.
+	 * Note: when called, textual content to write is within output buffer, right after buffered content (if any). That's why only length of that text is passed, as buffer and offset are implied.
 	 */
 	private void _writeSegment(int end) throws IOException {
 		final int[] escCodes = _outputEscapes;
@@ -1001,8 +939,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 
 			// Ok, bumped into something that needs escaping.
 			/*
-			 * First things first: need to flush the buffer. Inlined, as we
-			 * don't want to lose tail pointer
+			 * First things first: need to flush the buffer. Inlined, as we don't want to lose tail pointer
 			 */
 			int flushLen = (ptr - start);
 			if (flushLen > 0) {
@@ -1013,17 +950,14 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			}
 			++ptr;
 			// So; either try to prepend (most likely), or write directly:
-			start = _prependOrWriteCharacterEscape(_outputBuffer, ptr, end, c,
-					escCodes[c]);
+			start = _prependOrWriteCharacterEscape(_outputBuffer, ptr, end, c, escCodes[c]);
 		}
 	}
 
 	/**
-	 * This method called when the string content is already in a char buffer,
-	 * and need not be copied for processing.
+	 * This method called when the string content is already in a char buffer, and need not be copied for processing.
 	 */
-	private void _writeString(char[] text, int offset, int len)
-			throws IOException {
+	private void _writeString(char[] text, int offset, int len) throws IOException {
 		if (_characterEscapes != null) {
 			_writeStringCustom(text, offset, len);
 			return;
@@ -1034,8 +968,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		}
 
 		/*
-		 * Let's just find longest spans of non-escapable content, and for each
-		 * see if it makes sense to copy them, or write through
+		 * Let's just find longest spans of non-escapable content, and for each see if it makes sense to copy them, or write through
 		 */
 		len += offset; // -> len marks the end from now on
 		final int[] escCodes = _outputEscapes;
@@ -1061,8 +994,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 					_flushBuffer();
 				}
 				if (newAmount > 0) {
-					System.arraycopy(text, start, _outputBuffer, _outputTail,
-							newAmount);
+					System.arraycopy(text, start, _outputBuffer, _outputTail, newAmount);
 					_outputTail += newAmount;
 				}
 			} else { // Nope: better just write through
@@ -1080,18 +1012,14 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods, low-level writing, text segment /* with additional escaping
-	 * (ASCII or such)
+	 * /********************************************************** /* Internal methods, low-level writing, text segment /* with additional escaping (ASCII or such)
 	 * /**********************************************************
 	 */
 
 	/*
-	 * Same as "_writeString2()", except needs additional escaping for subset of
-	 * characters
+	 * Same as "_writeString2()", except needs additional escaping for subset of characters
 	 */
-	private void _writeStringASCII(final int len, final int maxNonEscaped)
-			throws IOException, JsonGenerationException {
+	private void _writeStringASCII(final int len, final int maxNonEscaped) throws IOException, JsonGenerationException {
 		// And then we'll need to verify need for escaping etc:
 		int end = _outputTail + len;
 		final int[] escCodes = _outputEscapes;
@@ -1125,8 +1053,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		}
 	}
 
-	private void _writeSegmentASCII(int end, final int maxNonEscaped)
-			throws IOException, JsonGenerationException {
+	private void _writeSegmentASCII(int end, final int maxNonEscaped) throws IOException, JsonGenerationException {
 		final int[] escCodes = _outputEscapes;
 		final int escLimit = Math.min(escCodes.length, maxNonEscaped + 1);
 
@@ -1160,14 +1087,11 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 				}
 			}
 			++ptr;
-			start = _prependOrWriteCharacterEscape(_outputBuffer, ptr, end, c,
-					escCode);
+			start = _prependOrWriteCharacterEscape(_outputBuffer, ptr, end, c, escCode);
 		}
 	}
 
-	private void _writeStringASCII(char[] text, int offset, int len,
-			final int maxNonEscaped) throws IOException,
-			JsonGenerationException {
+	private void _writeStringASCII(char[] text, int offset, int len, final int maxNonEscaped) throws IOException, JsonGenerationException {
 		len += offset; // -> len marks the end from now on
 		final int[] escCodes = _outputEscapes;
 		final int escLimit = Math.min(escCodes.length, maxNonEscaped + 1);
@@ -1202,8 +1126,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 					_flushBuffer();
 				}
 				if (newAmount > 0) {
-					System.arraycopy(text, start, _outputBuffer, _outputTail,
-							newAmount);
+					System.arraycopy(text, start, _outputBuffer, _outputTail, newAmount);
 					_outputTail += newAmount;
 				}
 			} else { // Nope: better just write through
@@ -1221,23 +1144,18 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods, low-level writing, text segment /* with custom escaping
-	 * (possibly coupling with ASCII limits)
+	 * /********************************************************** /* Internal methods, low-level writing, text segment /* with custom escaping (possibly coupling with ASCII limits)
 	 * /**********************************************************
 	 */
 
 	/*
-	 * Same as "_writeString2()", except needs additional escaping for subset of
-	 * characters
+	 * Same as "_writeString2()", except needs additional escaping for subset of characters
 	 */
-	private void _writeStringCustom(final int len) throws IOException,
-			JsonGenerationException {
+	private void _writeStringCustom(final int len) throws IOException, JsonGenerationException {
 		// And then we'll need to verify need for escaping etc:
 		int end = _outputTail + len;
 		final int[] escCodes = _outputEscapes;
-		final int maxNonEscaped = (_maximumNonEscapedChar < 1) ? 0xFFFF
-				: _maximumNonEscapedChar;
+		final int maxNonEscaped = (_maximumNonEscapedChar < 1) ? 0xFFFF : _maximumNonEscapedChar;
 		final int escLimit = Math.min(escCodes.length, maxNonEscaped + 1);
 		int escCode = 0;
 		final CharacterEscapes customEscapes = _characterEscapes;
@@ -1274,11 +1192,9 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		}
 	}
 
-	private void _writeSegmentCustom(int end) throws IOException,
-			JsonGenerationException {
+	private void _writeSegmentCustom(int end) throws IOException, JsonGenerationException {
 		final int[] escCodes = _outputEscapes;
-		final int maxNonEscaped = (_maximumNonEscapedChar < 1) ? 0xFFFF
-				: _maximumNonEscapedChar;
+		final int maxNonEscaped = (_maximumNonEscapedChar < 1) ? 0xFFFF : _maximumNonEscapedChar;
 		final int escLimit = Math.min(escCodes.length, maxNonEscaped + 1);
 		final CharacterEscapes customEscapes = _characterEscapes;
 
@@ -1317,17 +1233,14 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 				}
 			}
 			++ptr;
-			start = _prependOrWriteCharacterEscape(_outputBuffer, ptr, end, c,
-					escCode);
+			start = _prependOrWriteCharacterEscape(_outputBuffer, ptr, end, c, escCode);
 		}
 	}
 
-	private void _writeStringCustom(char[] text, int offset, int len)
-			throws IOException, JsonGenerationException {
+	private void _writeStringCustom(char[] text, int offset, int len) throws IOException, JsonGenerationException {
 		len += offset; // -> len marks the end from now on
 		final int[] escCodes = _outputEscapes;
-		final int maxNonEscaped = (_maximumNonEscapedChar < 1) ? 0xFFFF
-				: _maximumNonEscapedChar;
+		final int maxNonEscaped = (_maximumNonEscapedChar < 1) ? 0xFFFF : _maximumNonEscapedChar;
 		final int escLimit = Math.min(escCodes.length, maxNonEscaped + 1);
 		final CharacterEscapes customEscapes = _characterEscapes;
 
@@ -1366,8 +1279,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 					_flushBuffer();
 				}
 				if (newAmount > 0) {
-					System.arraycopy(text, start, _outputBuffer, _outputTail,
-							newAmount);
+					System.arraycopy(text, start, _outputBuffer, _outputTail, newAmount);
 					_outputTail += newAmount;
 				}
 			} else { // Nope: better just write through
@@ -1385,14 +1297,10 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods, low-level writing; binary
-	 * /**********************************************************
+	 * /********************************************************** /* Internal methods, low-level writing; binary /**********************************************************
 	 */
 
-	protected void _writeBinary(Base64Variant b64variant, byte[] input,
-			int inputPtr, final int inputEnd) throws IOException,
-			JsonGenerationException {
+	protected void _writeBinary(Base64Variant b64variant, byte[] input, int inputPtr, final int inputEnd) throws IOException, JsonGenerationException {
 		// Encoding is by chunks of 3 input, 4 output chars, so:
 		int safeInputEnd = inputEnd - 3;
 		// Let's also reserve room for possible (and quoted) lf char each round
@@ -1408,8 +1316,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			int b24 = (input[inputPtr++]) << 8;
 			b24 |= (input[inputPtr++]) & 0xFF;
 			b24 = (b24 << 8) | ((input[inputPtr++]) & 0xFF);
-			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer,
-					_outputTail);
+			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer, _outputTail);
 			if (--chunksBeforeLF <= 0) {
 				// note: must quote in JSON value
 				_outputBuffer[_outputTail++] = '\\';
@@ -1429,15 +1336,12 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			if (inputLeft == 2) {
 				b24 |= ((input[inputPtr++]) & 0xFF) << 8;
 			}
-			_outputTail = b64variant.encodeBase64Partial(b24, inputLeft,
-					_outputBuffer, _outputTail);
+			_outputTail = b64variant.encodeBase64Partial(b24, inputLeft, _outputBuffer, _outputTail);
 		}
 	}
 
 	// write-method called when length is definitely known
-	protected int _writeBinary(Base64Variant b64variant, InputStream data,
-			byte[] readBuffer, int bytesLeft) throws IOException,
-			JsonGenerationException {
+	protected int _writeBinary(Base64Variant b64variant, InputStream data, byte[] readBuffer, int bytesLeft) throws IOException, JsonGenerationException {
 		int inputPtr = 0;
 		int inputEnd = 0;
 		int lastFullOffset = -3;
@@ -1448,8 +1352,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 
 		while (bytesLeft > 2) { // main loop for full triplets
 			if (inputPtr > lastFullOffset) {
-				inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd,
-						bytesLeft);
+				inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, bytesLeft);
 				inputPtr = 0;
 				if (inputEnd < 3) { // required to try to read to have at least
 									// 3 bytes
@@ -1464,8 +1367,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			b24 |= (readBuffer[inputPtr++]) & 0xFF;
 			b24 = (b24 << 8) | ((readBuffer[inputPtr++]) & 0xFF);
 			bytesLeft -= 3;
-			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer,
-					_outputTail);
+			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer, _outputTail);
 			if (--chunksBeforeLF <= 0) {
 				_outputBuffer[_outputTail++] = '\\';
 				_outputBuffer[_outputTail++] = 'n';
@@ -1475,8 +1377,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 
 		// And then we may have 1 or 2 leftover bytes to encode
 		if (bytesLeft > 0) {
-			inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd,
-					bytesLeft);
+			inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, bytesLeft);
 			inputPtr = 0;
 			if (inputEnd > 0) { // yes, but do we have room for output?
 				if (_outputTail > safeOutputEnd) { // don't really need 6 bytes
@@ -1491,8 +1392,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 				} else {
 					amount = 1;
 				}
-				_outputTail = b64variant.encodeBase64Partial(b24, amount,
-						_outputBuffer, _outputTail);
+				_outputTail = b64variant.encodeBase64Partial(b24, amount, _outputBuffer, _outputTail);
 				bytesLeft -= amount;
 			}
 		}
@@ -1500,8 +1400,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	// write method when length is unknown
-	protected int _writeBinary(Base64Variant b64variant, InputStream data,
-			byte[] readBuffer) throws IOException, JsonGenerationException {
+	protected int _writeBinary(Base64Variant b64variant, InputStream data, byte[] readBuffer) throws IOException, JsonGenerationException {
 		int inputPtr = 0;
 		int inputEnd = 0;
 		int lastFullOffset = -3;
@@ -1514,8 +1413,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		// Ok, first we loop through all full triplets of data:
 		while (true) {
 			if (inputPtr > lastFullOffset) { // need to load more
-				inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd,
-						readBuffer.length);
+				inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, readBuffer.length);
 				inputPtr = 0;
 				if (inputEnd < 3) { // required to try to read to have at least
 									// 3 bytes
@@ -1531,8 +1429,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			b24 |= (readBuffer[inputPtr++]) & 0xFF;
 			b24 = (b24 << 8) | ((readBuffer[inputPtr++]) & 0xFF);
 			bytesDone += 3;
-			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer,
-					_outputTail);
+			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer, _outputTail);
 			if (--chunksBeforeLF <= 0) {
 				_outputBuffer[_outputTail++] = '\\';
 				_outputBuffer[_outputTail++] = 'n';
@@ -1553,14 +1450,12 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 				amount = 2;
 			}
 			bytesDone += amount;
-			_outputTail = b64variant.encodeBase64Partial(b24, amount,
-					_outputBuffer, _outputTail);
+			_outputTail = b64variant.encodeBase64Partial(b24, amount, _outputBuffer, _outputTail);
 		}
 		return bytesDone;
 	}
 
-	private int _readMore(InputStream in, byte[] readBuffer, int inputPtr,
-			int inputEnd, int maxRead) throws IOException {
+	private int _readMore(InputStream in, byte[] readBuffer, int inputPtr, int inputEnd, int maxRead) throws IOException {
 		// anything to shift to front?
 		int i = 0;
 		while (inputPtr < inputEnd) {
@@ -1585,9 +1480,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods, low-level writing, other
-	 * /**********************************************************
+	 * /********************************************************** /* Internal methods, low-level writing, other /**********************************************************
 	 */
 
 	private final void _writeNull() throws IOException {
@@ -1604,18 +1497,13 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods, low-level writing, escapes
-	 * /**********************************************************
+	 * /********************************************************** /* Internal methods, low-level writing, escapes /**********************************************************
 	 */
 
 	/**
-	 * Method called to try to either prepend character escape at front of given
-	 * buffer; or if not possible, to write it out directly. Uses head and tail
-	 * pointers (and updates as necessary)
+	 * Method called to try to either prepend character escape at front of given buffer; or if not possible, to write it out directly. Uses head and tail pointers (and updates as necessary)
 	 */
-	private void _prependOrWriteCharacterEscape(char ch, int escCode)
-			throws IOException, JsonGenerationException {
+	private void _prependOrWriteCharacterEscape(char ch, int escCode) throws IOException, JsonGenerationException {
 		if (escCode >= 0) { // \\N (2 char)
 			if (_outputTail >= 2) { // fits, just prepend
 				int ptr = _outputTail - 2;
@@ -1699,14 +1587,11 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/**
-	 * Method called to try to either prepend character escape at front of given
-	 * buffer; or if not possible, to write it out directly.
+	 * Method called to try to either prepend character escape at front of given buffer; or if not possible, to write it out directly.
 	 *
-	 * @return Pointer to start of prepended entity (if prepended); or 'ptr' if
-	 *         not.
+	 * @return Pointer to start of prepended entity (if prepended); or 'ptr' if not.
 	 */
-	private int _prependOrWriteCharacterEscape(char[] buffer, int ptr, int end,
-			char ch, int escCode) throws IOException, JsonGenerationException {
+	private int _prependOrWriteCharacterEscape(char[] buffer, int ptr, int end, char ch, int escCode) throws IOException, JsonGenerationException {
 		if (escCode >= 0) { // \\N (2 char)
 			if (ptr > 1 && ptr < end) { // fits, just prepend
 				ptr -= 2;
@@ -1783,11 +1668,9 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/**
-	 * Method called to append escape sequence for given character, at the end
-	 * of standard output buffer; or if not possible, write out directly.
+	 * Method called to append escape sequence for given character, at the end of standard output buffer; or if not possible, write out directly.
 	 */
-	private void _appendCharacterEscape(char ch, int escCode)
-			throws IOException, JsonGenerationException {
+	private void _appendCharacterEscape(char ch, int escCode) throws IOException, JsonGenerationException {
 		if (escCode >= 0) { // \\N (2 char)
 			if ((_outputTail + 2) > _outputEnd) {
 				_flushBuffer();

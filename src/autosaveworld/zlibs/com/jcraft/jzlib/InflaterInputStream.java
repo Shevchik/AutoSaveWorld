@@ -50,30 +50,25 @@ public class InflaterInputStream extends FilterInputStream {
 		this(in, false);
 	}
 
-	public InflaterInputStream(InputStream in, boolean nowrap)
-			throws IOException {
+	public InflaterInputStream(InputStream in, boolean nowrap) throws IOException {
 		this(in, new Inflater(nowrap));
 		myinflater = true;
 	}
 
-	public InflaterInputStream(InputStream in, Inflater inflater)
-			throws IOException {
+	public InflaterInputStream(InputStream in, Inflater inflater) throws IOException {
 		this(in, inflater, DEFAULT_BUFSIZE);
 	}
 
-	public InflaterInputStream(InputStream in, Inflater inflater, int size)
-			throws IOException {
+	public InflaterInputStream(InputStream in, Inflater inflater, int size) throws IOException {
 		this(in, inflater, size, true);
 	}
 
-	public InflaterInputStream(InputStream in, Inflater inflater, int size,
-			boolean close_in) throws IOException {
+	public InflaterInputStream(InputStream in, Inflater inflater, int size, boolean close_in) throws IOException {
 		super(in);
 		if (in == null || inflater == null) {
 			throw new NullPointerException();
 		} else if (size <= 0) {
-			throw new IllegalArgumentException(
-					"buffer size must be greater than 0");
+			throw new IllegalArgumentException("buffer size must be greater than 0");
 		}
 		this.inflater = inflater;
 		buf = new byte[size];
@@ -117,16 +112,16 @@ public class InflaterInputStream extends FilterInputStream {
 			n += inflater.next_out_index - off;
 			off = inflater.next_out_index;
 			switch (err) {
-			case JZlib.Z_DATA_ERROR:
-				throw new IOException(inflater.msg);
-			case JZlib.Z_STREAM_END:
-			case JZlib.Z_NEED_DICT:
-				eof = true;
-				if (err == JZlib.Z_NEED_DICT) {
-					return -1;
-				}
-				break;
-			default:
+				case JZlib.Z_DATA_ERROR:
+					throw new IOException(inflater.msg);
+				case JZlib.Z_STREAM_END:
+				case JZlib.Z_NEED_DICT:
+					eof = true;
+					if (err == JZlib.Z_NEED_DICT) {
+						return -1;
+					}
+					break;
+				default:
 			}
 			if (inflater.avail_out == 0) {
 				break;
@@ -234,8 +229,7 @@ public class InflaterInputStream extends FilterInputStream {
 			return null;
 		}
 		byte[] tmp = new byte[inflater.avail_in];
-		System.arraycopy(inflater.next_in, inflater.next_in_index, tmp, 0,
-				inflater.avail_in);
+		System.arraycopy(inflater.next_in, inflater.next_in_index, tmp, 0, inflater.avail_in);
 		return tmp;
 	}
 

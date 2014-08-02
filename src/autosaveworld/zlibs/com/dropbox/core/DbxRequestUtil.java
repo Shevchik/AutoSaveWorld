@@ -78,7 +78,7 @@ public class DbxRequestUtil {
 		if (headers == null) {
 			headers = new ArrayList<HttpRequestor.Header>();
 		}
-		headers.add(new HttpRequestor.Header("Authorization", "Bearer "+ accessToken));
+		headers.add(new HttpRequestor.Header("Authorization", "Bearer " + accessToken));
 		return headers;
 	}
 
@@ -97,7 +97,8 @@ public class DbxRequestUtil {
 	/**
 	 * Convenience function for making HTTP GET requests.
 	 */
-	public static HttpRequestor.Response startGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers) throws DbxException.NetworkIO {
+	public static HttpRequestor.Response startGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers)
+			throws DbxException.NetworkIO {
 		headers = addUserAgentHeader(headers, requestConfig);
 		headers = addAuthHeader(headers, accessToken);
 
@@ -112,7 +113,8 @@ public class DbxRequestUtil {
 	/**
 	 * Convenience function for making HTTP PUT requests.
 	 */
-	public static HttpRequestor.Uploader startPut(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers) throws DbxException.NetworkIO {
+	public static HttpRequestor.Uploader startPut(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers)
+			throws DbxException.NetworkIO {
 		headers = addUserAgentHeader(headers, requestConfig);
 		headers = addAuthHeader(headers, accessToken);
 
@@ -127,7 +129,8 @@ public class DbxRequestUtil {
 	/**
 	 * Convenience function for making HTTP POST requests.
 	 */
-	public static HttpRequestor.Response startPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers) throws DbxException.NetworkIO {
+	public static HttpRequestor.Response startPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers)
+			throws DbxException.NetworkIO {
 		String uri = buildUri(host, path);
 		byte[] encodedParams = StringUtil.stringToUtf8(encodeUrlParams(requestConfig.userLocale, params));
 
@@ -190,7 +193,7 @@ public class DbxRequestUtil {
 		try {
 			return reader.readFully(body);
 		} catch (JsonReadException ex) {
-			throw new DbxException.BadResponse("error in response JSON: "+ ex.getMessage(), ex);
+			throw new DbxException.BadResponse("error in response JSON: " + ex.getMessage(), ex);
 		} catch (IOException ex) {
 			throw new DbxException.NetworkIO(ex);
 		}
@@ -200,9 +203,9 @@ public class DbxRequestUtil {
 		public abstract T handle(HttpRequestor.Response response) throws DbxException;
 	}
 
-	public static <T> T doGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler) throws DbxException {
-		HttpRequestor.Response response = startGet(requestConfig, accessToken,
-				host, path, params, headers);
+	public static <T> T doGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler)
+			throws DbxException {
+		HttpRequestor.Response response = startGet(requestConfig, accessToken, host, path, params, headers);
 		try {
 			return handler.handle(response);
 		} finally {
@@ -215,14 +218,15 @@ public class DbxRequestUtil {
 		}
 	}
 
-	public static <T> T doPost(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler) throws DbxException {
+	public static <T> T doPost(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler)
+			throws DbxException {
 		headers = addAuthHeader(headers, accessToken);
 		return doPostNoAuth(requestConfig, host, path, params, headers, handler);
 	}
 
-	public static <T> T doPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler) throws DbxException {
-		HttpRequestor.Response response = startPostNoAuth(requestConfig, host,
-				path, params, headers);
+	public static <T> T doPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler)
+			throws DbxException {
+		HttpRequestor.Response response = startPostNoAuth(requestConfig, host, path, params, headers);
 		return finishResponse(response, handler);
 	}
 
@@ -237,8 +241,7 @@ public class DbxRequestUtil {
 	public static String getFirstHeader(HttpRequestor.Response response, String name) throws DbxException {
 		List<String> values = response.headers.get(name);
 		if (values == null) {
-			throw new DbxException.BadResponse("missing HTTP header \"" + name
-					+ "\"");
+			throw new DbxException.BadResponse("missing HTTP header \"" + name + "\"");
 		}
 		assert !values.isEmpty();
 		return values.get(0);

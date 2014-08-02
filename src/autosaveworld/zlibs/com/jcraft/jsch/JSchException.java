@@ -31,7 +31,7 @@ package autosaveworld.zlibs.com.jcraft.jsch;
 
 public class JSchException extends Exception {
 
-	private static final long serialVersionUID=-1319309923966731989L;
+	private static final long serialVersionUID = -1319309923966731989L;
 
 	private Throwable cause = null;
 

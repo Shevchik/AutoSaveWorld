@@ -68,10 +68,7 @@ public class AES128CTR implements Cipher {
 			SecretKeySpec keyspec = new SecretKeySpec(key, "AES");
 			cipher = javax.crypto.Cipher.getInstance("AES/CTR/" + pad);
 			synchronized (javax.crypto.Cipher.class) {
-				cipher.init(
-						(mode == ENCRYPT_MODE ? javax.crypto.Cipher.ENCRYPT_MODE
-								: javax.crypto.Cipher.DECRYPT_MODE), keyspec,
-								new IvParameterSpec(iv));
+				cipher.init((mode == ENCRYPT_MODE ? javax.crypto.Cipher.ENCRYPT_MODE : javax.crypto.Cipher.DECRYPT_MODE), keyspec, new IvParameterSpec(iv));
 			}
 		} catch (Exception e) {
 			cipher = null;
@@ -80,8 +77,7 @@ public class AES128CTR implements Cipher {
 	}
 
 	@Override
-	public void update(byte[] foo, int s1, int len, byte[] bar, int s2)
-			throws Exception {
+	public void update(byte[] foo, int s1, int len, byte[] bar, int s2) throws Exception {
 		cipher.update(foo, s1, len, bar, s2);
 	}
 

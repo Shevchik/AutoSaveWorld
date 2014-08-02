@@ -29,13 +29,10 @@
 
 package autosaveworld.zlibs.com.jcraft.jsch;
 
-
 public class SftpStatVFS {
 
 	/*
-	 * It seems data is serializsed according to sys/statvfs.h; for example,
-	 * http
-	 * ://pubs.opengroup.org/onlinepubs/009604499/basedefs/sys/statvfs.h.html
+	 * It seems data is serializsed according to sys/statvfs.h; for example, http ://pubs.opengroup.org/onlinepubs/009604499/basedefs/sys/statvfs.h.html
 	 */
 
 	private long bsize;
@@ -78,9 +75,9 @@ public class SftpStatVFS {
 		statvfs.namemax = buf.getLong();
 
 		statvfs.flag = (flag & 1/* SSH2_FXE_STATVFS_ST_RDONLY */) != 0 ? 1/* ST_RDONLY */
-				: 0;
+		: 0;
 		statvfs.flag |= (flag & 2/* SSH2_FXE_STATVFS_ST_NOSUID */) != 0 ? 2/* ST_NOSUID */
-				: 0;
+		: 0;
 
 		return statvfs;
 	}

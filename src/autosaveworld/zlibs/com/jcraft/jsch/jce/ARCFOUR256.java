@@ -61,9 +61,7 @@ public class ARCFOUR256 implements Cipher {
 			cipher = javax.crypto.Cipher.getInstance("RC4");
 			SecretKeySpec _key = new SecretKeySpec(key, "RC4");
 			synchronized (javax.crypto.Cipher.class) {
-				cipher.init(
-						(mode == ENCRYPT_MODE ? javax.crypto.Cipher.ENCRYPT_MODE
-								: javax.crypto.Cipher.DECRYPT_MODE), _key);
+				cipher.init((mode == ENCRYPT_MODE ? javax.crypto.Cipher.ENCRYPT_MODE : javax.crypto.Cipher.DECRYPT_MODE), _key);
 			}
 			byte[] foo = new byte[1];
 			for (int i = 0; i < skip; i++) {
@@ -76,8 +74,7 @@ public class ARCFOUR256 implements Cipher {
 	}
 
 	@Override
-	public void update(byte[] foo, int s1, int len, byte[] bar, int s2)
-			throws Exception {
+	public void update(byte[] foo, int s1, int len, byte[] bar, int s2) throws Exception {
 		cipher.update(foo, s1, len, bar, s2);
 	}
 

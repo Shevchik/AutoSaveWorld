@@ -3,12 +3,8 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
 
 /**
- * Implementation of <a
- * href="http://tools.ietf.org/html/draft-ietf-appsawg-json-pointer-03">JSON
- * Pointer</a> specification. Pointer instances can be used to locate logical
- * JSON nodes for things like tree traversal (see {@link TreeNode#at}). It may
- * be used in future for filtering of streaming JSON content as well (not
- * implemented yet for 2.3).
+ * Implementation of <a href="http://tools.ietf.org/html/draft-ietf-appsawg-json-pointer-03">JSON Pointer</a> specification. Pointer instances can be used to locate logical JSON nodes for things like
+ * tree traversal (see {@link TreeNode#at}). It may be used in future for filtering of streaming JSON content as well (not implemented yet for 2.3).
  * <p>
  * Instances are fully immutable and can be shared, cached.
  *
@@ -18,20 +14,17 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
  */
 public class JsonPointer {
 	/**
-	 * Marker instance used to represent segment that matches current node or
-	 * position.
+	 * Marker instance used to represent segment that matches current node or position.
 	 */
 	protected final static JsonPointer EMPTY = new JsonPointer();
 
 	/**
-	 * Reference to rest of the pointer beyond currently matching segment (if
-	 * any); null if this pointer refers to a matching segment.
+	 * Reference to rest of the pointer beyond currently matching segment (if any); null if this pointer refers to a matching segment.
 	 */
 	protected final JsonPointer _nextSegment;
 
 	/**
-	 * We will retain representation of the pointer, as a String, so that
-	 * {@link #toString} should be as efficient as possible.
+	 * We will retain representation of the pointer, as a String, so that {@link #toString} should be as efficient as possible.
 	 */
 	protected final String _asString;
 
@@ -40,13 +33,11 @@ public class JsonPointer {
 	protected final int _matchingElementIndex;
 
 	/*
-	 * /********************************************************** /*
-	 * Cosntruction /**********************************************************
+	 * /********************************************************** /* Cosntruction /**********************************************************
 	 */
 
 	/**
-	 * Constructor used for creating "empty" instance, used to represent state
-	 * that matches current node.
+	 * Constructor used for creating "empty" instance, used to represent state that matches current node.
 	 */
 	protected JsonPointer() {
 		_nextSegment = null;
@@ -67,63 +58,49 @@ public class JsonPointer {
 	}
 
 	/*
-	 * /********************************************************** /* Factory
-	 * methods /**********************************************************
+	 * /********************************************************** /* Factory methods /**********************************************************
 	 */
 
 	/**
-	 * Factory method that parses given input and construct matching pointer
-	 * instance, if it represents a valid JSON Pointer: if not, a
-	 * {@link IllegalArgumentException} is thrown.
+	 * Factory method that parses given input and construct matching pointer instance, if it represents a valid JSON Pointer: if not, a {@link IllegalArgumentException} is thrown.
 	 *
 	 * @throws IllegalArgumentException
-	 *             Thrown if the input does not present a valid JSON Pointer
-	 *             expression: currently the only such expression is one that
-	 *             does NOT start with a slash ('/').
+	 *             Thrown if the input does not present a valid JSON Pointer expression: currently the only such expression is one that does NOT start with a slash ('/').
 	 */
-	public static JsonPointer compile(String input)
-			throws IllegalArgumentException {
+	public static JsonPointer compile(String input) throws IllegalArgumentException {
 		// First quick checks for well-known 'empty' pointer
 		if ((input == null) || input.length() == 0) {
 			return EMPTY;
 		}
 		// And then quick validity check:
 		if (input.charAt(0) != '/') {
-			throw new IllegalArgumentException(
-					"Invalid input: JSON Pointer expression must start with '/': "
-							+ "\"" + input + "\"");
+			throw new IllegalArgumentException("Invalid input: JSON Pointer expression must start with '/': " + "\"" + input + "\"");
 		}
 		return _parseTail(input);
 	}
 
 	/**
-	 * Alias for {@link #compile}; added to make instances automatically
-	 * deserializable by Jackson databind.
+	 * Alias for {@link #compile}; added to make instances automatically deserializable by Jackson databind.
 	 */
 	public static JsonPointer valueOf(String input) {
 		return compile(input);
 	}
 
 	/*
-	 * Factory method that composes a pointer instance, given a set of 'raw'
-	 * segments: raw meaning that no processing will be done, no escaping may is
-	 * present.
-	 *
+	 * Factory method that composes a pointer instance, given a set of 'raw' segments: raw meaning that no processing will be done, no escaping may is present.
+	 * 
 	 * @param segments
-	 *
+	 * 
 	 * @return Constructed path instance
 	 */
 	/*
-	 * TODO! public static JsonPointer fromSegment(String... segments) { if
-	 * (segments.length == 0) { return EMPTY; } JsonPointer prev = null;
-	 *
-	 * for (String segment : segments) { JsonPointer next = new JsonPointer() }
-	 * }
+	 * TODO! public static JsonPointer fromSegment(String... segments) { if (segments.length == 0) { return EMPTY; } JsonPointer prev = null;
+	 * 
+	 * for (String segment : segments) { JsonPointer next = new JsonPointer() } }
 	 */
 
 	/*
-	 * /********************************************************** /* Public API
-	 * /**********************************************************
+	 * /********************************************************** /* Public API /**********************************************************
 	 */
 
 	public boolean matches() {
@@ -161,17 +138,14 @@ public class JsonPointer {
 	}
 
 	/**
-	 * Accessor for getting a "sub-pointer", instance where current segment has
-	 * been removed and pointer includes rest of segments;
+	 * Accessor for getting a "sub-pointer", instance where current segment has been removed and pointer includes rest of segments;
 	 */
 	public JsonPointer tail() {
 		return _nextSegment;
 	}
 
 	/*
-	 * /********************************************************** /* Standard
-	 * method overrides
-	 * /**********************************************************
+	 * /********************************************************** /* Standard method overrides /**********************************************************
 	 */
 
 	@Override
@@ -199,8 +173,7 @@ public class JsonPointer {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods /**********************************************************
+	 * /********************************************************** /* Internal methods /**********************************************************
 	 */
 
 	private final static int _parseIndex(String str) {
@@ -232,8 +205,7 @@ public class JsonPointer {
 		for (int i = 1; i < end;) {
 			char c = input.charAt(i);
 			if (c == '/') { // common case, got a segment
-				return new JsonPointer(input, input.substring(1, i),
-						_parseTail(input.substring(i)));
+				return new JsonPointer(input, input.substring(1, i), _parseTail(input.substring(i)));
 			}
 			++i;
 			// quoting is different; offline this case
@@ -247,8 +219,7 @@ public class JsonPointer {
 	}
 
 	/**
-	 * Method called to parse tail of pointer path, when a potentially escaped
-	 * character has been seen.
+	 * Method called to parse tail of pointer path, when a potentially escaped character has been seen.
 	 *
 	 * @param input
 	 *            Full input for the tail being parsed
@@ -265,9 +236,8 @@ public class JsonPointer {
 		while (i < end) {
 			char c = input.charAt(i);
 			if (c == '/') { // end is nigh!
-				return new JsonPointer(input, sb.toString(),
-						_parseTail(input.substring(i))); // need to push back
-															// slash
+				return new JsonPointer(input, sb.toString(), _parseTail(input.substring(i))); // need to push back
+																								// slash
 			}
 			++i;
 			if (c == '~' && i < end) {

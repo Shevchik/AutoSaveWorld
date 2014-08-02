@@ -120,7 +120,7 @@ public class FTP extends SocketClient {
 
 		length = line.length();
 		if (length < REPLY_CODE_LEN) {
-			throw new MalformedServerReplyException("Truncated server reply: "+ line);
+			throw new MalformedServerReplyException("Truncated server reply: " + line);
 		}
 
 		String code = null;
@@ -143,8 +143,7 @@ public class FTP extends SocketClient {
 
 				_replyLines.add(line);
 
-			} while (isStrictMultilineParsing() ? __strictCheck(line, code)
-					: __lenientCheck(line));
+			} while (isStrictMultilineParsing() ? __strictCheck(line, code) : __lenientCheck(line));
 		}
 
 		if (_replyCode == FTPReply.SERVICE_NOT_AVAILABLE) {
@@ -223,15 +222,13 @@ public class FTP extends SocketClient {
 		return __commandBuffer.toString();
 	}
 
-	private void __send(String message) throws IOException,
-			FTPConnectionClosedException, SocketException {
+	private void __send(String message) throws IOException, FTPConnectionClosedException, SocketException {
 		try {
 			_controlOutput_.write(message);
 			_controlOutput_.flush();
 		} catch (SocketException e) {
 			if (!isConnected()) {
-				throw new FTPConnectionClosedException(
-						"Connection unexpectedly closed.");
+				throw new FTPConnectionClosedException("Connection unexpectedly closed.");
 			} else {
 				throw e;
 			}

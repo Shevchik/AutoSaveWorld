@@ -15,8 +15,7 @@ public class JsonDateReader {
 	 */
 	public static final JsonReader<Date> Dropbox = new JsonReader<Date>() {
 		@Override
-		public Date read(JsonParser parser) throws IOException,
-				JsonReadException {
+		public Date read(JsonParser parser) throws IOException, JsonReadException {
 			JsonLocation l = parser.getCurrentLocation();
 			try {
 				char[] buffer = parser.getTextCharacters();
@@ -54,11 +53,8 @@ public class JsonDateReader {
 		// Check for fixed values. Using non-short-circuit OR because it's
 		// faster
 		// for the common case of them all being correct.
-		if (b[i + 3] != ',' | b[i + 4] != ' ' | b[i + 7] != ' '
-				| b[i + 11] != ' ' | b[i + 16] != ' ' | b[i + 19] != ':'
-				| b[i + 22] != ':' | b[i + 25] != ' ' | b[i + 26] != '+'
-				| b[i + 27] != '0' | b[i + 28] != '0' | b[i + 29] != '0'
-				| b[i + 30] != '0') {
+		if (b[i + 3] != ',' | b[i + 4] != ' ' | b[i + 7] != ' ' | b[i + 11] != ' ' | b[i + 16] != ' ' | b[i + 19] != ':' | b[i + 22] != ':' | b[i + 25] != ' ' | b[i + 26] != '+' | b[i + 27] != '0'
+				| b[i + 28] != '0' | b[i + 29] != '0' | b[i + 30] != '0') {
 			if (b[i + 3] != ',') {
 				throw new java.text.ParseException("expecting ','", 3);
 			}
@@ -165,8 +161,7 @@ public class JsonDateReader {
 		int second = s1 * 10 + s2 - ('0' * 11);
 
 		// TODO: How do we validate that the numbers are in range?
-		GregorianCalendar c = new GregorianCalendar(year, month, dayOfMonth,
-				hour, minute, second);
+		GregorianCalendar c = new GregorianCalendar(year, month, dayOfMonth, hour, minute, second);
 		c.setTimeZone(UTC);
 		return c.getTime();
 	}
@@ -181,104 +176,104 @@ public class JsonDateReader {
 		// Using non-short-circuit AND because it's faster for the common case
 		// of the values being correct.
 		switch (a) {
-		case 'S':
-			if (b == 'u' & c == 'n') {
-				return true;
-			}
-			if (b == 'a' & c == 't') {
-				return true;
-			}
-			return false;
-		case 'M':
-			if (b == 'o' & c == 'n') {
-				return true;
-			}
-			return false;
-		case 'T':
-			if (b == 'u' & c == 'e') {
-				return true;
-			}
-			if (b == 'h' & c == 'u') {
-				return true;
-			}
-			return false;
-		case 'W':
-			if (b == 'e' & c == 'd') {
-				return true;
-			}
-			return false;
-		case 'F':
-			if (b == 'r' & c == 'i') {
-				return true;
-			}
-			return false;
-		default:
-			return false;
+			case 'S':
+				if (b == 'u' & c == 'n') {
+					return true;
+				}
+				if (b == 'a' & c == 't') {
+					return true;
+				}
+				return false;
+			case 'M':
+				if (b == 'o' & c == 'n') {
+					return true;
+				}
+				return false;
+			case 'T':
+				if (b == 'u' & c == 'e') {
+					return true;
+				}
+				if (b == 'h' & c == 'u') {
+					return true;
+				}
+				return false;
+			case 'W':
+				if (b == 'e' & c == 'd') {
+					return true;
+				}
+				return false;
+			case 'F':
+				if (b == 'r' & c == 'i') {
+					return true;
+				}
+				return false;
+			default:
+				return false;
 		}
 	}
 
 	public static int getMonthIndex(char a, char b, char c) {
 		switch (a) {
-		case 'J':
-			if (b == 'a' & c == 'n') {
+			case 'J':
+				if (b == 'a' & c == 'n') {
+					return 0;
+				}
+				if (b == 'u') {
+					if (c == 'n') {
+						return 5;
+					}
+					if (c == 'l') {
+						return 6;
+					}
+					return -1;
+				}
+				return -1;
+			case 'F':
+				if (b == 'e' & c == 'b') {
+					return 1;
+				}
 				return 0;
-			}
-			if (b == 'u') {
-				if (c == 'n') {
-					return 5;
-				}
-				if (c == 'l') {
-					return 6;
-				}
-				return -1;
-			}
-			return -1;
-		case 'F':
-			if (b == 'e' & c == 'b') {
-				return 1;
-			}
-			return 0;
-		case 'M':
-			if (b == 'a') {
-				if (c == 'r') {
-					return 2;
-				}
-				if (c == 'y') {
-					return 4;
+			case 'M':
+				if (b == 'a') {
+					if (c == 'r') {
+						return 2;
+					}
+					if (c == 'y') {
+						return 4;
+					}
+					return -1;
 				}
 				return -1;
-			}
-			return -1;
-		case 'A':
-			if (b == 'p' & c == 'r') {
-				return 3;
-			}
-			if (b == 'u' & c == 'g') {
-				return 7;
-			}
-			return -1;
-		case 'S':
-			if (b == 'e' & c == 'p') {
-				return 8;
-			}
-			return -1;
-		case 'O':
-			if (b == 'c' & c == 't') {
-				return 9;
-			}
-			return -1;
-		case 'N':
-			if (b == 'o' & c == 'v') {
-				return 10;
-			}
-			return -1;
-		case 'D':
-			if (b == 'e' & c == 'c') {
-				return 11;
-			}
-			return -1;
-		default:
-			return -1;
+			case 'A':
+				if (b == 'p' & c == 'r') {
+					return 3;
+				}
+				if (b == 'u' & c == 'g') {
+					return 7;
+				}
+				return -1;
+			case 'S':
+				if (b == 'e' & c == 'p') {
+					return 8;
+				}
+				return -1;
+			case 'O':
+				if (b == 'c' & c == 't') {
+					return 9;
+				}
+				return -1;
+			case 'N':
+				if (b == 'o' & c == 'v') {
+					return 10;
+				}
+				return -1;
+			case 'D':
+				if (b == 'e' & c == 'c') {
+					return 11;
+				}
+				return -1;
+			default:
+				return -1;
 		}
 	}
 }

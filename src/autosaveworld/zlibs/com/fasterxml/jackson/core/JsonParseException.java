@@ -6,9 +6,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Exception type for parsing problems, used when non-well-formed content
- * (content that does not conform to JSON syntax as per specification) is
- * encountered.
+ * Exception type for parsing problems, used when non-well-formed content (content that does not conform to JSON syntax as per specification) is encountered.
  */
 public class JsonParseException extends JsonProcessingException {
 	private static final long serialVersionUID = 1L;

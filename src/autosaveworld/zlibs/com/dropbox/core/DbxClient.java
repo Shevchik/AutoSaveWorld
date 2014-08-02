@@ -20,12 +20,10 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
 
 /**
- * Use this class to make remote calls to the Dropbox API. You'll need an access
- * token first, normally acquired via {@link DbxWebAuth}.
+ * Use this class to make remote calls to the Dropbox API. You'll need an access token first, normally acquired via {@link DbxWebAuth}.
  *
  * <p>
- * This class has no mutable state, so it's thread safe as long as you pass in a
- * thread safe {@link HttpRequestor} implementation.
+ * This class has no mutable state, so it's thread safe as long as you pass in a thread safe {@link HttpRequestor} implementation.
  * </p>
  */
 public final class DbxClient {
@@ -36,20 +34,15 @@ public final class DbxClient {
 
 	/**
 	 * @param accessToken
-	 *            The OAuth 2 access token (that you got from Dropbox) that
-	 *            gives your app the ability to make Dropbox API calls against
-	 *            some particular user's account. The standard way to get one of
-	 *            these is to use {@link DbxWebAuth} to send your user through
-	 *            Dropbox's OAuth 2 authorization flow.
+	 *            The OAuth 2 access token (that you got from Dropbox) that gives your app the ability to make Dropbox API calls against some particular user's account. The standard way to get one of
+	 *            these is to use {@link DbxWebAuth} to send your user through Dropbox's OAuth 2 authorization flow.
 	 */
 	public DbxClient(DbxRequestConfig requestConfig, String accessToken) {
 		this(requestConfig, accessToken, DbxHost.Default);
 	}
 
 	/**
-	 * The same as {@link #DbxClient(DbxRequestConfig, String)} except you can
-	 * also set the hostnames of the Dropbox API servers. This is used in
-	 * testing. You don't normally need to call this.
+	 * The same as {@link #DbxClient(DbxRequestConfig, String)} except you can also set the hostnames of the Dropbox API servers. This is used in testing. You don't normally need to call this.
 	 */
 	public DbxClient(DbxRequestConfig requestConfig, String accessToken, DbxHost host) {
 		if (requestConfig == null) {
@@ -68,8 +61,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Returns the {@code DbxRequestConfig} that was passed in to the
-	 * constructor.
+	 * Returns the {@code DbxRequestConfig} that was passed in to the constructor.
 	 */
 	public DbxRequestConfig getRequestConfig() {
 		return requestConfig;
@@ -101,9 +93,7 @@ public final class DbxClient {
 	 * @param path
 	 *            The path to the file or folder (see {@link DbxPath}).
 	 *
-	 * @return If there is a file or folder at the given path, return the
-	 *         metadata for that path. If there is no file or folder there,
-	 *         return {@code null}.
+	 * @return If there is a file or folder at the given path, return the metadata for that path. If there is no file or folder there, return {@code null}.
 	 */
 	public DbxEntry getMetadata(final String path) throws DbxException {
 		DbxPath.checkArg("path", path);
@@ -112,28 +102,23 @@ public final class DbxClient {
 		String apiPath = "1/metadata/auto" + path;
 		String[] params = { "list", "false", };
 
-		return doGet(host, apiPath, params, null,
-			new DbxRequestUtil.ResponseHandler<DbxEntry>() {
-				@Override
-				public DbxEntry handle(HttpRequestor.Response response)
-						throws DbxException {
-					if (response.statusCode == 404) {
-						return null;
-					}
-					if (response.statusCode != 200) {
-						throw DbxRequestUtil.unexpectedStatus(response);
-					}
-					// Will return 'null' for "is_deleted=true" entries.
-					return DbxRequestUtil.readJsonFromResponse(
-							DbxEntry.Reader, response.body);
+		return doGet(host, apiPath, params, null, new DbxRequestUtil.ResponseHandler<DbxEntry>() {
+			@Override
+			public DbxEntry handle(HttpRequestor.Response response) throws DbxException {
+				if (response.statusCode == 404) {
+					return null;
 				}
+				if (response.statusCode != 200) {
+					throw DbxRequestUtil.unexpectedStatus(response);
+				}
+				// Will return 'null' for "is_deleted=true" entries.
+				return DbxRequestUtil.readJsonFromResponse(DbxEntry.Reader, response.body);
 			}
-		);
+		});
 	}
 
 	/**
-	 * Get the metadata for a given path; if the path refers to a folder, get
-	 * all the children's metadata as well.
+	 * Get the metadata for a given path; if the path refers to a folder, get all the children's metadata as well.
 	 *
 	 * <pre>
 	 * DbxClient dbxClient = ...
@@ -146,12 +131,9 @@ public final class DbxClient {
 	 * </pre>
 	 *
 	 * @param path
-	 *            The path (starting with "/") to the file or folder (see
-	 *            {@link DbxPath}).
+	 *            The path (starting with "/") to the file or folder (see {@link DbxPath}).
 	 *
-	 * @return If there is no file or folder at the given path, return
-	 *         {@code null}. Otherwise, return the metadata for that path and
-	 *         the metadata for all its immediate children (if it's a folder).
+	 * @return If there is no file or folder at the given path, return {@code null}. Otherwise, return the metadata for that path and the metadata for all its immediate children (if it's a folder).
 	 */
 	public DbxEntry.WithChildren getMetadataWithChildren(String path) throws DbxException {
 		return getMetadataWithChildrenBase(path, DbxEntry.WithChildren.Reader);
@@ -165,21 +147,19 @@ public final class DbxClient {
 
 		String[] params = { "list", "true", "file_limit", "25000", };
 
-		return doGet(host, apiPath, params, null,
-			new DbxRequestUtil.ResponseHandler<T>() {
-				@Override
-				public T handle(HttpRequestor.Response response) throws DbxException {
-					if (response.statusCode == 404) {
-						return null;
-					}
-					if (response.statusCode != 200) {
-						throw DbxRequestUtil.unexpectedStatus(response);
-					}
-					// Will return 'null' for "is_deleted=true" entries.
-					return DbxRequestUtil.readJsonFromResponse(reader, response.body);
+		return doGet(host, apiPath, params, null, new DbxRequestUtil.ResponseHandler<T>() {
+			@Override
+			public T handle(HttpRequestor.Response response) throws DbxException {
+				if (response.statusCode == 404) {
+					return null;
 				}
+				if (response.statusCode != 200) {
+					throw DbxRequestUtil.unexpectedStatus(response);
+				}
+				// Will return 'null' for "is_deleted=true" entries.
+				return DbxRequestUtil.readJsonFromResponse(reader, response.body);
 			}
-		);
+		});
 	}
 
 	// --------------------------------------------------------
@@ -187,10 +167,7 @@ public final class DbxClient {
 	// /chunked_upload
 
 	/**
-	 * A wrapper around
-	 * {@link #uploadFile(String, DbxWriteMode, long, DbxStreamWriter)} that
-	 * lets you pass in an {@link InputStream}. The entire stream
-	 * {@code contents} will be uploaded.
+	 * A wrapper around {@link #uploadFile(String, DbxWriteMode, long, DbxStreamWriter)} that lets you pass in an {@link InputStream}. The entire stream {@code contents} will be uploaded.
 	 *
 	 * <pre>
 	 * DbxClient dbxClient = ...
@@ -199,21 +176,16 @@ public final class DbxClient {
 	 * </pre>
 	 *
 	 * @param targetPath
-	 *            The path to the file on Dropbox (see {@link DbxPath}). If a
-	 *            file at that path already exists on Dropbox, then the
-	 *            {@code writeMode} parameter will determine what happens.
+	 *            The path to the file on Dropbox (see {@link DbxPath}). If a file at that path already exists on Dropbox, then the {@code writeMode} parameter will determine what happens.
 	 *
 	 * @param writeMode
-	 *            Determines what to do if there's already a file at the given
-	 *            {@code targetPath}.
+	 *            Determines what to do if there's already a file at the given {@code targetPath}.
 	 *
 	 * @param numBytes
-	 *            The number of bytes in the given stream. Use {@code -1} if you
-	 *            don't know.
+	 *            The number of bytes in the given stream. Use {@code -1} if you don't know.
 	 *
 	 * @param contents
-	 *            The source of file contents. This stream will be automatically
-	 *            closed (whether or not the upload succeeds).
+	 *            The source of file contents. This stream will be automatically closed (whether or not the upload succeeds).
 	 *
 	 * @throws IOException
 	 *             If there's an error reading from {@code in}.
@@ -223,8 +195,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Upload file contents to Dropbox, getting contents from the given
-	 * {@link DbxStreamWriter}.
+	 * Upload file contents to Dropbox, getting contents from the given {@link DbxStreamWriter}.
 	 *
 	 * <pre>
 	 * DbxClient dbxClient = ...
@@ -246,26 +217,19 @@ public final class DbxClient {
 	 * </pre>
 	 *
 	 * @param targetPath
-	 *            The path to the file on Dropbox (see {@link DbxPath}). If a
-	 *            file at that path already exists on Dropbox, then the
-	 *            {@code writeMode} parameter will determine what happens.
+	 *            The path to the file on Dropbox (see {@link DbxPath}). If a file at that path already exists on Dropbox, then the {@code writeMode} parameter will determine what happens.
 	 *
 	 * @param writeMode
-	 *            Determines what to do if there's already a file at the given
-	 *            {@code targetPath}.
+	 *            Determines what to do if there's already a file at the given {@code targetPath}.
 	 *
 	 * @param numBytes
-	 *            The number of bytes you're going to upload via the returned
-	 *            {@link DbxClient.Uploader}. Use {@code -1} if you don't know
-	 *            ahead of time.
+	 *            The number of bytes you're going to upload via the returned {@link DbxClient.Uploader}. Use {@code -1} if you don't know ahead of time.
 	 *
 	 * @param writer
-	 *            A callback that will be called when it's time to actually
-	 *            write out the body of the file.
+	 *            A callback that will be called when it's time to actually write out the body of the file.
 	 *
 	 * @throws E
-	 *             If {@code writer.write()} throws an exception, it will
-	 *             propagate out of this function.
+	 *             If {@code writer.write()} throws an exception, it will propagate out of this function.
 	 */
 	public <E extends Throwable> DbxEntry.File uploadFile(String targetPath, DbxWriteMode writeMode, long numBytes, DbxStreamWriter<E> writer) throws DbxException, E {
 		Uploader uploader = startUploadFile(targetPath, writeMode, numBytes);
@@ -276,14 +240,11 @@ public final class DbxClient {
 	private static final int ChunkedUploadChunkSize = 4 * 1024 * 1024;
 
 	/**
-	 * Start an API request to upload a file to Dropbox. Returns a
-	 * {@link DbxClient.Uploader} object that lets you actually send the file
-	 * contents via {@link DbxClient.Uploader#getBody()}. When you're done
-	 * copying the file body, call {@link DbxClient.Uploader#finish}.
+	 * Start an API request to upload a file to Dropbox. Returns a {@link DbxClient.Uploader} object that lets you actually send the file contents via {@link DbxClient.Uploader#getBody()}. When you're
+	 * done copying the file body, call {@link DbxClient.Uploader#finish}.
 	 *
 	 * <p>
-	 * You need to close the {@link Uploader} when you're done with it. Use a
-	 * {@code try}/{@code finally} to make sure you close it in all cases.
+	 * You need to close the {@link Uploader} when you're done with it. Use a {@code try}/{@code finally} to make sure you close it in all cases.
 	 * </p>
 	 *
 	 * <pre>
@@ -300,24 +261,18 @@ public final class DbxClient {
 	 * </pre>
 	 *
 	 * @param targetPath
-	 *            The path to the file on Dropbox (see {@link DbxPath}). If a
-	 *            file at that path already exists on Dropbox, then the
-	 *            {@code writeMode} parameter will determine what happens.
+	 *            The path to the file on Dropbox (see {@link DbxPath}). If a file at that path already exists on Dropbox, then the {@code writeMode} parameter will determine what happens.
 	 *
 	 * @param writeMode
-	 *            Determines what to do if there's already a file at the given
-	 *            {@code targetPath}.
+	 *            Determines what to do if there's already a file at the given {@code targetPath}.
 	 *
 	 * @param numBytes
-	 *            The number of bytes you're going to upload via the returned
-	 *            {@link DbxClient.Uploader}. Use {@code -1} if you don't know
-	 *            ahead of time.
+	 *            The number of bytes you're going to upload via the returned {@link DbxClient.Uploader}. Use {@code -1} if you don't know ahead of time.
 	 */
 	public Uploader startUploadFile(String targetPath, DbxWriteMode writeMode, long numBytes) throws DbxException {
 		if (numBytes < 0) {
 			if (numBytes != -1) {
-				throw new IllegalArgumentException(
-						"numBytes must be -1 or greater; given " + numBytes);
+				throw new IllegalArgumentException("numBytes must be -1 or greater; given " + numBytes);
 			}
 			// If the number of bytes isn't given in advance, use chunked
 			// uploads.
@@ -333,8 +288,7 @@ public final class DbxClient {
 	}
 
 	public <E extends Throwable> DbxEntry.File finishUploadFile(Uploader uploader, DbxStreamWriter<E> writer) throws DbxException, E {
-		NoThrowOutputStream streamWrapper = new NoThrowOutputStream(
-				uploader.getBody());
+		NoThrowOutputStream streamWrapper = new NoThrowOutputStream(uploader.getBody());
 		try {
 			writer.write(streamWrapper);
 			return uploader.finish();
@@ -354,14 +308,12 @@ public final class DbxClient {
 	// /files_put
 
 	/**
-	 * Similar to {@link #uploadFile}, except always uses the /files_put API
-	 * call. One difference is that {@code numBytes} must not be negative.
+	 * Similar to {@link #uploadFile}, except always uses the /files_put API call. One difference is that {@code numBytes} must not be negative.
 	 */
 	public Uploader startUploadFileSingle(String targetPath, DbxWriteMode writeMode, long numBytes) throws DbxException {
 		DbxPath.checkArg("targetPath", targetPath);
 		if (numBytes < 0) {
-			throw new IllegalArgumentException(
-					"numBytes must be zero or greater");
+			throw new IllegalArgumentException("numBytes must be zero or greater");
 		}
 
 		String host = this.host.content;
@@ -388,8 +340,7 @@ public final class DbxClient {
 
 		public SingleUploader(HttpRequestor.Uploader httpUploader, long claimedBytes) {
 			if (claimedBytes < 0) {
-				throw new IllegalArgumentException(
-						"'numBytes' must be greater than or equal to 0");
+				throw new IllegalArgumentException("'numBytes' must be greater than or equal to 0");
 			}
 
 			this.httpUploader = httpUploader;
@@ -417,10 +368,8 @@ public final class DbxClient {
 		}
 
 		/**
-		 * Release the resources related to this {@code Uploader} instance. If
-		 * {@code close()} or {@link #abort()} has already been called, this
-		 * does nothing. If neither has been called, this is equivalent to
-		 * calling {@link #abort()}.
+		 * Release the resources related to this {@code Uploader} instance. If {@code close()} or {@link #abort()} has already been called, this does nothing. If neither has been called, this is
+		 * equivalent to calling {@link #abort()}.
 		 */
 		@Override
 		public void close() {
@@ -433,9 +382,7 @@ public final class DbxClient {
 		}
 
 		/**
-		 * When you're done writing the file contents to {@link #body}, call
-		 * this to indicate that you're done. This will actually finish the
-		 * underlying HTTP request and return the uploaded file's
+		 * When you're done writing the file contents to {@link #body}, call this to indicate that you're done. This will actually finish the underlying HTTP request and return the uploaded file's
 		 * {@link DbxEntry}.
 		 */
 		@Override
@@ -465,28 +412,25 @@ public final class DbxClient {
 				u.close();
 			}
 
-			return DbxRequestUtil.finishResponse(response,
-				new DbxRequestUtil.ResponseHandler<DbxEntry.File>() {
-					@Override
-					public DbxEntry.File handle(HttpRequestor.Response response) throws DbxException {
-						if (response.statusCode != 200) {
-							throw DbxRequestUtil.unexpectedStatus(response);
-						}
-						DbxEntry entry = DbxRequestUtil.readJsonFromResponse(DbxEntry.Reader,response.body);
-						if (entry instanceof DbxEntry.Folder) {
-							throw new DbxException.BadResponse(
-									"uploaded file, but server returned metadata entry for a folder");
-						}
-						DbxEntry.File f = (DbxEntry.File) entry;
-						// Make sure the server agrees with us on how many
-						// bytes are in the file.
-						if (f.numBytes != bytesWritten) {
-							throw new DbxException.BadResponse("we uploaded " + bytesWritten + ", but server returned metadata entry with file size " + f.numBytes);
-						}
-						return f;
+			return DbxRequestUtil.finishResponse(response, new DbxRequestUtil.ResponseHandler<DbxEntry.File>() {
+				@Override
+				public DbxEntry.File handle(HttpRequestor.Response response) throws DbxException {
+					if (response.statusCode != 200) {
+						throw DbxRequestUtil.unexpectedStatus(response);
 					}
+					DbxEntry entry = DbxRequestUtil.readJsonFromResponse(DbxEntry.Reader, response.body);
+					if (entry instanceof DbxEntry.Folder) {
+						throw new DbxException.BadResponse("uploaded file, but server returned metadata entry for a folder");
+					}
+					DbxEntry.File f = (DbxEntry.File) entry;
+					// Make sure the server agrees with us on how many
+					// bytes are in the file.
+					if (f.numBytes != bytesWritten) {
+						throw new DbxException.BadResponse("we uploaded " + bytesWritten + ", but server returned metadata entry with file size " + f.numBytes);
+					}
+					return f;
 				}
-			);
+			});
 		}
 	}
 
@@ -525,11 +469,9 @@ public final class DbxClient {
 
 					try {
 						if (fieldName.equals("upload_id")) {
-							uploadId = JsonReader.StringReader.readField(
-									parser, fieldName, uploadId);
+							uploadId = JsonReader.StringReader.readField(parser, fieldName, uploadId);
 						} else if (fieldName.equals("offset")) {
-							bytesComplete = JsonReader.readUnsignedLongField(
-									parser, fieldName, bytesComplete);
+							bytesComplete = JsonReader.readUnsignedLongField(parser, fieldName, bytesComplete);
 						} else {
 							JsonReader.skipValue(parser);
 						}
@@ -553,8 +495,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Internal function called by both chunkedUploadFirst and
-	 * chunkedUploadAppend.
+	 * Internal function called by both chunkedUploadFirst and chunkedUploadAppend.
 	 */
 	private <E extends Throwable> HttpRequestor.Response chunkedUploadCommon(String[] params, long chunkSize, DbxStreamWriter<E> writer) throws DbxException, E {
 		String apiPath = "1/chunked_upload";
@@ -605,8 +546,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Equivalent to {@link #chunkedUploadFirst(byte[], int, int)
-	 * chunkedUploadFirst(data, 0, data.length)}.
+	 * Equivalent to {@link #chunkedUploadFirst(byte[], int, int) chunkedUploadFirst(data, 0, data.length)}.
 	 */
 	public String chunkedUploadFirst(byte[] data) throws DbxException {
 		return chunkedUploadFirst(data, 0, data.length);
@@ -620,11 +560,9 @@ public final class DbxClient {
 	 * @param dataOffset
 	 *            The start offset in {@code data} to read from.
 	 * @param dataLength
-	 *            The number of bytes to read from {@code data}, starting from
-	 *            {@code dataOffset}.
+	 *            The number of bytes to read from {@code data}, starting from {@code dataOffset}.
 	 *
-	 * @return The ID designated by the Dropbox server to identify the chunked
-	 *         upload.
+	 * @return The ID designated by the Dropbox server to identify the chunked upload.
 	 *
 	 * @throws DbxException
 	 */
@@ -639,27 +577,22 @@ public final class DbxClient {
 	 *            The number of bytes you're going to upload in this chunk.
 	 *
 	 * @param writer
-	 *            A callback that will be called when it's time to actually
-	 *            write out the body of the chunk.
+	 *            A callback that will be called when it's time to actually write out the body of the chunk.
 	 *
-	 * @return The ID designated by the Dropbox server to identify the chunked
-	 *         upload.
+	 * @return The ID designated by the Dropbox server to identify the chunked upload.
 	 *
 	 * @throws DbxException
 	 */
 	public <E extends Throwable> String chunkedUploadFirst(int chunkSize, DbxStreamWriter<E> writer) throws DbxException, E {
-		HttpRequestor.Response response = chunkedUploadCommon(new String[0],
-				chunkSize, writer);
+		HttpRequestor.Response response = chunkedUploadCommon(new String[0], chunkSize, writer);
 		try {
 			ChunkedUploadState correctedState = chunkedUploadCheckForOffsetCorrection(response);
 			if (correctedState != null) {
-				throw new DbxException.BadResponse(
-						"Got offset correction response on first chunk.");
+				throw new DbxException.BadResponse("Got offset correction response on first chunk.");
 			}
 
 			if (response.statusCode == 404) {
-				throw new DbxException.BadResponse(
-						"Got a 404, but we didn't send an upload_id");
+				throw new DbxException.BadResponse("Got a 404, but we didn't send an upload_id");
 			}
 
 			if (response.statusCode != 200) {
@@ -668,9 +601,7 @@ public final class DbxClient {
 			ChunkedUploadState returnedState = chunkedUploadParse200(response);
 
 			if (returnedState.offset != chunkSize) {
-				throw new DbxException.BadResponse("Sent " + chunkSize
-						+ " bytes, but returned offset is "
-						+ returnedState.offset);
+				throw new DbxException.BadResponse("Sent " + chunkSize + " bytes, but returned offset is " + returnedState.offset);
 			}
 
 			return returnedState.uploadId;
@@ -680,9 +611,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Equivalent to
-	 * {@link #chunkedUploadAppend(String, long, byte[], int, int)
-	 * chunkedUploadAppend(uploadId, uploadOffset, data, 0, data.length)}.
+	 * Equivalent to {@link #chunkedUploadAppend(String, long, byte[], int, int) chunkedUploadAppend(uploadId, uploadOffset, data, 0, data.length)}.
 	 */
 	public long chunkedUploadAppend(String uploadId, long uploadOffset, byte[] data) throws DbxException {
 		return chunkedUploadAppend(uploadId, uploadOffset, data, 0, data.length);
@@ -692,15 +621,11 @@ public final class DbxClient {
 	 * Append data to a chunked upload session.
 	 *
 	 * @param uploadId
-	 *            The identifier returned by {@link #chunkedUploadFirst} to
-	 *            identify the chunked upload session.
+	 *            The identifier returned by {@link #chunkedUploadFirst} to identify the chunked upload session.
 	 *
 	 * @param uploadOffset
-	 *            The current number of bytes uploaded to the chunked upload
-	 *            session. The server checks this value to make sure it is
-	 *            correct. If it is correct, the contents of {@code data} is
-	 *            appended and -1 is returned. If it is incorrect, the correct
-	 *            offset is returned.
+	 *            The current number of bytes uploaded to the chunked upload session. The server checks this value to make sure it is correct. If it is correct, the contents of {@code data} is
+	 *            appended and -1 is returned. If it is incorrect, the correct offset is returned.
 	 *
 	 * @param data
 	 *            The data to append.
@@ -709,12 +634,9 @@ public final class DbxClient {
 	 *            The start offset in {@code data} to read from.
 	 *
 	 * @param dataLength
-	 *            The number of bytes to read from {@code data}, starting from
-	 *            {@code dataOffset}.
+	 *            The number of bytes to read from {@code data}, starting from {@code dataOffset}.
 	 *
-	 * @return If everything goes correctly, returns {@code -1}. If the given
-	 *         {@code offset} didn't match the actual number of bytes in the
-	 *         chunked upload session, returns the correct number of bytes.
+	 * @return If everything goes correctly, returns {@code -1}. If the given {@code offset} didn't match the actual number of bytes in the chunked upload session, returns the correct number of bytes.
 	 *
 	 * @throws DbxException
 	 */
@@ -726,32 +648,23 @@ public final class DbxClient {
 	 * Append a chunk of data to a chunked upload session.
 	 *
 	 * @param uploadId
-	 *            The identifier returned by {@link #chunkedUploadFirst} to
-	 *            identify the chunked upload session.
+	 *            The identifier returned by {@link #chunkedUploadFirst} to identify the chunked upload session.
 	 *
 	 * @param uploadOffset
-	 *            The current number of bytes uploaded to the chunked upload
-	 *            session. The server checks this value to make sure it is
-	 *            correct. If it is correct, the contents of {@code data} is
-	 *            appended and -1 is returned. If it is incorrect, the correct
-	 *            offset is returned.
+	 *            The current number of bytes uploaded to the chunked upload session. The server checks this value to make sure it is correct. If it is correct, the contents of {@code data} is
+	 *            appended and -1 is returned. If it is incorrect, the correct offset is returned.
 	 *
 	 * @param chunkSize
 	 *            The size of the chunk.
 	 *
 	 * @param writer
-	 *            A callback that will be called when it's time to actually
-	 *            write out the body of the chunk.
+	 *            A callback that will be called when it's time to actually write out the body of the chunk.
 	 *
-	 * @return If everything goes correctly, returns {@code -1}. If the given
-	 *         {@code offset} didn't match the actual number of bytes in the
-	 *         chunked upload session, returns the correct number of bytes.
+	 * @return If everything goes correctly, returns {@code -1}. If the given {@code offset} didn't match the actual number of bytes in the chunked upload session, returns the correct number of bytes.
 	 *
 	 * @throws DbxException
 	 */
-	public <E extends Throwable> long chunkedUploadAppend(String uploadId,
-			long uploadOffset, long chunkSize, DbxStreamWriter<E> writer)
-			throws DbxException, E {
+	public <E extends Throwable> long chunkedUploadAppend(String uploadId, long uploadOffset, long chunkSize, DbxStreamWriter<E> writer) throws DbxException, E {
 		if (uploadId == null) {
 			throw new IllegalArgumentException("'uploadId' can't be null");
 		}
@@ -762,23 +675,17 @@ public final class DbxClient {
 			throw new IllegalArgumentException("'offset' can't be negative");
 		}
 
-		String[] params = { "upload_id", uploadId, "offset",
-				Long.toString(uploadOffset), };
-		HttpRequestor.Response response = chunkedUploadCommon(params,
-				chunkSize, writer);
+		String[] params = { "upload_id", uploadId, "offset", Long.toString(uploadOffset), };
+		HttpRequestor.Response response = chunkedUploadCommon(params, chunkSize, writer);
 		try {
 			ChunkedUploadState correctedState = chunkedUploadCheckForOffsetCorrection(response);
 			if (correctedState != null) {
 				if (!correctedState.uploadId.equals(uploadId)) {
-					throw new DbxException.BadResponse("uploadId mismatch: us="
-							+ jq(uploadId) + ", server="
-							+ jq(correctedState.uploadId));
+					throw new DbxException.BadResponse("uploadId mismatch: us=" + jq(uploadId) + ", server=" + jq(correctedState.uploadId));
 				}
 
 				if (correctedState.offset == uploadOffset) {
-					throw new DbxException.BadResponse(
-							"Corrected offset is same as given: "
-									+ uploadOffset);
+					throw new DbxException.BadResponse("Corrected offset is same as given: " + uploadOffset);
 				}
 
 				return correctedState.offset;
@@ -791,7 +698,7 @@ public final class DbxClient {
 
 			long expectedOffset = uploadOffset + chunkSize;
 			if (returnedState.offset != expectedOffset) {
-				throw new DbxException.BadResponse("Expected offset "+ expectedOffset + " bytes, but returned offset is " + returnedState.offset);
+				throw new DbxException.BadResponse("Expected offset " + expectedOffset + " bytes, but returned offset is " + returnedState.offset);
 			}
 
 			return -1;
@@ -801,22 +708,16 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Creates a file in the user's Dropbox at the given path, with file data
-	 * previously uploaded via {@link #chunkedUploadFirst} and
-	 * {@link #chunkedUploadAppend}.
+	 * Creates a file in the user's Dropbox at the given path, with file data previously uploaded via {@link #chunkedUploadFirst} and {@link #chunkedUploadAppend}.
 	 *
 	 * @param targetPath
-	 *            The path to the file on Dropbox (see {@link DbxPath}). If a
-	 *            file at that path already exists on Dropbox, then the
-	 *            {@code writeMode} parameter will determine what happens.
+	 *            The path to the file on Dropbox (see {@link DbxPath}). If a file at that path already exists on Dropbox, then the {@code writeMode} parameter will determine what happens.
 	 *
 	 * @param writeMode
-	 *            Determines what to do if there's already a file at the given
-	 *            {@code targetPath}.
+	 *            Determines what to do if there's already a file at the given {@code targetPath}.
 	 *
 	 * @param uploadId
-	 *            The identifier returned by {@link #chunkedUploadFirst} to
-	 *            identify the uploaded data.
+	 *            The identifier returned by {@link #chunkedUploadFirst} to identify the uploaded data.
 	 */
 	public DbxEntry.File chunkedUploadFinish(String targetPath, DbxWriteMode writeMode, String uploadId) throws DbxException {
 		DbxPath.checkArgNonRoot("targetPath", targetPath);
@@ -826,38 +727,31 @@ public final class DbxClient {
 		String[] params = { "upload_id", uploadId, };
 		params = LangUtil.arrayConcat(params, writeMode.params);
 
-		return doPost(host.content, apiPath, params, null,
-			new DbxRequestUtil.ResponseHandler<DbxEntry.File>() {
-				@Override
-				public DbxEntry.File handle(HttpRequestor.Response response)
-						throws DbxException {
-					if (response.statusCode != 200) {
-						throw DbxRequestUtil.unexpectedStatus(response);
-					}
-
-					DbxEntry entry = DbxRequestUtil.readJsonFromResponse(
-							DbxEntry.Reader, response.body);
-					if (entry instanceof DbxEntry.Folder) {
-						throw new DbxException.BadResponse(
-								"uploaded file, but server returned metadata entry for a folder");
-					}
-					return (DbxEntry.File) entry;
+		return doPost(host.content, apiPath, params, null, new DbxRequestUtil.ResponseHandler<DbxEntry.File>() {
+			@Override
+			public DbxEntry.File handle(HttpRequestor.Response response) throws DbxException {
+				if (response.statusCode != 200) {
+					throw DbxRequestUtil.unexpectedStatus(response);
 				}
+
+				DbxEntry entry = DbxRequestUtil.readJsonFromResponse(DbxEntry.Reader, response.body);
+				if (entry instanceof DbxEntry.Folder) {
+					throw new DbxException.BadResponse("uploaded file, but server returned metadata entry for a folder");
+				}
+				return (DbxEntry.File) entry;
 			}
-		);
+		});
 	}
 
 	/**
-	 * Similar to {@link #startUploadFile}, except always uses the chunked
-	 * upload API.
+	 * Similar to {@link #startUploadFile}, except always uses the chunked upload API.
 	 */
 	public Uploader startUploadFileChunked(String targetPath, DbxWriteMode writeMode, long numBytes) {
 		return startUploadFileChunked(ChunkedUploadChunkSize, targetPath, writeMode, numBytes);
 	}
 
 	/**
-	 * Similar to {@link #startUploadFile}, except always uses the chunked
-	 * upload API.
+	 * Similar to {@link #startUploadFile}, except always uses the chunked upload API.
 	 */
 	public Uploader startUploadFileChunked(int chunkSize, String targetPath, DbxWriteMode writeMode, long numBytes) {
 		DbxPath.checkArg("targetPath", targetPath);
@@ -869,8 +763,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Similar to {@link #uploadFile}, except always uses the chunked upload
-	 * API.
+	 * Similar to {@link #uploadFile}, except always uses the chunked upload API.
 	 */
 	public <E extends Throwable> DbxEntry.File uploadFileChunked(String targetPath, DbxWriteMode writeMode, long numBytes, DbxStreamWriter<E> writer) throws DbxException, E {
 		Uploader uploader = startUploadFileChunked(targetPath, writeMode, numBytes);
@@ -878,8 +771,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Similar to {@link #uploadFile}, except always uses the chunked upload
-	 * API.
+	 * Similar to {@link #uploadFile}, except always uses the chunked upload API.
 	 */
 	public <E extends Throwable> DbxEntry.File uploadFileChunked(int chunkSize, String targetPath, DbxWriteMode writeMode, long numBytes, DbxStreamWriter<E> writer) throws DbxException, E {
 		Uploader uploader = startUploadFileChunked(chunkSize, targetPath, writeMode, numBytes);
@@ -926,15 +818,12 @@ public final class DbxClient {
 						throw new IllegalStateException("'numBytes' is " + numBytes + " but you wrote " + body.uploadOffset + " bytes");
 					}
 				}
-				return DbxRequestUtil.runAndRetry(
-					3,
-					new DbxRequestUtil.RequestMaker<DbxEntry.File, RuntimeException>() {
-						@Override
-						public DbxEntry.File run() throws DbxException {
-							return chunkedUploadFinish(targetPath, writeMode, body.uploadId);
-						}
+				return DbxRequestUtil.runAndRetry(3, new DbxRequestUtil.RequestMaker<DbxEntry.File, RuntimeException>() {
+					@Override
+					public DbxEntry.File run() throws DbxException {
+						return chunkedUploadFinish(targetPath, writeMode, body.uploadId);
 					}
-				);
+				});
 			}
 		}
 
@@ -977,30 +866,23 @@ public final class DbxClient {
 			}
 
 			if (uploadId == null) {
-				uploadId = DbxRequestUtil.runAndRetry(
-					3,
-					new DbxRequestUtil.RequestMaker<String, RuntimeException>() {
-						@Override
-						public String run() throws DbxException {
-							return chunkedUploadFirst(chunk, 0,
-									chunkPos);
-						}
+				uploadId = DbxRequestUtil.runAndRetry(3, new DbxRequestUtil.RequestMaker<String, RuntimeException>() {
+					@Override
+					public String run() throws DbxException {
+						return chunkedUploadFirst(chunk, 0, chunkPos);
 					}
-				);
+				});
 				uploadOffset = chunkPos;
 			} else {
 				int arrayOffset = 0;
 				while (true) {
 					final int arrayOffsetFinal = arrayOffset;
-					long correctedOffset = DbxRequestUtil.runAndRetry(
-						3,
-						new DbxRequestUtil.RequestMaker<Long, RuntimeException>() {
-							@Override
-							public Long run() throws DbxException {
-								return chunkedUploadAppend(uploadId, uploadOffset, chunk, arrayOffsetFinal, chunkPos - arrayOffsetFinal);
-							}
+					long correctedOffset = DbxRequestUtil.runAndRetry(3, new DbxRequestUtil.RequestMaker<Long, RuntimeException>() {
+						@Override
+						public Long run() throws DbxException {
+							return chunkedUploadAppend(uploadId, uploadOffset, chunk, arrayOffsetFinal, chunkPos - arrayOffsetFinal);
 						}
-					);
+					});
 					long expectedOffset = uploadOffset + chunkPos;
 					if (correctedOffset == -1) {
 						// Everything went ok.
@@ -1052,10 +934,8 @@ public final class DbxClient {
 	}
 
 	/**
-	 * A DbxException wrapped inside an IOException. This is necessary because
-	 * sometimes we present an interface (such as OutputStream.write) that is
-	 * only declared to throw {@code IOException}, but we need to throw
-	 * {@code DbxException}.
+	 * A DbxException wrapped inside an IOException. This is necessary because sometimes we present an interface (such as OutputStream.write) that is only declared to throw {@code IOException}, but we
+	 * need to throw {@code DbxException}.
 	 */
 	public static final class IODbxException extends IOException {
 		private static final long serialVersionUID = 1L;
@@ -1068,19 +948,15 @@ public final class DbxClient {
 	}
 
 	/**
-	 * Returns metadata for all files and folders whose name matches the query
-	 * string.
+	 * Returns metadata for all files and folders whose name matches the query string.
 	 *
 	 * @param basePath
-	 *            The path to search under (recursively). Pass in {@code "/"} to
-	 *            search everything.
+	 *            The path to search under (recursively). Pass in {@code "/"} to search everything.
 	 * @param query
-	 *            A space-separated list of substrings to search for. A file
-	 *            matches only if it contains all the substrings.
+	 *            A space-separated list of substrings to search for. A file matches only if it contains all the substrings.
 	 * @return The list of metadata entries that match the search query.
 	 */
-	public List<DbxEntry> searchFileAndFolderNames(String basePath, String query)
-			throws DbxException {
+	public List<DbxEntry> searchFileAndFolderNames(String basePath, String query) throws DbxException {
 		DbxPath.checkArg("basePath", basePath);
 		if (query == null) {
 			throw new IllegalArgumentException("'query' can't be null");
@@ -1092,17 +968,15 @@ public final class DbxClient {
 		String apiPath = "1/search/auto" + basePath;
 		String[] params = { "query", query };
 
-		return doPost(host.api, apiPath, params, null,
-			new DbxRequestUtil.ResponseHandler<List<DbxEntry>>() {
-				@Override
-				public List<DbxEntry> handle(HttpRequestor.Response response) throws DbxException {
-					if (response.statusCode != 200) {
-						throw DbxRequestUtil.unexpectedStatus(response);
-					}
-					return DbxRequestUtil.readJsonFromResponse(JsonArrayReader.mk(DbxEntry.Reader), response.body);
+		return doPost(host.api, apiPath, params, null, new DbxRequestUtil.ResponseHandler<List<DbxEntry>>() {
+			@Override
+			public List<DbxEntry> handle(HttpRequestor.Response response) throws DbxException {
+				if (response.statusCode != 200) {
+					throw DbxRequestUtil.unexpectedStatus(response);
 				}
+				return DbxRequestUtil.readJsonFromResponse(JsonArrayReader.mk(DbxEntry.Reader), response.body);
 			}
-		);
+		});
 	}
 
 	/**
@@ -1113,29 +987,22 @@ public final class DbxClient {
 
 		String[] params = { "root", "auto", "path", path, };
 
-		return doPost(host.api, "1/fileops/create_folder", params, null,
-			new DbxRequestUtil.ResponseHandler<DbxEntry.Folder>() {
-				@Override
-				public DbxEntry.Folder handle(
-						HttpRequestor.Response response)
-						throws DbxException {
-					if (response.statusCode == 403) {
-						return null;
-					}
-					if (response.statusCode != 200) {
-						throw DbxRequestUtil.unexpectedStatus(response);
-					}
-					DbxEntry.Folder e = DbxRequestUtil
-							.readJsonFromResponse(DbxEntry.Folder.Reader,
-									response.body);
-					if (e == null) {
-						throw new DbxException.BadResponse(
-								"got deleted folder entry");
-					}
-					return e;
+		return doPost(host.api, "1/fileops/create_folder", params, null, new DbxRequestUtil.ResponseHandler<DbxEntry.Folder>() {
+			@Override
+			public DbxEntry.Folder handle(HttpRequestor.Response response) throws DbxException {
+				if (response.statusCode == 403) {
+					return null;
 				}
+				if (response.statusCode != 200) {
+					throw DbxRequestUtil.unexpectedStatus(response);
+				}
+				DbxEntry.Folder e = DbxRequestUtil.readJsonFromResponse(DbxEntry.Folder.Reader, response.body);
+				if (e == null) {
+					throw new DbxException.BadResponse("got deleted folder entry");
+				}
+				return e;
 			}
-		);
+		});
 	}
 
 	/**
@@ -1146,18 +1013,15 @@ public final class DbxClient {
 
 		String[] params = { "root", "auto", "path", path, };
 
-		doPost(host.api, "1/fileops/delete", params, null,
-			new DbxRequestUtil.ResponseHandler<Void>() {
-				@Override
-				public Void handle(HttpRequestor.Response response)
-						throws DbxException {
-					if (response.statusCode != 200) {
-						throw DbxRequestUtil.unexpectedStatus(response);
-					}
-					return null;
+		doPost(host.api, "1/fileops/delete", params, null, new DbxRequestUtil.ResponseHandler<Void>() {
+			@Override
+			public Void handle(HttpRequestor.Response response) throws DbxException {
+				if (response.statusCode != 200) {
+					throw DbxRequestUtil.unexpectedStatus(response);
 				}
+				return null;
 			}
-		);
+		});
 	}
 
 	// --------------------------------------------------------
@@ -1175,15 +1039,11 @@ public final class DbxClient {
 	}
 
 	/**
-	 * For uploading file content to Dropbox. Write stuff to the
-	 * {@link #getBody} stream.
+	 * For uploading file content to Dropbox. Write stuff to the {@link #getBody} stream.
 	 *
 	 * <p>
-	 * Don't call {@code close()} directly on the {@link #getBody}. Instead call
-	 * either call either {@link #finish} or {@link #close} to make sure the
-	 * stream and other resources are released. A safe idiom is to use the
-	 * object within a {@code try} block and put a call to {@link #close()} in
-	 * the {@code finally} block.
+	 * Don't call {@code close()} directly on the {@link #getBody}. Instead call either call either {@link #finish} or {@link #close} to make sure the stream and other resources are released. A safe
+	 * idiom is to use the object within a {@code try} block and put a call to {@link #close()} in the {@code finally} block.
 	 * </p>
 	 *
 	 * <pre>
@@ -1206,17 +1066,13 @@ public final class DbxClient {
 		public abstract void abort();
 
 		/**
-		 * Release the resources related to this {@code Uploader} instance. If
-		 * {@code close()} or {@link #abort()} has already been called, this
-		 * does nothing. If neither has been called, this is equivalent to
-		 * calling {@link #abort()}.
+		 * Release the resources related to this {@code Uploader} instance. If {@code close()} or {@link #abort()} has already been called, this does nothing. If neither has been called, this is
+		 * equivalent to calling {@link #abort()}.
 		 */
 		public abstract void close();
 
 		/**
-		 * When you're done writing the file contents to {@link #getBody}, call
-		 * this to indicate that you're done. This will actually finish the
-		 * underlying HTTP request and return the uploaded file's
+		 * When you're done writing the file contents to {@link #getBody}, call this to indicate that you're done. This will actually finish the underlying HTTP request and return the uploaded file's
 		 * {@link DbxEntry}.
 		 */
 		public abstract DbxEntry.File finish() throws DbxException;

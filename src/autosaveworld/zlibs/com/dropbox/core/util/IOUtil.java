@@ -48,7 +48,7 @@ public class IOUtil {
 
 	public static byte[] slurp(InputStream in, int byteLimit) throws IOException {
 		if (byteLimit < 0) {
-			throw new RuntimeException("'byteLimit' must be non-negative: "+ byteLimit);
+			throw new RuntimeException("'byteLimit' must be non-negative: " + byteLimit);
 		}
 
 		byte[] copyBuffer = slurpBuffer.get();

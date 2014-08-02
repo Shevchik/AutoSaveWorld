@@ -3,16 +3,14 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core.sym;
 import java.util.Arrays;
 
 /**
- * Generic implementation of PName used for "long" names, where long means that
- * its byte (UTF-8) representation is 13 bytes or more.
+ * Generic implementation of PName used for "long" names, where long means that its byte (UTF-8) representation is 13 bytes or more.
  */
 public final class NameN extends Name {
 	private final int q1, q2, q3, q4; // first four quads
 	private final int qlen; // total number of quads (4 + q.length)
 	private final int[] q;
 
-	NameN(String name, int hash, int q1, int q2, int q3, int q4, int[] quads,
-			int quadLen) {
+	NameN(String name, int hash, int q1, int q2, int q3, int q4, int[] quads, int quadLen) {
 		super(name, hash);
 		this.q1 = q1;
 		this.q2 = q2;
@@ -24,8 +22,7 @@ public final class NameN extends Name {
 
 	public static NameN construct(String name, int hash, int[] q, int qlen) {
 		/*
-		 * We have specialized implementations for shorter names, so let's not
-		 * allow runt instances here
+		 * We have specialized implementations for shorter names, so let's not allow runt instances here
 		 */
 		if (qlen < 4) {
 			throw new IllegalArgumentException();
@@ -81,25 +78,25 @@ public final class NameN extends Name {
 		}
 
 		switch (len) {
-		default:
-			return _equals2(quads);
-		case 8:
-			if (quads[7] != q[3]) {
-				return false;
-			}
-		case 7:
-			if (quads[6] != q[2]) {
-				return false;
-			}
-		case 6:
-			if (quads[5] != q[1]) {
-				return false;
-			}
-		case 5:
-			if (quads[4] != q[0]) {
-				return false;
-			}
-		case 4:
+			default:
+				return _equals2(quads);
+			case 8:
+				if (quads[7] != q[3]) {
+					return false;
+				}
+			case 7:
+				if (quads[6] != q[2]) {
+					return false;
+				}
+			case 6:
+				if (quads[5] != q[1]) {
+					return false;
+				}
+			case 5:
+				if (quads[4] != q[0]) {
+					return false;
+				}
+			case 4:
 		}
 		return true;
 	}

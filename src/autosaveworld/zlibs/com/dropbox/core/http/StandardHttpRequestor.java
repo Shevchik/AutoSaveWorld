@@ -9,21 +9,17 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * {@link HttpRequestor} implementation that uses Java's standard library
- * {@link HttpsURLConnection}. If you just want a connection with the default
- * settings, use the predefined {@link #Instance}.
+ * {@link HttpRequestor} implementation that uses Java's standard library {@link HttpsURLConnection}. If you just want a connection with the default settings, use the predefined {@link #Instance}.
  *
  * <p>
- * If you want to customize the way the connection is configured, create a
- * subclass that overrides {@link #configureConnection}.
+ * If you want to customize the way the connection is configured, create a subclass that overrides {@link #configureConnection}.
  * </p>
  */
 public class StandardHttpRequestor extends HttpRequestor {
 	private final Proxy proxy;
 
 	/**
-	 * Creates an instance that uses a direct HTTP connection (as opposed to
-	 * using a proxy).
+	 * Creates an instance that uses a direct HTTP connection (as opposed to using a proxy).
 	 */
 	public StandardHttpRequestor() {
 		this(Proxy.NO_PROXY);
@@ -37,27 +33,21 @@ public class StandardHttpRequestor extends HttpRequestor {
 	}
 
 	/**
-	 * We pass this value to {@link HttpsURLConnection#setConnectTimeout}. You
-	 * can change this setting by creating a subclass and overriding
-	 * {@link #configureConnection}.
+	 * We pass this value to {@link HttpsURLConnection#setConnectTimeout}. You can change this setting by creating a subclass and overriding {@link #configureConnection}.
 	 */
 	public static final int DefaultConnectTimeoutMillis = 35 * 1000;
 
 	/**
-	 * We pass this value to {@link HttpsURLConnection#setReadTimeout}. You can
-	 * change this setting by creating a subclass and overriding
-	 * {@link #configureConnection}.
+	 * We pass this value to {@link HttpsURLConnection#setReadTimeout}. You can change this setting by creating a subclass and overriding {@link #configureConnection}.
 	 */
 	public static final int DefaultReadTimeoutMillis = 35 * 1000;
 
 	/**
-	 * A thread-safe instance of {@code StandardHttpRequestor} that connects
-	 * directly (as opposed to using a proxy).
+	 * A thread-safe instance of {@code StandardHttpRequestor} that connects directly (as opposed to using a proxy).
 	 */
 	public static final StandardHttpRequestor Instance = new StandardHttpRequestor();
 
-	private static Response toResponse(HttpsURLConnection conn)
-			throws IOException {
+	private static Response toResponse(HttpsURLConnection conn) throws IOException {
 		int responseCode = conn.getResponseCode();
 		InputStream bodyStream;
 		if (responseCode >= 400) {
@@ -65,13 +55,11 @@ public class StandardHttpRequestor extends HttpRequestor {
 		} else {
 			bodyStream = conn.getInputStream();
 		}
-		return new Response(conn.getResponseCode(), bodyStream,
-				conn.getHeaderFields());
+		return new Response(conn.getResponseCode(), bodyStream, conn.getHeaderFields());
 	}
 
 	@Override
-	public Response doGet(String url, Iterable<Header> headers)
-			throws IOException {
+	public Response doGet(String url, Iterable<Header> headers) throws IOException {
 		HttpsURLConnection conn = prepRequest(url, headers);
 		conn.setRequestMethod("GET");
 		conn.connect();
@@ -79,29 +67,24 @@ public class StandardHttpRequestor extends HttpRequestor {
 	}
 
 	@Override
-	public Uploader startPost(String url, Iterable<Header> headers)
-			throws IOException {
+	public Uploader startPost(String url, Iterable<Header> headers) throws IOException {
 		HttpsURLConnection conn = prepRequest(url, headers);
 		conn.setRequestMethod("POST");
 		return new Uploader(conn);
 	}
 
 	@Override
-	public Uploader startPut(String url, Iterable<Header> headers)
-			throws IOException {
+	public Uploader startPut(String url, Iterable<Header> headers) throws IOException {
 		HttpsURLConnection conn = prepRequest(url, headers);
 		conn.setRequestMethod("PUT");
 		return new Uploader(conn);
 	}
 
 	/**
-	 * Can be overridden to configure the underlying {@link HttpsURLConnection}
-	 * used to make network requests. If you override this method, you should
-	 * probably call {@code super.configureConnection(conn)} in your overridden
-	 * method.
+	 * Can be overridden to configure the underlying {@link HttpsURLConnection} used to make network requests. If you override this method, you should probably call
+	 * {@code super.configureConnection(conn)} in your overridden method.
 	 */
-	protected void configureConnection(HttpsURLConnection conn)
-			throws IOException {
+	protected void configureConnection(HttpsURLConnection conn) throws IOException {
 	}
 
 	private static class Uploader extends HttpRequestor.Uploader {
@@ -113,8 +96,7 @@ public class StandardHttpRequestor extends HttpRequestor {
 			this.conn = conn;
 		}
 
-		private static OutputStream getOutputStream(HttpsURLConnection conn)
-				throws IOException {
+		private static OutputStream getOutputStream(HttpsURLConnection conn) throws IOException {
 			conn.setDoOutput(true);
 			return conn.getOutputStream();
 		}
@@ -122,8 +104,7 @@ public class StandardHttpRequestor extends HttpRequestor {
 		@Override
 		public void abort() {
 			if (conn == null) {
-				throw new IllegalStateException(
-						"Can't abort().  Uploader already closed.");
+				throw new IllegalStateException("Can't abort().  Uploader already closed.");
 			}
 			this.conn.disconnect();
 		}
@@ -140,19 +121,16 @@ public class StandardHttpRequestor extends HttpRequestor {
 		public Response finish() throws IOException {
 			HttpsURLConnection conn = this.conn;
 			if (conn == null) {
-				throw new IllegalStateException(
-						"Can't finish().  Uploader already closed.");
+				throw new IllegalStateException("Can't finish().  Uploader already closed.");
 			}
 			this.conn = null;
 			return toResponse(conn);
 		}
 	}
 
-	private HttpsURLConnection prepRequest(String url, Iterable<Header> headers)
-			throws IOException {
+	private HttpsURLConnection prepRequest(String url, Iterable<Header> headers) throws IOException {
 		URL urlObject = new URL(url);
-		HttpsURLConnection conn = (HttpsURLConnection) urlObject
-				.openConnection(this.proxy);
+		HttpsURLConnection conn = (HttpsURLConnection) urlObject.openConnection(this.proxy);
 
 		SSLConfig.apply(conn);
 		conn.setConnectTimeout(DefaultConnectTimeoutMillis);

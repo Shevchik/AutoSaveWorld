@@ -6,21 +6,17 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Object that encapsulates Location information used for reporting parsing (or
- * potentially generation) errors, as well as current location within input
- * streams.
+ * Object that encapsulates Location information used for reporting parsing (or potentially generation) errors, as well as current location within input streams.
  */
 public class JsonLocation implements java.io.Serializable // as per
-															// [JACKSON-168]
+// [JACKSON-168]
 {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Shared immutable "N/A location" that can be returned to indicate that no
-	 * location information is available
+	 * Shared immutable "N/A location" that can be returned to indicate that no location information is available
 	 */
-	public final static JsonLocation NA = new JsonLocation("N/A", -1L, -1L, -1,
-			-1);
+	public final static JsonLocation NA = new JsonLocation("N/A", -1L, -1L, -1, -1);
 
 	final long _totalBytes;
 	final long _totalChars;
@@ -31,23 +27,19 @@ public class JsonLocation implements java.io.Serializable // as per
 	/**
 	 * Displayable description for input source: file path, URL.
 	 * <p>
-	 * NOTE: <code>transient</code> since 2.2 so that Location itself is
-	 * Serializable.
+	 * NOTE: <code>transient</code> since 2.2 so that Location itself is Serializable.
 	 */
 	final transient Object _sourceRef;
 
 	public JsonLocation(Object srcRef, long totalChars, int lineNr, int colNr) {
 		/*
-		 * Unfortunately, none of legal encodings are straight single-byte
-		 * encodings. Could determine offset for UTF-16/UTF-32, but the most
-		 * important one is UTF-8... so for now, we'll just not report any real
-		 * byte count
+		 * Unfortunately, none of legal encodings are straight single-byte encodings. Could determine offset for UTF-16/UTF-32, but the most important one is UTF-8... so for now, we'll just not report
+		 * any real byte count
 		 */
 		this(srcRef, -1L, totalChars, lineNr, colNr);
 	}
 
-	public JsonLocation(Object sourceRef, long totalBytes, long totalChars,
-			int lineNr, int columnNr) {
+	public JsonLocation(Object sourceRef, long totalBytes, long totalChars, int lineNr, int columnNr) {
 		_sourceRef = sourceRef;
 		_totalBytes = totalBytes;
 		_totalChars = totalChars;
@@ -56,11 +48,8 @@ public class JsonLocation implements java.io.Serializable // as per
 	}
 
 	/**
-	 * Reference to the original resource being read, if one available. For
-	 * example, when a parser has been constructed by passing a
-	 * {@link java.io.File} instance, this method would return that File. Will
-	 * return null if no such reference is available, for example when
-	 * {@link java.io.InputStream} was used to construct the parser instance.
+	 * Reference to the original resource being read, if one available. For example, when a parser has been constructed by passing a {@link java.io.File} instance, this method would return that File.
+	 * Will return null if no such reference is available, for example when {@link java.io.InputStream} was used to construct the parser instance.
 	 */
 	public Object getSourceRef() {
 		return _sourceRef;
@@ -81,16 +70,14 @@ public class JsonLocation implements java.io.Serializable // as per
 	}
 
 	/**
-	 * @return Character offset within underlying stream, reader or writer, if
-	 *         available; -1 if not.
+	 * @return Character offset within underlying stream, reader or writer, if available; -1 if not.
 	 */
 	public long getCharOffset() {
 		return _totalChars;
 	}
 
 	/**
-	 * @return Byte offset within underlying stream, reader or writer, if
-	 *         available; -1 if not.
+	 * @return Byte offset within underlying stream, reader or writer, if available; -1 if not.
 	 */
 	public long getByteOffset() {
 		return _totalBytes;
@@ -144,9 +131,6 @@ public class JsonLocation implements java.io.Serializable // as per
 			return false;
 		}
 
-		return (_lineNr == otherLoc._lineNr)
-				&& (_columnNr == otherLoc._columnNr)
-				&& (_totalChars == otherLoc._totalChars)
-				&& (getByteOffset() == otherLoc.getByteOffset());
+		return (_lineNr == otherLoc._lineNr) && (_columnNr == otherLoc._columnNr) && (_totalChars == otherLoc._totalChars) && (getByteOffset() == otherLoc.getByteOffset());
 	}
 }

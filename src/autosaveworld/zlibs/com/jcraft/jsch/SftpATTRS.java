@@ -295,8 +295,7 @@ public class SftpATTRS {
 	}
 
 	private boolean isType(int mask) {
-		return (flags & SSH_FILEXFER_ATTR_PERMISSIONS) != 0
-				&& (permissions & S_IFMT) == mask;
+		return (flags & SSH_FILEXFER_ATTR_PERMISSIONS) != 0 && (permissions & S_IFMT) == mask;
 	}
 
 	public boolean isReg() {
@@ -361,17 +360,11 @@ public class SftpATTRS {
 
 	@Override
 	public String toString() {
-		return (getPermissionsString() + " " + getUId() + " " + getGId() + " "
-				+ getSize() + " " + getMtimeString());
+		return (getPermissionsString() + " " + getUId() + " " + getGId() + " " + getSize() + " " + getMtimeString());
 	}
 	/*
-	 * public String toString(){ return (((flags&SSH_FILEXFER_ATTR_SIZE)!=0) ?
-	 * ("size:"+size+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_UIDGID)!=0) ?
-	 * ("uid:"+uid+",gid:"+gid+" ") : "")+
-	 * (((flags&SSH_FILEXFER_ATTR_PERMISSIONS)!=0) ?
-	 * ("permissions:0x"+Integer.toHexString(permissions)+" ") : "")+
-	 * (((flags&SSH_FILEXFER_ATTR_ACMODTIME)!=0) ?
-	 * ("atime:"+atime+",mtime:"+mtime+" ") : "")+
-	 * (((flags&SSH_FILEXFER_ATTR_EXTENDED)!=0) ? ("extended:?"+" ") : ""); }
+	 * public String toString(){ return (((flags&SSH_FILEXFER_ATTR_SIZE)!=0) ? ("size:"+size+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_UIDGID)!=0) ? ("uid:"+uid+",gid:"+gid+" ") : "")+
+	 * (((flags&SSH_FILEXFER_ATTR_PERMISSIONS)!=0) ? ("permissions:0x"+Integer.toHexString(permissions)+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_ACMODTIME)!=0) ? ("atime:"+atime+",mtime:"+mtime+" ") :
+	 * "")+ (((flags&SSH_FILEXFER_ATTR_EXTENDED)!=0) ? ("extended:?"+" ") : ""); }
 	 */
 }

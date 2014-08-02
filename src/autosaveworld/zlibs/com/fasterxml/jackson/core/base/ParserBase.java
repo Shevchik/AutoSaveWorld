@@ -19,14 +19,11 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;
 
 /**
- * Intermediate base class used by all Jackson {@link JsonParser}
- * implementations. Contains most common things that are independent of actual
- * underlying input source.
+ * Intermediate base class used by all Jackson {@link JsonParser} implementations. Contains most common things that are independent of actual underlying input source.
  */
 public abstract class ParserBase extends ParserMinimalBase {
 	/*
-	 * /********************************************************** /* Generic
-	 * I/O state /**********************************************************
+	 * /********************************************************** /* Generic I/O state /**********************************************************
 	 */
 
 	/**
@@ -35,15 +32,12 @@ public abstract class ParserBase extends ParserMinimalBase {
 	final protected IOContext _ioContext;
 
 	/**
-	 * Flag that indicates whether parser is closed or not. Gets set when parser
-	 * is either closed by explicit call ({@link #close}) or when end-of-input
-	 * is reached.
+	 * Flag that indicates whether parser is closed or not. Gets set when parser is either closed by explicit call ({@link #close}) or when end-of-input is reached.
 	 */
 	protected boolean _closed;
 
 	/*
-	 * /********************************************************** /* Current
-	 * input data /**********************************************************
+	 * /********************************************************** /* Current input data /**********************************************************
 	 */
 
 	// Note: type of actual buffer depends on sub-class, can't include
@@ -59,43 +53,34 @@ public abstract class ParserBase extends ParserMinimalBase {
 	protected int _inputEnd = 0;
 
 	/*
-	 * /********************************************************** /* Current
-	 * input location information
-	 * /**********************************************************
+	 * /********************************************************** /* Current input location information /**********************************************************
 	 */
 
 	/**
-	 * Number of characters/bytes that were contained in previous blocks (blocks
-	 * that were already processed prior to the current buffer).
+	 * Number of characters/bytes that were contained in previous blocks (blocks that were already processed prior to the current buffer).
 	 */
 	protected long _currInputProcessed = 0L;
 
 	/**
-	 * Current row location of current point in input buffer, starting from 1,
-	 * if available.
+	 * Current row location of current point in input buffer, starting from 1, if available.
 	 */
 	protected int _currInputRow = 1;
 
 	/**
-	 * Current index of the first character of the current row in input buffer.
-	 * Needed to calculate column position, if necessary; benefit of not having
-	 * column itself is that this only has to be updated once per line.
+	 * Current index of the first character of the current row in input buffer. Needed to calculate column position, if necessary; benefit of not having column itself is that this only has to be
+	 * updated once per line.
 	 */
 	protected int _currInputRowStart = 0;
 
 	/*
-	 * /********************************************************** /*
-	 * Information about starting location of event /* Reader is pointing to;
-	 * updated on-demand
+	 * /********************************************************** /* Information about starting location of event /* Reader is pointing to; updated on-demand
 	 * /**********************************************************
 	 */
 
 	// // // Location info at point when current token was started
 
 	/**
-	 * Total number of bytes/characters read before start of current token. For
-	 * big (gigabyte-sized) sizes are possible, needs to be long, unlike
-	 * pointers and sizes related to in-memory buffers.
+	 * Total number of bytes/characters read before start of current token. For big (gigabyte-sized) sizes are possible, needs to be long, unlike pointers and sizes related to in-memory buffers.
 	 */
 	protected long _tokenInputTotal = 0;
 
@@ -105,73 +90,55 @@ public abstract class ParserBase extends ParserMinimalBase {
 	protected int _tokenInputRow = 1;
 
 	/**
-	 * Column on input row that current token starts; 0-based (although in the
-	 * end it'll be converted to 1-based)
+	 * Column on input row that current token starts; 0-based (although in the end it'll be converted to 1-based)
 	 */
 	protected int _tokenInputCol = 0;
 
 	/*
-	 * /********************************************************** /* Parsing
-	 * state /**********************************************************
+	 * /********************************************************** /* Parsing state /**********************************************************
 	 */
 
 	/**
-	 * Information about parser context, context in which the next token is to
-	 * be parsed (root, array, object).
+	 * Information about parser context, context in which the next token is to be parsed (root, array, object).
 	 */
 	protected JsonReadContext _parsingContext;
 
 	/**
-	 * Secondary token related to the next token after current one; used if its
-	 * type is known. This may be value token that follows FIELD_NAME, for
-	 * example.
+	 * Secondary token related to the next token after current one; used if its type is known. This may be value token that follows FIELD_NAME, for example.
 	 */
 	protected JsonToken _nextToken;
 
 	/*
-	 * /********************************************************** /* Buffer(s)
-	 * for local name(s) and text content
-	 * /**********************************************************
+	 * /********************************************************** /* Buffer(s) for local name(s) and text content /**********************************************************
 	 */
 
 	/**
-	 * Buffer that contains contents of String values, including field names if
-	 * necessary (name split across boundary, contains escape sequence, or
-	 * access needed to char array)
+	 * Buffer that contains contents of String values, including field names if necessary (name split across boundary, contains escape sequence, or access needed to char array)
 	 */
 	protected final TextBuffer _textBuffer;
 
 	/**
-	 * Temporary buffer that is needed if field name is accessed using
-	 * {@link #getTextCharacters} method (instead of String returning
-	 * alternatives)
+	 * Temporary buffer that is needed if field name is accessed using {@link #getTextCharacters} method (instead of String returning alternatives)
 	 */
 	protected char[] _nameCopyBuffer = null;
 
 	/**
-	 * Flag set to indicate whether the field name is available from the name
-	 * copy buffer or not (in addition to its String representation being
-	 * available via read context)
+	 * Flag set to indicate whether the field name is available from the name copy buffer or not (in addition to its String representation being available via read context)
 	 */
 	protected boolean _nameCopied = false;
 
 	/**
-	 * ByteArrayBuilder is needed if 'getBinaryValue' is called. If so, we
-	 * better reuse it for remainder of content.
+	 * ByteArrayBuilder is needed if 'getBinaryValue' is called. If so, we better reuse it for remainder of content.
 	 */
 	protected ByteArrayBuilder _byteArrayBuilder = null;
 
 	/**
-	 * We will hold on to decoded binary data, for duration of current event, so
-	 * that multiple calls to {@link #getBinaryValue} will not need to decode
-	 * data more than once.
+	 * We will hold on to decoded binary data, for duration of current event, so that multiple calls to {@link #getBinaryValue} will not need to decode data more than once.
 	 */
 	protected byte[] _binaryValue;
 
 	/*
-	 * /********************************************************** /* Constants
-	 * and fields of former 'JsonNumericParserBase'
-	 * /**********************************************************
+	 * /********************************************************** /* Constants and fields of former 'JsonNumericParserBase' /**********************************************************
 	 */
 
 	final protected static int NR_UNKNOWN = 0;
@@ -225,8 +192,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	// for efficiency
 
 	/**
-	 * Bitfield that indicates which numeric representations have been
-	 * calculated for the current type
+	 * Bitfield that indicates which numeric representations have been calculated for the current type
 	 */
 	protected int _numTypesValid = NR_UNKNOWN;
 
@@ -247,8 +213,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	// And then other information about value itself
 
 	/**
-	 * Flag that indicates whether numeric value has a negative value. That is,
-	 * whether its textual representation starts with minus character.
+	 * Flag that indicates whether numeric value has a negative value. That is, whether its textual representation starts with minus character.
 	 */
 	protected boolean _numberNegative;
 
@@ -258,20 +223,17 @@ public abstract class ParserBase extends ParserMinimalBase {
 	protected int _intLength;
 
 	/**
-	 * Length of the fractional part (not including decimal point or exponent),
-	 * in characters. Not used for pure integer values.
+	 * Length of the fractional part (not including decimal point or exponent), in characters. Not used for pure integer values.
 	 */
 	protected int _fractLength;
 
 	/**
-	 * Length of the exponent part of the number, if any, not including 'e'
-	 * marker or sign, just digits. Not used for pure integer values.
+	 * Length of the exponent part of the number, if any, not including 'e' marker or sign, just digits. Not used for pure integer values.
 	 */
 	protected int _expLength;
 
 	/*
-	 * /********************************************************** /* Life-cycle
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle /**********************************************************
 	 */
 
 	protected ParserBase(IOContext ctxt, int features) {
@@ -279,8 +241,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		_features = features;
 		_ioContext = ctxt;
 		_textBuffer = ctxt.constructTextBuffer();
-		DupDetector dups = Feature.STRICT_DUPLICATE_DETECTION
-				.enabledIn(features) ? DupDetector.rootDetector(this) : null;
+		DupDetector dups = Feature.STRICT_DUPLICATE_DETECTION.enabledIn(features) ? DupDetector.rootDetector(this) : null;
 		_parsingContext = JsonReadContext.createRootContext(dups);
 	}
 
@@ -290,19 +251,16 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* JsonParser
-	 * impl /**********************************************************
+	 * /********************************************************** /* JsonParser impl /**********************************************************
 	 */
 
 	/**
-	 * Method that can be called to get the name associated with the current
-	 * event.
+	 * Method that can be called to get the name associated with the current event.
 	 */
 	@Override
 	public String getCurrentName() throws IOException {
 		// [JACKSON-395]: start markers require information from parent
-		if (_currToken == JsonToken.START_OBJECT
-				|| _currToken == JsonToken.START_ARRAY) {
+		if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
 			JsonReadContext parent = _parsingContext.getParent();
 			return parent.getCurrentName();
 		}
@@ -313,13 +271,11 @@ public abstract class ParserBase extends ParserMinimalBase {
 	public void overrideCurrentName(String name) {
 		// Simple, but need to look for START_OBJECT/ARRAY's "off-by-one" thing:
 		JsonReadContext ctxt = _parsingContext;
-		if (_currToken == JsonToken.START_OBJECT
-				|| _currToken == JsonToken.START_ARRAY) {
+		if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
 			ctxt = ctxt.getParent();
 		}
 		/*
-		 * 24-Sep-2013, tatu: Unfortunate, but since we did not expose
-		 * exceptions, need to wrap this here
+		 * 24-Sep-2013, tatu: Unfortunate, but since we did not expose exceptions, need to wrap this here
 		 */
 		try {
 			ctxt.setCurrentName(name);
@@ -353,33 +309,26 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/**
-	 * Method that return the <b>starting</b> location of the current token;
-	 * that is, position of the first character from input that starts the
-	 * current token.
+	 * Method that return the <b>starting</b> location of the current token; that is, position of the first character from input that starts the current token.
 	 */
 	@Override
 	public JsonLocation getTokenLocation() {
-		return new JsonLocation(_ioContext.getSourceReference(), -1L,
-				getTokenCharacterOffset(), // bytes, chars
+		return new JsonLocation(_ioContext.getSourceReference(), -1L, getTokenCharacterOffset(), // bytes, chars
 				getTokenLineNr(), getTokenColumnNr());
 	}
 
 	/**
-	 * Method that returns location of the last processed character; usually for
-	 * error reporting purposes
+	 * Method that returns location of the last processed character; usually for error reporting purposes
 	 */
 	@Override
 	public JsonLocation getCurrentLocation() {
 		int col = _inputPtr - _currInputRowStart + 1; // 1-based
-		return new JsonLocation(_ioContext.getSourceReference(), -1L,
-				_currInputProcessed + _inputPtr, // bytes, chars
+		return new JsonLocation(_ioContext.getSourceReference(), -1L, _currInputProcessed + _inputPtr, // bytes, chars
 				_currInputRow, col);
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access to token information, text and similar
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access to token information, text and similar /**********************************************************
 	 */
 
 	@Override
@@ -400,9 +349,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * low-level accessors
-	 * /**********************************************************
+	 * /********************************************************** /* Public low-level accessors /**********************************************************
 	 */
 
 	public long getTokenCharacterOffset() {
@@ -421,9 +368,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Low-level
-	 * reading, other
-	 * /**********************************************************
+	 * /********************************************************** /* Low-level reading, other /**********************************************************
 	 */
 
 	protected final void loadMoreGuaranteed() throws IOException {
@@ -433,9 +378,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Abstract
-	 * methods needed from sub-classes
-	 * /**********************************************************
+	 * /********************************************************** /* Abstract methods needed from sub-classes /**********************************************************
 	 */
 
 	protected abstract boolean loadMore() throws IOException;
@@ -445,15 +388,12 @@ public abstract class ParserBase extends ParserMinimalBase {
 	protected abstract void _closeInput() throws IOException;
 
 	/*
-	 * /********************************************************** /* Low-level
-	 * reading, other
-	 * /**********************************************************
+	 * /********************************************************** /* Low-level reading, other /**********************************************************
 	 */
 
 	/**
-	 * Method called to release internal buffers owned by the base reader. This
-	 * may be called along with {@link #_closeInput} (for example, when
-	 * explicitly closing this reader instance), or separately (if need be).
+	 * Method called to release internal buffers owned by the base reader. This may be called along with {@link #_closeInput} (for example, when explicitly closing this reader instance), or separately
+	 * (if need be).
 	 */
 	protected void _releaseBuffers() throws IOException {
 		_textBuffer.releaseBuffers();
@@ -465,17 +405,12 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/**
-	 * Method called when an EOF is encountered between tokens. If so, it may be
-	 * a legitimate EOF, but only iff there is no open non-root context.
+	 * Method called when an EOF is encountered between tokens. If so, it may be a legitimate EOF, but only iff there is no open non-root context.
 	 */
 	@Override
 	protected void _handleEOF() throws JsonParseException {
 		if (!_parsingContext.inRoot()) {
-			_reportInvalidEOF(": expected close marker for "
-					+ _parsingContext.getTypeDesc()
-					+ " (from "
-					+ _parsingContext.getStartLocation(_ioContext
-							.getSourceReference()) + ")");
+			_reportInvalidEOF(": expected close marker for " + _parsingContext.getTypeDesc() + " (from " + _parsingContext.getStartLocation(_ioContext.getSourceReference()) + ")");
 		}
 	}
 
@@ -488,26 +423,16 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * Internal/package methods: Error reporting
-	 * /**********************************************************
+	 * /********************************************************** /* Internal/package methods: Error reporting /**********************************************************
 	 */
 
-	protected void _reportMismatchedEndMarker(int actCh, char expCh)
-			throws JsonParseException {
-		String startDesc = ""
-				+ _parsingContext.getStartLocation(_ioContext
-						.getSourceReference());
-		_reportError("Unexpected close marker '" + ((char) actCh)
-				+ "': expected '" + expCh + "' (for "
-				+ _parsingContext.getTypeDesc() + " starting at " + startDesc
-				+ ")");
+	protected void _reportMismatchedEndMarker(int actCh, char expCh) throws JsonParseException {
+		String startDesc = "" + _parsingContext.getStartLocation(_ioContext.getSourceReference());
+		_reportError("Unexpected close marker '" + ((char) actCh) + "': expected '" + expCh + "' (for " + _parsingContext.getTypeDesc() + " starting at " + startDesc + ")");
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * Internal/package methods: shared/reusable builders
-	 * /**********************************************************
+	 * /********************************************************** /* Internal/package methods: shared/reusable builders /**********************************************************
 	 */
 
 	public ByteArrayBuilder _getByteArrayBuilder() {
@@ -520,15 +445,12 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Methods
-	 * from former JsonNumericParserBase
-	 * /**********************************************************
+	 * /********************************************************** /* Methods from former JsonNumericParserBase /**********************************************************
 	 */
 
 	// // // Life-cycle of number-parsing
 
-	protected final JsonToken reset(boolean negative, int intLen, int fractLen,
-			int expLen) {
+	protected final JsonToken reset(boolean negative, int intLen, int fractLen, int expLen) {
 		if (fractLen < 1 && expLen < 1) { // integer
 			return resetInt(negative, intLen);
 		}
@@ -544,8 +466,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		return JsonToken.VALUE_NUMBER_INT;
 	}
 
-	protected final JsonToken resetFloat(boolean negative, int intLen,
-			int fractLen, int expLen) {
+	protected final JsonToken resetFloat(boolean negative, int intLen, int fractLen, int expLen) {
 		_numberNegative = negative;
 		_intLength = intLen;
 		_fractLength = fractLen;
@@ -562,9 +483,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Numeric
-	 * accessors of public API
-	 * /**********************************************************
+	 * /********************************************************** /* Numeric accessors of public API /**********************************************************
 	 */
 
 	@Override
@@ -588,8 +507,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		}
 
 		/*
-		 * And then floating point types. But here optimal type needs to be big
-		 * decimal, to avoid losing any data?
+		 * And then floating point types. But here optimal type needs to be big decimal, to avoid losing any data?
 		 */
 		if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
 			return _numberBigDecimal;
@@ -616,10 +534,8 @@ public abstract class ParserBase extends ParserMinimalBase {
 		}
 
 		/*
-		 * And then floating point types. Here optimal type needs to be big
-		 * decimal, to avoid losing any data? However... using BD is slow, so
-		 * let's allow returning double as type if no explicit call has been
-		 * made to access data as BD?
+		 * And then floating point types. Here optimal type needs to be big decimal, to avoid losing any data? However... using BD is slow, so let's allow returning double as type if no explicit call
+		 * has been made to access data as BD?
 		 */
 		if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
 			return NumberType.BIG_DECIMAL;
@@ -670,13 +586,10 @@ public abstract class ParserBase extends ParserMinimalBase {
 	public float getFloatValue() throws IOException {
 		double value = getDoubleValue();
 		/*
-		 * 22-Jan-2009, tatu: Bounds/range checks would be tricky here, so let's
-		 * not bother even trying...
+		 * 22-Jan-2009, tatu: Bounds/range checks would be tricky here, so let's not bother even trying...
 		 */
 		/*
-		 * if (value < -Float.MAX_VALUE || value > MAX_FLOAT_D) {
-		 * _reportError("Numeric value ("
-		 * +getText()+") out of range of Java float"); }
+		 * if (value < -Float.MAX_VALUE || value > MAX_FLOAT_D) { _reportError("Numeric value (" +getText()+") out of range of Java float"); }
 		 */
 		return (float) value;
 	}
@@ -708,20 +621,15 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Conversion
-	 * from textual to numeric representation
-	 * /**********************************************************
+	 * /********************************************************** /* Conversion from textual to numeric representation /**********************************************************
 	 */
 
 	/**
-	 * Method that will parse actual numeric value out of a syntactically valid
-	 * number value. Type it will parse into depends on whether it is a floating
-	 * point number, as well as its magnitude: smallest legal type (of ones
-	 * available) is used for efficiency.
+	 * Method that will parse actual numeric value out of a syntactically valid number value. Type it will parse into depends on whether it is a floating point number, as well as its magnitude:
+	 * smallest legal type (of ones available) is used for efficiency.
 	 *
 	 * @param expType
-	 *            Numeric type that we will immediately need, if any; mostly
-	 *            necessary to optimize handling of floating point numbers
+	 *            Numeric type that we will immediately need, if any; mostly necessary to optimize handling of floating point numbers
 	 */
 	protected void _parseNumericValue(int expType) throws IOException {
 		// Int or float?
@@ -771,17 +679,13 @@ public abstract class ParserBase extends ParserMinimalBase {
 			_parseSlowFloat(expType);
 			return;
 		}
-		_reportError("Current token (" + _currToken
-				+ ") not numeric, can not use numeric value accessors");
+		_reportError("Current token (" + _currToken + ") not numeric, can not use numeric value accessors");
 	}
 
 	private void _parseSlowFloat(int expType) throws IOException {
 		/*
-		 * Nope: floating point. Here we need to be careful to get optimal
-		 * parsing strategy: choice is between accurate but slow (BigDecimal)
-		 * and lossy but fast (Double). For now let's only use BD when
-		 * explicitly requested -- it can still be constructed correctly at any
-		 * point since we do retain textual representation
+		 * Nope: floating point. Here we need to be careful to get optimal parsing strategy: choice is between accurate but slow (BigDecimal) and lossy but fast (Double). For now let's only use BD
+		 * when explicitly requested -- it can still be constructed correctly at any point since we do retain textual representation
 		 */
 		try {
 			if (expType == NR_BIGDECIMAL) {
@@ -794,14 +698,11 @@ public abstract class ParserBase extends ParserMinimalBase {
 			}
 		} catch (NumberFormatException nex) {
 			// Can this ever occur? Due to overflow, maybe?
-			_wrapError(
-					"Malformed numeric value '"
-							+ _textBuffer.contentsAsString() + "'", nex);
+			_wrapError("Malformed numeric value '" + _textBuffer.contentsAsString() + "'", nex);
 		}
 	}
 
-	private void _parseSlowInt(int expType, char[] buf, int offset, int len)
-			throws IOException {
+	private void _parseSlowInt(int expType, char[] buf, int offset, int len) throws IOException {
 		String numStr = _textBuffer.contentsAsString();
 		try {
 			// [JACKSON-230] Some long cases still...
@@ -822,8 +723,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Numeric
-	 * conversions /**********************************************************
+	 * /********************************************************** /* Numeric conversions /**********************************************************
 	 */
 
 	protected void convertNumberToInt() throws IOException {
@@ -832,13 +732,11 @@ public abstract class ParserBase extends ParserMinimalBase {
 			// Let's verify it's lossless conversion by simple roundtrip
 			int result = (int) _numberLong;
 			if ((result) != _numberLong) {
-				_reportError("Numeric value (" + getText()
-						+ ") out of range of int");
+				_reportError("Numeric value (" + getText() + ") out of range of int");
 			}
 			_numberInt = result;
 		} else if ((_numTypesValid & NR_BIGINT) != 0) {
-			if (BI_MIN_INT.compareTo(_numberBigInt) > 0
-					|| BI_MAX_INT.compareTo(_numberBigInt) < 0) {
+			if (BI_MIN_INT.compareTo(_numberBigInt) > 0 || BI_MAX_INT.compareTo(_numberBigInt) < 0) {
 				reportOverflowInt();
 			}
 			_numberInt = _numberBigInt.intValue();
@@ -849,8 +747,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 			}
 			_numberInt = (int) _numberDouble;
 		} else if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
-			if (BD_MIN_INT.compareTo(_numberBigDecimal) > 0
-					|| BD_MAX_INT.compareTo(_numberBigDecimal) < 0) {
+			if (BD_MIN_INT.compareTo(_numberBigDecimal) > 0 || BD_MAX_INT.compareTo(_numberBigDecimal) < 0) {
 				reportOverflowInt();
 			}
 			_numberInt = _numberBigDecimal.intValue();
@@ -864,8 +761,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		if ((_numTypesValid & NR_INT) != 0) {
 			_numberLong = _numberInt;
 		} else if ((_numTypesValid & NR_BIGINT) != 0) {
-			if (BI_MIN_LONG.compareTo(_numberBigInt) > 0
-					|| BI_MAX_LONG.compareTo(_numberBigInt) < 0) {
+			if (BI_MIN_LONG.compareTo(_numberBigInt) > 0 || BI_MAX_LONG.compareTo(_numberBigInt) < 0) {
 				reportOverflowLong();
 			}
 			_numberLong = _numberBigInt.longValue();
@@ -876,8 +772,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 			}
 			_numberLong = (long) _numberDouble;
 		} else if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
-			if (BD_MIN_LONG.compareTo(_numberBigDecimal) > 0
-					|| BD_MAX_LONG.compareTo(_numberBigDecimal) < 0) {
+			if (BD_MIN_LONG.compareTo(_numberBigDecimal) > 0 || BD_MAX_LONG.compareTo(_numberBigDecimal) < 0) {
 				reportOverflowLong();
 			}
 			_numberLong = _numberBigDecimal.longValue();
@@ -905,9 +800,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 
 	protected void convertNumberToDouble() throws IOException {
 		/*
-		 * 05-Aug-2008, tatus: Important note: this MUST start with more
-		 * accurate representations, since we don't know which value is the
-		 * original one (others get generated when requested)
+		 * 05-Aug-2008, tatus: Important note: this MUST start with more accurate representations, since we don't know which value is the original one (others get generated when requested)
 		 */
 
 		if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
@@ -926,15 +819,12 @@ public abstract class ParserBase extends ParserMinimalBase {
 
 	protected void convertNumberToBigDecimal() throws IOException {
 		/*
-		 * 05-Aug-2008, tatus: Important note: this MUST start with more
-		 * accurate representations, since we don't know which value is the
-		 * original one (others get generated when requested)
+		 * 05-Aug-2008, tatus: Important note: this MUST start with more accurate representations, since we don't know which value is the original one (others get generated when requested)
 		 */
 
 		if ((_numTypesValid & NR_DOUBLE) != 0) {
 			/*
-			 * Let's actually parse from String representation, to avoid
-			 * rounding errors that non-decimal floating operations would incur
+			 * Let's actually parse from String representation, to avoid rounding errors that non-decimal floating operations would incur
 			 */
 			_numberBigDecimal = NumberInput.parseBigDecimal(getText());
 		} else if ((_numTypesValid & NR_BIGINT) != 0) {
@@ -950,15 +840,11 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	/*
-	 * /********************************************************** /* Number
-	 * handling exceptions
-	 * /**********************************************************
+	 * /********************************************************** /* Number handling exceptions /**********************************************************
 	 */
 
-	protected void reportUnexpectedNumberChar(int ch, String comment)
-			throws JsonParseException {
-		String msg = "Unexpected character (" + _getCharDesc(ch)
-				+ ") in numeric value";
+	protected void reportUnexpectedNumberChar(int ch, String comment) throws JsonParseException {
+		String msg = "Unexpected character (" + _getCharDesc(ch) + ") in numeric value";
 		if (comment != null) {
 			msg += ": " + comment;
 		}
@@ -970,32 +856,25 @@ public abstract class ParserBase extends ParserMinimalBase {
 	}
 
 	protected void reportOverflowInt() throws IOException {
-		_reportError("Numeric value (" + getText() + ") out of range of int ("
-				+ Integer.MIN_VALUE + " - " + Integer.MAX_VALUE + ")");
+		_reportError("Numeric value (" + getText() + ") out of range of int (" + Integer.MIN_VALUE + " - " + Integer.MAX_VALUE + ")");
 	}
 
 	protected void reportOverflowLong() throws IOException {
-		_reportError("Numeric value (" + getText() + ") out of range of long ("
-				+ Long.MIN_VALUE + " - " + Long.MAX_VALUE + ")");
+		_reportError("Numeric value (" + getText() + ") out of range of long (" + Long.MIN_VALUE + " - " + Long.MAX_VALUE + ")");
 	}
 
 	/*
-	 * /********************************************************** /* Base64
-	 * handling support
-	 * /**********************************************************
+	 * /********************************************************** /* Base64 handling support /**********************************************************
 	 */
 
 	/**
-	 * Method that sub-classes must implement to support escaped sequences in
-	 * base64-encoded sections. Sub-classes that do not need base64 support can
-	 * leave this as is
+	 * Method that sub-classes must implement to support escaped sequences in base64-encoded sections. Sub-classes that do not need base64 support can leave this as is
 	 */
 	protected char _decodeEscaped() throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
-	protected final int _decodeBase64Escape(Base64Variant b64variant, int ch,
-			int index) throws IOException {
+	protected final int _decodeBase64Escape(Base64Variant b64variant, int ch, int index) throws IOException {
 		// 17-May-2011, tatu: As per [JACKSON-xxx], need to handle escaped chars
 		if (ch != '\\') {
 			throw reportInvalidBase64Char(b64variant, ch, index);
@@ -1016,8 +895,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		return bits;
 	}
 
-	protected final int _decodeBase64Escape(Base64Variant b64variant, char ch,
-			int index) throws IOException {
+	protected final int _decodeBase64Escape(Base64Variant b64variant, char ch, int index) throws IOException {
 		// 17-May-2011, tatu: As per [JACKSON-xxx], need to handle escaped chars
 		if (ch != '\\') {
 			throw reportInvalidBase64Char(b64variant, ch, index);
@@ -1038,40 +916,26 @@ public abstract class ParserBase extends ParserMinimalBase {
 		return bits;
 	}
 
-	protected IllegalArgumentException reportInvalidBase64Char(
-			Base64Variant b64variant, int ch, int bindex)
-			throws IllegalArgumentException {
+	protected IllegalArgumentException reportInvalidBase64Char(Base64Variant b64variant, int ch, int bindex) throws IllegalArgumentException {
 		return reportInvalidBase64Char(b64variant, ch, bindex, null);
 	}
 
 	/**
 	 * @param bindex
-	 *            Relative index within base64 character unit; between 0 and 3
-	 *            (as unit has exactly 4 characters)
+	 *            Relative index within base64 character unit; between 0 and 3 (as unit has exactly 4 characters)
 	 */
-	protected IllegalArgumentException reportInvalidBase64Char(
-			Base64Variant b64variant, int ch, int bindex, String msg)
-			throws IllegalArgumentException {
+	protected IllegalArgumentException reportInvalidBase64Char(Base64Variant b64variant, int ch, int bindex, String msg) throws IllegalArgumentException {
 		String base;
 		if (ch <= INT_SPACE) {
-			base = "Illegal white space character (code 0x"
-					+ Integer.toHexString(ch) + ") as character #"
-					+ (bindex + 1)
-					+ " of 4-char base64 unit: can only used between units";
+			base = "Illegal white space character (code 0x" + Integer.toHexString(ch) + ") as character #" + (bindex + 1) + " of 4-char base64 unit: can only used between units";
 		} else if (b64variant.usesPaddingChar(ch)) {
-			base = "Unexpected padding character ('"
-					+ b64variant.getPaddingChar()
-					+ "') as character #"
-					+ (bindex + 1)
-					+ " of 4-char base64 unit: padding only legal as 3rd or 4th character";
+			base = "Unexpected padding character ('" + b64variant.getPaddingChar() + "') as character #" + (bindex + 1) + " of 4-char base64 unit: padding only legal as 3rd or 4th character";
 		} else if (!Character.isDefined(ch) || Character.isISOControl(ch)) {
 			// Not sure if we can really get here... ? (most illegal xml chars
 			// are caught at lower level)
-			base = "Illegal character (code 0x" + Integer.toHexString(ch)
-					+ ") in base64 content";
+			base = "Illegal character (code 0x" + Integer.toHexString(ch) + ") in base64 content";
 		} else {
-			base = "Illegal character '" + ((char) ch) + "' (code 0x"
-					+ Integer.toHexString(ch) + ") in base64 content";
+			base = "Illegal character '" + ((char) ch) + "' (code 0x" + Integer.toHexString(ch) + ") in base64 content";
 		}
 		if (msg != null) {
 			base = base + ": " + msg;

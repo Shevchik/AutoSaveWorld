@@ -22,28 +22,22 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- * The proper SSL configuration that should be used when connecting to Dropbox
- * API servers. This includes: <li>A custom set of trusted root SSL
- * certificates.</li> <li>Requiring TLS v1.0 and above (TLS v1.2 if supported)</li>
- * <li>A limited set of allowed SSL ciphersuites.</li>
+ * The proper SSL configuration that should be used when connecting to Dropbox API servers. This includes: <li>A custom set of trusted root SSL certificates.</li> <li>Requiring TLS v1.0 and above (TLS
+ * v1.2 if supported)</li> <li>A limited set of allowed SSL ciphersuites.</li>
  *
  * <p>
- * {@link #getSSLSocketFactory} returns a properly configured object that you
- * can use to create sockets.
+ * {@link #getSSLSocketFactory} returns a properly configured object that you can use to create sockets.
  * </p>
  *
  * <p>
- * If you have an {@link HttpsURLConnection}, call the convenience method
- * {@link #apply(HttpsURLConnection)} (before calling
- * {@link HttpsURLConnection#connect}) to apply the appropriate security
+ * If you have an {@link HttpsURLConnection}, call the convenience method {@link #apply(HttpsURLConnection)} (before calling {@link HttpsURLConnection#connect}) to apply the appropriate security
  * settings.
  * </p>
  *
  */
 public class SSLConfig {
 	/**
-	 * Apply security settings to an {@link HttpsURLConnection}. Make sure you
-	 * haven't called {@link HttpsURLConnection#connect} yet.
+	 * Apply security settings to an {@link HttpsURLConnection}. Make sure you haven't called {@link HttpsURLConnection#connect} yet.
 	 */
 	public static void apply(HttpsURLConnection conn) throws SSLException {
 		conn.setSSLSocketFactory(sslSocketFactory);
@@ -65,39 +59,13 @@ public class SSLConfig {
 	// all Android API levels:
 	// - API Level >= 10 uses the RFC naming convention
 	// - API Level < 10 uses the OpenSSL naming convention
-	private static HashSet<String> allowedCipherSuites = new HashSet<String>(
-			Arrays.asList(new String[] {
-				"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-				"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
-				"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-				"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-				"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-				"TLS_ECDHE_RSA_WITH_RC4_128_SHA",
-				"TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
-				"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",
-				"TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
-				"TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
-				"TLS_DHE_RSA_WITH_AES_128_CBC_SHA256",
-				"TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
-				"TLS_RSA_WITH_AES_256_GCM_SHA384",
-				"TLS_RSA_WITH_AES_256_CBC_SHA256",
-				"TLS_RSA_WITH_AES_256_CBC_SHA",
-				"TLS_RSA_WITH_AES_128_GCM_SHA256",
-				"TLS_RSA_WITH_AES_128_CBC_SHA256",
-				"TLS_RSA_WITH_AES_128_CBC_SHA",
-				"ECDHE-RSA-AES256-GCM-SHA384", "ECDHE-RSA-AES256-SHA384",
-				"ECDHE-RSA-AES256-SHA", "ECDHE-RSA-AES128-GCM-SHA256",
-				"ECDHE-RSA-AES128-SHA256", "ECDHE-RSA-AES128-SHA",
-				"ECDHE-RSA-RC4-SHA", "DHE-RSA-AES256-GCM-SHA384",
-				"DHE-RSA-AES256-SHA256", "DHE-RSA-AES256-SHA",
-				"DHE-RSA-AES128-GCM-SHA256", "DHE-RSA-AES128-SHA256",
-				"DHE-RSA-AES128-SHA", "AES256-GCM-SHA384", "AES256-SHA256",
-				"AES256-SHA", "AES128-GCM-SHA256", "AES128-SHA256",
-				"AES128-SHA"
-			}
-		)
-	);
+	private static HashSet<String> allowedCipherSuites = new HashSet<String>(Arrays.asList(new String[] { "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+			"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+			"TLS_ECDHE_RSA_WITH_RC4_128_SHA", "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_DHE_RSA_WITH_AES_256_CBC_SHA256", "TLS_DHE_RSA_WITH_AES_256_CBC_SHA", "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+			"TLS_DHE_RSA_WITH_AES_128_CBC_SHA256", "TLS_DHE_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_256_GCM_SHA384", "TLS_RSA_WITH_AES_256_CBC_SHA256", "TLS_RSA_WITH_AES_256_CBC_SHA",
+			"TLS_RSA_WITH_AES_128_GCM_SHA256", "TLS_RSA_WITH_AES_128_CBC_SHA256", "TLS_RSA_WITH_AES_128_CBC_SHA", "ECDHE-RSA-AES256-GCM-SHA384", "ECDHE-RSA-AES256-SHA384", "ECDHE-RSA-AES256-SHA",
+			"ECDHE-RSA-AES128-GCM-SHA256", "ECDHE-RSA-AES128-SHA256", "ECDHE-RSA-AES128-SHA", "ECDHE-RSA-RC4-SHA", "DHE-RSA-AES256-GCM-SHA384", "DHE-RSA-AES256-SHA256", "DHE-RSA-AES256-SHA",
+			"DHE-RSA-AES128-GCM-SHA256", "DHE-RSA-AES128-SHA256", "DHE-RSA-AES128-SHA", "AES256-GCM-SHA384", "AES256-SHA256", "AES256-SHA", "AES128-GCM-SHA256", "AES128-SHA256", "AES128-SHA" }));
 
 	private static void limitProtocolsAndCiphers(SSLSocket socket) throws SSLException {
 		// Set TLS protocol version
@@ -116,8 +84,7 @@ public class SSLConfig {
 					break outer;
 				}
 			}
-			throw new SSLException(
-					"Socket doesn't support protocols \"TLSv1.2\", \"TLSv1.0\" or \"TLSv1\".");
+			throw new SSLException("Socket doesn't support protocols \"TLSv1.2\", \"TLSv1.0\" or \"TLSv1\".");
 		}
 
 		socket.setEnabledCipherSuites(getFilteredCipherSuites(socket.getSupportedCipherSuites()));
@@ -237,7 +204,7 @@ public class SSLConfig {
 		return sslContext;
 	}
 
-	private static TrustManager[] createTrustManagers( KeyStore trustedCertKeyStore) {
+	private static TrustManager[] createTrustManagers(KeyStore trustedCertKeyStore) {
 		TrustManagerFactory tmf;
 		try {
 			tmf = TrustManagerFactory.getInstance("X509");

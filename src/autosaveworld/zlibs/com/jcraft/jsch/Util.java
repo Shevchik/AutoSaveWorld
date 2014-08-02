@@ -50,8 +50,7 @@ class Util {
 		return 0;
 	}
 
-	static byte[] fromBase64(byte[] buf, int start, int length)
-			throws JSchException {
+	static byte[] fromBase64(byte[] buf, int start, int length) throws JSchException {
 		try {
 			byte[] foo = new byte[length];
 			int j = 0;
@@ -147,8 +146,7 @@ class Util {
 		return glob0(pattern, 0, name, 0);
 	}
 
-	static private boolean glob0(byte[] pattern, int pattern_index,
-			byte[] name, int name_index) {
+	static private boolean glob0(byte[] pattern, int pattern_index, byte[] name, int name_index) {
 		if (name.length > 0 && name[0] == '.') {
 			if (pattern.length > 0 && pattern[0] == '.') {
 				if (pattern.length == 2 && pattern[1] == '*') {
@@ -161,8 +159,7 @@ class Util {
 		return glob(pattern, pattern_index, name, name_index);
 	}
 
-	static private boolean glob(byte[] pattern, int pattern_index, byte[] name,
-			int name_index) {
+	static private boolean glob(byte[] pattern, int pattern_index, byte[] name, int name_index) {
 		// System.err.println("glob: "+new
 		// String(pattern)+", "+pattern_index+" "+new
 		// String(name)+", "+name_index);
@@ -219,8 +216,7 @@ class Util {
 					foo = pattern[i];
 					while (j < namelen) {
 						if (foo == name[j]) {
-							if (glob(pattern, i + skipUTF8Char(foo), name, j
-									+ skipUTF8Char(name[j]))) {
+							if (glob(pattern, i + skipUTF8Char(foo), name, j + skipUTF8Char(name[j]))) {
 								return true;
 							}
 						}
@@ -338,8 +334,7 @@ class Util {
 		return foo;
 	}
 
-	private static String[] chars = { "0", "1", "2", "3", "4", "5", "6", "7",
-		"8", "9", "a", "b", "c", "d", "e", "f" };
+	private static String[] chars = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
 
 	static String getFingerPrint(HASH hash, byte[] data) {
 		try {
@@ -377,8 +372,7 @@ class Util {
 		return true;
 	}
 
-	static Socket createSocket(String host, int port, int timeout)
-			throws JSchException {
+	static Socket createSocket(String host, int port, int timeout) throws JSchException {
 		Socket socket = null;
 		if (timeout == 0) {
 			try {
@@ -486,11 +480,8 @@ class Util {
 	static final byte[] empty = str2byte("");
 
 	/*
-	 * static byte[] char2byte(char[] foo){ int len=0; for(int i=0;
-	 * i<foo.length; i++){ if((foo[i]&0xff00)==0) len++; else len+=2; } byte[]
-	 * bar=new byte[len]; for(int i=0, j=0; i<foo.length; i++){
-	 * if((foo[i]&0xff00)==0){ bar[j++]=(byte)foo[i]; } else{
-	 * bar[j++]=(byte)(foo[i]>>>8); bar[j++]=(byte)foo[i]; } } return bar; }
+	 * static byte[] char2byte(char[] foo){ int len=0; for(int i=0; i<foo.length; i++){ if((foo[i]&0xff00)==0) len++; else len+=2; } byte[] bar=new byte[len]; for(int i=0, j=0; i<foo.length; i++){
+	 * if((foo[i]&0xff00)==0){ bar[j++]=(byte)foo[i]; } else{ bar[j++]=(byte)(foo[i]>>>8); bar[j++]=(byte)foo[i]; } } return bar; }
 	 */
 	static void bzero(byte[] foo) {
 		if (foo == null) {

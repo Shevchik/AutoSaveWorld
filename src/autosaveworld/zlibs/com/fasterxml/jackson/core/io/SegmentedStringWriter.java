@@ -7,12 +7,9 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.BufferRecycler;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;
 
 /**
- * Efficient alternative to {@link StringWriter}, based on using segmented
- * internal buffer. Initial input buffer is also recyclable.
+ * Efficient alternative to {@link StringWriter}, based on using segmented internal buffer. Initial input buffer is also recyclable.
  * <p>
- * This class is most useful when serializing JSON content as a String: if so,
- * instance of this class can be given as the writer to
- * <code>JsonGenerator</code>.
+ * This class is most useful when serializing JSON content as a String: if so, instance of this class can be given as the writer to <code>JsonGenerator</code>.
  */
 public final class SegmentedStringWriter extends Writer {
 	final protected TextBuffer _buffer;
@@ -23,9 +20,7 @@ public final class SegmentedStringWriter extends Writer {
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * java.io.Writer implementation
-	 * /**********************************************************
+	 * /********************************************************** /* java.io.Writer implementation /**********************************************************
 	 */
 
 	@Override
@@ -82,15 +77,12 @@ public final class SegmentedStringWriter extends Writer {
 	}
 
 	/*
-	 * /********************************************************** /* Extended
-	 * API /**********************************************************
+	 * /********************************************************** /* Extended API /**********************************************************
 	 */
 
 	/**
-	 * Main access method that will construct a String that contains all the
-	 * contents, release all internal buffers we may have, and return result
-	 * String. Note that the method is not idempotent -- if called second time,
-	 * will just return an empty String.
+	 * Main access method that will construct a String that contains all the contents, release all internal buffers we may have, and return result String. Note that the method is not idempotent -- if
+	 * called second time, will just return an empty String.
 	 */
 	public String getAndClear() {
 		String result = _buffer.contentsAsString();

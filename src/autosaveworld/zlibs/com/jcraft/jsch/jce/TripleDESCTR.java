@@ -70,22 +70,14 @@ public class TripleDESCTR implements Cipher {
 		try {
 			cipher = javax.crypto.Cipher.getInstance("DESede/CTR/" + pad);
 			/*
-			 * // The following code does not work on IBM's JDK 1.4.1
-			 * SecretKeySpec skeySpec = new SecretKeySpec(key, "DESede");
-			 * cipher.init((mode==ENCRYPT_MODE?
-			 * javax.crypto.Cipher.ENCRYPT_MODE:
-			 * javax.crypto.Cipher.DECRYPT_MODE), skeySpec, new
-			 * IvParameterSpec(iv));
+			 * // The following code does not work on IBM's JDK 1.4.1 SecretKeySpec skeySpec = new SecretKeySpec(key, "DESede"); cipher.init((mode==ENCRYPT_MODE? javax.crypto.Cipher.ENCRYPT_MODE:
+			 * javax.crypto.Cipher.DECRYPT_MODE), skeySpec, new IvParameterSpec(iv));
 			 */
 			DESedeKeySpec keyspec = new DESedeKeySpec(key);
-			SecretKeyFactory keyfactory = SecretKeyFactory
-					.getInstance("DESede");
+			SecretKeyFactory keyfactory = SecretKeyFactory.getInstance("DESede");
 			SecretKey _key = keyfactory.generateSecret(keyspec);
 			synchronized (javax.crypto.Cipher.class) {
-				cipher.init(
-						(mode == ENCRYPT_MODE ? javax.crypto.Cipher.ENCRYPT_MODE
-								: javax.crypto.Cipher.DECRYPT_MODE), _key,
-								new IvParameterSpec(iv));
+				cipher.init((mode == ENCRYPT_MODE ? javax.crypto.Cipher.ENCRYPT_MODE : javax.crypto.Cipher.DECRYPT_MODE), _key, new IvParameterSpec(iv));
 			}
 		} catch (Exception e) {
 			cipher = null;
@@ -94,8 +86,7 @@ public class TripleDESCTR implements Cipher {
 	}
 
 	@Override
-	public void update(byte[] foo, int s1, int len, byte[] bar, int s2)
-			throws Exception {
+	public void update(byte[] foo, int s1, int len, byte[] bar, int s2) throws Exception {
 		cipher.update(foo, s1, len, bar, s2);
 	}
 

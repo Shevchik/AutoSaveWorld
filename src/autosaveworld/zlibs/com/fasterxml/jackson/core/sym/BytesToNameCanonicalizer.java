@@ -8,11 +8,8 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.InternCache;
 
 /**
- * A caching symbol table implementation used for canonicalizing JSON field
- * names (as {@link Name}s which are constructed directly from a byte-based
- * input source). Complications arise from trying to do efficient reuse and
- * merging of symbol tables, to be able to make use of usually shared vocabulary
- * of subsequent parsing runs.
+ * A caching symbol table implementation used for canonicalizing JSON field names (as {@link Name}s which are constructed directly from a byte-based input source). Complications arise from trying to
+ * do efficient reuse and merging of symbol tables, to be able to make use of usually shared vocabulary of subsequent parsing runs.
  *
  * @author Tatu Saloranta
  */
@@ -20,29 +17,21 @@ public final class BytesToNameCanonicalizer {
 	private static final int DEFAULT_T_SIZE = 64;
 
 	/**
-	 * Let's not expand symbol tables past some maximum size; this should
-	 * protected against OOMEs caused by large documents with unique (~= random)
-	 * names.
+	 * Let's not expand symbol tables past some maximum size; this should protected against OOMEs caused by large documents with unique (~= random) names.
 	 */
 	private static final int MAX_T_SIZE = 0x10000; // 64k entries == 256k mem
 
 	/**
-	 * Let's only share reasonably sized symbol tables. Max size set to 3/4 of
-	 * 16k; this corresponds to 64k main hash index. This should allow for
-	 * enough distinct names for almost any case.
+	 * Let's only share reasonably sized symbol tables. Max size set to 3/4 of 16k; this corresponds to 64k main hash index. This should allow for enough distinct names for almost any case.
 	 */
 	private final static int MAX_ENTRIES_FOR_REUSE = 6000;
 
 	/**
-	 * Also: to thwart attacks based on hash collisions (which may or may not be
-	 * cheap to calculate), we will need to detect "too long" collision chains.
+	 * Also: to thwart attacks based on hash collisions (which may or may not be cheap to calculate), we will need to detect "too long" collision chains.
 	 * <p>
-	 * Note: longest chain we have been able to produce without malicious intent
-	 * has been 10 (with "com.fasterxml.jackson.core.sym.TestSymbolTables"); our
-	 * setting should be reasonable here.
+	 * Note: longest chain we have been able to produce without malicious intent has been 10 (with "com.fasterxml.jackson.core.sym.TestSymbolTables"); our setting should be reasonable here.
 	 * <p>
-	 * Also note that value was lowered from 255 (2.3 and earlier) to 100 for
-	 * 2.4
+	 * Also note that value was lowered from 255 (2.3 and earlier) to 100 for 2.4
 	 *
 	 * @since 2.1
 	 */
@@ -54,71 +43,58 @@ public final class BytesToNameCanonicalizer {
 	final static int MIN_HASH_SIZE = 16;
 
 	/**
-	 * We will also need to define initial size for collision list, when copying
-	 * it.
+	 * We will also need to define initial size for collision list, when copying it.
 	 */
 	final static int INITIAL_COLLISION_LEN = 32;
 
 	/**
-	 * Bucket index is 8 bits, and value 0 is reserved to represent 'empty'
-	 * status.
+	 * Bucket index is 8 bits, and value 0 is reserved to represent 'empty' status.
 	 */
 	final static int LAST_VALID_BUCKET = 0xFE;
 
 	/*
-	 * /********************************************************** /* Linkage,
-	 * needed for merging symbol tables
-	 * /**********************************************************
+	 * /********************************************************** /* Linkage, needed for merging symbol tables /**********************************************************
 	 */
 
 	/**
-	 * Reference to the root symbol table, for child tables, so that they can
-	 * merge table information back as necessary.
+	 * Reference to the root symbol table, for child tables, so that they can merge table information back as necessary.
 	 */
 	final protected BytesToNameCanonicalizer _parent;
 
 	/**
-	 * Member that is only used by the root table instance: root passes
-	 * immutable state into child instances, and children may return new state
-	 * if they add entries to the table. Child tables do NOT use the reference.
+	 * Member that is only used by the root table instance: root passes immutable state into child instances, and children may return new state if they add entries to the table. Child tables do NOT
+	 * use the reference.
 	 */
 	final protected AtomicReference<TableInfo> _tableInfo;
 
 	/**
-	 * Seed value we use as the base to make hash codes non-static between
-	 * different runs, but still stable for lifetime of a single symbol table
-	 * instance. This is done for security reasons, to avoid potential DoS
-	 * attack via hash collisions.
+	 * Seed value we use as the base to make hash codes non-static between different runs, but still stable for lifetime of a single symbol table instance. This is done for security reasons, to avoid
+	 * potential DoS attack via hash collisions.
 	 *
 	 * @since 2.1
 	 */
 	final private int _seed;
 
 	/*
-	 * /********************************************************** /*
-	 * Configuration /**********************************************************
+	 * /********************************************************** /* Configuration /**********************************************************
 	 */
 
 	/**
-	 * Whether canonical symbol Strings are to be intern()ed before added to the
-	 * table or not.
+	 * Whether canonical symbol Strings are to be intern()ed before added to the table or not.
 	 * <p>
-	 * NOTE: non-final to allow disabling intern()ing in case of excessive
-	 * collisions.
+	 * NOTE: non-final to allow disabling intern()ing in case of excessive collisions.
 	 */
 	protected boolean _intern;
 
 	/**
-	 * Flag that indicates whether we should throw an exception if enough hash
-	 * collisions are detected (true); or just worked around (false).
+	 * Flag that indicates whether we should throw an exception if enough hash collisions are detected (true); or just worked around (false).
 	 *
 	 * @since 2.4
 	 */
 	protected final boolean _failOnDoS;
 
 	/*
-	 * /********************************************************** /* Main table
-	 * state /**********************************************************
+	 * /********************************************************** /* Main table state /**********************************************************
 	 */
 
 	// // // First, global information
@@ -129,8 +105,7 @@ public final class BytesToNameCanonicalizer {
 	protected int _count;
 
 	/**
-	 * We need to keep track of the longest collision list; this is needed both
-	 * to indicate problems with attacks and to allow flushing for other cases.
+	 * We need to keep track of the longest collision list; this is needed both to indicate problems with attacks and to allow flushing for other cases.
 	 *
 	 * @since 2.1
 	 */
@@ -140,21 +115,18 @@ public final class BytesToNameCanonicalizer {
 	// // // matching Name array
 
 	/**
-	 * Mask used to truncate 32-bit hash value to current hash array size;
-	 * essentially, hash array size - 1 (since hash array sizes are 2^N).
+	 * Mask used to truncate 32-bit hash value to current hash array size; essentially, hash array size - 1 (since hash array sizes are 2^N).
 	 */
 	protected int _hashMask;
 
 	/**
-	 * Array of 2^N size, which contains combination of 24-bits of hash (0 to
-	 * indicate 'empty' slot), and 8-bit collision bucket index (0 to indicate
-	 * empty collision bucket chain; otherwise subtract one from index)
+	 * Array of 2^N size, which contains combination of 24-bits of hash (0 to indicate 'empty' slot), and 8-bit collision bucket index (0 to indicate empty collision bucket chain; otherwise subtract
+	 * one from index)
 	 */
 	protected int[] _hash;
 
 	/**
-	 * Array that contains <code>Name</code> instances matching entries in
-	 * <code>_mainHash</code>. Contains nulls for unused entries.
+	 * Array that contains <code>Name</code> instances matching entries in <code>_mainHash</code>. Contains nulls for unused entries.
 	 */
 	protected Name[] _mainNames;
 
@@ -166,94 +138,74 @@ public final class BytesToNameCanonicalizer {
 	protected Bucket[] _collList;
 
 	/**
-	 * Total number of Names in collision buckets (included in
-	 * <code>_count</code> along with primary entries)
+	 * Total number of Names in collision buckets (included in <code>_count</code> along with primary entries)
 	 */
 	protected int _collCount;
 
 	/**
-	 * Index of the first unused collision bucket entry (== size of the used
-	 * portion of collision list): less than or equal to 0xFF (255), since max
-	 * number of entries is 255 (8-bit, minus 0 used as 'empty' marker)
+	 * Index of the first unused collision bucket entry (== size of the used portion of collision list): less than or equal to 0xFF (255), since max number of entries is 255 (8-bit, minus 0 used as
+	 * 'empty' marker)
 	 */
 	protected int _collEnd;
 
 	// // // Info regarding pending rehashing...
 
 	/**
-	 * This flag is set if, after adding a new entry, it is deemed that a rehash
-	 * is warranted if any more entries are to be added.
+	 * This flag is set if, after adding a new entry, it is deemed that a rehash is warranted if any more entries are to be added.
 	 */
 	private transient boolean _needRehash;
 
 	/*
-	 * /********************************************************** /* Sharing,
-	 * versioning /**********************************************************
+	 * /********************************************************** /* Sharing, versioning /**********************************************************
 	 */
 
 	// // // Which of the buffers may be shared (and are copy-on-write)?
 
 	/**
-	 * Flag that indicates whether underlying data structures for the main hash
-	 * area are shared or not. If they are, then they need to be handled in
-	 * copy-on-write way, i.e. if they need to be modified, a copy needs to be
-	 * made first; at this point it will not be shared any more, and can be
-	 * modified.
+	 * Flag that indicates whether underlying data structures for the main hash area are shared or not. If they are, then they need to be handled in copy-on-write way, i.e. if they need to be
+	 * modified, a copy needs to be made first; at this point it will not be shared any more, and can be modified.
 	 * <p>
-	 * This flag needs to be checked both when adding new main entries, and when
-	 * adding new collision list queues (i.e. creating a new collision list head
-	 * entry)
+	 * This flag needs to be checked both when adding new main entries, and when adding new collision list queues (i.e. creating a new collision list head entry)
 	 */
 	private boolean _hashShared;
 
 	private boolean _namesShared;
 
 	/**
-	 * Flag that indicates whether underlying data structures for the collision
-	 * list are shared or not. If they are, then they need to be handled in
-	 * copy-on-write way, i.e. if they need to be modified, a copy needs to be
-	 * made first; at this point it will not be shared any more, and can be
-	 * modified.
+	 * Flag that indicates whether underlying data structures for the collision list are shared or not. If they are, then they need to be handled in copy-on-write way, i.e. if they need to be
+	 * modified, a copy needs to be made first; at this point it will not be shared any more, and can be modified.
 	 * <p>
 	 * This flag needs to be checked when adding new collision entries.
 	 */
 	private boolean _collListShared;
 
 	/*
-	 * /********************************************************** /* Bit of DoS
-	 * detection goodness
-	 * /**********************************************************
+	 * /********************************************************** /* Bit of DoS detection goodness /**********************************************************
 	 */
 
 	/**
-	 * Lazily constructed structure that is used to keep track of collision
-	 * buckets that have overflowed once: this is used to detect likely attempts
-	 * at denial-of-service attacks that uses hash collisions.
+	 * Lazily constructed structure that is used to keep track of collision buckets that have overflowed once: this is used to detect likely attempts at denial-of-service attacks that uses hash
+	 * collisions.
 	 *
 	 * @since 2.4
 	 */
 	protected BitSet _overflows;
 
 	/*
-	 * /********************************************************** /*
-	 * Life-cycle: constructors
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle: constructors /**********************************************************
 	 */
 
 	/**
-	 * Constructor used for creating per-<code>JsonFactory</code> "root" symbol
-	 * tables: ones used for merging and sharing common symbols
+	 * Constructor used for creating per-<code>JsonFactory</code> "root" symbol tables: ones used for merging and sharing common symbols
 	 *
 	 * @param sz
 	 *            Initial hash area size
 	 * @param intern
 	 *            Whether Strings contained should be {@link String#intern}ed
 	 * @param seed
-	 *            Random seed valued used to make it more difficult to cause
-	 *            collisions (used for collision-based DoS attacks).
+	 *            Random seed valued used to make it more difficult to cause collisions (used for collision-based DoS attacks).
 	 */
-	private BytesToNameCanonicalizer(int sz, boolean intern, int seed,
-			boolean failOnDoS) {
+	private BytesToNameCanonicalizer(int sz, boolean intern, int seed, boolean failOnDoS) {
 		_parent = null;
 		_seed = seed;
 		_intern = intern;
@@ -263,8 +215,7 @@ public final class BytesToNameCanonicalizer {
 			sz = MIN_HASH_SIZE;
 		} else {
 			/*
-			 * Also; size must be 2^N; otherwise hash algorithm won't work... so
-			 * let's just pad it up, if so
+			 * Also; size must be 2^N; otherwise hash algorithm won't work... so let's just pad it up, if so
 			 */
 			if ((sz & (sz - 1)) != 0) { // only true if it's 2^N
 				int curr = MIN_HASH_SIZE;
@@ -280,8 +231,7 @@ public final class BytesToNameCanonicalizer {
 	/**
 	 * Constructor used when creating a child instance
 	 */
-	private BytesToNameCanonicalizer(BytesToNameCanonicalizer parent,
-			boolean intern, int seed, boolean failOnDoS, TableInfo state) {
+	private BytesToNameCanonicalizer(BytesToNameCanonicalizer parent, boolean intern, int seed, boolean failOnDoS, TableInfo state) {
 		_parent = parent;
 		_seed = seed;
 		_intern = intern;
@@ -306,9 +256,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * public TableInfo(int count, int mainHashMask, int[] mainHash, Name[]
-	 * mainNames, Bucket[] collList, int collCount, int collEnd, int
-	 * longestCollisionList)
+	 * public TableInfo(int count, int mainHashMask, int[] mainHash, Name[] mainNames, Bucket[] collList, int collCount, int collEnd, int longestCollisionList)
 	 */
 	private TableInfo initTableInfo(int sz) {
 		return new TableInfo(0, // count
@@ -323,19 +271,15 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * Life-cycle: factory methods, merging
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle: factory methods, merging /**********************************************************
 	 */
 
 	/**
-	 * Factory method to call to create a symbol table instance with a
-	 * randomized seed value.
+	 * Factory method to call to create a symbol table instance with a randomized seed value.
 	 */
 	public static BytesToNameCanonicalizer createRoot() {
 		/*
-		 * [Issue-21]: Need to use a variable seed, to thwart hash-collision
-		 * based attacks.
+		 * [Issue-21]: Need to use a variable seed, to thwart hash-collision based attacks.
 		 */
 		long now = System.currentTimeMillis();
 		// ensure it's not 0; and might as well require to be odd so:
@@ -344,46 +288,36 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Factory method that should only be called from unit tests, where seed
-	 * value should remain the same.
+	 * Factory method that should only be called from unit tests, where seed value should remain the same.
 	 */
 	protected static BytesToNameCanonicalizer createRoot(int seed) {
 		return new BytesToNameCanonicalizer(DEFAULT_T_SIZE, true, seed, true);
 	}
 
 	/**
-	 * Factory method used to create actual symbol table instance to use for
-	 * parsing.
+	 * Factory method used to create actual symbol table instance to use for parsing.
 	 */
 	public BytesToNameCanonicalizer makeChild(int flags) {
-		return new BytesToNameCanonicalizer(this,
-				JsonFactory.Feature.INTERN_FIELD_NAMES.enabledIn(flags), _seed,
-				JsonFactory.Feature.FAIL_ON_SYMBOL_HASH_OVERFLOW
-						.enabledIn(flags), _tableInfo.get());
+		return new BytesToNameCanonicalizer(this, JsonFactory.Feature.INTERN_FIELD_NAMES.enabledIn(flags), _seed, JsonFactory.Feature.FAIL_ON_SYMBOL_HASH_OVERFLOW.enabledIn(flags), _tableInfo.get());
 	}
 
 	@Deprecated
 	// since 2.4
-	public BytesToNameCanonicalizer makeChild(boolean canonicalize,
-			boolean intern) {
+	public BytesToNameCanonicalizer makeChild(boolean canonicalize, boolean intern) {
 		return new BytesToNameCanonicalizer(this, intern, _seed, true, // JsonFactory.Feature.FAIL_ON_SYMBOL_HASH_OVERFLOW
 				_tableInfo.get());
 	}
 
 	/**
-	 * Method called by the using code to indicate it is done with this
-	 * instance. This lets instance merge accumulated changes into parent (if
-	 * need be), safely and efficiently, and without calling code having to know
-	 * about parent information
+	 * Method called by the using code to indicate it is done with this instance. This lets instance merge accumulated changes into parent (if need be), safely and efficiently, and without calling
+	 * code having to know about parent information
 	 */
 	public void release() {
 		// we will try to merge if child table has new entries
 		if (_parent != null && maybeDirty()) {
 			_parent.mergeChild(new TableInfo(this));
 			/*
-			 * Let's also mark this instance as dirty, so that just in case
-			 * release was too early, there's no corruption of possibly shared
-			 * data.
+			 * Let's also mark this instance as dirty, so that just in case release was too early, there's no corruption of possibly shared data.
 			 */
 			_hashShared = true;
 			_namesShared = true;
@@ -396,23 +330,19 @@ public final class BytesToNameCanonicalizer {
 		TableInfo currState = _tableInfo.get();
 
 		/*
-		 * Should usually grow; but occasionally could also shrink if (but only
-		 * if) collision list overflow ends up clearing some collision lists.
+		 * Should usually grow; but occasionally could also shrink if (but only if) collision list overflow ends up clearing some collision lists.
 		 */
 		if (childCount == currState.count) {
 			return;
 		}
 
 		/*
-		 * One caveat: let's try to avoid problems with degenerate cases of
-		 * documents with generated "random" names: for these, symbol tables
-		 * would bloat indefinitely. One way to do this is to just purge tables
-		 * if they grow too large, and that's what we'll do here.
+		 * One caveat: let's try to avoid problems with degenerate cases of documents with generated "random" names: for these, symbol tables would bloat indefinitely. One way to do this is to just
+		 * purge tables if they grow too large, and that's what we'll do here.
 		 */
 		if (childCount > MAX_ENTRIES_FOR_REUSE) {
 			/*
-			 * Should there be a way to get notified about this event, to log it
-			 * or such? (as it's somewhat abnormal thing to happen)
+			 * Should there be a way to get notified about this event, to log it or such? (as it's somewhat abnormal thing to happen)
 			 */
 			// At any rate, need to clean up the tables
 			childState = initTableInfo(DEFAULT_T_SIZE);
@@ -421,8 +351,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * /********************************************************** /* API,
-	 * accessors /**********************************************************
+	 * /********************************************************** /* API, accessors /**********************************************************
 	 */
 
 	public int size() {
@@ -441,9 +370,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Method called to check to quickly see if a child symbol table may have
-	 * gotten additional entries. Used for checking to see if a child table
-	 * should be merged into shared table.
+	 * Method called to check to quickly see if a child symbol table may have gotten additional entries. Used for checking to see if a child table should be merged into shared table.
 	 */
 	public boolean maybeDirty() {
 		return !_hashShared;
@@ -457,9 +384,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Method mostly needed by unit tests; calculates number of entries that are
-	 * in collision list. Value can be at most ({@link #size} - 1), but should
-	 * usually be much lower, ideally 0.
+	 * Method mostly needed by unit tests; calculates number of entries that are in collision list. Value can be at most ({@link #size} - 1), but should usually be much lower, ideally 0.
 	 *
 	 * @since 2.1
 	 */
@@ -468,9 +393,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Method mostly needed by unit tests; calculates length of the longest
-	 * collision chain. This should typically be a low number, but may be up to
-	 * {@link #size} - 1 in the pathological case
+	 * Method mostly needed by unit tests; calculates length of the longest collision chain. This should typically be a low number, but may be up to {@link #size} - 1 in the pathological case
 	 *
 	 * @since 2.1
 	 */
@@ -479,9 +402,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, accessing symbols:
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, accessing symbols: /**********************************************************
 	 */
 
 	public static Name getEmptyName() {
@@ -489,16 +410,12 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Finds and returns name matching the specified symbol, if such name
-	 * already exists in the table. If not, will return null.
+	 * Finds and returns name matching the specified symbol, if such name already exists in the table. If not, will return null.
 	 * <p>
-	 * Note: separate methods to optimize common case of short element/attribute
-	 * names (4 or less ascii characters)
+	 * Note: separate methods to optimize common case of short element/attribute names (4 or less ascii characters)
 	 *
 	 * @param q1
-	 *            int32 containing first 4 bytes of the name; if the whole name
-	 *            less than 4 bytes, padded with zero bytes in front (zero MSBs,
-	 *            ie. right aligned)
+	 *            int32 containing first 4 bytes of the name; if the whole name less than 4 bytes, padded with zero bytes in front (zero MSBs, ie. right aligned)
 	 *
 	 * @return Name matching the symbol passed (or constructed for it)
 	 */
@@ -508,8 +425,7 @@ public final class BytesToNameCanonicalizer {
 		int val = _hash[ix];
 
 		/*
-		 * High 24 bits of the value are low 24 bits of hash (low 8 bits are
-		 * bucket index)... match?
+		 * High 24 bits of the value are low 24 bits of hash (low 8 bits are bucket index)... match?
 		 */
 		if ((((val >> 8) ^ hash) << 8) == 0) { // match
 			// Ok, but do we have an actual match?
@@ -537,18 +453,14 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Finds and returns name matching the specified symbol, if such name
-	 * already exists in the table. If not, will return null.
+	 * Finds and returns name matching the specified symbol, if such name already exists in the table. If not, will return null.
 	 * <p>
-	 * Note: separate methods to optimize common case of relatively short
-	 * element/attribute names (8 or less ascii characters)
+	 * Note: separate methods to optimize common case of relatively short element/attribute names (8 or less ascii characters)
 	 *
 	 * @param q1
 	 *            int32 containing first 4 bytes of the name.
 	 * @param q2
-	 *            int32 containing bytes 5 through 8 of the name; if less than 8
-	 *            bytes, padded with up to 3 zero bytes in front (zero MSBs, ie.
-	 *            right aligned)
+	 *            int32 containing bytes 5 through 8 of the name; if less than 8 bytes, padded with up to 3 zero bytes in front (zero MSBs, ie. right aligned)
 	 *
 	 * @return Name matching the symbol passed (or constructed for it)
 	 */
@@ -558,8 +470,7 @@ public final class BytesToNameCanonicalizer {
 		int val = _hash[ix];
 
 		/*
-		 * High 24 bits of the value are low 24 bits of hash (low 8 bits are
-		 * bucket index)... match?
+		 * High 24 bits of the value are low 24 bits of hash (low 8 bits are bucket index)... match?
 		 */
 		if ((((val >> 8) ^ hash) << 8) == 0) { // match
 			// Ok, but do we have an actual match?
@@ -587,13 +498,9 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Finds and returns name matching the specified symbol, if such name
-	 * already exists in the table; or if not, creates name object, adds to the
-	 * table, and returns it.
+	 * Finds and returns name matching the specified symbol, if such name already exists in the table; or if not, creates name object, adds to the table, and returns it.
 	 * <p>
-	 * Note: this is the general purpose method that can be called for names of
-	 * any length. However, if name is less than 9 bytes long, it is preferable
-	 * to call the version optimized for short names.
+	 * Note: this is the general purpose method that can be called for names of any length. However, if name is less than 9 bytes long, it is preferable to call the version optimized for short names.
 	 *
 	 * @param q
 	 *            Array of int32s, each of which contain 4 bytes of encoded name
@@ -631,8 +538,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * /********************************************************** /* API,
-	 * mutators /**********************************************************
+	 * /********************************************************** /* API, mutators /**********************************************************
 	 */
 
 	public Name addName(String name, int q1, int q2) {
@@ -661,15 +567,12 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * /********************************************************** /* Helper
-	 * methods /**********************************************************
+	 * /********************************************************** /* Helper methods /**********************************************************
 	 */
 
 	/*
-	 * Note on hash calculation: we try to make it more difficult to generate
-	 * collisions automatically; part of this is to avoid simple "multiply-add"
-	 * algorithm (like JDK String.hashCode()), and add bit of shifting. And
-	 * other part is to make this non-linear, at least for shorter symbols.
+	 * Note on hash calculation: we try to make it more difficult to generate collisions automatically; part of this is to avoid simple "multiply-add" algorithm (like JDK String.hashCode()), and add
+	 * bit of shifting. And other part is to make this non-linear, at least for shorter symbols.
 	 */
 
 	// JDK uses 31; other fine choices are 33 and 65599, let's use 33
@@ -688,8 +591,7 @@ public final class BytesToNameCanonicalizer {
 
 	public int calcHash(int q1, int q2) {
 		/*
-		 * For two quads, let's change algorithm a bit, to spice things up (can
-		 * do bit more processing anyway)
+		 * For two quads, let's change algorithm a bit, to spice things up (can do bit more processing anyway)
 		 */
 		int hash = q1;
 		hash ^= (hash >>> 15); // try mixing first and second byte pairs first
@@ -706,9 +608,8 @@ public final class BytesToNameCanonicalizer {
 		}
 
 		/*
-		 * And then change handling again for "multi-quad" case; mostly to make
-		 * calculation of collisions less fun. For example, add seed bit later
-		 * in the game, and switch plus/xor around, use different shift lengths.
+		 * And then change handling again for "multi-quad" case; mostly to make calculation of collisions less fun. For example, add seed bit later in the game, and switch plus/xor around, use
+		 * different shift lengths.
 		 */
 		int hash = q[0] ^ _seed;
 		hash += (hash >>> 9);
@@ -753,32 +654,23 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * /********************************************************** /* Standard
-	 * methods /**********************************************************
+	 * /********************************************************** /* Standard methods /**********************************************************
 	 */
 
 	/*
-	 * @Override public String toString() { StringBuilder sb = new
-	 * StringBuilder(); sb.append("[BytesToNameCanonicalizer, size: ");
-	 * sb.append(_count); sb.append('/'); sb.append(_mainHash.length);
+	 * @Override public String toString() { StringBuilder sb = new StringBuilder(); sb.append("[BytesToNameCanonicalizer, size: "); sb.append(_count); sb.append('/'); sb.append(_mainHash.length);
 	 * sb.append(", "); sb.append(_collCount); sb.append(" coll; avg length: ");
-	 *
-	 * // Average length: minimum of 1 for all (1 == primary hit); // and then 1
-	 * per each traversal for collisions/buckets //int maxDist = 1; int
-	 * pathCount = _count; for (int i = 0; i < _collEnd; ++i) { int spillLen =
-	 * _collList[i].length(); for (int j = 1; j <= spillLen; ++j) { pathCount +=
-	 * j; } } double avgLength;
-	 *
-	 * if (_count == 0) { avgLength = 0.0; } else { avgLength = (double)
-	 * pathCount / (double) _count; } // let's round up a bit (two 2 decimal
-	 * places) //avgLength -= (avgLength % 0.01);
-	 *
+	 * 
+	 * // Average length: minimum of 1 for all (1 == primary hit); // and then 1 per each traversal for collisions/buckets //int maxDist = 1; int pathCount = _count; for (int i = 0; i < _collEnd; ++i)
+	 * { int spillLen = _collList[i].length(); for (int j = 1; j <= spillLen; ++j) { pathCount += j; } } double avgLength;
+	 * 
+	 * if (_count == 0) { avgLength = 0.0; } else { avgLength = (double) pathCount / (double) _count; } // let's round up a bit (two 2 decimal places) //avgLength -= (avgLength % 0.01);
+	 * 
 	 * sb.append(avgLength); sb.append(']'); return sb.toString(); }
 	 */
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods /**********************************************************
+	 * /********************************************************** /* Internal methods /**********************************************************
 	 */
 
 	private void _addSymbol(int hash, Name symbol) {
@@ -793,8 +685,7 @@ public final class BytesToNameCanonicalizer {
 		++_count;
 
 		/*
-		 * Ok, enough about set up: now we need to find the slot to add symbol
-		 * in:
+		 * Ok, enough about set up: now we need to find the slot to add symbol in:
 		 */
 		int ix = (hash & _hashMask);
 		if (_mainNames[ix] == null) { // primary empty?
@@ -805,8 +696,7 @@ public final class BytesToNameCanonicalizer {
 			_mainNames[ix] = symbol;
 		} else { // nope, it's a collision, need to spill over
 			/*
-			 * How about spill-over area... do we already know the bucket (is
-			 * the case if it's not the first collision)
+			 * How about spill-over area... do we already know the bucket (is the case if it's not the first collision)
 			 */
 			if (_collListShared) {
 				unshareCollision(); // also allocates if list was null
@@ -837,29 +727,25 @@ public final class BytesToNameCanonicalizer {
 			int collLen = newB.length;
 			if (collLen > MAX_COLL_CHAIN_LENGTH) {
 				/*
-				 * 23-May-2014, tatu: Instead of throwing an exception right
-				 * away, let's handle in bit smarter way.
+				 * 23-May-2014, tatu: Instead of throwing an exception right away, let's handle in bit smarter way.
 				 */
 				_handleSpillOverflow(bucket, newB);
 			} else {
 				_collList[bucket] = newB;
 				// but, be careful wrt attacks
-				_longestCollisionList = Math.max(newB.length,
-						_longestCollisionList);
+				_longestCollisionList = Math.max(newB.length, _longestCollisionList);
 			}
 		}
 
 		/*
-		 * Ok. Now, do we need a rehash next time? Need to have at least 50%
-		 * fill rate no matter what:
+		 * Ok. Now, do we need a rehash next time? Need to have at least 50% fill rate no matter what:
 		 */
 		{
 			int hashSize = _hash.length;
 			if (_count > (hashSize >> 1)) {
 				int hashQuarter = (hashSize >> 2);
 				/*
-				 * And either strictly above 75% (the usual) or just 50%, and
-				 * collision count >= 25% of total hash size
+				 * And either strictly above 75% (the usual) or just 50%, and collision count >= 25% of total hash size
 				 */
 				if (_count > (hashSize - hashQuarter)) {
 					_needRehash = true;
@@ -901,17 +787,14 @@ public final class BytesToNameCanonicalizer {
 		_namesShared = false;
 
 		/*
-		 * And then we can first deal with the main hash area. Since we are
-		 * expanding linearly (double up), we know there'll be no collisions
-		 * during this phase.
+		 * And then we can first deal with the main hash area. Since we are expanding linearly (double up), we know there'll be no collisions during this phase.
 		 */
 		int[] oldMainHash = _hash;
 		int len = oldMainHash.length;
 		int newLen = len + len;
 
 		/*
-		 * 13-Mar-2010, tatu: Let's guard against OOME that could be caused by
-		 * large documents with unique (or mostly so) names
+		 * 13-Mar-2010, tatu: Let's guard against OOME that could be caused by large documents with unique (or mostly so) names
 		 */
 		if (newLen > MAX_T_SIZE) {
 			nukeSymbols();
@@ -935,9 +818,7 @@ public final class BytesToNameCanonicalizer {
 		}
 
 		/*
-		 * And then the spill area. This may cause collisions, although not
-		 * necessarily as many as there were earlier. Let's allocate same amount
-		 * of space, however
+		 * And then the spill area. This may cause collisions, although not necessarily as many as there were earlier. Let's allocate same amount of space, however
 		 */
 		int oldEnd = _collEnd;
 		if (oldEnd == 0) { // no prior collisions...
@@ -996,14 +877,12 @@ public final class BytesToNameCanonicalizer {
 		_longestCollisionList = maxColl;
 
 		if (symbolsSeen != _count) { // sanity check
-			throw new RuntimeException("Internal error: count after rehash "
-					+ symbolsSeen + "; should be " + _count);
+			throw new RuntimeException("Internal error: count after rehash " + symbolsSeen + "; should be " + _count);
 		}
 	}
 
 	/**
-	 * Helper method called to empty all shared symbols, but to leave arrays
-	 * allocated
+	 * Helper method called to empty all shared symbols, but to leave arrays allocated
 	 */
 	private void nukeSymbols() {
 		_count = 0;
@@ -1016,9 +895,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Method called to find the best bucket to spill a Name over to: usually
-	 * the first bucket that has only one entry, but in general first one of the
-	 * buckets with least number of entries
+	 * Method called to find the best bucket to spill a Name over to: usually the first bucket that has only one entry, but in general first one of the buckets with least number of entries
 	 */
 	private int findBestBucket() {
 		Bucket[] buckets = _collList;
@@ -1039,10 +916,8 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/**
-	 * Method that needs to be called, if the main hash structure is (may be)
-	 * shared. This happens every time something is added, even if addition is
-	 * to the collision list (since collision list index comes from lowest 8
-	 * bits of the primary hash entry)
+	 * Method that needs to be called, if the main hash structure is (may be) shared. This happens every time something is added, even if addition is to the collision list (since collision list index
+	 * comes from lowest 8 bits of the primary hash entry)
 	 */
 	private void unshareMain() {
 		final int[] old = _hash;
@@ -1072,9 +947,7 @@ public final class BytesToNameCanonicalizer {
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * Constructing name objects
-	 * /**********************************************************
+	 * /********************************************************** /* Constructing name objects /**********************************************************
 	 */
 
 	private static Name constructName(int hash, String name, int q1, int q2) {
@@ -1084,47 +957,38 @@ public final class BytesToNameCanonicalizer {
 		return new Name2(name, hash, q1, q2);
 	}
 
-	private static Name constructName(int hash, String name, int[] quads,
-			int qlen) {
+	private static Name constructName(int hash, String name, int[] quads, int qlen) {
 		if (qlen < 4) { // Need to check for 3 quad one, can do others too
 			switch (qlen) {
-			case 1:
-				return new Name1(name, hash, quads[0]);
-			case 2:
-				return new Name2(name, hash, quads[0], quads[1]);
-			case 3:
-				return new Name3(name, hash, quads[0], quads[1], quads[2]);
-			default:
+				case 1:
+					return new Name1(name, hash, quads[0]);
+				case 2:
+					return new Name2(name, hash, quads[0], quads[1]);
+				case 3:
+					return new Name3(name, hash, quads[0], quads[1], quads[2]);
+				default:
 			}
 		}
 		return NameN.construct(name, hash, quads, qlen);
 	}
 
 	/*
-	 * /********************************************************** /* Other
-	 * helper methods
-	 * /**********************************************************
+	 * /********************************************************** /* Other helper methods /**********************************************************
 	 */
 
 	/**
 	 * @since 2.1
 	 */
 	protected void reportTooManyCollisions(int maxLen) {
-		throw new IllegalStateException(
-				"Longest collision chain in symbol table (of size " + _count
-						+ ") now exceeds maximum, " + maxLen
-						+ " -- suspect a DoS attack based on hash collisions");
+		throw new IllegalStateException("Longest collision chain in symbol table (of size " + _count + ") now exceeds maximum, " + maxLen + " -- suspect a DoS attack based on hash collisions");
 	}
 
 	/*
-	 * /********************************************************** /* Helper
-	 * classes /**********************************************************
+	 * /********************************************************** /* Helper classes /**********************************************************
 	 */
 
 	/**
-	 * Immutable value class used for sharing information as efficiently as
-	 * possible, by only require synchronization of reference manipulation but
-	 * not access to contents.
+	 * Immutable value class used for sharing information as efficiently as possible, by only require synchronization of reference manipulation but not access to contents.
 	 *
 	 * @since 2.1
 	 */
@@ -1138,9 +1002,7 @@ public final class BytesToNameCanonicalizer {
 		public final int collEnd;
 		public final int longestCollisionList;
 
-		public TableInfo(int count, int mainHashMask, int[] mainHash,
-				Name[] mainNames, Bucket[] collList, int collCount,
-				int collEnd, int longestCollisionList) {
+		public TableInfo(int count, int mainHashMask, int[] mainHash, Name[] mainNames, Bucket[] collList, int collCount, int collEnd, int longestCollisionList) {
 			this.count = count;
 			this.mainHashMask = mainHashMask;
 			this.mainHash = mainHash;

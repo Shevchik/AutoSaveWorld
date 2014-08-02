@@ -1,9 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.sym;
 
 /**
- * Specialized implementation of PName: can be used for short Strings that
- * consists of 9 to 12 bytes. It's the longest special purpose implementaion;
- * longer ones are expressed using {@link NameN}.
+ * Specialized implementation of PName: can be used for short Strings that consists of 9 to 12 bytes. It's the longest special purpose implementaion; longer ones are expressed using {@link NameN}.
  */
 public final class Name3 extends Name {
 	private final int q1, q2, q3;
@@ -29,7 +27,6 @@ public final class Name3 extends Name {
 
 	@Override
 	public boolean equals(int[] quads, int qlen) {
-		return (qlen == 3) && (quads[0] == q1) && (quads[1] == q2)
-				&& (quads[2] == q3);
+		return (qlen == 3) && (quads[0] == q1) && (quads[1] == q2) && (quads[2] == q3);
 	}
 }

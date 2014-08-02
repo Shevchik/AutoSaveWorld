@@ -48,8 +48,7 @@ public class KeyPairRSA extends KeyPair {
 		this(jsch, null, null, null);
 	}
 
-	public KeyPairRSA(JSch jsch, byte[] n_array, byte[] pub_array,
-			byte[] prv_array) {
+	public KeyPairRSA(JSch jsch, byte[] n_array, byte[] pub_array, byte[] prv_array) {
 		super(jsch);
 		this.n_array = n_array;
 		this.pub_array = pub_array;
@@ -86,10 +85,8 @@ public class KeyPairRSA extends KeyPair {
 		}
 	}
 
-	private static final byte[] begin = Util
-			.str2byte("-----BEGIN RSA PRIVATE KEY-----");
-	private static final byte[] end = Util
-			.str2byte("-----END RSA PRIVATE KEY-----");
+	private static final byte[] begin = Util.str2byte("-----BEGIN RSA PRIVATE KEY-----");
+	private static final byte[] end = Util.str2byte("-----END RSA PRIVATE KEY-----");
 
 	@Override
 	byte[] getBegin() {
@@ -171,8 +168,7 @@ public class KeyPairRSA extends KeyPair {
 					p_array = buf.getMPIntBits();
 					q_array = buf.getMPIntBits();
 					if (n_array != null) {
-						key_size = (new java.math.BigInteger(n_array))
-								.bitLength();
+						key_size = (new java.math.BigInteger(n_array)).bitLength();
 					}
 
 					getEPArray();
@@ -185,12 +181,9 @@ public class KeyPairRSA extends KeyPair {
 			}
 
 			/*
-			 * Key must be in the following ASN.1 DER encoding, RSAPrivateKey
-			 * ::= SEQUENCE { version Version, modulus INTEGER, -- n
-			 * publicExponent INTEGER, -- e privateExponent INTEGER, -- d prime1
-			 * INTEGER, -- p prime2 INTEGER, -- q exponent1 INTEGER, -- d mod
-			 * (p-1) exponent2 INTEGER, -- d mod (q-1) coefficient INTEGER, --
-			 * (inverse of q) mod p otherPrimeInfos OtherPrimeInfos OPTIONAL }
+			 * Key must be in the following ASN.1 DER encoding, RSAPrivateKey ::= SEQUENCE { version Version, modulus INTEGER, -- n publicExponent INTEGER, -- e privateExponent INTEGER, -- d prime1
+			 * INTEGER, -- p prime2 INTEGER, -- q exponent1 INTEGER, -- d mod (p-1) exponent2 INTEGER, -- d mod (q-1) coefficient INTEGER, -- (inverse of q) mod p otherPrimeInfos OtherPrimeInfos
+			 * OPTIONAL }
 			 */
 
 			index++; // SEQUENCE
@@ -392,8 +385,7 @@ public class KeyPairRSA extends KeyPair {
 			SignatureRSA rsa = (SignatureRSA) (c.newInstance());
 			rsa.init();
 
-			if (pub_array == null && n_array == null
-					&& getPublicKeyBlob() != null) {
+			if (pub_array == null && n_array == null && getPublicKeyBlob() != null) {
 				Buffer buf = new Buffer(getPublicKeyBlob());
 				buf.getString();
 				pub_array = buf.getString();
@@ -444,26 +436,21 @@ public class KeyPairRSA extends KeyPair {
 
 	private byte[] getEPArray() {
 		if (ep_array == null) {
-			ep_array = (new BigInteger(prv_array)).mod(
-					new BigInteger(p_array).subtract(BigInteger.ONE))
-					.toByteArray();
+			ep_array = (new BigInteger(prv_array)).mod(new BigInteger(p_array).subtract(BigInteger.ONE)).toByteArray();
 		}
 		return ep_array;
 	}
 
 	private byte[] getEQArray() {
 		if (eq_array == null) {
-			eq_array = (new BigInteger(prv_array)).mod(
-					new BigInteger(q_array).subtract(BigInteger.ONE))
-					.toByteArray();
+			eq_array = (new BigInteger(prv_array)).mod(new BigInteger(q_array).subtract(BigInteger.ONE)).toByteArray();
 		}
 		return eq_array;
 	}
 
 	private byte[] getCArray() {
 		if (c_array == null) {
-			c_array = (new BigInteger(q_array)).modInverse(
-					new BigInteger(p_array)).toByteArray();
+			c_array = (new BigInteger(q_array)).modInverse(new BigInteger(p_array)).toByteArray();
 		}
 		return c_array;
 	}

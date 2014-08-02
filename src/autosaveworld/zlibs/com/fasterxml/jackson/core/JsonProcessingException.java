@@ -6,21 +6,17 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Intermediate base class for all problems encountered when processing
- * (parsing, generating) JSON content that are not pure I/O problems. Regular
- * {@link java.io.IOException}s will be passed through as is. Sub-class of
- * {@link java.io.IOException} for convenience.
+ * Intermediate base class for all problems encountered when processing (parsing, generating) JSON content that are not pure I/O problems. Regular {@link java.io.IOException}s will be passed through
+ * as is. Sub-class of {@link java.io.IOException} for convenience.
  */
 public class JsonProcessingException extends java.io.IOException {
 	final static long serialVersionUID = 123; // Stupid eclipse...
 
 	protected JsonLocation _location;
 
-	protected JsonProcessingException(String msg, JsonLocation loc,
-			Throwable rootCause) {
+	protected JsonProcessingException(String msg, JsonLocation loc, Throwable rootCause) {
 		/*
-		 * Argh. IOException(Throwable,String) is only available starting with
-		 * JDK 1.6...
+		 * Argh. IOException(Throwable,String) is only available starting with JDK 1.6...
 		 */
 		super(msg);
 		if (rootCause != null) {
@@ -50,14 +46,11 @@ public class JsonProcessingException extends java.io.IOException {
 	}
 
 	/*
-	 * /********************************************************** /* Extended
-	 * API /**********************************************************
+	 * /********************************************************** /* Extended API /**********************************************************
 	 */
 
 	/**
-	 * Method that allows accessing the original "message" argument, without
-	 * additional decorations (like location information) that overridden
-	 * {@link #getMessage} adds.
+	 * Method that allows accessing the original "message" argument, without additional decorations (like location information) that overridden {@link #getMessage} adds.
 	 *
 	 * @since 2.1
 	 */
@@ -66,23 +59,18 @@ public class JsonProcessingException extends java.io.IOException {
 	}
 
 	/*
-	 * /********************************************************** /* Methods
-	 * for sub-classes to use, override
-	 * /**********************************************************
+	 * /********************************************************** /* Methods for sub-classes to use, override /**********************************************************
 	 */
 
 	/**
-	 * Accessor that sub-classes can override to append additional information
-	 * right after the main message, but before source location information.
+	 * Accessor that sub-classes can override to append additional information right after the main message, but before source location information.
 	 */
 	protected String getMessageSuffix() {
 		return null;
 	}
 
 	/*
-	 * /********************************************************** /* Overrides
-	 * of standard methods
-	 * /**********************************************************
+	 * /********************************************************** /* Overrides of standard methods /**********************************************************
 	 */
 
 	/**

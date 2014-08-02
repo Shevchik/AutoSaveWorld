@@ -42,15 +42,12 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 		this(out, size, true);
 	}
 
-	public GZIPOutputStream(OutputStream out, int size, boolean close_out)
-			throws IOException {
-		this(out, new Deflater(JZlib.Z_DEFAULT_COMPRESSION, 15 + 16), size,
-				close_out);
+	public GZIPOutputStream(OutputStream out, int size, boolean close_out) throws IOException {
+		this(out, new Deflater(JZlib.Z_DEFAULT_COMPRESSION, 15 + 16), size, close_out);
 		mydeflater = true;
 	}
 
-	public GZIPOutputStream(OutputStream out, Deflater deflater, int size,
-			boolean close_out) throws IOException {
+	public GZIPOutputStream(OutputStream out, Deflater deflater, int size, boolean close_out) throws IOException {
 		super(out, deflater, size, close_out);
 	}
 

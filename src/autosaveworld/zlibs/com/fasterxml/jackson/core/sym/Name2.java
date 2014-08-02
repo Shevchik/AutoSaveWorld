@@ -1,13 +1,10 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.sym;
 
 /**
- * Specialized implementation of PName: can be used for short Strings that
- * consists of 5 to 8 bytes. Usually this means relatively short ascii-only
- * names.
+ * Specialized implementation of PName: can be used for short Strings that consists of 5 to 8 bytes. Usually this means relatively short ascii-only names.
  * <p>
- * The reason for such specialized classes is mostly space efficiency; and to a
- * lesser degree performance. Both are achieved for short Strings by avoiding
- * another level of indirection (via quad arrays)
+ * The reason for such specialized classes is mostly space efficiency; and to a lesser degree performance. Both are achieved for short Strings by avoiding another level of indirection (via quad
+ * arrays)
  */
 public final class Name2 extends Name {
 	private final int q1, q2;

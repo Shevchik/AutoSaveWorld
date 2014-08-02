@@ -159,8 +159,7 @@ public class ZStream {
 		return deflateInit(level, bits, false);
 	}
 
-	public int deflateInit(int level, int bits, int memlevel,
-			JZlib.WrapperType wrapperType) {
+	public int deflateInit(int level, int bits, int memlevel, JZlib.WrapperType wrapperType) {
 		if (bits < 9 || bits > 15) {
 			return Z_STREAM_ERROR;
 		}
@@ -229,17 +228,13 @@ public class ZStream {
 			return;
 		}
 
-		if (dstate.pending_buf.length <= dstate.pending_out
-				|| next_out.length <= next_out_index
-				|| dstate.pending_buf.length < (dstate.pending_out + len)
-				|| next_out.length < (next_out_index + len)) {
+		if (dstate.pending_buf.length <= dstate.pending_out || next_out.length <= next_out_index || dstate.pending_buf.length < (dstate.pending_out + len) || next_out.length < (next_out_index + len)) {
 			// System.out.println(dstate.pending_buf.length+", "+dstate.pending_out+
 			// ", "+next_out.length+", "+next_out_index+", "+len);
 			// System.out.println("avail_out="+avail_out);
 		}
 
-		System.arraycopy(dstate.pending_buf, dstate.pending_out, next_out,
-				next_out_index, len);
+		System.arraycopy(dstate.pending_buf, dstate.pending_out, next_out, next_out_index, len);
 
 		next_out_index += len;
 		dstate.pending_out += len;
@@ -386,8 +381,7 @@ public class ZStream {
 	}
 
 	/**
-	 * Those methods are expected to be override by Inflater and Deflater. In
-	 * the future, they will become abstract methods.
+	 * Those methods are expected to be override by Inflater and Deflater. In the future, they will become abstract methods.
 	 */
 	public int end() {
 		return Z_OK;

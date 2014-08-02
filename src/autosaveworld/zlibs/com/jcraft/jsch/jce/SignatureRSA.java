@@ -49,16 +49,14 @@ public class SignatureRSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 
 	@Override
 	public void setPubKey(byte[] e, byte[] n) throws Exception {
-		RSAPublicKeySpec rsaPubKeySpec = new RSAPublicKeySpec(
-				new BigInteger(n), new BigInteger(e));
+		RSAPublicKeySpec rsaPubKeySpec = new RSAPublicKeySpec(new BigInteger(n), new BigInteger(e));
 		PublicKey pubKey = keyFactory.generatePublic(rsaPubKeySpec);
 		signature.initVerify(pubKey);
 	}
 
 	@Override
 	public void setPrvKey(byte[] d, byte[] n) throws Exception {
-		RSAPrivateKeySpec rsaPrivKeySpec = new RSAPrivateKeySpec(
-				new BigInteger(n), new BigInteger(d));
+		RSAPrivateKeySpec rsaPrivKeySpec = new RSAPrivateKeySpec(new BigInteger(n), new BigInteger(d));
 		PrivateKey prvKey = keyFactory.generatePrivate(rsaPrivKeySpec);
 		signature.initSign(prvKey);
 	}
@@ -81,15 +79,9 @@ public class SignatureRSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 		byte[] tmp;
 
 		if (sig[0] == 0 && sig[1] == 0 && sig[2] == 0) {
-			j = ((sig[i++] << 24) & 0xff000000)
-					| ((sig[i++] << 16) & 0x00ff0000)
-					| ((sig[i++] << 8) & 0x0000ff00)
-					| ((sig[i++]) & 0x000000ff);
+			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);
 			i += j;
-			j = ((sig[i++] << 24) & 0xff000000)
-					| ((sig[i++] << 16) & 0x00ff0000)
-					| ((sig[i++] << 8) & 0x0000ff00)
-					| ((sig[i++]) & 0x000000ff);
+			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);
 			tmp = new byte[j];
 			System.arraycopy(sig, i, tmp, 0, j);
 			sig = tmp;

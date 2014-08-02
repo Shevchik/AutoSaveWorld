@@ -10,27 +10,21 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Interface that defines how Jackson package can interact with efficient
- * pre-serialized or lazily-serialized and reused String representations.
- * Typically implementations store possible serialized version(s) so that
- * serialization of String can be done more efficiently, especially when used
- * multiple times.
+ * Interface that defines how Jackson package can interact with efficient pre-serialized or lazily-serialized and reused String representations. Typically implementations store possible serialized
+ * version(s) so that serialization of String can be done more efficiently, especially when used multiple times.
  * <p>
- * Note that "quoted" in methods means quoting of 'special' characters using
- * JSON backlash notation (and not use of actual double quotes).
+ * Note that "quoted" in methods means quoting of 'special' characters using JSON backlash notation (and not use of actual double quotes).
  *
  * @see autosaveworld.zlibs.com.fasterxml.jackson.core.io.SerializedString
  */
 public interface SerializableString {
 	/**
-	 * Returns unquoted String that this object represents (and offers
-	 * serialized forms for)
+	 * Returns unquoted String that this object represents (and offers serialized forms for)
 	 */
 	String getValue();
 
 	/**
-	 * Returns length of the (unquoted) String as characters. Functionally
-	 * equvalent to:
+	 * Returns length of the (unquoted) String as characters. Functionally equvalent to:
 	 *
 	 * <pre>
 	 * getValue().length();
@@ -39,20 +33,16 @@ public interface SerializableString {
 	int charLength();
 
 	/*
-	 * /********************************************************** /* Accessors
-	 * for byte sequences
-	 * /**********************************************************
+	 * /********************************************************** /* Accessors for byte sequences /**********************************************************
 	 */
 
 	/**
-	 * Returns JSON quoted form of the String, as character array. Result can be
-	 * embedded as-is in textual JSON as property name or JSON String.
+	 * Returns JSON quoted form of the String, as character array. Result can be embedded as-is in textual JSON as property name or JSON String.
 	 */
 	char[] asQuotedChars();
 
 	/**
-	 * Returns UTF-8 encoded version of unquoted String. Functionally equivalent
-	 * to (but more efficient than):
+	 * Returns UTF-8 encoded version of unquoted String. Functionally equivalent to (but more efficient than):
 	 *
 	 * <pre>
 	 * getValue().getBytes(&quot;UTF-8&quot;);
@@ -61,8 +51,7 @@ public interface SerializableString {
 	byte[] asUnquotedUTF8();
 
 	/**
-	 * Returns UTF-8 encoded version of JSON-quoted String. Functionally
-	 * equivalent to (but more efficient than):
+	 * Returns UTF-8 encoded version of JSON-quoted String. Functionally equivalent to (but more efficient than):
 	 *
 	 * <pre>
 	 * new String(asQuotedChars()).getBytes(&quot;UTF-8&quot;);
@@ -71,15 +60,11 @@ public interface SerializableString {
 	byte[] asQuotedUTF8();
 
 	/*
-	 * /********************************************************** /* Helper
-	 * methods for appending byte/char sequences
-	 * /**********************************************************
+	 * /********************************************************** /* Helper methods for appending byte/char sequences /**********************************************************
 	 */
 
 	/**
-	 * Method that will append quoted UTF-8 bytes of this String into given
-	 * buffer, if there is enough room; if not, returns -1. Functionally
-	 * equivalent to:
+	 * Method that will append quoted UTF-8 bytes of this String into given buffer, if there is enough room; if not, returns -1. Functionally equivalent to:
 	 *
 	 * <pre>
 	 * byte[] bytes = str.asQuotedUTF8();
@@ -92,8 +77,7 @@ public interface SerializableString {
 	int appendQuotedUTF8(byte[] buffer, int offset);
 
 	/**
-	 * Method that will append quoted characters of this String into given
-	 * buffer. Functionally equivalent to:
+	 * Method that will append quoted characters of this String into given buffer. Functionally equivalent to:
 	 *
 	 * <pre>
 	 * char[] ch = str.asQuotedChars();
@@ -106,8 +90,7 @@ public interface SerializableString {
 	int appendQuoted(char[] buffer, int offset);
 
 	/**
-	 * Method that will append unquoted ('raw') UTF-8 bytes of this String into
-	 * given buffer. Functionally equivalent to:
+	 * Method that will append unquoted ('raw') UTF-8 bytes of this String into given buffer. Functionally equivalent to:
 	 *
 	 * <pre>
 	 * byte[] bytes = str.asUnquotedUTF8();
@@ -120,8 +103,7 @@ public interface SerializableString {
 	int appendUnquotedUTF8(byte[] buffer, int offset);
 
 	/**
-	 * Method that will append unquoted characters of this String into given
-	 * buffer. Functionally equivalent to:
+	 * Method that will append unquoted characters of this String into given buffer. Functionally equivalent to:
 	 *
 	 * <pre>
 	 * char[] ch = str.getValue().toCharArray();
@@ -134,9 +116,7 @@ public interface SerializableString {
 	int appendUnquoted(char[] buffer, int offset);
 
 	/*
-	 * /********************************************************** /* Helper
-	 * methods for writing out byte sequences
-	 * /**********************************************************
+	 * /********************************************************** /* Helper methods for writing out byte sequences /**********************************************************
 	 */
 
 	/**

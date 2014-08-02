@@ -38,8 +38,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 /**
- * This class implements ConfigRepository interface, and parses OpenSSH's
- * configuration file. The following keywords will be recognized,
+ * This class implements ConfigRepository interface, and parses OpenSSH's configuration file. The following keywords will be recognized,
  * <ul>
  * <li>Host</li>
  * <li>User</li>
@@ -112,7 +111,7 @@ public class OpenSSHConfig implements ConfigRepository {
 		BufferedReader br = new BufferedReader(r);
 
 		String host = "";
-		Vector/* <String[]> */<String[]>kv = new Vector<String[]>();
+		Vector/* <String[]> */<String[]> kv = new Vector<String[]>();
 		String l = null;
 
 		while ((l = br.readLine()) != null) {
@@ -172,8 +171,7 @@ public class OpenSSHConfig implements ConfigRepository {
 			byte[] _host = Util.str2byte(host);
 			if (hosts.size() > 1) {
 				for (int i = 1; i < hosts.size(); i++) {
-					String patterns[] = hosts.elementAt(i)
-							.split("[ \t]");
+					String patterns[] = hosts.elementAt(i).split("[ \t]");
 					for (int j = 0; j < patterns.length; j++) {
 						boolean negate = false;
 						String foo = patterns[j].trim();
@@ -183,12 +181,10 @@ public class OpenSSHConfig implements ConfigRepository {
 						}
 						if (Util.glob(Util.str2byte(foo), _host)) {
 							if (!negate) {
-								_configs.addElement(config.get(hosts
-										.elementAt(i)));
+								_configs.addElement(config.get(hosts.elementAt(i)));
 							}
 						} else if (negate) {
-							_configs.addElement(config.get(hosts
-									.elementAt(i)));
+							_configs.addElement(config.get(hosts.elementAt(i)));
 						}
 					}
 				}

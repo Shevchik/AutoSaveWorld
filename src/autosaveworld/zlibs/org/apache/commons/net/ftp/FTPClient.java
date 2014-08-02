@@ -425,8 +425,7 @@ public class FTPClient extends FTP {
 		__passivePort = -1;
 	}
 
-	public boolean enterRemoteActiveMode(InetAddress host, int port)
-			throws IOException {
+	public boolean enterRemoteActiveMode(InetAddress host, int port) throws IOException {
 		if (FTPReply.isPositiveCompletion(port(host, port))) {
 			__dataConnectionMode = ACTIVE_REMOTE_DATA_CONNECTION_MODE;
 			__passiveHost = null;
@@ -492,13 +491,11 @@ public class FTPClient extends FTP {
 		this.__activeMaxPort = maxPort;
 	}
 
-	public void setActiveExternalIPAddress(String ipAddress)
-			throws UnknownHostException {
+	public void setActiveExternalIPAddress(String ipAddress) throws UnknownHostException {
 		this.__activeExternalHost = InetAddress.getByName(ipAddress);
 	}
 
-	public void setPassiveLocalIPAddress(String ipAddress)
-			throws UnknownHostException {
+	public void setPassiveLocalIPAddress(String ipAddress) throws UnknownHostException {
 		this.__passiveLocalHost = InetAddress.getByName(ipAddress);
 	}
 
@@ -550,32 +547,28 @@ public class FTPClient extends FTP {
 	}
 
 	public boolean remoteStore(String filename) throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE
-				|| __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
 			return FTPReply.isPositivePreliminary(stor(filename));
 		}
 		return false;
 	}
 
 	public boolean remoteStoreUnique(String filename) throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE
-				|| __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
 			return FTPReply.isPositivePreliminary(stou(filename));
 		}
 		return false;
 	}
 
 	public boolean remoteStoreUnique() throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE
-				|| __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
 			return FTPReply.isPositivePreliminary(stou());
 		}
 		return false;
 	}
 
 	public boolean remoteAppend(String filename) throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE
-				|| __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
 			return FTPReply.isPositivePreliminary(appe(filename));
 		}
 		return false;
@@ -768,8 +761,7 @@ public class FTPClient extends FTP {
 	}
 
 	public String[] listNames(String pathname) throws IOException {
-		Socket socket = _openDataConnection_(FTPCmd.NLST,
-				getListArguments(pathname));
+		Socket socket = _openDataConnection_(FTPCmd.NLST, getListArguments(pathname));
 
 		if (socket == null) {
 			return null;

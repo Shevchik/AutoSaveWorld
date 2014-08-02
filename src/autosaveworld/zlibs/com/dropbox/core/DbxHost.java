@@ -11,32 +11,26 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
 
 /**
- * This is for mocking things out during testing. Most of the time you won't
- * have to deal with this class; just use the default value:
- * {@link DbxHost#Default}.
+ * This is for mocking things out during testing. Most of the time you won't have to deal with this class; just use the default value: {@link DbxHost#Default}.
  */
 public final class DbxHost {
 	/**
-	 * The standard Dropbox hosts: "api.dropbox.com", "api-content.dropbox.com",
-	 * and "www.dropbox.com"
+	 * The standard Dropbox hosts: "api.dropbox.com", "api-content.dropbox.com", and "www.dropbox.com"
 	 */
 	public static final DbxHost Default = new DbxHost("api.dropbox.com", "api-content.dropbox.com", "www.dropbox.com");
 
 	/**
-	 * The host name of the main Dropbox API server. The default is
-	 * "api.dropbox.com".
+	 * The host name of the main Dropbox API server. The default is "api.dropbox.com".
 	 */
 	public final String api;
 
 	/**
-	 * The host name of the Dropbox API content server. The default is
-	 * "api-content.dropbox.com".
+	 * The host name of the Dropbox API content server. The default is "api-content.dropbox.com".
 	 */
 	public final String content;
 
 	/**
-	 * The host name of the Dropbox web server. Used during user authorization.
-	 * The default is "www.dropbox.com".
+	 * The host name of the Dropbox web server. Used during user authorization. The default is "www.dropbox.com".
 	 */
 	public final String web;
 

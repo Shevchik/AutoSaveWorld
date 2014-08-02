@@ -6,13 +6,11 @@ import java.io.InputStream;
 import java.io.Reader;
 
 /**
- * Since JDK does not come with UTF-32/UCS-4, let's implement a simple decoder
- * to use.
+ * Since JDK does not come with UTF-32/UCS-4, let's implement a simple decoder to use.
  */
 public class UTF32Reader extends Reader {
 	/**
-	 * JSON actually limits available Unicode range in the high end to the same
-	 * as xml (to basically limit UTF-8 max byte sequence length to 4)
+	 * JSON actually limits available Unicode range in the high end to the same as xml (to basically limit UTF-8 max byte sequence length to 4)
 	 */
 	final protected static int LAST_VALID_UNICODE_CHAR = 0x10FFFF;
 
@@ -30,8 +28,7 @@ public class UTF32Reader extends Reader {
 	protected final boolean _bigEndian;
 
 	/**
-	 * Although input is fine with full Unicode set, Java still uses 16-bit
-	 * chars, so we may have to split high-order chars into surrogate pairs.
+	 * Although input is fine with full Unicode set, Java still uses 16-bit chars, so we may have to split high-order chars into surrogate pairs.
 	 */
 	protected char _surrogate = NC;
 
@@ -48,12 +45,10 @@ public class UTF32Reader extends Reader {
 	protected final boolean _managedBuffers;
 
 	/*
-	 * /********************************************************** /* Life-cycle
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle /**********************************************************
 	 */
 
-	public UTF32Reader(IOContext ctxt, InputStream in, byte[] buf, int ptr,
-			int len, boolean isBigEndian) {
+	public UTF32Reader(IOContext ctxt, InputStream in, byte[] buf, int ptr, int len, boolean isBigEndian) {
 		_context = ctxt;
 		_in = in;
 		_buffer = buf;
@@ -64,8 +59,7 @@ public class UTF32Reader extends Reader {
 	}
 
 	/*
-	 * /********************************************************** /* Public API
-	 * /**********************************************************
+	 * /********************************************************** /* Public API /**********************************************************
 	 */
 
 	@Override
@@ -82,9 +76,7 @@ public class UTF32Reader extends Reader {
 	protected char[] _tmpBuf = null;
 
 	/**
-	 * Although this method is implemented by the base class, AND it should
-	 * never be called by main code, let's still implement it bit more
-	 * efficiently just in case
+	 * Although this method is implemented by the base class, AND it should never be called by main code, let's still implement it bit more efficiently just in case
 	 */
 	@Override
 	public int read() throws IOException {
@@ -121,8 +113,7 @@ public class UTF32Reader extends Reader {
 			// No need to load more, already got one char
 		} else {
 			/*
-			 * Note: we'll try to avoid blocking as much as possible. As a
-			 * result, we only need to get 4 bytes for a full char.
+			 * Note: we'll try to avoid blocking as much as possible. As a result, we only need to get 4 bytes for a full char.
 			 */
 			int left = (_length - _ptr);
 			if (left < 4) {
@@ -137,13 +128,9 @@ public class UTF32Reader extends Reader {
 			int ch;
 
 			if (_bigEndian) {
-				ch = (_buffer[ptr] << 24) | ((_buffer[ptr + 1] & 0xFF) << 16)
-						| ((_buffer[ptr + 2] & 0xFF) << 8)
-						| (_buffer[ptr + 3] & 0xFF);
+				ch = (_buffer[ptr] << 24) | ((_buffer[ptr + 1] & 0xFF) << 16) | ((_buffer[ptr + 2] & 0xFF) << 8) | (_buffer[ptr + 3] & 0xFF);
 			} else {
-				ch = (_buffer[ptr] & 0xFF) | ((_buffer[ptr + 1] & 0xFF) << 8)
-						| ((_buffer[ptr + 2] & 0xFF) << 16)
-						| (_buffer[ptr + 3] << 24);
+				ch = (_buffer[ptr] & 0xFF) | ((_buffer[ptr + 1] & 0xFF) << 8) | ((_buffer[ptr + 2] & 0xFF) << 16) | (_buffer[ptr + 3] << 24);
 			}
 			_ptr += 4;
 
@@ -151,13 +138,7 @@ public class UTF32Reader extends Reader {
 			// (also, we can and need to verify illegal chars)
 			if (ch > 0xFFFF) { // need to split into surrogates?
 				if (ch > LAST_VALID_UNICODE_CHAR) {
-					reportInvalid(
-							ch,
-							outPtr - start,
-							"(above "
-									+ Integer
-											.toHexString(LAST_VALID_UNICODE_CHAR)
-									+ ") ");
+					reportInvalid(ch, outPtr - start, "(above " + Integer.toHexString(LAST_VALID_UNICODE_CHAR) + ") ");
 				}
 				ch -= 0x10000; // to normalize it starting with 0x0
 				cbuf[outPtr++] = (char) (0xD800 + (ch >> 10));
@@ -181,35 +162,26 @@ public class UTF32Reader extends Reader {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods /**********************************************************
+	 * /********************************************************** /* Internal methods /**********************************************************
 	 */
 
-	private void reportUnexpectedEOF(int gotBytes, int needed)
-			throws IOException {
+	private void reportUnexpectedEOF(int gotBytes, int needed) throws IOException {
 		int bytePos = _byteCount + gotBytes, charPos = _charCount;
 
-		throw new CharConversionException(
-				"Unexpected EOF in the middle of a 4-byte UTF-32 char: got "
-						+ gotBytes + ", needed " + needed + ", at char #"
-						+ charPos + ", byte #" + bytePos + ")");
+		throw new CharConversionException("Unexpected EOF in the middle of a 4-byte UTF-32 char: got " + gotBytes + ", needed " + needed + ", at char #" + charPos + ", byte #" + bytePos + ")");
 	}
 
-	private void reportInvalid(int value, int offset, String msg)
-			throws IOException {
+	private void reportInvalid(int value, int offset, String msg) throws IOException {
 		int bytePos = _byteCount + _ptr - 1, charPos = _charCount + offset;
 
-		throw new CharConversionException("Invalid UTF-32 character 0x"
-				+ Integer.toHexString(value) + msg + " at char #" + charPos
-				+ ", byte #" + bytePos + ")");
+		throw new CharConversionException("Invalid UTF-32 character 0x" + Integer.toHexString(value) + msg + " at char #" + charPos + ", byte #" + bytePos + ")");
 	}
 
 	/**
 	 * @param available
 	 *            Number of "unused" bytes in the input buffer
 	 *
-	 * @return True, if enough bytes were read to allow decoding of at least one
-	 *         full character; false if EOF was encountered instead.
+	 * @return True, if enough bytes were read to allow decoding of at least one full character; false if EOF was encountered instead.
 	 */
 	private boolean loadMore(int available) throws IOException {
 		_byteCount += (_length - available);
@@ -223,8 +195,7 @@ public class UTF32Reader extends Reader {
 			_length = available;
 		} else {
 			/*
-			 * Ok; here we can actually reasonably expect an EOF, so let's do a
-			 * separate read right away:
+			 * Ok; here we can actually reasonably expect an EOF, so let's do a separate read right away:
 			 */
 			_ptr = 0;
 			int count = (_in == null) ? -1 : _in.read(_buffer);
@@ -246,8 +217,7 @@ public class UTF32Reader extends Reader {
 		 * Need at least 4 bytes; if we don't get that many, it's an error.
 		 */
 		while (_length < 4) {
-			int count = (_in == null) ? -1 : _in.read(_buffer, _length,
-					_buffer.length - _length);
+			int count = (_in == null) ? -1 : _in.read(_buffer, _length, _buffer.length - _length);
 			if (count < 1) {
 				if (count < 0) { // -1, EOF... no good!
 					if (_managedBuffers) {
@@ -264,9 +234,7 @@ public class UTF32Reader extends Reader {
 	}
 
 	/**
-	 * This method should be called along with (or instead of) normal close.
-	 * After calling this method, no further reads should be tried. Method will
-	 * try to recycle read buffers (if any).
+	 * This method should be called along with (or instead of) normal close. After calling this method, no further reads should be tried. Method will try to recycle read buffers (if any).
 	 */
 	private void freeBuffers() {
 		byte[] buf = _buffer;
@@ -276,10 +244,8 @@ public class UTF32Reader extends Reader {
 		}
 	}
 
-	private void reportBounds(char[] cbuf, int start, int len)
-			throws IOException {
-		throw new ArrayIndexOutOfBoundsException("read(buf," + start + ","
-				+ len + "), cbuf[" + cbuf.length + "]");
+	private void reportBounds(char[] cbuf, int start, int len) throws IOException {
+		throw new ArrayIndexOutOfBoundsException("read(buf," + start + "," + len + "), cbuf[" + cbuf.length + "]");
 	}
 
 	private void reportStrangeStream() throws IOException {

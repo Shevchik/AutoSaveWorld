@@ -57,8 +57,7 @@ public class ProxySOCKS4 implements Proxy {
 		if (proxy_host.indexOf(':') != -1) {
 			try {
 				host = proxy_host.substring(0, proxy_host.indexOf(':'));
-				port = Integer.parseInt(proxy_host.substring(proxy_host
-						.indexOf(':') + 1));
+				port = Integer.parseInt(proxy_host.substring(proxy_host.indexOf(':') + 1));
 			} catch (Exception e) {
 			}
 		}
@@ -76,8 +75,7 @@ public class ProxySOCKS4 implements Proxy {
 	}
 
 	@Override
-	public void connect(SocketFactory socket_factory, String host, int port,
-			int timeout) throws JSchException {
+	public void connect(SocketFactory socket_factory, String host, int port, int timeout) throws JSchException {
 		try {
 			if (socket_factory == null) {
 				socket = Util.createSocket(proxy_host, proxy_port, timeout);
@@ -99,21 +97,14 @@ public class ProxySOCKS4 implements Proxy {
 
 			/*
 			 * 1) CONNECT
-			 *
-			 * The client connects to the SOCKS server and sends a CONNECT
-			 * request when it wants to establish a connection to an application
-			 * server. The client includes in the request packet the IP address
-			 * and the port number of the destination host, and userid, in the
-			 * following format.
-			 *
-			 * +----+----+----+----+----+----+----+----+----+----+....+----+ |
-			 * VN | CD | DSTPORT | DSTIP | USERID |NULL|
-			 * +----+----+----+----+----+----+----+----+----+----+....+----+ #
-			 * of bytes: 1 1 2 4 variable 1
-			 *
-			 * VN is the SOCKS protocol version number and should be 4. CD is
-			 * the SOCKS command code and should be 1 for CONNECT request. NULL
-			 * is a byte of all zero bits.
+			 * 
+			 * The client connects to the SOCKS server and sends a CONNECT request when it wants to establish a connection to an application server. The client includes in the request packet the IP
+			 * address and the port number of the destination host, and userid, in the following format.
+			 * 
+			 * +----+----+----+----+----+----+----+----+----+----+....+----+ | VN | CD | DSTPORT | DSTIP | USERID |NULL| +----+----+----+----+----+----+----+----+----+----+....+----+ # of bytes: 1 1 2
+			 * 4 variable 1
+			 * 
+			 * VN is the SOCKS protocol version number and should be 4. CD is the SOCKS command code and should be 1 for CONNECT request. NULL is a byte of all zero bits.
 			 */
 
 			index = 0;
@@ -134,35 +125,24 @@ public class ProxySOCKS4 implements Proxy {
 			}
 
 			if (user != null) {
-				System.arraycopy(Util.str2byte(user), 0, buf, index,
-						user.length());
+				System.arraycopy(Util.str2byte(user), 0, buf, index, user.length());
 				index += user.length();
 			}
 			buf[index++] = 0;
 			out.write(buf, 0, index);
 
 			/*
-			 * The SOCKS server checks to see whether such a request should be
-			 * granted based on any combination of source IP address,
-			 * destination IP address, destination port number, the userid, and
-			 * information it may obtain by consulting IDENT, cf. RFC 1413. If
-			 * the request is granted, the SOCKS server makes a connection to
-			 * the specified port of the destination host. A reply packet is
-			 * sent to the client when this connection is established, or when
-			 * the request is rejected or the operation fails.
-			 *
-			 * +----+----+----+----+----+----+----+----+ | VN | CD | DSTPORT |
-			 * DSTIP | +----+----+----+----+----+----+----+----+ # of bytes: 1 1
-			 * 2 4
-			 *
-			 * VN is the version of the reply code and should be 0. CD is the
-			 * result code with one of the following values:
-			 *
-			 * 90: request granted 91: request rejected or failed 92: request
-			 * rejected becasue SOCKS server cannot connect to identd on the
-			 * client 93: request rejected because the client program and identd
-			 * report different user-ids
-			 *
+			 * The SOCKS server checks to see whether such a request should be granted based on any combination of source IP address, destination IP address, destination port number, the userid, and
+			 * information it may obtain by consulting IDENT, cf. RFC 1413. If the request is granted, the SOCKS server makes a connection to the specified port of the destination host. A reply packet
+			 * is sent to the client when this connection is established, or when the request is rejected or the operation fails.
+			 * 
+			 * +----+----+----+----+----+----+----+----+ | VN | CD | DSTPORT | DSTIP | +----+----+----+----+----+----+----+----+ # of bytes: 1 1 2 4
+			 * 
+			 * VN is the version of the reply code and should be 0. CD is the result code with one of the following values:
+			 * 
+			 * 90: request granted 91: request rejected or failed 92: request rejected becasue SOCKS server cannot connect to identd on the client 93: request rejected because the client program and
+			 * identd report different user-ids
+			 * 
 			 * The remaining fields are ignored.
 			 */
 
@@ -176,8 +156,7 @@ public class ProxySOCKS4 implements Proxy {
 				s += i;
 			}
 			if (buf[0] != 0) {
-				throw new JSchException("ProxySOCKS4: server returns VN "
-						+ buf[0]);
+				throw new JSchException("ProxySOCKS4: server returns VN " + buf[0]);
 			}
 			if (buf[1] != 90) {
 				try {

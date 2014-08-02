@@ -97,7 +97,7 @@ public class PemLoader {
 			for (String[] certlines : certs) {
 				String line = certlines[0];
 				if (!line.equals("-----BEGIN CERTIFICATE-----")) {
-					throw new LoadException("Expecting \"-----BEGIN CERTIFICATE-----\", blank line, or comment line starting with \"#\", got \""+ line + "\"");
+					throw new LoadException("Expecting \"-----BEGIN CERTIFICATE-----\", blank line, or comment line starting with \"#\", got \"" + line + "\"");
 				}
 				byte[] certData = loadCertData(certlines);
 				X509Certificate certificate;

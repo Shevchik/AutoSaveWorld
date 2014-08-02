@@ -7,8 +7,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonStreamContext;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharTypes;
 
 /**
- * Extension of {@link JsonStreamContext}, which implements core methods needed,
- * and also exposes more complete API to parser implementation classes.
+ * Extension of {@link JsonStreamContext}, which implements core methods needed, and also exposes more complete API to parser implementation classes.
  */
 public final class JsonReadContext extends JsonStreamContext {
 	// // // Configuration
@@ -30,23 +29,17 @@ public final class JsonReadContext extends JsonStreamContext {
 	protected String _currentName;
 
 	/*
-	 * /********************************************************** /* Simple
-	 * instance reuse slots; speeds up things /* a bit (10-15%) for docs with
-	 * lots of small /* arrays/objects (for which allocation was /* visible in
-	 * profile stack frames)
-	 * /**********************************************************
+	 * /********************************************************** /* Simple instance reuse slots; speeds up things /* a bit (10-15%) for docs with lots of small /* arrays/objects (for which
+	 * allocation was /* visible in profile stack frames) /**********************************************************
 	 */
 
 	protected JsonReadContext _child = null;
 
 	/*
-	 * /********************************************************** /* Instance
-	 * construction, reuse
-	 * /**********************************************************
+	 * /********************************************************** /* Instance construction, reuse /**********************************************************
 	 */
 
-	public JsonReadContext(JsonReadContext parent, DupDetector dups, int type,
-			int lineNr, int colNr) {
+	public JsonReadContext(JsonReadContext parent, DupDetector dups, int type, int lineNr, int colNr) {
 		super();
 		_parent = parent;
 		_dups = dups;
@@ -68,8 +61,7 @@ public final class JsonReadContext extends JsonStreamContext {
 	}
 
 	/*
-	 * public void trackDups(JsonParser jp) { _dups =
-	 * DupDetector.rootDetector(jp); }
+	 * public void trackDups(JsonParser jp) { _dups = DupDetector.rootDetector(jp); }
 	 */
 
 	// // // Factory methods
@@ -80,8 +72,7 @@ public final class JsonReadContext extends JsonStreamContext {
 		return createRootContext(lineNr, colNr, null);
 	}
 
-	public static JsonReadContext createRootContext(int lineNr, int colNr,
-			DupDetector dups) {
+	public static JsonReadContext createRootContext(int lineNr, int colNr, DupDetector dups) {
 		return new JsonReadContext(null, dups, TYPE_ROOT, lineNr, colNr);
 	}
 
@@ -98,8 +89,7 @@ public final class JsonReadContext extends JsonStreamContext {
 	public JsonReadContext createChildArrayContext(int lineNr, int colNr) {
 		JsonReadContext ctxt = _child;
 		if (ctxt == null) {
-			_child = ctxt = new JsonReadContext(this, (_dups == null) ? null
-					: _dups.child(), TYPE_ARRAY, lineNr, colNr);
+			_child = ctxt = new JsonReadContext(this, (_dups == null) ? null : _dups.child(), TYPE_ARRAY, lineNr, colNr);
 		} else {
 			ctxt.reset(TYPE_ARRAY, lineNr, colNr);
 		}
@@ -109,8 +99,7 @@ public final class JsonReadContext extends JsonStreamContext {
 	public JsonReadContext createChildObjectContext(int lineNr, int colNr) {
 		JsonReadContext ctxt = _child;
 		if (ctxt == null) {
-			_child = ctxt = new JsonReadContext(this, (_dups == null) ? null
-					: _dups.child(), TYPE_OBJECT, lineNr, colNr);
+			_child = ctxt = new JsonReadContext(this, (_dups == null) ? null : _dups.child(), TYPE_OBJECT, lineNr, colNr);
 			return ctxt;
 		}
 		ctxt.reset(TYPE_OBJECT, lineNr, colNr);
@@ -118,9 +107,7 @@ public final class JsonReadContext extends JsonStreamContext {
 	}
 
 	/*
-	 * /********************************************************** /* Abstract
-	 * method implementation
-	 * /**********************************************************
+	 * /********************************************************** /* Abstract method implementation /**********************************************************
 	 */
 
 	@Override
@@ -134,13 +121,11 @@ public final class JsonReadContext extends JsonStreamContext {
 	}
 
 	/*
-	 * /********************************************************** /* Extended
-	 * API /**********************************************************
+	 * /********************************************************** /* Extended API /**********************************************************
 	 */
 
 	/**
-	 * @return Location pointing to the point where the context start marker was
-	 *         found
+	 * @return Location pointing to the point where the context start marker was found
 	 */
 	public JsonLocation getStartLocation(Object srcRef) {
 		// We don't keep track of offsets at this level (only reader does)
@@ -149,15 +134,12 @@ public final class JsonReadContext extends JsonStreamContext {
 	}
 
 	/*
-	 * /********************************************************** /* State
-	 * changes /**********************************************************
+	 * /********************************************************** /* State changes /**********************************************************
 	 */
 
 	public boolean expectComma() {
 		/*
-		 * Assumption here is that we will be getting a value (at least before
-		 * calling this method again), and so will auto-increment index to avoid
-		 * having to do another call
+		 * Assumption here is that we will be getting a value (at least before calling this method again), and so will auto-increment index to avoid having to do another call
 		 */
 		int ix = ++_index; // starts from -1
 		return (_type != TYPE_ROOT && ix > 0);
@@ -170,47 +152,42 @@ public final class JsonReadContext extends JsonStreamContext {
 		}
 	}
 
-	private void _checkDup(DupDetector dd, String name)
-			throws JsonProcessingException {
+	private void _checkDup(DupDetector dd, String name) throws JsonProcessingException {
 		if (dd.isDup(name)) {
-			throw new JsonParseException("Duplicate field '" + name + "'",
-					dd.findLocation());
+			throw new JsonParseException("Duplicate field '" + name + "'", dd.findLocation());
 		}
 	}
 
 	/*
-	 * /********************************************************** /* Overridden
-	 * standard methods
-	 * /**********************************************************
+	 * /********************************************************** /* Overridden standard methods /**********************************************************
 	 */
 
 	/**
-	 * Overridden to provide developer readable "JsonPath" representation of the
-	 * context.
+	 * Overridden to provide developer readable "JsonPath" representation of the context.
 	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(64);
 		switch (_type) {
-		case TYPE_ROOT:
-			sb.append("/");
-			break;
-		case TYPE_ARRAY:
-			sb.append('[');
-			sb.append(getCurrentIndex());
-			sb.append(']');
-			break;
-		case TYPE_OBJECT:
-			sb.append('{');
-			if (_currentName != null) {
-				sb.append('"');
-				CharTypes.appendQuoted(sb, _currentName);
-				sb.append('"');
-			} else {
-				sb.append('?');
-			}
-			sb.append('}');
-			break;
+			case TYPE_ROOT:
+				sb.append("/");
+				break;
+			case TYPE_ARRAY:
+				sb.append('[');
+				sb.append(getCurrentIndex());
+				sb.append(']');
+				break;
+			case TYPE_OBJECT:
+				sb.append('{');
+				if (_currentName != null) {
+					sb.append('"');
+					CharTypes.appendQuoted(sb, _currentName);
+					sb.append('"');
+				} else {
+					sb.append('?');
+				}
+				sb.append('}');
+				break;
 		}
 		return sb.toString();
 	}

@@ -30,8 +30,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Given a string, returns the representation of that string as a Java
-	 * string literal.
+	 * Given a string, returns the representation of that string as a Java string literal.
 	 */
 	public static String javaQuotedLiteral(String value) {
 		StringBuilder b = new StringBuilder(value.length() * 2);
@@ -39,39 +38,39 @@ public class StringUtil {
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
 			switch (c) {
-			case '"':
-				b.append("\\\"");
-				break;
-			case '\\':
-				b.append("\\\\");
-				break;
-			case '\n':
-				b.append("\\n");
-				break;
-			case '\r':
-				b.append("\\t");
-				break;
-			case '\t':
-				b.append("\\r");
-				break;
-			case '\0':
-				b.append("\\000");
-				break; // Inserting '\0' isn't safe if there's a digit after
-			default:
-				if (c >= 0x20 && c <= 0x7e) {
-					b.append(c);
-				} else {
-					int h1 = (c >> 12) & 0xf;
-					int h2 = (c >> 8) & 0xf;
-					int h3 = (c >> 4) & 0xf;
-					int h4 = c & 0xf;
-					b.append("\\u");
-					b.append(HexDigits[h1]);
-					b.append(HexDigits[h2]);
-					b.append(HexDigits[h3]);
-					b.append(HexDigits[h4]);
-				}
-				break;
+				case '"':
+					b.append("\\\"");
+					break;
+				case '\\':
+					b.append("\\\\");
+					break;
+				case '\n':
+					b.append("\\n");
+					break;
+				case '\r':
+					b.append("\\t");
+					break;
+				case '\t':
+					b.append("\\r");
+					break;
+				case '\0':
+					b.append("\\000");
+					break; // Inserting '\0' isn't safe if there's a digit after
+				default:
+					if (c >= 0x20 && c <= 0x7e) {
+						b.append(c);
+					} else {
+						int h1 = (c >> 12) & 0xf;
+						int h2 = (c >> 8) & 0xf;
+						int h3 = (c >> 4) & 0xf;
+						int h4 = c & 0xf;
+						b.append("\\u");
+						b.append(HexDigits[h1]);
+						b.append(HexDigits[h2]);
+						b.append(HexDigits[h3]);
+						b.append(HexDigits[h4]);
+					}
+					break;
 			}
 		}
 		b.append('"');
@@ -88,9 +87,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Convert a string of binary bytes to the equivalent hexadecimal string.
-	 * The resulting String will have two characters for every byte in the
-	 * input.
+	 * Convert a string of binary bytes to the equivalent hexadecimal string. The resulting String will have two characters for every byte in the input.
 	 */
 	public static String binaryToHex(byte[] data, int offset, int length) {
 		assert offset < data.length && offset >= 0 : offset + ", " + data.length;
@@ -109,10 +106,8 @@ public class StringUtil {
 	}
 
 	/**
-	 * When you're compating two strings for equality and one of them is a value
-	 * that could be provided by an attacker and the other is a value that the
-	 * attacker shouldn't know, use this function to check for equality. Using
-	 * regular {@code String.equals} is not secure.
+	 * When you're compating two strings for equality and one of them is a value that could be provided by an attacker and the other is a value that the attacker shouldn't know, use this function to
+	 * check for equality. Using regular {@code String.equals} is not secure.
 	 */
 	public static boolean secureStringEquals(String a, String b) {
 		if (a.length() != b.length()) {

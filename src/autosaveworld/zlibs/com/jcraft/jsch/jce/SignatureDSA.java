@@ -48,21 +48,15 @@ public class SignatureDSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 	}
 
 	@Override
-	public void setPubKey(byte[] y, byte[] p, byte[] q, byte[] g)
-			throws Exception {
-		DSAPublicKeySpec dsaPubKeySpec = new DSAPublicKeySpec(
-				new BigInteger(y), new BigInteger(p), new BigInteger(q),
-				new BigInteger(g));
+	public void setPubKey(byte[] y, byte[] p, byte[] q, byte[] g) throws Exception {
+		DSAPublicKeySpec dsaPubKeySpec = new DSAPublicKeySpec(new BigInteger(y), new BigInteger(p), new BigInteger(q), new BigInteger(g));
 		PublicKey pubKey = keyFactory.generatePublic(dsaPubKeySpec);
 		signature.initVerify(pubKey);
 	}
 
 	@Override
-	public void setPrvKey(byte[] x, byte[] p, byte[] q, byte[] g)
-			throws Exception {
-		DSAPrivateKeySpec dsaPrivKeySpec = new DSAPrivateKeySpec(
-				new BigInteger(x), new BigInteger(p), new BigInteger(q),
-				new BigInteger(g));
+	public void setPrvKey(byte[] x, byte[] p, byte[] q, byte[] g) throws Exception {
+		DSAPrivateKeySpec dsaPrivKeySpec = new DSAPrivateKeySpec(new BigInteger(x), new BigInteger(p), new BigInteger(q), new BigInteger(g));
 		PrivateKey prvKey = keyFactory.generatePrivate(dsaPrivKeySpec);
 		signature.initSign(prvKey);
 	}
@@ -71,10 +65,7 @@ public class SignatureDSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 	public byte[] sign() throws Exception {
 		byte[] sig = signature.sign();
 		/*
-		 * System.err.print("sign["+sig.length+"] "); for(int i=0;
-		 * i<sig.length;i++){
-		 * System.err.print(Integer.toHexString(sig[i]&0xff)+":"); }
-		 * System.err.println("");
+		 * System.err.print("sign["+sig.length+"] "); for(int i=0; i<sig.length;i++){ System.err.print(Integer.toHexString(sig[i]&0xff)+":"); } System.err.println("");
 		 */
 		// sig is in ASN.1
 		// SEQUENCE::={ r INTEGER, s INTEGER }
@@ -94,12 +85,8 @@ public class SignatureDSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 
 		// result must be 40 bytes, but length of r and s may not be 20 bytes
 
-		System.arraycopy(r, (r.length > 20) ? 1 : 0, result,
-				(r.length > 20) ? 0 : 20 - r.length, (r.length > 20) ? 20
-						: r.length);
-		System.arraycopy(s, (s.length > 20) ? 1 : 0, result,
-				(s.length > 20) ? 20 : 40 - s.length, (s.length > 20) ? 20
-						: s.length);
+		System.arraycopy(r, (r.length > 20) ? 1 : 0, result, (r.length > 20) ? 0 : 20 - r.length, (r.length > 20) ? 20 : r.length);
+		System.arraycopy(s, (s.length > 20) ? 1 : 0, result, (s.length > 20) ? 20 : 40 - s.length, (s.length > 20) ? 20 : s.length);
 
 		// System.arraycopy(sig, (sig[3]==20?4:5), result, 0, 20);
 		// System.arraycopy(sig, sig.length-20, result, 20, 20);
@@ -119,15 +106,9 @@ public class SignatureDSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 		byte[] tmp;
 
 		if (sig[0] == 0 && sig[1] == 0 && sig[2] == 0) {
-			j = ((sig[i++] << 24) & 0xff000000)
-					| ((sig[i++] << 16) & 0x00ff0000)
-					| ((sig[i++] << 8) & 0x0000ff00)
-					| ((sig[i++]) & 0x000000ff);
+			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);
 			i += j;
-			j = ((sig[i++] << 24) & 0xff000000)
-					| ((sig[i++] << 16) & 0x00ff0000)
-					| ((sig[i++] << 8) & 0x0000ff00)
-					| ((sig[i++]) & 0x000000ff);
+			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);
 			tmp = new byte[j];
 			System.arraycopy(sig, i, tmp, 0, j);
 			sig = tmp;
@@ -155,10 +136,8 @@ public class SignatureDSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 		sig = tmp;
 
 		/*
-		 * tmp=new byte[sig.length+6]; tmp[0]=(byte)0x30; tmp[1]=(byte)0x2c;
-		 * tmp[2]=(byte)0x02; tmp[3]=(byte)0x14; System.arraycopy(sig, 0, tmp,
-		 * 4, 20); tmp[24]=(byte)0x02; tmp[25]=(byte)0x14; System.arraycopy(sig,
-		 * 20, tmp, 26, 20); sig=tmp;
+		 * tmp=new byte[sig.length+6]; tmp[0]=(byte)0x30; tmp[1]=(byte)0x2c; tmp[2]=(byte)0x02; tmp[3]=(byte)0x14; System.arraycopy(sig, 0, tmp, 4, 20); tmp[24]=(byte)0x02; tmp[25]=(byte)0x14;
+		 * System.arraycopy(sig, 20, tmp, 26, 20); sig=tmp;
 		 */
 		return signature.verify(sig);
 	}

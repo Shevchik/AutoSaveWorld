@@ -31,7 +31,7 @@ package autosaveworld.zlibs.com.jcraft.jsch;
 
 public class SftpException extends Exception {
 
-	private static final long serialVersionUID=-5616888495583253811L;
+	private static final long serialVersionUID = -5616888495583253811L;
 
 	public int id;
 	private Throwable cause = null;

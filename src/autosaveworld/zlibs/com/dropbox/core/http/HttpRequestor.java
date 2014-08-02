@@ -7,23 +7,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An interface that the Dropbox client library uses to make HTTP requests. If
- * you're fine with the standard Java {@link java.net.HttpURLConnection}
- * implementation, then just use {@link StandardHttpRequestor#Instance}.
+ * An interface that the Dropbox client library uses to make HTTP requests. If you're fine with the standard Java {@link java.net.HttpURLConnection} implementation, then just use
+ * {@link StandardHttpRequestor#Instance}.
  */
 public abstract class HttpRequestor {
-	public abstract Response doGet(String url, Iterable<Header> headers)
-			throws IOException;
+	public abstract Response doGet(String url, Iterable<Header> headers) throws IOException;
 
-	public abstract Uploader startPost(String url, Iterable<Header> headers)
-			throws IOException;
+	public abstract Uploader startPost(String url, Iterable<Header> headers) throws IOException;
 
-	public abstract Uploader startPut(String url, Iterable<Header> headers)
-			throws IOException;
+	public abstract Uploader startPut(String url, Iterable<Header> headers) throws IOException;
 
 	/**
-	 * A simple structure holding an HTTP header, which is key/value pair. Used
-	 * with {@link HttpRequestor}.
+	 * A simple structure holding an HTTP header, which is key/value pair. Used with {@link HttpRequestor}.
 	 */
 	public static final class Header {
 		public final String key;
@@ -54,8 +49,7 @@ public abstract class HttpRequestor {
 		public final InputStream body;
 		public final Map<String, ? extends List<String>> headers;
 
-		public Response(int statusCode, InputStream body,
-				Map<String, ? extends List<String>> headers) {
+		public Response(int statusCode, InputStream body, Map<String, ? extends List<String>> headers) {
 			this.statusCode = statusCode;
 			this.body = body;
 			this.headers = headers;

@@ -58,8 +58,7 @@ class UserAuthNone extends UserAuth {
 		boolean result = (command == SSH_MSG_SERVICE_ACCEPT);
 
 		if (JSch.getLogger().isEnabled(Logger.INFO)) {
-			JSch.getLogger()
-			.log(Logger.INFO, "SSH_MSG_SERVICE_ACCEPT received");
+			JSch.getLogger().log(Logger.INFO, "SSH_MSG_SERVICE_ACCEPT received");
 		}
 		if (!result) {
 			return false;

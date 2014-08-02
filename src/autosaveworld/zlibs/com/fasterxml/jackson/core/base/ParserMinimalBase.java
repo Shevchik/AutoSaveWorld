@@ -22,13 +22,9 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.VersionUtil;
 
 /**
- * Intermediate base class used by all Jackson {@link JsonParser}
- * implementations, but does not add any additional fields that depend on
- * particular method of obtaining input.
+ * Intermediate base class used by all Jackson {@link JsonParser} implementations, but does not add any additional fields that depend on particular method of obtaining input.
  * <p>
- * Note that 'minimal' here mostly refers to minimal number of fields (size) and
- * functionality that is specific to certain types of parser implementations;
- * but not necessarily to number of methods.
+ * Note that 'minimal' here mostly refers to minimal number of fields (size) and functionality that is specific to certain types of parser implementations; but not necessarily to number of methods.
  */
 public abstract class ParserMinimalBase extends JsonParser {
 	// Control chars:
@@ -55,27 +51,21 @@ public abstract class ParserMinimalBase extends JsonParser {
 	protected final static int INT_E = 'E';
 
 	/*
-	 * /********************************************************** /* Minimal
-	 * generally useful state
-	 * /**********************************************************
+	 * /********************************************************** /* Minimal generally useful state /**********************************************************
 	 */
 
 	/**
-	 * Last token retrieved via {@link #nextToken}, if any. Null before the
-	 * first call to <code>nextToken()</code>, as well as if token has been
-	 * explicitly cleared
+	 * Last token retrieved via {@link #nextToken}, if any. Null before the first call to <code>nextToken()</code>, as well as if token has been explicitly cleared
 	 */
 	protected JsonToken _currToken;
 
 	/**
-	 * Last cleared token, if any: that is, value that was in effect when
-	 * {@link #clearCurrentToken} was called.
+	 * Last cleared token, if any: that is, value that was in effect when {@link #clearCurrentToken} was called.
 	 */
 	protected JsonToken _lastClearedToken;
 
 	/*
-	 * /********************************************************** /* Life-cycle
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle /**********************************************************
 	 */
 
 	protected ParserMinimalBase() {
@@ -89,9 +79,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	// public abstract Version version();
 
 	/*
-	 * /********************************************************** /*
-	 * Configuration overrides if any
-	 * /**********************************************************
+	 * /********************************************************** /* Configuration overrides if any /**********************************************************
 	 */
 
 	// from base class:
@@ -102,13 +90,11 @@ public abstract class ParserMinimalBase extends JsonParser {
 	// public boolean isFeatureEnabled(Feature f)
 
 	/*
-	 * /********************************************************** /* JsonParser
-	 * impl /**********************************************************
+	 * /********************************************************** /* JsonParser impl /**********************************************************
 	 */
 
 	@Override
-	public abstract JsonToken nextToken() throws IOException,
-			JsonParseException;
+	public abstract JsonToken nextToken() throws IOException, JsonParseException;
 
 	@Override
 	public JsonToken getCurrentToken() {
@@ -129,9 +115,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	@Override
 	public JsonToken nextValue() throws IOException {
 		/*
-		 * Implementation should be as trivial as follows; only needs to change
-		 * if we are to skip other tokens (for example, if comments were exposed
-		 * as tokens)
+		 * Implementation should be as trivial as follows; only needs to change if we are to skip other tokens (for example, if comments were exposed as tokens)
 		 */
 		JsonToken t = nextToken();
 		if (t == JsonToken.FIELD_NAME) {
@@ -142,24 +126,20 @@ public abstract class ParserMinimalBase extends JsonParser {
 
 	@Override
 	public JsonParser skipChildren() throws IOException {
-		if (_currToken != JsonToken.START_OBJECT
-				&& _currToken != JsonToken.START_ARRAY) {
+		if (_currToken != JsonToken.START_OBJECT && _currToken != JsonToken.START_ARRAY) {
 			return this;
 		}
 		int open = 1;
 
 		/*
-		 * Since proper matching of start/end markers is handled by nextToken(),
-		 * we'll just count nesting levels here
+		 * Since proper matching of start/end markers is handled by nextToken(), we'll just count nesting levels here
 		 */
 		while (true) {
 			JsonToken t = nextToken();
 			if (t == null) {
 				_handleEOF();
 				/*
-				 * given constraints, above should never return; however,
-				 * FindBugs doesn't know about it and complains... so let's add
-				 * dummy break here
+				 * given constraints, above should never return; however, FindBugs doesn't know about it and complains... so let's add dummy break here
 				 */
 				return this;
 			}
@@ -198,9 +178,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	// public abstract JsonLocation getCurrentLocation();
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, token state overrides
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, token state overrides /**********************************************************
 	 */
 
 	@Override
@@ -220,9 +198,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	public abstract void overrideCurrentName(String name);
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access to token information, text
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access to token information, text /**********************************************************
 	 */
 
 	@Override
@@ -241,19 +217,14 @@ public abstract class ParserMinimalBase extends JsonParser {
 	public abstract int getTextOffset() throws IOException;
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access to token information, binary
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access to token information, binary /**********************************************************
 	 */
 
 	@Override
-	public abstract byte[] getBinaryValue(Base64Variant b64variant)
-			throws IOException;
+	public abstract byte[] getBinaryValue(Base64Variant b64variant) throws IOException;
 
 	/*
-	 * /********************************************************** /* Public
-	 * API, access with conversion/coercion
-	 * /**********************************************************
+	 * /********************************************************** /* Public API, access with conversion/coercion /**********************************************************
 	 */
 
 	@Override
@@ -261,32 +232,32 @@ public abstract class ParserMinimalBase extends JsonParser {
 		JsonToken t = _currToken;
 		if (t != null) {
 			switch (t.id()) {
-			case ID_STRING:
-				String str = getText().trim();
-				if ("true".equals(str)) {
+				case ID_STRING:
+					String str = getText().trim();
+					if ("true".equals(str)) {
+						return true;
+					}
+					if ("false".equals(str)) {
+						return false;
+					}
+					if (_hasTextualNull(str)) {
+						return false;
+					}
+					break;
+				case ID_NUMBER_INT:
+					return getIntValue() != 0;
+				case ID_TRUE:
 					return true;
-				}
-				if ("false".equals(str)) {
+				case ID_FALSE:
+				case ID_NULL:
 					return false;
-				}
-				if (_hasTextualNull(str)) {
-					return false;
-				}
-				break;
-			case ID_NUMBER_INT:
-				return getIntValue() != 0;
-			case ID_TRUE:
-				return true;
-			case ID_FALSE:
-			case ID_NULL:
-				return false;
-			case ID_EMBEDDED_OBJECT:
-				Object value = this.getEmbeddedObject();
-				if (value instanceof Boolean) {
-					return (Boolean) value;
-				}
-				break;
-			default:
+				case ID_EMBEDDED_OBJECT:
+					Object value = this.getEmbeddedObject();
+					if (value instanceof Boolean) {
+						return (Boolean) value;
+					}
+					break;
+				default:
 			}
 		}
 		return defaultValue;
@@ -297,26 +268,26 @@ public abstract class ParserMinimalBase extends JsonParser {
 		JsonToken t = _currToken;
 		if (t != null) {
 			switch (t.id()) {
-			case ID_STRING:
-				String str = getText();
-				if (_hasTextualNull(str)) {
+				case ID_STRING:
+					String str = getText();
+					if (_hasTextualNull(str)) {
+						return 0;
+					}
+					return NumberInput.parseAsInt(str, defaultValue);
+				case ID_NUMBER_INT:
+				case ID_NUMBER_FLOAT:
+					return getIntValue();
+				case ID_TRUE:
+					return 1;
+				case ID_FALSE:
 					return 0;
-				}
-				return NumberInput.parseAsInt(str, defaultValue);
-			case ID_NUMBER_INT:
-			case ID_NUMBER_FLOAT:
-				return getIntValue();
-			case ID_TRUE:
-				return 1;
-			case ID_FALSE:
-				return 0;
-			case ID_NULL:
-				return 0;
-			case ID_EMBEDDED_OBJECT:
-				Object value = this.getEmbeddedObject();
-				if (value instanceof Number) {
-					return ((Number) value).intValue();
-				}
+				case ID_NULL:
+					return 0;
+				case ID_EMBEDDED_OBJECT:
+					Object value = this.getEmbeddedObject();
+					if (value instanceof Number) {
+						return ((Number) value).intValue();
+					}
 			}
 		}
 		return defaultValue;
@@ -327,25 +298,25 @@ public abstract class ParserMinimalBase extends JsonParser {
 		JsonToken t = _currToken;
 		if (t != null) {
 			switch (t.id()) {
-			case ID_STRING:
-				String str = getText();
-				if (_hasTextualNull(str)) {
+				case ID_STRING:
+					String str = getText();
+					if (_hasTextualNull(str)) {
+						return 0L;
+					}
+					return NumberInput.parseAsLong(str, defaultValue);
+				case ID_NUMBER_INT:
+				case ID_NUMBER_FLOAT:
+					return getLongValue();
+				case ID_TRUE:
+					return 1L;
+				case ID_FALSE:
+				case ID_NULL:
 					return 0L;
-				}
-				return NumberInput.parseAsLong(str, defaultValue);
-			case ID_NUMBER_INT:
-			case ID_NUMBER_FLOAT:
-				return getLongValue();
-			case ID_TRUE:
-				return 1L;
-			case ID_FALSE:
-			case ID_NULL:
-				return 0L;
-			case ID_EMBEDDED_OBJECT:
-				Object value = this.getEmbeddedObject();
-				if (value instanceof Number) {
-					return ((Number) value).longValue();
-				}
+				case ID_EMBEDDED_OBJECT:
+					Object value = this.getEmbeddedObject();
+					if (value instanceof Number) {
+						return ((Number) value).longValue();
+					}
 			}
 		}
 		return defaultValue;
@@ -356,25 +327,25 @@ public abstract class ParserMinimalBase extends JsonParser {
 		JsonToken t = _currToken;
 		if (t != null) {
 			switch (t.id()) {
-			case ID_STRING:
-				String str = getText();
-				if (_hasTextualNull(str)) {
-					return 0L;
-				}
-				return NumberInput.parseAsDouble(str, defaultValue);
-			case ID_NUMBER_INT:
-			case ID_NUMBER_FLOAT:
-				return getDoubleValue();
-			case ID_TRUE:
-				return 1.0;
-			case ID_FALSE:
-			case ID_NULL:
-				return 0.0;
-			case ID_EMBEDDED_OBJECT:
-				Object value = this.getEmbeddedObject();
-				if (value instanceof Number) {
-					return ((Number) value).doubleValue();
-				}
+				case ID_STRING:
+					String str = getText();
+					if (_hasTextualNull(str)) {
+						return 0L;
+					}
+					return NumberInput.parseAsDouble(str, defaultValue);
+				case ID_NUMBER_INT:
+				case ID_NUMBER_FLOAT:
+					return getDoubleValue();
+				case ID_TRUE:
+					return 1.0;
+				case ID_FALSE:
+				case ID_NULL:
+					return 0.0;
+				case ID_EMBEDDED_OBJECT:
+					Object value = this.getEmbeddedObject();
+					if (value instanceof Number) {
+						return ((Number) value).doubleValue();
+					}
 			}
 		}
 		return defaultValue;
@@ -383,8 +354,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	@Override
 	public String getValueAsString(String defaultValue) throws IOException {
 		if (_currToken != JsonToken.VALUE_STRING) {
-			if (_currToken == null || _currToken == JsonToken.VALUE_NULL
-					|| !_currToken.isScalarValue()) {
+			if (_currToken == null || _currToken == JsonToken.VALUE_NULL || !_currToken.isScalarValue()) {
 				return defaultValue;
 			}
 		}
@@ -392,16 +362,13 @@ public abstract class ParserMinimalBase extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Base64
-	 * decoding /**********************************************************
+	 * /********************************************************** /* Base64 decoding /**********************************************************
 	 */
 
 	/**
-	 * Helper method that can be used for base64 decoding in cases where encoded
-	 * content has already been read as a String.
+	 * Helper method that can be used for base64 decoding in cases where encoded content has already been read as a String.
 	 */
-	protected void _decodeBase64(String str, ByteArrayBuilder builder,
-			Base64Variant b64variant) throws IOException {
+	protected void _decodeBase64(String str, ByteArrayBuilder builder, Base64Variant b64variant) throws IOException {
 		// just call helper method introduced in 2.2.3
 		try {
 			b64variant.decode(str, builder);
@@ -412,34 +379,23 @@ public abstract class ParserMinimalBase extends JsonParser {
 
 	/**
 	 * @param bindex
-	 *            Relative index within base64 character unit; between 0 and 3
-	 *            (as unit has exactly 4 characters)
+	 *            Relative index within base64 character unit; between 0 and 3 (as unit has exactly 4 characters)
 	 *
 	 * @deprecated in 2.2.3; should migrate away
 	 */
 	@Deprecated
-	protected void _reportInvalidBase64(Base64Variant b64variant, char ch,
-			int bindex, String msg) throws JsonParseException {
+	protected void _reportInvalidBase64(Base64Variant b64variant, char ch, int bindex, String msg) throws JsonParseException {
 		String base;
 		if (ch <= INT_SPACE) {
-			base = "Illegal white space character (code 0x"
-					+ Integer.toHexString(ch) + ") as character #"
-					+ (bindex + 1)
-					+ " of 4-char base64 unit: can only used between units";
+			base = "Illegal white space character (code 0x" + Integer.toHexString(ch) + ") as character #" + (bindex + 1) + " of 4-char base64 unit: can only used between units";
 		} else if (b64variant.usesPaddingChar(ch)) {
-			base = "Unexpected padding character ('"
-					+ b64variant.getPaddingChar()
-					+ "') as character #"
-					+ (bindex + 1)
-					+ " of 4-char base64 unit: padding only legal as 3rd or 4th character";
+			base = "Unexpected padding character ('" + b64variant.getPaddingChar() + "') as character #" + (bindex + 1) + " of 4-char base64 unit: padding only legal as 3rd or 4th character";
 		} else if (!Character.isDefined(ch) || Character.isISOControl(ch)) {
 			// Not sure if we can really get here... ? (most illegal xml chars
 			// are caught at lower level)
-			base = "Illegal character (code 0x" + Integer.toHexString(ch)
-					+ ") in base64 content";
+			base = "Illegal character (code 0x" + Integer.toHexString(ch) + ") in base64 content";
 		} else {
-			base = "Illegal character '" + ch + "' (code 0x"
-					+ Integer.toHexString(ch) + ") in base64 content";
+			base = "Illegal character '" + ch + "' (code 0x" + Integer.toHexString(ch) + ") in base64 content";
 		}
 		if (msg != null) {
 			base = base + ": " + msg;
@@ -457,15 +413,12 @@ public abstract class ParserMinimalBase extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Coercion
-	 * helper methods (overridable)
-	 * /**********************************************************
+	 * /********************************************************** /* Coercion helper methods (overridable) /**********************************************************
 	 */
 
 	/**
-	 * Helper method used to determine whether we are currently pointing to a
-	 * String value of "null" (NOT a null token); and, if so, that parser is to
-	 * recognize and return it similar to if it was real null token.
+	 * Helper method used to determine whether we are currently pointing to a String value of "null" (NOT a null token); and, if so, that parser is to recognize and return it similar to if it was real
+	 * null token.
 	 *
 	 * @since 2.3
 	 */
@@ -474,12 +427,10 @@ public abstract class ParserMinimalBase extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Error
-	 * reporting /**********************************************************
+	 * /********************************************************** /* Error reporting /**********************************************************
 	 */
 
-	protected void _reportUnexpectedChar(int ch, String comment)
-			throws JsonParseException {
+	protected void _reportUnexpectedChar(int ch, String comment) throws JsonParseException {
 		if (ch < 0) { // sanity check
 			_reportInvalidEOF();
 		}
@@ -508,31 +459,24 @@ public abstract class ParserMinimalBase extends JsonParser {
 
 	protected void _throwInvalidSpace(int i) throws JsonParseException {
 		char c = (char) i;
-		String msg = "Illegal character ("
-				+ _getCharDesc(c)
-				+ "): only regular white space (\\r, \\n, \\t) is allowed between tokens";
+		String msg = "Illegal character (" + _getCharDesc(c) + "): only regular white space (\\r, \\n, \\t) is allowed between tokens";
 		_reportError(msg);
 	}
 
 	/**
-	 * Method called to report a problem with unquoted control character. Note:
-	 * starting with version 1.4, it is possible to suppress exception by
-	 * enabling {@link Feature#ALLOW_UNQUOTED_CONTROL_CHARS}.
+	 * Method called to report a problem with unquoted control character. Note: starting with version 1.4, it is possible to suppress exception by enabling {@link Feature#ALLOW_UNQUOTED_CONTROL_CHARS}
+	 * .
 	 */
-	protected void _throwUnquotedSpace(int i, String ctxtDesc)
-			throws JsonParseException {
+	protected void _throwUnquotedSpace(int i, String ctxtDesc) throws JsonParseException {
 		// JACKSON-208; possible to allow unquoted control chars:
 		if (!isEnabled(Feature.ALLOW_UNQUOTED_CONTROL_CHARS) || i > INT_SPACE) {
 			char c = (char) i;
-			String msg = "Illegal unquoted character (" + _getCharDesc(c)
-					+ "): has to be escaped using backslash to be included in "
-					+ ctxtDesc;
+			String msg = "Illegal unquoted character (" + _getCharDesc(c) + "): has to be escaped using backslash to be included in " + ctxtDesc;
 			_reportError(msg);
 		}
 	}
 
-	protected char _handleUnrecognizedCharacterEscape(char ch)
-			throws JsonProcessingException {
+	protected char _handleUnrecognizedCharacterEscape(char ch) throws JsonProcessingException {
 		// as per [JACKSON-300]
 		if (isEnabled(Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)) {
 			return ch;
@@ -546,9 +490,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	}
 
 	/*
-	 * /********************************************************** /* Error
-	 * reporting, generic
-	 * /**********************************************************
+	 * /********************************************************** /* Error reporting, generic /**********************************************************
 	 */
 
 	protected final static String _getCharDesc(int ch) {
@@ -557,8 +499,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 			return "(CTRL-CHAR, code " + ch + ")";
 		}
 		if (ch > 255) {
-			return "'" + c + "' (code " + ch + " / 0x"
-					+ Integer.toHexString(ch) + ")";
+			return "'" + c + "' (code " + ch + " / 0x" + Integer.toHexString(ch) + ")";
 		}
 		return "'" + c + "' (code " + ch + ")";
 	}
@@ -567,8 +508,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 		throw _constructError(msg);
 	}
 
-	protected final void _wrapError(String msg, Throwable t)
-			throws JsonParseException {
+	protected final void _wrapError(String msg, Throwable t) throws JsonParseException {
 		throw _constructError(msg, t);
 	}
 

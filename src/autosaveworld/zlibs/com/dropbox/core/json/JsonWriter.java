@@ -10,8 +10,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
 public abstract class JsonWriter<T> {
 	public abstract void write(T value, JsonGenerator g) throws IOException;
 
-	public final void writeToStream(T value, OutputStream out, boolean indent)
-			throws IOException {
+	public final void writeToStream(T value, OutputStream out, boolean indent) throws IOException {
 		JsonGenerator g = JsonReader.jsonFactory.createGenerator(out);
 		if (indent) {
 			g = g.useDefaultPrettyPrinter();
@@ -23,13 +22,11 @@ public abstract class JsonWriter<T> {
 		}
 	}
 
-	public final void writeToStream(T value, OutputStream out)
-			throws IOException {
+	public final void writeToStream(T value, OutputStream out) throws IOException {
 		writeToStream(value, out, true);
 	}
 
-	public final void writeToFile(T value, File file, boolean indent)
-			throws IOException {
+	public final void writeToFile(T value, File file, boolean indent) throws IOException {
 		FileOutputStream fout = new FileOutputStream(file);
 		try {
 			writeToStream(value, fout, indent);
@@ -42,8 +39,7 @@ public abstract class JsonWriter<T> {
 		writeToFile(value, file, true);
 	}
 
-	public final void writeToFile(T value, String fileName, boolean indent)
-			throws IOException {
+	public final void writeToFile(T value, String fileName, boolean indent) throws IOException {
 		writeToFile(value, new File(fileName), indent);
 	}
 

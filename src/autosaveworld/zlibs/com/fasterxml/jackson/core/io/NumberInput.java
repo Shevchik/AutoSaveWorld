@@ -4,10 +4,7 @@ import java.math.BigDecimal;
 
 public final class NumberInput {
 	/**
-	 * Textual representation of a double constant that can cause nasty problems
-	 * with JDK (see
-	 * http://www.exploringbinary.com/java-hangs-when-converting-2-
-	 * 2250738585072012e-308).
+	 * Textual representation of a double constant that can cause nasty problems with JDK (see http://www.exploringbinary.com/java-hangs-when-converting-2- 2250738585072012e-308).
 	 */
 	public final static String NASTY_SMALL_DOUBLE = "2.2250738585072012e-308";
 
@@ -16,14 +13,11 @@ public final class NumberInput {
 	 */
 	final static long L_BILLION = 1000000000;
 
-	final static String MIN_LONG_STR_NO_SIGN = String.valueOf(Long.MIN_VALUE)
-			.substring(1);
+	final static String MIN_LONG_STR_NO_SIGN = String.valueOf(Long.MIN_VALUE).substring(1);
 	final static String MAX_LONG_STR = String.valueOf(Long.MAX_VALUE);
 
 	/**
-	 * Fast method for parsing integers that are known to fit into regular
-	 * 32-bit signed int type. This means that length is between 1 and 9 digits
-	 * (inclusive)
+	 * Fast method for parsing integers that are known to fit into regular 32-bit signed int type. This means that length is between 1 and 9 digits (inclusive)
 	 * <p>
 	 * Note: public to let unit tests call it
 	 */
@@ -57,14 +51,11 @@ public final class NumberInput {
 	}
 
 	/**
-	 * Helper method to (more) efficiently parse integer numbers from String
-	 * values.
+	 * Helper method to (more) efficiently parse integer numbers from String values.
 	 */
 	public static int parseInt(String s) {
 		/*
-		 * Ok: let's keep strategy simple: ignoring optional minus sign, we'll
-		 * accept 1 - 9 digits and parse things efficiently; otherwise just
-		 * defer to JDK parse functionality.
+		 * Ok: let's keep strategy simple: ignoring optional minus sign, we'll accept 1 - 9 digits and parse things efficiently; otherwise just defer to JDK parse functionality.
 		 */
 		char c = s.charAt(0);
 		int len = s.length();
@@ -122,8 +113,7 @@ public final class NumberInput {
 
 	public static long parseLong(String s) {
 		/*
-		 * Ok, now; as the very first thing, let's just optimize case of
-		 * "fake longs"; that is, if we know they must be ints, call int parsing
+		 * Ok, now; as the very first thing, let's just optimize case of "fake longs"; that is, if we know they must be ints, call int parsing
 		 */
 		int length = s.length();
 		if (length <= 9) {
@@ -134,17 +124,13 @@ public final class NumberInput {
 	}
 
 	/**
-	 * Helper method for determining if given String representation of an
-	 * integral number would fit in 64-bit Java long or not. Note that input
-	 * String must NOT contain leading minus sign (even if 'negative' is set to
-	 * true).
+	 * Helper method for determining if given String representation of an integral number would fit in 64-bit Java long or not. Note that input String must NOT contain leading minus sign (even if
+	 * 'negative' is set to true).
 	 *
 	 * @param negative
-	 *            Whether original number had a minus sign (which is NOT passed
-	 *            to this method) or not
+	 *            Whether original number had a minus sign (which is NOT passed to this method) or not
 	 */
-	public static boolean inLongRange(char[] ch, int off, int len,
-			boolean negative) {
+	public static boolean inLongRange(char[] ch, int off, int len, boolean negative) {
 		String cmpStr = negative ? MIN_LONG_STR_NO_SIGN : MAX_LONG_STR;
 		int cmpLen = cmpStr.length();
 		if (len < cmpLen) {
@@ -164,12 +150,10 @@ public final class NumberInput {
 	}
 
 	/**
-	 * Similar to {@link #inLongRange(char[],int,int,boolean)}, but with String
-	 * argument
+	 * Similar to {@link #inLongRange(char[],int,int,boolean)}, but with String argument
 	 *
 	 * @param negative
-	 *            Whether original number had a minus sign (which is NOT passed
-	 *            to this method) or not
+	 *            Whether original number had a minus sign (which is NOT passed to this method) or not
 	 */
 	public static boolean inLongRange(String s, boolean negative) {
 		String cmp = negative ? MIN_LONG_STR_NO_SIGN : MAX_LONG_STR;
@@ -288,9 +272,7 @@ public final class NumberInput {
 		// [JACKSON-486]: avoid some nasty float representations... but should
 		// it be MIN_NORMAL or MIN_VALUE?
 		/*
-		 * as per [JACKSON-827], let's use MIN_VALUE as it is available on all
-		 * JDKs; normalized only in JDK 1.6. In practice, should not really
-		 * matter.
+		 * as per [JACKSON-827], let's use MIN_VALUE as it is available on all JDKs; normalized only in JDK 1.6. In practice, should not really matter.
 		 */
 		if (NASTY_SMALL_DOUBLE.equals(s)) {
 			return Double.MIN_VALUE;
@@ -298,8 +280,7 @@ public final class NumberInput {
 		return Double.parseDouble(s);
 	}
 
-	public static BigDecimal parseBigDecimal(String s)
-			throws NumberFormatException {
+	public static BigDecimal parseBigDecimal(String s) throws NumberFormatException {
 		try {
 			return new BigDecimal(s);
 		} catch (NumberFormatException e) {
@@ -307,13 +288,11 @@ public final class NumberInput {
 		}
 	}
 
-	public static BigDecimal parseBigDecimal(char[] b)
-			throws NumberFormatException {
+	public static BigDecimal parseBigDecimal(char[] b) throws NumberFormatException {
 		return parseBigDecimal(b, 0, b.length);
 	}
 
-	public static BigDecimal parseBigDecimal(char[] b, int off, int len)
-			throws NumberFormatException {
+	public static BigDecimal parseBigDecimal(char[] b, int off, int len) throws NumberFormatException {
 		try {
 			return new BigDecimal(b, off, len);
 		} catch (NumberFormatException e) {
@@ -322,7 +301,6 @@ public final class NumberInput {
 	}
 
 	private static NumberFormatException _badBD(String s) {
-		return new NumberFormatException("Value \"" + s
-				+ "\" can not be represented as BigDecimal");
+		return new NumberFormatException("Value \"" + s + "\" can not be represented as BigDecimal");
 	}
 }

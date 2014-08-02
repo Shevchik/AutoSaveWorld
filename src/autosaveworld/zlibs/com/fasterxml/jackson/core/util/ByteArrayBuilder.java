@@ -9,16 +9,11 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 
 /**
- * Helper class that is similar to {@link java.io.ByteArrayOutputStream} in
- * usage, but more geared to Jackson use cases internally. Specific changes
- * include segment storage (no need to have linear backing buffer, can avoid
- * reallocations, copying), as well API not based on
- * {@link java.io.OutputStream}. In short, a very much specialized builder
- * object.
+ * Helper class that is similar to {@link java.io.ByteArrayOutputStream} in usage, but more geared to Jackson use cases internally. Specific changes include segment storage (no need to have linear
+ * backing buffer, can avoid reallocations, copying), as well API not based on {@link java.io.OutputStream}. In short, a very much specialized builder object.
  * <p>
- * Also implements {@link OutputStream} to allow efficient aggregation of output
- * content as a byte array, similar to how {@link java.io.ByteArrayOutputStream}
- * works, but somewhat more efficiently for many use cases.
+ * Also implements {@link OutputStream} to allow efficient aggregation of output content as a byte array, similar to how {@link java.io.ByteArrayOutputStream} works, but somewhat more efficiently for
+ * many use cases.
  */
 public final class ByteArrayBuilder extends OutputStream {
 	private final static byte[] NO_BYTES = new byte[0];
@@ -56,8 +51,7 @@ public final class ByteArrayBuilder extends OutputStream {
 
 	public ByteArrayBuilder(BufferRecycler br, int firstBlockSize) {
 		_bufferRecycler = br;
-		_currBlock = (br == null) ? new byte[firstBlockSize] : br
-				.allocByteBuffer(BufferRecycler.BYTE_WRITE_CONCAT_BUFFER);
+		_currBlock = (br == null) ? new byte[firstBlockSize] : br.allocByteBuffer(BufferRecycler.BYTE_WRITE_CONCAT_BUFFER);
 	}
 
 	public void reset() {
@@ -70,15 +64,12 @@ public final class ByteArrayBuilder extends OutputStream {
 	}
 
 	/**
-	 * Clean up method to call to release all buffers this object may be using.
-	 * After calling the method, no other accessors can be used (and attempt to
-	 * do so may result in an exception)
+	 * Clean up method to call to release all buffers this object may be using. After calling the method, no other accessors can be used (and attempt to do so may result in an exception)
 	 */
 	public void release() {
 		reset();
 		if (_bufferRecycler != null && _currBlock != null) {
-			_bufferRecycler.releaseByteBuffer(
-					BufferRecycler.BYTE_WRITE_CONCAT_BUFFER, _currBlock);
+			_bufferRecycler.releaseByteBuffer(BufferRecycler.BYTE_WRITE_CONCAT_BUFFER, _currBlock);
 			_currBlock = null;
 		}
 	}
@@ -113,8 +104,7 @@ public final class ByteArrayBuilder extends OutputStream {
 	}
 
 	/**
-	 * Method called when results are finalized and we can get the full
-	 * aggregated result buffer to return to the caller
+	 * Method called when results are finalized and we can get the full aggregated result buffer to return to the caller
 	 */
 	public byte[] toByteArray() {
 		int totalLen = _pastLen + _currBlockPtr;
@@ -134,9 +124,7 @@ public final class ByteArrayBuilder extends OutputStream {
 		System.arraycopy(_currBlock, 0, result, offset, _currBlockPtr);
 		offset += _currBlockPtr;
 		if (offset != totalLen) { // just a sanity check
-			throw new RuntimeException(
-					"Internal error: total len assumed to be " + totalLen
-							+ ", copied " + offset + " bytes");
+			throw new RuntimeException("Internal error: total len assumed to be " + totalLen + ", copied " + offset + " bytes");
 		}
 		// Let's only reset if there's sizable use, otherwise will get reset
 		// later on
@@ -147,14 +135,11 @@ public final class ByteArrayBuilder extends OutputStream {
 	}
 
 	/*
-	 * /********************************************************** /* Non-stream
-	 * API (similar to TextBuffer), since 1.6
-	 * /**********************************************************
+	 * /********************************************************** /* Non-stream API (similar to TextBuffer), since 1.6 /**********************************************************
 	 */
 
 	/**
-	 * Method called when starting "manual" output: will clear out current state
-	 * and return the first segment buffer to fill
+	 * Method called when starting "manual" output: will clear out current state and return the first segment buffer to fill
 	 */
 	public byte[] resetAndGetFirstSegment() {
 		reset();
@@ -162,8 +147,7 @@ public final class ByteArrayBuilder extends OutputStream {
 	}
 
 	/**
-	 * Method called when the current segment buffer is full; will append to
-	 * current contents, allocate a new segment buffer and return it
+	 * Method called when the current segment buffer is full; will append to current contents, allocate a new segment buffer and return it
 	 */
 	public byte[] finishCurrentSegment() {
 		_allocMore();
@@ -171,8 +155,7 @@ public final class ByteArrayBuilder extends OutputStream {
 	}
 
 	/**
-	 * Method that will complete "manual" output process, coalesce content (if
-	 * necessary) and return results as a contiguous buffer.
+	 * Method that will complete "manual" output process, coalesce content (if necessary) and return results as a contiguous buffer.
 	 *
 	 * @param lastBlockLength
 	 *            Amount of content in the current segment buffer.
@@ -197,9 +180,7 @@ public final class ByteArrayBuilder extends OutputStream {
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * OutputStream implementation
-	 * /**********************************************************
+	 * /********************************************************** /* OutputStream implementation /**********************************************************
 	 */
 
 	@Override
@@ -239,21 +220,17 @@ public final class ByteArrayBuilder extends OutputStream {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods /**********************************************************
+	 * /********************************************************** /* Internal methods /**********************************************************
 	 */
 
 	private void _allocMore() {
 		_pastLen += _currBlock.length;
 
 		/*
-		 * Let's allocate block that's half the total size, except never smaller
-		 * than twice the initial block size. The idea is just to grow with
-		 * reasonable rate, to optimize between minimal number of chunks and
-		 * minimal amount of wasted space.
+		 * Let's allocate block that's half the total size, except never smaller than twice the initial block size. The idea is just to grow with reasonable rate, to optimize between minimal number of
+		 * chunks and minimal amount of wasted space.
 		 */
-		int newSize = Math.max((_pastLen >> 1),
-				(INITIAL_BLOCK_SIZE + INITIAL_BLOCK_SIZE));
+		int newSize = Math.max((_pastLen >> 1), (INITIAL_BLOCK_SIZE + INITIAL_BLOCK_SIZE));
 		// plus not to exceed max we define...
 		if (newSize > MAX_BLOCK_SIZE) {
 			newSize = MAX_BLOCK_SIZE;

@@ -14,14 +14,12 @@ public final class CharTypes {
 	}
 
 	/**
-	 * Lookup table used for determining which input characters need special
-	 * handling when contained in text segment.
+	 * Lookup table used for determining which input characters need special handling when contained in text segment.
 	 */
 	final static int[] sInputCodes;
 	static {
 		/*
-		 * 96 would do for most cases (backslash is ASCII 94) but if we want to
-		 * do lookups by raw bytes it's better to have full table
+		 * 96 would do for most cases (backslash is ASCII 94) but if we want to do lookups by raw bytes it's better to have full table
 		 */
 		final int[] table = new int[256];
 		// Control chars and non-space white space are not allowed unquoted
@@ -62,9 +60,8 @@ public final class CharTypes {
 	}
 
 	/**
-	 * To support non-default (and -standard) unquoted field names mode, need to
-	 * have alternate checking. Basically this is list of 8-bit ASCII characters
-	 * that are legal as part of Javascript identifier
+	 * To support non-default (and -standard) unquoted field names mode, need to have alternate checking. Basically this is list of 8-bit ASCII characters that are legal as part of Javascript
+	 * identifier
 	 */
 	final static int[] sInputCodesJsNames;
 	static {
@@ -78,9 +75,7 @@ public final class CharTypes {
 			}
 		}
 		/*
-		 * As per [JACKSON-267], '@', '#' and '*' are also to be accepted as
-		 * well. And '-' (for hyphenated names); and '+' for sake of
-		 * symmetricity...
+		 * As per [JACKSON-267], '@', '#' and '*' are also to be accepted as well. And '-' (for hyphenated names); and '+' for sake of symmetricity...
 		 */
 		table['@'] = 0;
 		table['#'] = 0;
@@ -91,8 +86,7 @@ public final class CharTypes {
 	}
 
 	/**
-	 * This table is similar to Latin-1, except that it marks all "high-bit"
-	 * code as ok. They will be validated at a later point, when decoding name
+	 * This table is similar to Latin-1, except that it marks all "high-bit" code as ok. They will be validated at a later point, when decoding name
 	 */
 	final static int[] sInputCodesUtf8JsNames;
 	static {
@@ -104,8 +98,7 @@ public final class CharTypes {
 	}
 
 	/**
-	 * Decoding table used to quickly determine characters that are relevant
-	 * within comment content.
+	 * Decoding table used to quickly determine characters that are relevant within comment content.
 	 */
 	final static int[] sInputCodesComment;
 	static {
@@ -148,8 +141,7 @@ public final class CharTypes {
 	}
 
 	/**
-	 * Lookup table used for determining which output characters in 7-bit ASCII
-	 * range need to be quoted.
+	 * Lookup table used for determining which output characters in 7-bit ASCII range need to be quoted.
 	 */
 	final static int[] sOutputEscapes128;
 	static {
@@ -160,8 +152,7 @@ public final class CharTypes {
 			table[i] = CharacterEscapes.ESCAPE_STANDARD;
 		}
 		/*
-		 * Others (and some within that range too) have explicit shorter
-		 * sequences
+		 * Others (and some within that range too) have explicit shorter sequences
 		 */
 		table['"'] = '"';
 		table['\\'] = '\\';
@@ -175,8 +166,7 @@ public final class CharTypes {
 	}
 
 	/**
-	 * Lookup table for the first 128 Unicode characters (7-bit ASCII) range.
-	 * For actual hex digits, contains corresponding value; for others -1.
+	 * Lookup table for the first 128 Unicode characters (7-bit ASCII) range. For actual hex digits, contains corresponding value; for others -1.
 	 */
 	final static int[] sHexValues = new int[128];
 	static {
@@ -215,11 +205,8 @@ public final class CharTypes {
 	}
 
 	/**
-	 * Accessor for getting a read-only encoding table for first 128 Unicode
-	 * code points (single-byte UTF-8 characters). Value of 0 means
-	 * "no escaping"; other positive values that value is character to use after
-	 * backslash; and negative values that generic (backslash - u) escaping is
-	 * to be used.
+	 * Accessor for getting a read-only encoding table for first 128 Unicode code points (single-byte UTF-8 characters). Value of 0 means "no escaping"; other positive values that value is character
+	 * to use after backslash; and negative values that generic (backslash - u) escaping is to be used.
 	 */
 	public static int[] get7BitOutputEscapes() {
 		return sOutputEscapes128;

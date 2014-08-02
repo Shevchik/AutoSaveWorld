@@ -9,17 +9,13 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
 
 /**
- * Helper class that can be used to sequence multiple physical
- * {@link JsonParser}s to create a single logical sequence of tokens, as a
- * single {@link JsonParser}.
+ * Helper class that can be used to sequence multiple physical {@link JsonParser}s to create a single logical sequence of tokens, as a single {@link JsonParser}.
  * <p>
- * Fairly simple use of {@link JsonParserDelegate}: only need to override
- * {@link #nextToken} to handle transition
+ * Fairly simple use of {@link JsonParserDelegate}: only need to override {@link #nextToken} to handle transition
  */
 public class JsonParserSequence extends JsonParserDelegate {
 	/**
-	 * Parsers other than the first one (which is initially assigned as
-	 * delegate)
+	 * Parsers other than the first one (which is initially assigned as delegate)
 	 */
 	protected final JsonParser[] _parsers;
 
@@ -40,15 +36,11 @@ public class JsonParserSequence extends JsonParserDelegate {
 	}
 
 	/**
-	 * Method that will construct a parser (possibly a sequence) that contains
-	 * all given sub-parsers. All parsers given are checked to see if they are
-	 * sequences: and if so, they will be "flattened", that is, contained
-	 * parsers are directly added in a new sequence instead of adding sequences
-	 * within sequences. This is done to minimize delegation depth, ideally only
-	 * having just a single level of delegation.
+	 * Method that will construct a parser (possibly a sequence) that contains all given sub-parsers. All parsers given are checked to see if they are sequences: and if so, they will be "flattened",
+	 * that is, contained parsers are directly added in a new sequence instead of adding sequences within sequences. This is done to minimize delegation depth, ideally only having just a single level
+	 * of delegation.
 	 */
-	public static JsonParserSequence createFlattened(JsonParser first,
-			JsonParser second) {
+	public static JsonParserSequence createFlattened(JsonParser first, JsonParser second) {
 		if (!(first instanceof JsonParserSequence || second instanceof JsonParserSequence)) {
 			// simple:
 			return new JsonParserSequence(new JsonParser[] { first, second });
@@ -80,8 +72,7 @@ public class JsonParserSequence extends JsonParserDelegate {
 
 	/*
 	 * ******************************************************
-	 * Overridden methods, needed: cases where default delegation does not work
-	 * ******************************************************
+	 * Overridden methods, needed: cases where default delegation does not work ******************************************************
 	 */
 
 	@Override
@@ -107,28 +98,23 @@ public class JsonParserSequence extends JsonParserDelegate {
 	}
 
 	/*
-	 * /******************************************************* /* Additional
-	 * extended API /*******************************************************
+	 * /******************************************************* /* Additional extended API /*******************************************************
 	 */
 
 	/**
-	 * Method that is most useful for debugging or testing; returns actual
-	 * number of underlying parsers sequence was constructed with (nor just ones
-	 * remaining active)
+	 * Method that is most useful for debugging or testing; returns actual number of underlying parsers sequence was constructed with (nor just ones remaining active)
 	 */
 	public int containedParsersCount() {
 		return _parsers.length;
 	}
 
 	/*
-	 * /******************************************************* /* Helper
-	 * methods /*******************************************************
+	 * /******************************************************* /* Helper methods /*******************************************************
 	 */
 
 	/**
-	 * Method that will switch active parser from the current one to next parser
-	 * in sequence, if there is another parser left, making this the new
-	 * delegate. Old delegate is returned if switch succeeds.
+	 * Method that will switch active parser from the current one to next parser in sequence, if there is another parser left, making this the new delegate. Old delegate is returned if switch
+	 * succeeds.
 	 *
 	 * @return True if switch succeeded; false otherwise
 	 */

@@ -7,38 +7,30 @@ import java.io.InputStream;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 
 /**
- * Interface used to expose beginning of a data file to data format detection
- * code.
+ * Interface used to expose beginning of a data file to data format detection code.
  */
 public interface InputAccessor {
 	/**
-	 * Method to call to check if more input is available. Since this may result
-	 * in more content to be read (at least one more byte), a
-	 * {@link IOException} may get thrown.
+	 * Method to call to check if more input is available. Since this may result in more content to be read (at least one more byte), a {@link IOException} may get thrown.
 	 */
 	boolean hasMoreBytes() throws IOException;
 
 	/**
-	 * Returns next byte available, if any; if no more bytes are available, will
-	 * throw {@link java.io.EOFException}.
+	 * Returns next byte available, if any; if no more bytes are available, will throw {@link java.io.EOFException}.
 	 */
 	byte nextByte() throws IOException;
 
 	/**
-	 * Method that can be called to reset accessor to read from beginning of
-	 * input.
+	 * Method that can be called to reset accessor to read from beginning of input.
 	 */
 	void reset();
 
 	/*
-	 * /********************************************************** /* Standard
-	 * implementation
-	 * /**********************************************************
+	 * /********************************************************** /* Standard implementation /**********************************************************
 	 */
 
 	/**
-	 * Basic implementation that reads data from given {@link InputStream} and
-	 * buffers it as necessary.
+	 * Basic implementation that reads data from given {@link InputStream} and buffers it as necessary.
 	 */
 	class Std implements InputAccessor {
 		protected final InputStream _in;
@@ -58,8 +50,7 @@ public interface InputAccessor {
 		protected int _ptr;
 
 		/**
-		 * Constructor used when content to check is available via input stream
-		 * and must be read.
+		 * Constructor used when content to check is available via input stream and must be read.
 		 */
 		public Std(InputStream in, byte[] buffer) {
 			_in = in;
@@ -70,8 +61,7 @@ public interface InputAccessor {
 		}
 
 		/**
-		 * Constructor used when the full input (or at least enough leading
-		 * bytes of full input) is available.
+		 * Constructor used when the full input (or at least enough leading bytes of full input) is available.
 		 */
 		public Std(byte[] inputDocument) {
 			_in = null;
@@ -82,8 +72,7 @@ public interface InputAccessor {
 		}
 
 		/**
-		 * Constructor used when the full input (or at least enough leading
-		 * bytes of full input) is available.
+		 * Constructor used when the full input (or at least enough leading bytes of full input) is available.
 		 *
 		 * @since 2.1
 		 */
@@ -120,10 +109,7 @@ public interface InputAccessor {
 			// should we just try loading more automatically?
 			if (_ptr >= _bufferedEnd) {
 				if (!hasMoreBytes()) {
-					throw new EOFException(
-							"Failed auto-detect: could not read more than "
-									+ _ptr + " bytes (max buffer size: "
-									+ _buffer.length + ")");
+					throw new EOFException("Failed auto-detect: could not read more than " + _ptr + " bytes (max buffer size: " + _buffer.length + ")");
 				}
 			}
 			return _buffer[_ptr++];
@@ -135,15 +121,11 @@ public interface InputAccessor {
 		}
 
 		/*
-		 * /********************************************************** /*
-		 * Extended API for DataFormatDetector/Matcher
-		 * /**********************************************************
+		 * /********************************************************** /* Extended API for DataFormatDetector/Matcher /**********************************************************
 		 */
 
-		public DataFormatMatcher createMatcher(JsonFactory match,
-				MatchStrength matchStrength) {
-			return new DataFormatMatcher(_in, _buffer, _bufferedStart,
-					(_bufferedEnd - _bufferedStart), match, matchStrength);
+		public DataFormatMatcher createMatcher(JsonFactory match, MatchStrength matchStrength) {
+			return new DataFormatMatcher(_in, _buffer, _bufferedStart, (_bufferedEnd - _bufferedStart), match, matchStrength);
 		}
 	}
 }

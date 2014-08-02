@@ -210,8 +210,7 @@ public abstract class Channel implements Runnable {
 	public InputStream getInputStream() throws IOException {
 		int max_input_buffer_size = 32 * 1024;
 		try {
-			max_input_buffer_size = Integer.parseInt(getSession().getConfig(
-					"max_input_buffer_size"));
+			max_input_buffer_size = Integer.parseInt(getSession().getConfig("max_input_buffer_size"));
 		} catch (Exception e) {
 		}
 		PipedInputStream in = new MyPipedInputStream(32 * 1024, // this value
@@ -226,8 +225,7 @@ public abstract class Channel implements Runnable {
 	public InputStream getExtInputStream() throws IOException {
 		int max_input_buffer_size = 32 * 1024;
 		try {
-			max_input_buffer_size = Integer.parseInt(getSession().getConfig(
-					"max_input_buffer_size"));
+			max_input_buffer_size = Integer.parseInt(getSession().getConfig("max_input_buffer_size"));
 		} catch (Exception e) {
 		}
 		PipedInputStream in = new MyPipedInputStream(32 * 1024, // this value
@@ -270,8 +268,7 @@ public abstract class Channel implements Runnable {
 			}
 
 			@Override
-			public void write(byte[] buf, int s, int l)
-					throws java.io.IOException {
+			public void write(byte[] buf, int s, int l) throws java.io.IOException {
 				if (packet == null) {
 					init();
 				}
@@ -428,8 +425,7 @@ public abstract class Channel implements Runnable {
 					if (in == -1) {
 					} else {
 						System.arraycopy(buffer, 0, tmp, 0, in);
-						System.arraycopy(buffer, out, tmp, tmp.length
-								- (buffer.length - out), (buffer.length - out));
+						System.arraycopy(buffer, out, tmp, tmp.length - (buffer.length - out), (buffer.length - out));
 						out = tmp.length - (buffer.length - out);
 					}
 				} else if (in == out) {
@@ -538,33 +534,23 @@ public abstract class Channel implements Runnable {
 
 	/*
 	 * http://www1.ietf.org/internet-drafts/draft-ietf-secsh-connect-24.txt
-	 *
-	 * 5.3 Closing a Channel When a party will no longer send more data to a
-	 * channel, it SHOULD send SSH_MSG_CHANNEL_EOF.
-	 *
+	 * 
+	 * 5.3 Closing a Channel When a party will no longer send more data to a channel, it SHOULD send SSH_MSG_CHANNEL_EOF.
+	 * 
 	 * byte SSH_MSG_CHANNEL_EOF uint32 recipient_channel
-	 *
-	 * No explicit response is sent to this message. However, the application
-	 * may send EOF to whatever is at the other end of the channel. Note that
-	 * the channel remains open after this message, and more data may still be
-	 * sent in the other direction. This message does not consume window space
-	 * and can be sent even if no window space is available.
-	 *
-	 * When either party wishes to terminate the channel, it sends
-	 * SSH_MSG_CHANNEL_CLOSE. Upon receiving this message, a party MUST send
-	 * back a SSH_MSG_CHANNEL_CLOSE unless it has already sent this message for
-	 * the channel. The channel is considered closed for a party when it has
-	 * both sent and received SSH_MSG_CHANNEL_CLOSE, and the party may then
-	 * reuse the channel number. A party MAY send SSH_MSG_CHANNEL_CLOSE without
-	 * having sent or received SSH_MSG_CHANNEL_EOF.
-	 *
+	 * 
+	 * No explicit response is sent to this message. However, the application may send EOF to whatever is at the other end of the channel. Note that the channel remains open after this message, and
+	 * more data may still be sent in the other direction. This message does not consume window space and can be sent even if no window space is available.
+	 * 
+	 * When either party wishes to terminate the channel, it sends SSH_MSG_CHANNEL_CLOSE. Upon receiving this message, a party MUST send back a SSH_MSG_CHANNEL_CLOSE unless it has already sent this
+	 * message for the channel. The channel is considered closed for a party when it has both sent and received SSH_MSG_CHANNEL_CLOSE, and the party may then reuse the channel number. A party MAY send
+	 * SSH_MSG_CHANNEL_CLOSE without having sent or received SSH_MSG_CHANNEL_EOF.
+	 * 
 	 * byte SSH_MSG_CHANNEL_CLOSE uint32 recipient_channel
-	 *
-	 * This message does not consume window space and can be sent even if no
-	 * window space is available.
-	 *
-	 * It is recommended that any data sent before this message is delivered to
-	 * the actual destination, if possible.
+	 * 
+	 * This message does not consume window space and can be sent even if no window space is available.
+	 * 
+	 * It is recommended that any data sent before this message is delivered to the actual destination, if possible.
 	 */
 
 	void close() {
@@ -669,8 +655,7 @@ public abstract class Channel implements Runnable {
 	// }
 
 	/*
-	 * class OutputThread extends Thread{ Channel c; OutputThread(Channel c){
-	 * this.c=c;} public void run(){c.output_thread();} }
+	 * class OutputThread extends Thread{ Channel c; OutputThread(Channel c){ this.c=c;} public void run(){c.output_thread();} }
 	 */
 
 	class PassiveInputStream extends MyPipedInputStream {
@@ -698,8 +683,7 @@ public abstract class Channel implements Runnable {
 	class PassiveOutputStream extends PipedOutputStream {
 		private MyPipedInputStream _sink = null;
 
-		PassiveOutputStream(PipedInputStream in, boolean resizable_buffer)
-				throws IOException {
+		PassiveOutputStream(PipedInputStream in, boolean resizable_buffer) throws IOException {
 			super(in);
 			if (resizable_buffer && (in instanceof MyPipedInputStream)) {
 				this._sink = (MyPipedInputStream) in;
@@ -807,8 +791,7 @@ public abstract class Channel implements Runnable {
 			retry = 1;
 		}
 		synchronized (this) {
-			while (this.getRecipient() == -1 && _session.isConnected()
-					&& retry > 0) {
+			while (this.getRecipient() == -1 && _session.isConnected() && retry > 0) {
 				if (timeout > 0L) {
 					if ((System.currentTimeMillis() - start) > timeout) {
 						retry = 0;

@@ -50,22 +50,16 @@ public class Random implements autosaveworld.zlibs.com.jcraft.jsch.Random {
 		random = new SecureRandom();
 
 		/*
-		 * try{ random=SecureRandom.getInstance("SHA1PRNG"); return; }
-		 * catch(java.security.NoSuchAlgorithmException e){ //
-		 * System.err.println(e); }
-		 *
-		 * // The following code is for IBM's JCE try{
-		 * random=SecureRandom.getInstance("IBMSecureRandom"); return; }
-		 * catch(java.security.NoSuchAlgorithmException ee){
-		 * //System.err.println(ee); }
+		 * try{ random=SecureRandom.getInstance("SHA1PRNG"); return; } catch(java.security.NoSuchAlgorithmException e){ // System.err.println(e); }
+		 * 
+		 * // The following code is for IBM's JCE try{ random=SecureRandom.getInstance("IBMSecureRandom"); return; } catch(java.security.NoSuchAlgorithmException ee){ //System.err.println(ee); }
 		 */
 	}
 
 	@Override
 	public void fill(byte[] foo, int start, int len) {
 		/*
-		 * // This case will not become true in our usage. if(start==0 &&
-		 * foo.length==len){ random.nextBytes(foo); return; }
+		 * // This case will not become true in our usage. if(start==0 && foo.length==len){ random.nextBytes(foo); return; }
 		 */
 		if (len > tmp.length) {
 			tmp = new byte[len];

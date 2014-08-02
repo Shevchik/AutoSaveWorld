@@ -33,15 +33,10 @@ public abstract class JsonReader<T> {
 	}
 
 	/**
-	 * A wrapper around 'JsonParser.nextToken' that throws our own better
-	 * {@link JsonReadException} instead of Jackson's {@link JsonParseException}
-	 * .
+	 * A wrapper around 'JsonParser.nextToken' that throws our own better {@link JsonReadException} instead of Jackson's {@link JsonParseException} .
 	 * <p>
-	 * JsonParseException is bad for two reasons. First, it extends IOException,
-	 * which makes it easy to miss. Second, there's no way to get the original
-	 * error message, which makes it hard to chain logical location information
-	 * (see {@link JsonReadException#addFieldContext} and
-	 * {@link JsonReadException#addArrayContext}).
+	 * JsonParseException is bad for two reasons. First, it extends IOException, which makes it easy to miss. Second, there's no way to get the original error message, which makes it hard to chain
+	 * logical location information (see {@link JsonReadException#addFieldContext} and {@link JsonReadException#addArrayContext}).
 	 */
 	public static JsonToken nextToken(JsonParser parser) throws IOException, JsonReadException {
 		try {
@@ -130,14 +125,12 @@ public abstract class JsonReader<T> {
 
 	public static final JsonReader<Boolean> BooleanReader = new JsonReader<Boolean>() {
 		@Override
-		public Boolean read(JsonParser parser) throws IOException,
-				JsonReadException {
+		public Boolean read(JsonParser parser) throws IOException, JsonReadException {
 			return readBoolean(parser);
 		}
 	};
 
-	public static boolean readBoolean(JsonParser parser) throws IOException,
-			JsonReadException {
+	public static boolean readBoolean(JsonParser parser) throws IOException, JsonReadException {
 		try {
 			boolean b = parser.getBooleanValue();
 			parser.nextToken();
@@ -148,9 +141,7 @@ public abstract class JsonReader<T> {
 	}
 
 	/**
-	 * If you're implementing a {@link JsonReader} for a JSON object, you can
-	 * use this to map field names to a number you can {@code switch} on to
-	 * efficiently locate assign a field.
+	 * If you're implementing a {@link JsonReader} for a JSON object, you can use this to map field names to a number you can {@code switch} on to efficiently locate assign a field.
 	 */
 	public static final class FieldMapping {
 		// This is not optimized. Potential optimizations:
@@ -284,8 +275,7 @@ public abstract class JsonReader<T> {
 			public final IOException reason;
 
 			public IOError(File file, IOException reason) {
-				super("unable to read file \"" + file.getPath() + "\": "
-						+ reason.getMessage());
+				super("unable to read file \"" + file.getPath() + "\": " + reason.getMessage());
 				this.reason = reason;
 			}
 		}

@@ -44,8 +44,7 @@ public class KeyPairDSA extends KeyPair {
 		this(jsch, null, null, null, null, null);
 	}
 
-	public KeyPairDSA(JSch jsch, byte[] P_array, byte[] Q_array,
-			byte[] G_array, byte[] pub_array, byte[] prv_array) {
+	public KeyPairDSA(JSch jsch, byte[] P_array, byte[] Q_array, byte[] G_array, byte[] pub_array, byte[] prv_array) {
 		super(jsch);
 		this.P_array = P_array;
 		this.Q_array = Q_array;
@@ -80,10 +79,8 @@ public class KeyPairDSA extends KeyPair {
 		}
 	}
 
-	private static final byte[] begin = Util
-			.str2byte("-----BEGIN DSA PRIVATE KEY-----");
-	private static final byte[] end = Util
-			.str2byte("-----END DSA PRIVATE KEY-----");
+	private static final byte[] begin = Util.str2byte("-----BEGIN DSA PRIVATE KEY-----");
+	private static final byte[] end = Util.str2byte("-----END DSA PRIVATE KEY-----");
 
 	@Override
 	byte[] getBegin() {
@@ -134,8 +131,7 @@ public class KeyPairDSA extends KeyPair {
 					pub_array = buf.getMPIntBits();
 					prv_array = buf.getMPIntBits();
 					if (P_array != null) {
-						key_size = (new java.math.BigInteger(P_array))
-								.bitLength();
+						key_size = (new java.math.BigInteger(P_array)).bitLength();
 					}
 					return true;
 				}
@@ -323,8 +319,7 @@ public class KeyPairDSA extends KeyPair {
 			SignatureDSA dsa = (SignatureDSA) (c.newInstance());
 			dsa.init();
 
-			if (pub_array == null && P_array == null
-					&& getPublicKeyBlob() != null) {
+			if (pub_array == null && P_array == null && getPublicKeyBlob() != null) {
 				Buffer buf = new Buffer(getPublicKeyBlob());
 				buf.getString();
 				P_array = buf.getString();
@@ -350,8 +345,7 @@ public class KeyPairDSA extends KeyPair {
 		byte[] G_array = tmp[3];
 		byte[] pub_array = tmp[4];
 		byte[] prv_array = tmp[5];
-		KeyPairDSA kpair = new KeyPairDSA(jsch, P_array, Q_array, G_array,
-				pub_array, prv_array);
+		KeyPairDSA kpair = new KeyPairDSA(jsch, P_array, Q_array, G_array, pub_array, prv_array);
 		kpair.publicKeyComment = new String(tmp[6]);
 		kpair.vendor = VENDOR_OPENSSH;
 		return kpair;

@@ -9,36 +9,23 @@ import java.nio.ByteBuffer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
 
 /**
- * String token that can lazily serialize String contained and then reuse that
- * serialization later on. This is similar to JDBC prepared statements, for
- * example, in that instances should only be created when they are used more
- * than use; prime candidates are various serializers.
+ * String token that can lazily serialize String contained and then reuse that serialization later on. This is similar to JDBC prepared statements, for example, in that instances should only be
+ * created when they are used more than use; prime candidates are various serializers.
  * <p>
- * Class is final for performance reasons and since this is not designed to be
- * extensible or customizable (customizations would occur in calling code)
+ * Class is final for performance reasons and since this is not designed to be extensible or customizable (customizations would occur in calling code)
  */
-public class SerializedString implements SerializableString,
-		java.io.Serializable {
+public class SerializedString implements SerializableString, java.io.Serializable {
 	protected final String _value;
 
 	/*
-	 * 13-Dec-2010, tatu: Whether use volatile or not is actually an important
-	 * decision for multi-core use cases. Cost of volatility can be non-trivial
-	 * for heavy use cases, and serialized-string instances are accessed often.
-	 * Given that all code paths with common Jackson usage patterns go through a
-	 * few memory barriers (mostly with cache/reuse pool access) it seems safe
-	 * enough to omit volatiles here, given how simple lazy initialization is.
-	 * This can be compared to how {@link String#intern} works; lazily and
-	 * without synchronization or use of volatile keyword.
-	 *
-	 * Change to remove volatile was a request by implementors of a
-	 * high-throughput search framework; and they believed this is an important
-	 * optimization for heaviest, multi-core deployed use cases.
+	 * 13-Dec-2010, tatu: Whether use volatile or not is actually an important decision for multi-core use cases. Cost of volatility can be non-trivial for heavy use cases, and serialized-string
+	 * instances are accessed often. Given that all code paths with common Jackson usage patterns go through a few memory barriers (mostly with cache/reuse pool access) it seems safe enough to omit
+	 * volatiles here, given how simple lazy initialization is. This can be compared to how {@link String#intern} works; lazily and without synchronization or use of volatile keyword.
+	 * 
+	 * Change to remove volatile was a request by implementors of a high-throughput search framework; and they believed this is an important optimization for heaviest, multi-core deployed use cases.
 	 */
 	/*
-	 * 22-Sep-2013, tatu: FWIW, there have been no reports of problems in this
-	 * area, or anything pointing to it. So I think we are safe up to JDK7 and
-	 * hopefully beyond.
+	 * 22-Sep-2013, tatu: FWIW, there have been no reports of problems in this area, or anything pointing to it. So I think we are safe up to JDK7 and hopefully beyond.
 	 */
 
 	protected/* volatile */byte[] _quotedUTF8Ref;
@@ -49,21 +36,17 @@ public class SerializedString implements SerializableString,
 
 	public SerializedString(String v) {
 		if (v == null) {
-			throw new IllegalStateException(
-					"Null String illegal for SerializedString");
+			throw new IllegalStateException("Null String illegal for SerializedString");
 		}
 		_value = v;
 	}
 
 	/*
-	 * /********************************************************** /*
-	 * Serializable overrides
-	 * /**********************************************************
+	 * /********************************************************** /* Serializable overrides /**********************************************************
 	 */
 
 	/**
-	 * Ugly hack, to work through the requirement that _value is indeed final,
-	 * and that JDK serialization won't call ctor(s).
+	 * Ugly hack, to work through the requirement that _value is indeed final, and that JDK serialization won't call ctor(s).
 	 *
 	 * @since 2.1
 	 */
@@ -82,8 +65,7 @@ public class SerializedString implements SerializableString,
 	}
 
 	/*
-	 * /********************************************************** /* API
-	 * /**********************************************************
+	 * /********************************************************** /* API /**********************************************************
 	 */
 
 	@Override
@@ -110,8 +92,7 @@ public class SerializedString implements SerializableString,
 	}
 
 	/**
-	 * Accessor for accessing value that has been quoted using JSON quoting
-	 * rules, and encoded using UTF-8 encoding.
+	 * Accessor for accessing value that has been quoted using JSON quoting rules, and encoded using UTF-8 encoding.
 	 */
 	@Override
 	public final byte[] asUnquotedUTF8() {
@@ -124,8 +105,7 @@ public class SerializedString implements SerializableString,
 	}
 
 	/**
-	 * Accessor for accessing value as is (without JSON quoting) encoded using
-	 * UTF-8 encoding.
+	 * Accessor for accessing value as is (without JSON quoting) encoded using UTF-8 encoding.
 	 */
 	@Override
 	public final byte[] asQuotedUTF8() {
@@ -138,9 +118,7 @@ public class SerializedString implements SerializableString,
 	}
 
 	/*
-	 * /********************************************************** /* Additional
-	 * 2.0 methods for appending/writing contents
-	 * /**********************************************************
+	 * /********************************************************** /* Additional 2.0 methods for appending/writing contents /**********************************************************
 	 */
 
 	@Override
@@ -254,9 +232,7 @@ public class SerializedString implements SerializableString,
 	}
 
 	/*
-	 * /********************************************************** /* Standard
-	 * method overrides
-	 * /**********************************************************
+	 * /********************************************************** /* Standard method overrides /**********************************************************
 	 */
 
 	@Override

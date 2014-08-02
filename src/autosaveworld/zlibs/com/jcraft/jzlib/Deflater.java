@@ -66,8 +66,7 @@ final public class Deflater extends ZStream {
 		}
 	}
 
-	public Deflater(int level, int bits, int memlevel,
-			JZlib.WrapperType wrapperType) throws GZIPException {
+	public Deflater(int level, int bits, int memlevel, JZlib.WrapperType wrapperType) throws GZIPException {
 		super();
 		int ret = init(level, bits, memlevel, wrapperType);
 		if (ret != Z_OK) {
@@ -95,8 +94,7 @@ final public class Deflater extends ZStream {
 		return init(level, bits, false);
 	}
 
-	public int init(int level, int bits, int memlevel,
-			JZlib.WrapperType wrapperType) {
+	public int init(int level, int bits, int memlevel, JZlib.WrapperType wrapperType) {
 		if (bits < 9 || bits > 15) {
 			return Z_STREAM_ERROR;
 		}

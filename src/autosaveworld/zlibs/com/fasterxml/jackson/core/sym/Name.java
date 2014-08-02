@@ -1,8 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.sym;
 
 /**
- * Base class for tokenized names (key strings in objects) that have been
- * tokenized from byte-based input sources (like {@link java.io.InputStream}.
+ * Base class for tokenized names (key strings in objects) that have been tokenized from byte-based input sources (like {@link java.io.InputStream}.
  *
  * @author Tatu Saloranta
  */
@@ -21,9 +20,7 @@ public abstract class Name {
 	}
 
 	/*
-	 * /********************************************************** /* Methods
-	 * for package/core parser
-	 * /**********************************************************
+	 * /********************************************************** /* Methods for package/core parser /**********************************************************
 	 */
 
 	public abstract boolean equals(int quad1);
@@ -33,9 +30,7 @@ public abstract class Name {
 	public abstract boolean equals(int[] quads, int qlen);
 
 	/*
-	 * /********************************************************** /* Overridden
-	 * standard methods
-	 * /**********************************************************
+	 * /********************************************************** /* Overridden standard methods /**********************************************************
 	 */
 
 	@Override

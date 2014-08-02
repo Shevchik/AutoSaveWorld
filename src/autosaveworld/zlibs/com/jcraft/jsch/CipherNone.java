@@ -49,8 +49,7 @@ public class CipherNone implements Cipher {
 	}
 
 	@Override
-	public void update(byte[] foo, int s1, int len, byte[] bar, int s2)
-			throws Exception {
+	public void update(byte[] foo, int s1, int len, byte[] bar, int s2) throws Exception {
 	}
 
 	@Override

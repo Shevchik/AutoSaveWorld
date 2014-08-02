@@ -114,8 +114,7 @@ class UserAuthPassword extends UserAuth {
 						// System.err.println(new String(foo)+
 						// " partial_success:"+(partial_success!=0));
 						if (partial_success != 0) {
-							throw new JSchPartialAuthException(
-									Util.byte2str(foo));
+							throw new JSchPartialAuthException(Util.byte2str(foo));
 						}
 						session.auth_failures++;
 						break;

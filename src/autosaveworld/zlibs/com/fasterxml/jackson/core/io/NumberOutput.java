@@ -17,8 +17,7 @@ public final class NumberOutput {
 	final static char[] FULL_3 = new char[4000];
 	static {
 		/*
-		 * Let's fill it with NULLs for ignorable leading digits, and digit
-		 * chars for others
+		 * Let's fill it with NULLs for ignorable leading digits, and digit chars for others
 		 */
 		int ix = 0;
 		for (int i1 = 0; i1 < 10; ++i1) {
@@ -49,15 +48,11 @@ public final class NumberOutput {
 		}
 	}
 
-	final static String[] sSmallIntStrs = new String[] { "0", "1", "2", "3",
-			"4", "5", "6", "7", "8", "9", "10" };
-	final static String[] sSmallIntStrs2 = new String[] { "-1", "-2", "-3",
-			"-4", "-5", "-6", "-7", "-8", "-9", "-10" };
+	final static String[] sSmallIntStrs = new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+	final static String[] sSmallIntStrs2 = new String[] { "-1", "-2", "-3", "-4", "-5", "-6", "-7", "-8", "-9", "-10" };
 
 	/*
-	 * /********************************************************** /* Efficient
-	 * serialization methods using raw buffers
-	 * /**********************************************************
+	 * /********************************************************** /* Efficient serialization methods using raw buffers /**********************************************************
 	 */
 
 	/**
@@ -67,8 +62,7 @@ public final class NumberOutput {
 		if (v < 0) {
 			if (v == Integer.MIN_VALUE) {
 				/*
-				 * Special case: no matching positive value within range; let's
-				 * then "upgrade" to long and output as such.
+				 * Special case: no matching positive value within range; let's then "upgrade" to long and output as such.
 				 */
 				return outputLong(v, b, off);
 			}
@@ -94,9 +88,7 @@ public final class NumberOutput {
 
 		// ok, all 3 triplets included
 		/*
-		 * Let's first hand possible billions separately before handling 3
-		 * triplets. This is possible since we know we can have at most '2' as
-		 * billion count.
+		 * Let's first hand possible billions separately before handling 3 triplets. This is possible since we know we can have at most '2' as billion count.
 		 */
 		boolean hasBillions = (v >= BILLION);
 		if (hasBillions) {
@@ -182,8 +174,7 @@ public final class NumberOutput {
 		// First: does it actually fit in an int?
 		if (v < 0L) {
 			/*
-			 * MIN_INT is actually printed as long, just because its negation is
-			 * not an int but long
+			 * MIN_INT is actually printed as long, just because its negation is not an int but long
 			 */
 			if (v > MIN_INT_AS_LONG) {
 				return outputInt((int) v, b, off);
@@ -203,8 +194,7 @@ public final class NumberOutput {
 		}
 
 		/*
-		 * Ok: real long print. Need to first figure out length in characters,
-		 * and then print in from end to beginning
+		 * Ok: real long print. Need to first figure out length in characters, and then print in from end to beginning
 		 */
 		int origOffset = off;
 		off += calcLongStrLength(v);
@@ -279,14 +269,11 @@ public final class NumberOutput {
 	}
 
 	/*
-	 * /********************************************************** /* Secondary
-	 * convenience serialization methods
-	 * /**********************************************************
+	 * /********************************************************** /* Secondary convenience serialization methods /**********************************************************
 	 */
 
 	/*
-	 * !!! 05-Aug-2008, tatus: Any ways to further optimize these? (or need:
-	 * only called by diagnostics methods?)
+	 * !!! 05-Aug-2008, tatus: Any ways to further optimize these? (or need: only called by diagnostics methods?)
 	 */
 
 	public static String toString(int v) {
@@ -315,8 +302,7 @@ public final class NumberOutput {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods /**********************************************************
+	 * /********************************************************** /* Internal methods /**********************************************************
 	 */
 
 	private static int leading3(int t, char[] b, int off) {
@@ -367,8 +353,7 @@ public final class NumberOutput {
 
 	/**
 	 * <p>
-	 * Pre-conditions: <code>c</code> is positive, and larger than
-	 * Integer.MAX_VALUE (about 2 billions).
+	 * Pre-conditions: <code>c</code> is positive, and larger than Integer.MAX_VALUE (about 2 billions).
 	 */
 	private static int calcLongStrLength(long v) {
 		int len = 10;

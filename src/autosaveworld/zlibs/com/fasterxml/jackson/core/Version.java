@@ -6,18 +6,14 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Object that encapsulates versioning information of a component. Version
- * information includes not just version number but also optionally group and
- * artifact ids of the component being versioned.
+ * Object that encapsulates versioning information of a component. Version information includes not just version number but also optionally group and artifact ids of the component being versioned.
  * <p>
- * Note that optional group and artifact id properties are new with Jackson 2.0:
- * if provided, they should align with Maven artifact information.
+ * Note that optional group and artifact id properties are new with Jackson 2.0: if provided, they should align with Maven artifact information.
  */
 public class Version implements Comparable<Version>, java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final static Version UNKNOWN_VERSION = new Version(0, 0, 0, null,
-			null, null);
+	private final static Version UNKNOWN_VERSION = new Version(0, 0, 0, null, null, null);
 
 	protected final int _majorVersion;
 
@@ -30,8 +26,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 	protected final String _artifactId;
 
 	/**
-	 * Additional information for snapshot versions; null for non-snapshot
-	 * (release) versions.
+	 * Additional information for snapshot versions; null for non-snapshot (release) versions.
 	 */
 	protected final String _snapshotInfo;
 
@@ -45,8 +40,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 		this(major, minor, patchLevel, snapshotInfo, null, null);
 	}
 
-	public Version(int major, int minor, int patchLevel, String snapshotInfo,
-			String groupId, String artifactId) {
+	public Version(int major, int minor, int patchLevel, String snapshotInfo, String groupId, String artifactId) {
 		_majorVersion = major;
 		_minorVersion = minor;
 		_patchLevel = patchLevel;
@@ -56,8 +50,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 	}
 
 	/**
-	 * Method returns canonical "not known" version, which is used as version in
-	 * cases where actual version information is not known (instead of null).
+	 * Method returns canonical "not known" version, which is used as version in cases where actual version information is not known (instead of null).
 	 */
 	public static Version unknownVersion() {
 		return UNKNOWN_VERSION;
@@ -109,8 +102,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 
 	@Override
 	public int hashCode() {
-		return _artifactId.hashCode() ^ _groupId.hashCode() + _majorVersion
-				- _minorVersion + _patchLevel;
+		return _artifactId.hashCode() ^ _groupId.hashCode() + _majorVersion - _minorVersion + _patchLevel;
 	}
 
 	@Override
@@ -125,10 +117,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 			return false;
 		}
 		Version other = (Version) o;
-		return (other._majorVersion == _majorVersion)
-				&& (other._minorVersion == _minorVersion)
-				&& (other._patchLevel == _patchLevel)
-				&& other._artifactId.equals(_artifactId)
+		return (other._majorVersion == _majorVersion) && (other._minorVersion == _minorVersion) && (other._patchLevel == _patchLevel) && other._artifactId.equals(_artifactId)
 				&& other._groupId.equals(_groupId);
 	}
 

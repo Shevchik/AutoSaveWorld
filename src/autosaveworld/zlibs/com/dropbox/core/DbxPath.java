@@ -3,13 +3,11 @@ package autosaveworld.zlibs.com.dropbox.core;
 import static autosaveworld.zlibs.com.dropbox.core.util.StringUtil.jq;
 
 /**
- * Utility functions for working with Dropbox paths. This SDK uses
- * {@code String}s to represent paths.
+ * Utility functions for working with Dropbox paths. This SDK uses {@code String}s to represent paths.
  *
  * <p>
- * Dropbox paths always start with with a slash ({@code "/"}). For full-Dropbox
- * apps, the path is relative to the root of the user's Dropbox. For App Folder
- * apps, the path is relative to the App Folder.
+ * Dropbox paths always start with with a slash ({@code "/"}). For full-Dropbox apps, the path is relative to the root of the user's Dropbox. For App Folder apps, the path is relative to the App
+ * Folder.
  * </p>
  */
 public class DbxPath {
@@ -22,8 +20,7 @@ public class DbxPath {
 		if (!path.startsWith("/")) {
 			return "must start with \"/\"";
 		}
-		if (path.length() == 1)
-		 {
+		if (path.length() == 1) {
 			return null; // Special case for "/"
 		}
 
@@ -100,13 +97,11 @@ public class DbxPath {
 	}
 
 	/**
-	 * Returns the parent path of the given path or {@code null} if the path is
-	 * {@code "/"}.
+	 * Returns the parent path of the given path or {@code null} if the path is {@code "/"}.
 	 * <ul>
 	 * <li>{@code getParent("/")} &rarr; {@code null}</li>
 	 * <li>{@code getParent("/Photos")} &rarr; {@code "/"}</li>
-	 * <li>{@code getParent("/Photos/Recent/Home.jpeg")} &rarr;
-	 * {@code "/Photos/Recent"}</li>
+	 * <li>{@code getParent("/Photos/Recent/Home.jpeg")} &rarr; {@code "/Photos/Recent"}</li>
 	 * </ul>
 	 */
 	public static String getParent(String path) {
@@ -121,8 +116,7 @@ public class DbxPath {
 		}
 
 		int lastSlash = path.lastIndexOf("/");
-		if (path.length() == 1)
-		 {
+		if (path.length() == 1) {
 			return null; // "/" has no parent
 		}
 

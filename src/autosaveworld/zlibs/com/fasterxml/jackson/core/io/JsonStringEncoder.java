@@ -7,12 +7,10 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;
 
 /**
- * Helper class used for efficient encoding of JSON String values (including
- * JSON field names) into Strings or UTF-8 byte arrays.
+ * Helper class used for efficient encoding of JSON String values (including JSON field names) into Strings or UTF-8 byte arrays.
  * <p>
- * Note that methods in here are somewhat optimized, but not ridiculously so.
- * Reason is that conversion method results are expected to be cached so that
- * these methods will not be hot spots during normal operation.
+ * Note that methods in here are somewhat optimized, but not ridiculously so. Reason is that conversion method results are expected to be cached so that these methods will not be hot spots during
+ * normal operation.
  */
 public final class JsonStringEncoder {
 	private final static char[] HC = CharTypes.copyHexChars();
@@ -29,21 +27,17 @@ public final class JsonStringEncoder {
 	// private final static int INT_0 = '0';
 
 	/**
-	 * This <code>ThreadLocal</code> contains a
-	 * {@link java.lang.ref.SoftReference} to a {@link BufferRecycler} used to
-	 * provide a low-cost buffer recycling between reader and writer instances.
+	 * This <code>ThreadLocal</code> contains a {@link java.lang.ref.SoftReference} to a {@link BufferRecycler} used to provide a low-cost buffer recycling between reader and writer instances.
 	 */
 	final protected static ThreadLocal<SoftReference<JsonStringEncoder>> _threadEncoder = new ThreadLocal<SoftReference<JsonStringEncoder>>();
 
 	/**
-	 * Lazily constructed text buffer used to produce JSON encoded Strings as
-	 * characters (without UTF-8 encoding)
+	 * Lazily constructed text buffer used to produce JSON encoded Strings as characters (without UTF-8 encoding)
 	 */
 	protected TextBuffer _text;
 
 	/**
-	 * Lazily-constructed builder used for UTF-8 encoding of text values (quoted
-	 * and unquoted)
+	 * Lazily-constructed builder used for UTF-8 encoding of text values (quoted and unquoted)
 	 */
 	protected ByteArrayBuilder _bytes;
 
@@ -53,9 +47,7 @@ public final class JsonStringEncoder {
 	protected final char[] _qbuf;
 
 	/*
-	 * /********************************************************** /*
-	 * Construction, instance access
-	 * /**********************************************************
+	 * /********************************************************** /* Construction, instance access /**********************************************************
 	 */
 
 	public JsonStringEncoder() {
@@ -66,8 +58,7 @@ public final class JsonStringEncoder {
 	}
 
 	/**
-	 * Factory method for getting an instance; this is either recycled
-	 * per-thread instance, or a newly constructed one.
+	 * Factory method for getting an instance; this is either recycled per-thread instance, or a newly constructed one.
 	 */
 	public static JsonStringEncoder getInstance() {
 		SoftReference<JsonStringEncoder> ref = _threadEncoder.get();
@@ -81,13 +72,11 @@ public final class JsonStringEncoder {
 	}
 
 	/*
-	 * /********************************************************** /* Public API
-	 * /**********************************************************
+	 * /********************************************************** /* Public API /**********************************************************
 	 */
 
 	/**
-	 * Method that will quote text contents using JSON standard quoting, and
-	 * return results as a character array
+	 * Method that will quote text contents using JSON standard quoting, and return results as a character array
 	 */
 	public char[] quoteAsString(String input) {
 		TextBuffer textBuffer = _text;
@@ -120,8 +109,7 @@ public final class JsonStringEncoder {
 			// something to escape; 2 or 6-char variant?
 			char d = input.charAt(inPtr++);
 			int escCode = escCodes[d];
-			int length = (escCode < 0) ? _appendNumeric(d, _qbuf)
-					: _appendNamed(escCode, _qbuf);
+			int length = (escCode < 0) ? _appendNumeric(d, _qbuf) : _appendNamed(escCode, _qbuf);
 			;
 			if ((outPtr + length) > outputBuffer.length) {
 				int first = outputBuffer.length - outPtr;
@@ -142,8 +130,7 @@ public final class JsonStringEncoder {
 	}
 
 	/**
-	 * Will quote given JSON String value using standard quoting, encode results
-	 * as UTF-8, and return result as a byte array.
+	 * Will quote given JSON String value using standard quoting, encode results as UTF-8, and return result as a byte array.
 	 */
 	public byte[] quoteAsUTF8(String text) {
 		ByteArrayBuilder bb = _bytes;
@@ -236,8 +223,7 @@ public final class JsonStringEncoder {
 	}
 
 	/**
-	 * Will encode given String as UTF-8 (without any quoting), return resulting
-	 * byte array.
+	 * Will encode given String as UTF-8 (without any quoting), return resulting byte array.
 	 */
 	@SuppressWarnings("resource")
 	public byte[] encodeAsUTF8(String text) {
@@ -325,8 +311,7 @@ public final class JsonStringEncoder {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods /**********************************************************
+	 * /********************************************************** /* Internal methods /**********************************************************
 	 */
 
 	private int _appendNumeric(int value, char[] qbuf) {
@@ -367,10 +352,7 @@ public final class JsonStringEncoder {
 	private static int _convert(int p1, int p2) {
 		// Ok, then, is the second part valid?
 		if (p2 < SURR2_FIRST || p2 > SURR2_LAST) {
-			throw new IllegalArgumentException(
-					"Broken surrogate pair: first char 0x"
-							+ Integer.toHexString(p1) + ", second 0x"
-							+ Integer.toHexString(p2) + "; illegal combination");
+			throw new IllegalArgumentException("Broken surrogate pair: first char 0x" + Integer.toHexString(p1) + ", second 0x" + Integer.toHexString(p2) + "; illegal combination");
 		}
 		return 0x10000 + ((p1 - SURR1_FIRST) << 10) + (p2 - SURR2_FIRST);
 	}

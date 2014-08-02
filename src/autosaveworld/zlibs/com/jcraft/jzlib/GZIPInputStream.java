@@ -38,14 +38,12 @@ public class GZIPInputStream extends InflaterInputStream {
 		this(in, DEFAULT_BUFSIZE, true);
 	}
 
-	public GZIPInputStream(InputStream in, int size, boolean close_in)
-			throws IOException {
+	public GZIPInputStream(InputStream in, int size, boolean close_in) throws IOException {
 		this(in, new Inflater(15 + 16), size, close_in);
 		myinflater = true;
 	}
 
-	public GZIPInputStream(InputStream in, Inflater inflater, int size,
-			boolean close_in) throws IOException {
+	public GZIPInputStream(InputStream in, Inflater inflater, int size, boolean close_in) throws IOException {
 		super(in, inflater, size, close_in);
 	}
 

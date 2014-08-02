@@ -52,29 +52,24 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	protected static final int DEFAULT_BUFSIZE = 512;
 
 	public DeflaterOutputStream(OutputStream out) throws IOException {
-		this(out, new Deflater(JZlib.Z_DEFAULT_COMPRESSION), DEFAULT_BUFSIZE,
-				true);
+		this(out, new Deflater(JZlib.Z_DEFAULT_COMPRESSION), DEFAULT_BUFSIZE, true);
 		mydeflater = true;
 	}
 
-	public DeflaterOutputStream(OutputStream out, Deflater def)
-			throws IOException {
+	public DeflaterOutputStream(OutputStream out, Deflater def) throws IOException {
 		this(out, def, DEFAULT_BUFSIZE, true);
 	}
 
-	public DeflaterOutputStream(OutputStream out, Deflater deflater, int size)
-			throws IOException {
+	public DeflaterOutputStream(OutputStream out, Deflater deflater, int size) throws IOException {
 		this(out, deflater, size, true);
 	}
 
-	public DeflaterOutputStream(OutputStream out, Deflater deflater, int size,
-			boolean close_out) throws IOException {
+	public DeflaterOutputStream(OutputStream out, Deflater deflater, int size, boolean close_out) throws IOException {
 		super(out);
 		if (out == null || deflater == null) {
 			throw new NullPointerException();
 		} else if (size <= 0) {
-			throw new IllegalArgumentException(
-					"buffer size must be greater than 0");
+			throw new IllegalArgumentException("buffer size must be greater than 0");
 		}
 		this.deflater = deflater;
 		buffer = new byte[size];
@@ -131,16 +126,16 @@ public class DeflaterOutputStream extends FilterOutputStream {
 		deflater.setOutput(buffer, 0, buffer.length);
 		int err = deflater.deflate(flush);
 		switch (err) {
-		case JZlib.Z_OK:
-		case JZlib.Z_STREAM_END:
-			break;
-		case JZlib.Z_BUF_ERROR:
-			if (deflater.avail_in <= 0 && flush != JZlib.Z_FINISH) {
-				// flush() without any data
+			case JZlib.Z_OK:
+			case JZlib.Z_STREAM_END:
 				break;
-			}
-		default:
-			throw new IOException("failed to deflate");
+			case JZlib.Z_BUF_ERROR:
+				if (deflater.avail_in <= 0 && flush != JZlib.Z_FINISH) {
+					// flush() without any data
+					break;
+				}
+			default:
+				throw new IOException("failed to deflate");
 		}
 		int len = deflater.next_out_index;
 		if (len > 0) {

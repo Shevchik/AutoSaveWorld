@@ -49,8 +49,7 @@ class ChannelSession extends Channel {
 	}
 
 	/**
-	 * Allocate a Pseudo-Terminal. Refer to RFC4254 6.2. Requesting a
-	 * Pseudo-Terminal.
+	 * Allocate a Pseudo-Terminal. Refer to RFC4254 6.2. Requesting a Pseudo-Terminal.
 	 *
 	 * @param enable
 	 */
@@ -68,8 +67,7 @@ class ChannelSession extends Channel {
 	}
 
 	/**
-	 * Change the window dimension interactively. Refer to RFC4254 6.7. Window
-	 * Dimension Change Message.
+	 * Change the window dimension interactively. Refer to RFC4254 6.7. Window Dimension Change Message.
 	 *
 	 * @param col
 	 *            terminal width, columns
@@ -95,8 +93,7 @@ class ChannelSession extends Channel {
 	}
 
 	/**
-	 * Set the terminal type. This method is not effective after
-	 * Channel#connect().
+	 * Set the terminal type. This method is not effective after Channel#connect().
 	 *
 	 * @param ttype
 	 *            terminal type(for example, "vt100")
@@ -107,8 +104,7 @@ class ChannelSession extends Channel {
 	}
 
 	/**
-	 * Set the terminal type. This method is not effective after
-	 * Channel#connect().
+	 * Set the terminal type. This method is not effective after Channel#connect().
 	 *
 	 * @param ttype
 	 *            terminal type(for example, "vt100")
@@ -150,10 +146,8 @@ class ChannelSession extends Channel {
 		Packet packet = new Packet(buf);
 		int i = -1;
 		try {
-			while (isConnected() && thread != null && io != null
-					&& io.in != null) {
-				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14
-						- Session.buffer_margin);
+			while (isConnected() && thread != null && io != null && io.in != null) {
+				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14 - Session.buffer_margin);
 				if (i == 0) {
 					continue;
 				}

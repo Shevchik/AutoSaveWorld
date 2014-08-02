@@ -21,9 +21,8 @@ public final class UTF8Writer extends Writer {
 	private int _outPtr;
 
 	/**
-	 * When outputting chars from BMP, surrogate pairs need to be coalesced. To
-	 * do this, both pairs must be known first; and since it is possible pairs
-	 * may be split, we need temporary storage for the first half
+	 * When outputting chars from BMP, surrogate pairs need to be coalesced. To do this, both pairs must be known first; and since it is possible pairs may be split, we need temporary storage for the
+	 * first half
 	 */
 	private int _surrogate = 0;
 
@@ -33,8 +32,7 @@ public final class UTF8Writer extends Writer {
 
 		_outBuffer = ctxt.allocWriteEncodingBuffer();
 		/*
-		 * Max. expansion for a single char (in unmodified UTF-8) is 4 bytes (or
-		 * 3 depending on how you view it -- 4 when recombining surrogate pairs)
+		 * Max. expansion for a single char (in unmodified UTF-8) is 4 bytes (or 3 depending on how you view it -- 4 when recombining surrogate pairs)
 		 */
 		_outBufferEnd = _outBuffer.length - 4;
 		_outPtr = 0;
@@ -65,8 +63,7 @@ public final class UTF8Writer extends Writer {
 			out.close();
 
 			/*
-			 * Let's 'flush' orphan surrogate, no matter what; but only after
-			 * cleanly closing everything else.
+			 * Let's 'flush' orphan surrogate, no matter what; but only after cleanly closing everything else.
 			 */
 			int code = _surrogate;
 			_surrogate = 0;
@@ -118,8 +115,7 @@ public final class UTF8Writer extends Writer {
 
 		output_loop: for (; off < len;) {
 			/*
-			 * First, let's ensure we can output at least 4 bytes (longest UTF-8
-			 * encoded codepoint):
+			 * First, let's ensure we can output at least 4 bytes (longest UTF-8 encoded codepoint):
 			 */
 			if (outPtr >= outBufLast) {
 				_out.write(outBuf, 0, outPtr);
@@ -263,8 +259,7 @@ public final class UTF8Writer extends Writer {
 
 		output_loop: for (; off < len;) {
 			/*
-			 * First, let's ensure we can output at least 4 bytes (longest UTF-8
-			 * encoded codepoint):
+			 * First, let's ensure we can output at least 4 bytes (longest UTF-8 encoded codepoint):
 			 */
 			if (outPtr >= outBufLast) {
 				_out.write(outBuf, 0, outPtr);
@@ -332,8 +327,7 @@ public final class UTF8Writer extends Writer {
 	}
 
 	/*
-	 * /********************************************************** /* Internal
-	 * methods /**********************************************************
+	 * /********************************************************** /* Internal methods /**********************************************************
 	 */
 
 	/**
@@ -345,12 +339,9 @@ public final class UTF8Writer extends Writer {
 
 		// Ok, then, is the second part valid?
 		if (secondPart < SURR2_FIRST || secondPart > SURR2_LAST) {
-			throw new IOException("Broken surrogate pair: first char 0x"
-					+ Integer.toHexString(firstPart) + ", second 0x"
-					+ Integer.toHexString(secondPart) + "; illegal combination");
+			throw new IOException("Broken surrogate pair: first char 0x" + Integer.toHexString(firstPart) + ", second 0x" + Integer.toHexString(secondPart) + "; illegal combination");
 		}
-		return 0x10000 + ((firstPart - SURR1_FIRST) << 10)
-				+ (secondPart - SURR2_FIRST);
+		return 0x10000 + ((firstPart - SURR1_FIRST) << 10) + (secondPart - SURR2_FIRST);
 	}
 
 	protected static void illegalSurrogate(int code) throws IOException {
@@ -359,20 +350,16 @@ public final class UTF8Writer extends Writer {
 
 	protected static String illegalSurrogateDesc(int code) {
 		if (code > 0x10FFFF) { // over max?
-			return "Illegal character point (0x" + Integer.toHexString(code)
-					+ ") to output; max is 0x10FFFF as per RFC 4627";
+			return "Illegal character point (0x" + Integer.toHexString(code) + ") to output; max is 0x10FFFF as per RFC 4627";
 		}
 		if (code >= SURR1_FIRST) {
 			if (code <= SURR1_LAST) { // Unmatched first part (closing without
 										// second part?)
-				return "Unmatched first part of surrogate pair (0x"
-						+ Integer.toHexString(code) + ")";
+				return "Unmatched first part of surrogate pair (0x" + Integer.toHexString(code) + ")";
 			}
-			return "Unmatched second part of surrogate pair (0x"
-					+ Integer.toHexString(code) + ")";
+			return "Unmatched second part of surrogate pair (0x" + Integer.toHexString(code) + ")";
 		}
 		// should we ever get this?
-		return "Illegal character point (0x" + Integer.toHexString(code)
-				+ ") to output";
+		return "Illegal character point (0x" + Integer.toHexString(code) + ") to output";
 	}
 }

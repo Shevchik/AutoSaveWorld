@@ -6,8 +6,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Exception type for exceptions during JSON writing, such as trying to output
- * content in wrong context (non-matching end-array or end-object, for example).
+ * Exception type for exceptions during JSON writing, such as trying to output content in wrong context (non-matching end-array or end-object, for example).
  */
 public class JsonGenerationException extends JsonProcessingException {
 	private final static long serialVersionUID = 123; // Stupid eclipse...

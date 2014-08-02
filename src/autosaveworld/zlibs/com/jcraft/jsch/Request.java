@@ -63,8 +63,7 @@ abstract class Request {
 					Thread.sleep(10);
 				} catch (Exception ee) {
 				}
-				if (timeout > 0L
-						&& (System.currentTimeMillis() - start) > timeout) {
+				if (timeout > 0L && (System.currentTimeMillis() - start) > timeout) {
 					channel.reply = 0;
 					throw new JSchException("channel request: timeout");
 				}

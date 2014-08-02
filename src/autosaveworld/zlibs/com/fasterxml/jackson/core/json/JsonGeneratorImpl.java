@@ -15,67 +15,50 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.VersionUtil;
 
 /**
- * Intermediate base class shared by JSON-backed generators like
- * {@link UTF8JsonGenerator} and {@link WriterBasedJsonGenerator}.
+ * Intermediate base class shared by JSON-backed generators like {@link UTF8JsonGenerator} and {@link WriterBasedJsonGenerator}.
  *
  * @since 2.1
  */
 public abstract class JsonGeneratorImpl extends GeneratorBase {
 	/*
-	 * /********************************************************** /* Constants
-	 * /**********************************************************
+	 * /********************************************************** /* Constants /**********************************************************
 	 */
 
 	/**
-	 * This is the default set of escape codes, over 7-bit ASCII range (first
-	 * 128 character codes), used for single-byte UTF-8 characters.
+	 * This is the default set of escape codes, over 7-bit ASCII range (first 128 character codes), used for single-byte UTF-8 characters.
 	 */
-	protected final static int[] sOutputEscapes = CharTypes
-			.get7BitOutputEscapes();
+	protected final static int[] sOutputEscapes = CharTypes.get7BitOutputEscapes();
 
 	/*
-	 * /********************************************************** /*
-	 * Configuration, basic I/O
-	 * /**********************************************************
+	 * /********************************************************** /* Configuration, basic I/O /**********************************************************
 	 */
 
 	final protected IOContext _ioContext;
 
 	/*
-	 * /********************************************************** /*
-	 * Configuration, output escaping
-	 * /**********************************************************
+	 * /********************************************************** /* Configuration, output escaping /**********************************************************
 	 */
 
 	/**
-	 * Currently active set of output escape code definitions (whether and how
-	 * to escape or not) for 7-bit ASCII range (first 128 character codes).
-	 * Defined separately to make potentially customizable
+	 * Currently active set of output escape code definitions (whether and how to escape or not) for 7-bit ASCII range (first 128 character codes). Defined separately to make potentially customizable
 	 */
 	protected int[] _outputEscapes = sOutputEscapes;
 
 	/**
-	 * Value between 128 (0x80) and 65535 (0xFFFF) that indicates highest
-	 * Unicode code point that will not need escaping; or 0 to indicate that all
-	 * characters can be represented without escaping. Typically used to force
-	 * escaping of some portion of character set; for example to always escape
-	 * non-ASCII characters (if value was 127).
+	 * Value between 128 (0x80) and 65535 (0xFFFF) that indicates highest Unicode code point that will not need escaping; or 0 to indicate that all characters can be represented without escaping.
+	 * Typically used to force escaping of some portion of character set; for example to always escape non-ASCII characters (if value was 127).
 	 * <p>
 	 * NOTE: not all sub-classes make use of this setting.
 	 */
 	protected int _maximumNonEscapedChar;
 
 	/**
-	 * Definition of custom character escapes to use for generators created by
-	 * this factory, if any. If null, standard data format specific escapes are
-	 * used.
+	 * Definition of custom character escapes to use for generators created by this factory, if any. If null, standard data format specific escapes are used.
 	 */
 	protected CharacterEscapes _characterEscapes;
 
 	/*
-	 * /********************************************************** /*
-	 * Configuration, other
-	 * /**********************************************************
+	 * /********************************************************** /* Configuration, other /**********************************************************
 	 */
 
 	/**
@@ -86,8 +69,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase {
 	protected SerializableString _rootValueSeparator = DefaultPrettyPrinter.DEFAULT_ROOT_VALUE_SEPARATOR;
 
 	/*
-	 * /********************************************************** /* Life-cycle
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle /**********************************************************
 	 */
 
 	public JsonGeneratorImpl(IOContext ctxt, int features, ObjectCodec codec) {
@@ -99,9 +81,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase {
 	}
 
 	/*
-	 * /********************************************************** /* Overridden
-	 * configuration methods
-	 * /**********************************************************
+	 * /********************************************************** /* Overridden configuration methods /**********************************************************
 	 */
 
 	@Override
@@ -127,8 +107,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase {
 	}
 
 	/**
-	 * Method for accessing custom escapes factory uses for
-	 * {@link JsonGenerator}s it creates.
+	 * Method for accessing custom escapes factory uses for {@link JsonGenerator}s it creates.
 	 */
 	@Override
 	public CharacterEscapes getCharacterEscapes() {
@@ -142,8 +121,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase {
 	}
 
 	/*
-	 * /********************************************************** /* Versioned
-	 * /**********************************************************
+	 * /********************************************************** /* Versioned /**********************************************************
 	 */
 
 	@Override
@@ -152,15 +130,13 @@ public abstract class JsonGeneratorImpl extends GeneratorBase {
 	}
 
 	/*
-	 * /********************************************************** /* Partial
-	 * API /**********************************************************
+	 * /********************************************************** /* Partial API /**********************************************************
 	 */
 
 	// // Overrides just to make things final, to possibly help with inlining
 
 	@Override
-	public final void writeStringField(String fieldName, String value)
-			throws IOException, JsonGenerationException {
+	public final void writeStringField(String fieldName, String value) throws IOException, JsonGenerationException {
 		writeFieldName(fieldName);
 		writeString(value);
 	}

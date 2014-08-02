@@ -44,8 +44,7 @@ public class PBKDF implements autosaveworld.zlibs.com.jcraft.jsch.PBKDF {
 		}
 		try {
 			PBEKeySpec spec = new PBEKeySpec(pass, salt, iterations, size * 8);
-			SecretKeyFactory skf = SecretKeyFactory
-					.getInstance("PBKDF2WithHmacSHA1");
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 			byte[] key = skf.generateSecret(spec).getEncoded();
 			return key;
 		} catch (InvalidKeySpecException e) {

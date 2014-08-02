@@ -51,8 +51,7 @@ public class ProxyHTTP implements Proxy {
 		if (proxy_host.indexOf(':') != -1) {
 			try {
 				host = proxy_host.substring(0, proxy_host.indexOf(':'));
-				port = Integer.parseInt(proxy_host.substring(proxy_host
-						.indexOf(':') + 1));
+				port = Integer.parseInt(proxy_host.substring(proxy_host.indexOf(':') + 1));
 			} catch (Exception e) {
 			}
 		}
@@ -71,8 +70,7 @@ public class ProxyHTTP implements Proxy {
 	}
 
 	@Override
-	public void connect(SocketFactory socket_factory, String host, int port,
-			int timeout) throws JSchException {
+	public void connect(SocketFactory socket_factory, String host, int port, int timeout) throws JSchException {
 		try {
 			if (socket_factory == null) {
 				socket = Util.createSocket(proxy_host, proxy_port, timeout);
@@ -88,8 +86,7 @@ public class ProxyHTTP implements Proxy {
 			}
 			socket.setTcpNoDelay(true);
 
-			out.write(Util.str2byte("CONNECT " + host + ":" + port
-					+ " HTTP/1.0\r\n"));
+			out.write(Util.str2byte("CONNECT " + host + ":" + port + " HTTP/1.0\r\n"));
 
 			if (user != null && passwd != null) {
 				byte[] code = Util.str2byte(user + ":" + passwd);
@@ -136,9 +133,7 @@ public class ProxyHTTP implements Proxy {
 			}
 
 			/*
-			 * while(foo>=0){ foo=in.read(); if(foo!=13) continue;
-			 * foo=in.read(); if(foo!=10) continue; foo=in.read(); if(foo!=13)
-			 * continue; foo=in.read(); if(foo!=10) continue; break; }
+			 * while(foo>=0){ foo=in.read(); if(foo!=13) continue; foo=in.read(); if(foo!=10) continue; foo=in.read(); if(foo!=13) continue; foo=in.read(); if(foo!=10) continue; break; }
 			 */
 
 			int count = 0;

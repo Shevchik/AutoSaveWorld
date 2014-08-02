@@ -67,9 +67,7 @@ public class Packet {
 		buffer.skip(pad);
 		// buffer.putPad(pad);
 		/*
-		 * for(int i=0; i<buffer.index; i++){
-		 * System.err.print(Integer.toHexString(buffer.buffer[i]&0xff)+":"); }
-		 * System.err.println("");
+		 * for(int i=0; i<buffer.index; i++){ System.err.print(Integer.toHexString(buffer.buffer[i]&0xff)+":"); } System.err.println("");
 		 */
 	}
 
@@ -97,8 +95,7 @@ public class Packet {
 		// if(buffer.buffer.length<s)
 		// System.err.println("buffer.buffer.length="+buffer.buffer.length+" s="+(s));
 
-		System.arraycopy(buffer.buffer, len + 5 + 9, buffer.buffer, s,
-				buffer.index - 5 - 9 - len);
+		System.arraycopy(buffer.buffer, len + 5 + 9, buffer.buffer, s, buffer.index - 5 - 9 - len);
 
 		buffer.index = 10;
 		buffer.putInt(len);

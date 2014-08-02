@@ -16,8 +16,7 @@ public class JsonArrayReader<T, L> extends JsonReader<L> {
 	}
 
 	public static <T> JsonArrayReader<T, ArrayList<T>> mk(JsonReader<? extends T> elementReader) {
-		return new JsonArrayReader<T, ArrayList<T>>(elementReader,
-				new Collector.ArrayListCollector<T>());
+		return new JsonArrayReader<T, ArrayList<T>>(elementReader, new Collector.ArrayListCollector<T>());
 	}
 
 	public static <T, L> JsonArrayReader<T, L> mk(JsonReader<? extends T> elementReader, Collector<T, ? extends L> collector) {

@@ -5,8 +5,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonProcessingException;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonStreamContext;
 
 /**
- * Extension of {@link JsonStreamContext}, which implements core methods needed,
- * and also exposes more complete API to generator implementation classes.
+ * Extension of {@link JsonStreamContext}, which implements core methods needed, and also exposes more complete API to generator implementation classes.
  */
 public class JsonWriteContext extends JsonStreamContext {
 	// // // Return values for writeValue()
@@ -28,33 +27,27 @@ public class JsonWriteContext extends JsonStreamContext {
 	protected final DupDetector _dups;
 
 	/*
-	 * /********************************************************** /* Simple
-	 * instance reuse slots; speed up things /* a bit (10-15%) for docs with
-	 * lots of small /* arrays/objects
+	 * /********************************************************** /* Simple instance reuse slots; speed up things /* a bit (10-15%) for docs with lots of small /* arrays/objects
 	 * /**********************************************************
 	 */
 
 	protected JsonWriteContext _child = null;
 
 	/**
-	 * Name of the field of which value is to be parsed; only used for OBJECT
-	 * contexts
+	 * Name of the field of which value is to be parsed; only used for OBJECT contexts
 	 */
 	protected String _currentName;
 
 	/**
-	 * Marker used to indicate that we just received a name, and now expect a
-	 * value
+	 * Marker used to indicate that we just received a name, and now expect a value
 	 */
 	protected boolean _gotName;
 
 	/*
-	 * /********************************************************** /* Life-cycle
-	 * /**********************************************************
+	 * /********************************************************** /* Life-cycle /**********************************************************
 	 */
 
-	protected JsonWriteContext(int type, JsonWriteContext parent,
-			DupDetector dups) {
+	protected JsonWriteContext(int type, JsonWriteContext parent, DupDetector dups) {
 		super();
 		_type = type;
 		_parent = parent;
@@ -90,8 +83,7 @@ public class JsonWriteContext extends JsonStreamContext {
 	public JsonWriteContext createChildArrayContext() {
 		JsonWriteContext ctxt = _child;
 		if (ctxt == null) {
-			_child = ctxt = new JsonWriteContext(TYPE_ARRAY, this,
-					(_dups == null) ? null : _dups.child());
+			_child = ctxt = new JsonWriteContext(TYPE_ARRAY, this, (_dups == null) ? null : _dups.child());
 			return ctxt;
 		}
 		return ctxt.reset(TYPE_ARRAY);
@@ -100,8 +92,7 @@ public class JsonWriteContext extends JsonStreamContext {
 	public JsonWriteContext createChildObjectContext() {
 		JsonWriteContext ctxt = _child;
 		if (ctxt == null) {
-			_child = ctxt = new JsonWriteContext(TYPE_OBJECT, this,
-					(_dups == null) ? null : _dups.child());
+			_child = ctxt = new JsonWriteContext(TYPE_OBJECT, this, (_dups == null) ? null : _dups.child());
 			return ctxt;
 		}
 		return ctxt.reset(TYPE_OBJECT);
@@ -135,8 +126,7 @@ public class JsonWriteContext extends JsonStreamContext {
 		return (_index < 0) ? STATUS_OK_AS_IS : STATUS_OK_AFTER_COMMA;
 	}
 
-	private final void _checkDup(DupDetector dd, String name)
-			throws JsonProcessingException {
+	private final void _checkDup(DupDetector dd, String name) throws JsonProcessingException {
 		if (dd.isDup(name)) {
 			throw new JsonGenerationException("Duplicate field '" + name + "'");
 		}
@@ -190,8 +180,7 @@ public class JsonWriteContext extends JsonStreamContext {
 	// // // Overridden standard methods
 
 	/**
-	 * Overridden to provide developer writeable "JsonPath" representation of
-	 * the context.
+	 * Overridden to provide developer writeable "JsonPath" representation of the context.
 	 */
 	@Override
 	public String toString() {
