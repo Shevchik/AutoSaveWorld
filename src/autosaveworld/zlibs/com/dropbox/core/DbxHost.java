@@ -56,7 +56,15 @@ public final class DbxHost {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
 		return getClass().equals(o.getClass()) && equals((DbxHost) o);
+	}
+
+	@Override
+	public int hashCode() {
+		return api.hashCode() ^ content.hashCode() ^ web.hashCode();
 	}
 
 	public boolean equals(DbxHost o) {

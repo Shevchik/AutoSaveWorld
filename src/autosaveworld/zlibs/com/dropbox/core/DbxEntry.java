@@ -187,6 +187,9 @@ public abstract class DbxEntry implements Serializable {
 
 		@Override
 		public boolean equals(Object o) {
+			if (o == null) {
+				return false;
+			}
 			if (!getClass().equals(o.getClass())) {
 				return false;
 			}
@@ -331,6 +334,9 @@ public abstract class DbxEntry implements Serializable {
 
 		@Override
 		public boolean equals(Object o) {
+			if (o == null) {
+				return false;
+			}
 			if (!getClass().equals(o.getClass())) {
 				return false;
 			}
@@ -377,8 +383,7 @@ public abstract class DbxEntry implements Serializable {
 
 	public static final JsonReader<DbxEntry> Reader = new JsonReader<DbxEntry>() {
 		@Override
-		public final DbxEntry read(JsonParser parser) throws IOException,
-				JsonReadException {
+		public final DbxEntry read(JsonParser parser) throws IOException, JsonReadException {
 			WithChildrenC<?> wc = DbxEntry.read(parser, null);
 			if (wc == null) {
 				return null;
@@ -433,11 +438,8 @@ public abstract class DbxEntry implements Serializable {
 
 		public static final JsonReader<WithChildren> Reader = new JsonReader<WithChildren>() {
 			@Override
-			public final WithChildren read(JsonParser parser)
-					throws IOException, JsonReadException {
-				WithChildrenC<List<DbxEntry>> c = DbxEntry
-						.<List<DbxEntry>> read(parser,
-								new Collector.ArrayListCollector<DbxEntry>());
+			public final WithChildren read(JsonParser parser) throws IOException, JsonReadException {
+				WithChildrenC<List<DbxEntry>> c = DbxEntry.<List<DbxEntry>> read(parser, new Collector.ArrayListCollector<DbxEntry>());
 				if (c == null) {
 					return null;
 				}
@@ -447,6 +449,9 @@ public abstract class DbxEntry implements Serializable {
 
 		@Override
 		public boolean equals(Object o) {
+			if (o == null) {
+				return false;
+			}
 			return getClass().equals(o.getClass()) && equals((WithChildren) o);
 		}
 
@@ -533,12 +538,14 @@ public abstract class DbxEntry implements Serializable {
 
 		@Override
 		public boolean equals(Object o) {
+			if (o == null) {
+				return false;
+			}
 			return getClass().equals(o.getClass()) && equals((WithChildren) o);
 		}
 
 		public boolean equals(WithChildren o) {
-			if (children != null ? !children.equals(o.children)
-					: o.children != null) {
+			if (children != null ? !children.equals(o.children) : o.children != null) {
 				return false;
 			}
 			if (!entry.equals(o.entry)) {
@@ -564,9 +571,7 @@ public abstract class DbxEntry implements Serializable {
 	/**
 	 * @return {@code null} if the entry is an 'is_deleted' entry.
 	 */
-	public static <C> WithChildrenC<C> read(JsonParser parser,
-			Collector<DbxEntry, ? extends C> collector) throws IOException,
-			JsonReadException {
+	public static <C> WithChildrenC<C> read(JsonParser parser, Collector<DbxEntry, ? extends C> collector) throws IOException, JsonReadException {
 		JsonLocation top = JsonReader.expectObjectStart(parser);
 
 		String size = null;
@@ -634,12 +639,9 @@ public abstract class DbxEntry implements Serializable {
 					break;
 				case FM_hash:
 					if (collector == null) {
-						throw new JsonReadException(
-								"not expecting \"hash\" field, since we didn't ask for children",
-								parser.getCurrentLocation());
+						throw new JsonReadException("not expecting \"hash\" field, since we didn't ask for children", parser.getCurrentLocation());
 					}
-					hash = JsonReader.StringReader.readField(parser, fieldName,
-							hash);
+					hash = JsonReader.StringReader.readField(parser, fieldName, hash);
 					break;
 				case FM_contents:
 					if (collector == null) {
@@ -647,12 +649,10 @@ public abstract class DbxEntry implements Serializable {
 								"not expecting \"contents\" field, since we didn't ask for children",
 								parser.getCurrentLocation());
 					}
-					contents = JsonArrayReader.mk(Reader, collector).readField(
-							parser, fieldName, contents);
+					contents = JsonArrayReader.mk(Reader, collector).readField(parser, fieldName, contents);
 					break;
 				default:
-					throw new AssertionError("bad index: " + fi
-							+ ", field = \"" + fieldName + "\"");
+					throw new AssertionError("bad index: " + fi + ", field = \"" + fieldName + "\"");
 				}
 			} catch (JsonReadException ex) {
 				throw ex.addFieldContext(fieldName);

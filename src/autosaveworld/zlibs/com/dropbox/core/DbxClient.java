@@ -12,11 +12,9 @@ import autosaveworld.zlibs.com.dropbox.core.http.HttpRequestor;
 import autosaveworld.zlibs.com.dropbox.core.json.JsonArrayReader;
 import autosaveworld.zlibs.com.dropbox.core.json.JsonReadException;
 import autosaveworld.zlibs.com.dropbox.core.json.JsonReader;
-import autosaveworld.zlibs.com.dropbox.core.util.Collector;
 import autosaveworld.zlibs.com.dropbox.core.util.CountingOutputStream;
 import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
 import autosaveworld.zlibs.com.dropbox.core.util.LangUtil;
-import autosaveworld.zlibs.com.dropbox.core.util.Maybe;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
@@ -159,26 +157,6 @@ public final class DbxClient {
 		return getMetadataWithChildrenBase(path, DbxEntry.WithChildren.Reader);
 	}
 
-	/**
-	 * Same as {@link #getMetadataWithChildren} except instead of always
-	 * returning a list of {@link DbxEntry} objects, you specify a
-	 * {@link Collector} that processes the {@link DbxEntry} objects one by one
-	 * and aggregates them however you want.
-	 *
-	 * <p>
-	 * This allows your to process the {@link DbxEntry} values as they arrive,
-	 * instead of having to wait for the entire API call to finish before
-	 * processing the first one. Be careful, though, because the API call may
-	 * fail in the middle (after you've already processed some entries). Make
-	 * sure your code can handle that situation. For example, if you're
-	 * inserting stuff into a database as they arrive, you might want do
-	 * everything in a transaction and commit only if the entire call succeeds.
-	 * </p>
-	 */
-	public <C> DbxEntry.WithChildrenC<C> getMetadataWithChildrenC(String path, final Collector<DbxEntry, ? extends C> collector) throws DbxException {
-		return getMetadataWithChildrenBase(path, new DbxEntry.WithChildrenC.Reader<C>(collector));
-	}
-
 	private <T> T getMetadataWithChildrenBase(String path, final JsonReader<? extends T> reader) throws DbxException {
 		DbxPath.checkArg("path", path);
 
@@ -190,8 +168,7 @@ public final class DbxClient {
 		return doGet(host, apiPath, params, null,
 			new DbxRequestUtil.ResponseHandler<T>() {
 				@Override
-				public T handle(HttpRequestor.Response response)
-						throws DbxException {
+				public T handle(HttpRequestor.Response response) throws DbxException {
 					if (response.statusCode == 404) {
 						return null;
 					}
@@ -199,85 +176,7 @@ public final class DbxClient {
 						throw DbxRequestUtil.unexpectedStatus(response);
 					}
 					// Will return 'null' for "is_deleted=true" entries.
-					return DbxRequestUtil.readJsonFromResponse(reader,
-							response.body);
-				}
-			}
-		);
-	}
-
-	/**
-	 * Get the metadata for a given path and its children if anything has
-	 * changed since the last time you got them (as determined by the value of
-	 * {@link DbxEntry.WithChildren#hash} from the last result).
-	 *
-	 * @param path
-	 *            The path (starting with "/") to the file or folder (see
-	 *            {@link DbxPath}).
-	 *
-	 * @param previousFolderHash
-	 *            The value of {@link DbxEntry.WithChildren#hash} from the last
-	 *            time you got the metadata for this folder (and children).
-	 *
-	 * @return Never returns {@code null}. If the folder at the given path
-	 *         hasn't changed since you last retrieved it (i.e. its contents
-	 *         match {@code previousFolderHash}), return {@code Maybe.Nothing}.
-	 *         If it doesn't match {@code previousFolderHash} return either
-	 *         {@code Maybe.Just(null)} if there's nothing there or
-	 *         {@code Maybe.Just} with the metadata.
-	 */
-	public Maybe<DbxEntry.WithChildren> getMetadataWithChildrenIfChanged(String path, String previousFolderHash) throws DbxException {
-		return getMetadataWithChildrenIfChangedBase(path, previousFolderHash, DbxEntry.WithChildren.Reader);
-	}
-
-	/**
-	 * Same as {@link #getMetadataWithChildrenIfChanged} except instead of
-	 * always returning a list of {@link DbxEntry} objects, you specify a
-	 * {@link Collector} that processes the {@link DbxEntry} objects one by one
-	 * and aggregates them however you want.
-	 *
-	 * <p>
-	 * This allows your to process the {@link DbxEntry} values as they arrive,
-	 * instead of having to wait for the entire API call to finish before
-	 * processing the first one. Be careful, though, because the API call may
-	 * fail in the middle (after you've already processed some entries). Make
-	 * sure your code can handle that situation. For example, if you're
-	 * inserting stuff into a database as they arrive, you might want do
-	 * everything in a transaction and commit only if the entire call succeeds.
-	 * </p>
-	 */
-	public <C> Maybe<DbxEntry.WithChildrenC<C>> getMetadataWithChildrenIfChangedC(String path, String previousFolderHash, Collector<DbxEntry, ? extends C> collector) throws DbxException {
-		return getMetadataWithChildrenIfChangedBase(path, previousFolderHash, new DbxEntry.WithChildrenC.Reader<C>(collector));
-	}
-
-	private <T> Maybe<T> getMetadataWithChildrenIfChangedBase(String path, String previousFolderHash, final JsonReader<T> reader) throws DbxException {
-		if (previousFolderHash == null) {
-			throw new IllegalArgumentException("'previousFolderHash' must not be null");
-		}
-		if (previousFolderHash.length() == 0) {
-			throw new IllegalArgumentException("'previousFolderHash' must not be empty");
-		}
-		DbxPath.checkArg("path", path);
-
-		String host = this.host.api;
-		String apiPath = "1/metadata/auto" + path;
-
-		String[] params = { "list", "true", "file_limit", "25000", "hash", previousFolderHash, };
-
-		return doGet(host, apiPath, params, null,
-			new DbxRequestUtil.ResponseHandler<Maybe<T>>() {
-				@Override
-				public Maybe<T> handle(HttpRequestor.Response response) throws DbxException {
-					if (response.statusCode == 404) {
-						return Maybe.Just(null);
-					}
-					if (response.statusCode == 304) {
-						return Maybe.Nothing();
-					}
-					if (response.statusCode != 200) {
-						throw DbxRequestUtil.unexpectedStatus(response);
-					}
-					return Maybe.Just(DbxRequestUtil.readJsonFromResponse(reader, response.body));
+					return DbxRequestUtil.readJsonFromResponse(reader, response.body);
 				}
 			}
 		);
