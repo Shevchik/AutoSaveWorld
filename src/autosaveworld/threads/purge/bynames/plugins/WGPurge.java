@@ -125,7 +125,11 @@ public class WGPurge {
 					MessageLogger.debug("Deleting region " + regionid);
 					m.removeRegion(regionid);
 				}
-				try {m.save();} catch (Exception e) {}
+				try {
+					m.save();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				rgtodel.clear();
 			}
 		};
