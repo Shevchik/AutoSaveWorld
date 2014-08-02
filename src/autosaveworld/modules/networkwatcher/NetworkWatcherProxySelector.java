@@ -29,25 +29,34 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import sun.reflect.CallerSensitive;
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 
 public class NetworkWatcherProxySelector extends ProxySelector {
 
+	private AutoSaveWorldConfig config;
 	private ProxySelector defaultSelector;
 
-	public NetworkWatcherProxySelector(ProxySelector defaultSelector) {
+	public ProxySelector getDefaultSelector() {
+		return defaultSelector;
+	}
+
+	public NetworkWatcherProxySelector(ProxySelector defaultSelector, AutoSaveWorldConfig config) {
 		this.defaultSelector = defaultSelector;
+		this.config = config;
 	}
 
 	@Override
 	public List<Proxy> select(URI uri) {
-		if (Bukkit.isPrimaryThread()) {
-			Plugin plugin = getRequestingPlugin();
-			if (plugin != null) {
-				MessageLogger.warn("Plugin "+plugin.getName()+" attempted to access "+uri+" in main server thread");
-			} else {
-				MessageLogger.warn("Something attempted to access "+uri+" in main server thread, printing stack trace");
-				Thread.dumpStack();
+		if (config.networkWatcher) {
+			if (Bukkit.isPrimaryThread()) {
+				Plugin plugin = getRequestingPlugin();
+				if (plugin != null) {
+					MessageLogger.warn("Plugin "+plugin.getName()+" attempted to establish connection "+uri+" in main server thread");
+				} else {
+					MessageLogger.warn("Something attempted to access "+uri+" in main server thread, printing stack trace");
+					Thread.dumpStack();
+				}
 			}
 		}
 		return defaultSelector.select(uri);

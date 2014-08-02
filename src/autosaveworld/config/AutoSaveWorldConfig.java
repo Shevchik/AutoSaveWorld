@@ -139,6 +139,8 @@ public class AutoSaveWorldConfig {
 	public boolean worldRegenSaveGP = true;
 	public boolean worldregenSaveTowny = true;
 	public boolean worldregenSavePStones = true;
+	//network watcher
+	public boolean networkWatcher = true;
 
 
 	public void load() {
@@ -295,6 +297,9 @@ public class AutoSaveWorldConfig {
 		worldregenSaveTowny = config.getBoolean("worldregen.savetowny", worldregenSaveTowny);
 		worldregenSavePStones = config.getBoolean("worldregen.savepstones", worldregenSavePStones);
 
+		//network watcher variables
+		networkWatcher = config.getBoolean("networkwatcher.warnmainthreadnetwrokaccess", networkWatcher);
+
 		save();
 	}
 
@@ -423,6 +428,9 @@ public class AutoSaveWorldConfig {
 		config.set("worldregen.savegp", worldRegenSaveGP);
 		config.set("worldregen.savetowny", worldregenSaveTowny);
 		config.set("worldregen.savepstones", worldregenSavePStones);
+
+		//network watcher variables
+		config.set("networkwatcher.warnmainthreadnetwrokaccess", networkWatcher);
 
 		try {
 			config.save(new File(GlobalConstants.getConfigPath()));

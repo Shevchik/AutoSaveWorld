@@ -64,6 +64,8 @@ public class AutoSaveWorld extends JavaPlugin {
 	public PluginManager pluginmanager;
 	//process manager
 	public ProcessManager processmanager;
+	//network watcher
+	public NetworkWatcher watcher;
 	//configs
 	public AutoSaveWorldConfigMSG configmsg;
 	public AutoSaveWorldConfig config;
@@ -96,7 +98,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Load process manager
 		processmanager = new ProcessManager();
 		// Load network watcher
-		NetworkWatcher watcher = new NetworkWatcher();
+		watcher = new NetworkWatcher(config);
 		watcher.register();
 		// Start Threads
 		startThread(ThreadType.SAVE);
@@ -132,13 +134,15 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.CONSOLECOMMAND);
 		stopThread(ThreadType.WORLDREGENCOPY);
 		stopThread(ThreadType.WORLDREGENPASTE);
+		//stop network watcher
+		watcher.unregister();
+		watcher = null;
 		//null some variables
 		pluginmanager = null;
 		processmanager = null;
 		configmsg = null;
 		config = null;
 	}
-
 
 
 	protected void startThread(ThreadType type) {

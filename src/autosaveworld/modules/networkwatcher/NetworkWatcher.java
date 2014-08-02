@@ -19,10 +19,25 @@ package autosaveworld.modules.networkwatcher;
 
 import java.net.ProxySelector;
 
+import autosaveworld.config.AutoSaveWorldConfig;
+
 public class NetworkWatcher {
 
+	private AutoSaveWorldConfig config;
+
+	public NetworkWatcher(AutoSaveWorldConfig config) {
+		this.config = config;
+	}
+
 	public void register() {
-		ProxySelector.setDefault(new NetworkWatcherProxySelector(ProxySelector.getDefault()));
+		ProxySelector.setDefault(new NetworkWatcherProxySelector(ProxySelector.getDefault(), config));
+	}
+
+	public void unregister() {
+		ProxySelector cur = ProxySelector.getDefault();
+		if (cur instanceof NetworkWatcherProxySelector) {
+			ProxySelector.setDefault(((NetworkWatcherProxySelector) cur).getDefaultSelector());
+		}
 	}
 
 }
