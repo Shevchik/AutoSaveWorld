@@ -28,12 +28,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-import com.sk89q.worldedit.bukkit.BukkitUtil;
-
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.worldregen.SchematicOperations;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
+import autosaveworld.threads.worldregen.SchematicOperations;
+
+import com.sk89q.worldedit.bukkit.BukkitUtil;
 
 public class PStonesCopy {
 

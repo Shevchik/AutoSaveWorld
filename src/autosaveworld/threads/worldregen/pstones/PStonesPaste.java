@@ -28,8 +28,8 @@ import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.worldregen.SchematicOperations;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToLoad;
+import autosaveworld.threads.worldregen.SchematicOperations;
 
 public class PStonesPaste {
 

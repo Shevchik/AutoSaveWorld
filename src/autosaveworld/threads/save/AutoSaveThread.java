@@ -100,7 +100,7 @@ public class AutoSaveThread extends Thread {
 			MessageLogger.debug("Backup is running with world saving enabled, skipping autosave");
 			return;
 		}
-		
+
 		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
 		// Save the players

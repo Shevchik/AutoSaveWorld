@@ -70,6 +70,7 @@ public class MVInvPurge {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		MessageLogger.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
