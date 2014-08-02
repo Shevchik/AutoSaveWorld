@@ -28,7 +28,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import sun.reflect.CallerSensitive;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 
@@ -67,7 +66,6 @@ public class NetworkWatcherProxySelector extends ProxySelector {
 		defaultSelector.connectFailed(uri, sa, ioe);
 	}
 
-	@CallerSensitive
 	private Plugin getRequestingPlugin() {
 		HashMap<ClassLoader, Plugin> map = getClassloaderToPluginMap();
 		StackTraceElement[] stacktrace = new Exception().getStackTrace();
