@@ -1123,8 +1123,20 @@ public class Session implements Runnable {
 			}
 			byte command = packet.buffer.getCommand();
 			// System.err.println("command: "+command);
-			if (command == SSH_MSG_KEXINIT || command == SSH_MSG_NEWKEYS || command == SSH_MSG_KEXDH_INIT || command == SSH_MSG_KEXDH_REPLY || command == SSH_MSG_KEX_DH_GEX_GROUP
-					|| command == SSH_MSG_KEX_DH_GEX_INIT || command == SSH_MSG_KEX_DH_GEX_REPLY || command == SSH_MSG_KEX_DH_GEX_REQUEST || command == SSH_MSG_DISCONNECT) {
+			if (
+				command == SSH_MSG_KEXINIT || 
+				command == SSH_MSG_NEWKEYS || 
+				command == SSH_MSG_KEXDH_INIT || 
+				command == SSH_MSG_KEXDH_REPLY || 
+				
+				//this two commands have the same number, and it is not a mistake, so find bugs warning can be ignored
+				command == SSH_MSG_KEX_DH_GEX_GROUP ||
+				command == SSH_MSG_KEX_DH_GEX_INIT ||
+
+				command == SSH_MSG_KEX_DH_GEX_REPLY || 
+				command == SSH_MSG_KEX_DH_GEX_REQUEST || 
+				command == SSH_MSG_DISCONNECT
+			) {
 				break;
 			}
 			try {
