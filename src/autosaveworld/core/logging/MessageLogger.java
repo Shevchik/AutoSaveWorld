@@ -49,7 +49,10 @@ public class MessageLogger {
 	public static void broadcast(String message, boolean broadcast) {
 		if (!message.equals("") && broadcast) {
 			if (formattingCodesParser != null) {
-				Bukkit.broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
+				try {
+					Bukkit.broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
+				} catch (Throwable t) {
+				}
 			}
 		}
 	}
