@@ -79,9 +79,6 @@ public class InternalUtils {
 			URLClassLoader urlloader= (URLClassLoader) pluginClassLoader;
 			urlloader.close();
 		}
-		//force gc
-		System.gc();
-		System.gc();
 	}
 
 	private void removeCommand(CommandMap commandMap, Collection<Command> commands, Command cmd) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
