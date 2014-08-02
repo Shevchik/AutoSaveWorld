@@ -493,10 +493,10 @@ public abstract class DbxEntry implements Serializable {
 			if (o == null) {
 				return false;
 			}
-			return getClass().equals(o.getClass()) && equals((WithChildren) o);
+			return getClass().equals(o.getClass()) && equals((WithChildrenC<?>) o);
 		}
 
-		public boolean equals(WithChildren o) {
+		public boolean equals(WithChildrenC<?> o) {
 			if (children != null ? !children.equals(o.children) : o.children != null) {
 				return false;
 			}
