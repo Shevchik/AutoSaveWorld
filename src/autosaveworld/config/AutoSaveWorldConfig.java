@@ -51,7 +51,7 @@ public class AutoSaveWorldConfig {
 	public int backupInterval =  60*60*6;
 	public boolean backupBroadcast = true;
 	public boolean backupsaveBefore = true;
-	public boolean backupDisableWorldSaving = true;
+	public boolean backupDisableWorldSaving = false;
 	//localfs backup
 	public boolean backupLFSEnabled = true;
 	public List<String> backupLFSExtFolders;
