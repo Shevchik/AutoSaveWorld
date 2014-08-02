@@ -1355,7 +1355,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			case '\'':
 				/*
 				 * [JACKSON-173]: allow single quotes. Unlike with regular Strings, we'll eagerly parse contents; this so that there's no need to store information on quote char used.
-				 * 
+				 *
 				 * Also, no separation to fast/slow parsing; we'll just do one regular (~= slowish) parsing, to keep code simple
 				 */
 				if (isEnabled(Feature.ALLOW_SINGLE_QUOTES)) {

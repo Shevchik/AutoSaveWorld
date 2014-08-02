@@ -51,7 +51,7 @@ public class Random implements autosaveworld.zlibs.com.jcraft.jsch.Random {
 
 		/*
 		 * try{ random=SecureRandom.getInstance("SHA1PRNG"); return; } catch(java.security.NoSuchAlgorithmException e){ // System.err.println(e); }
-		 * 
+		 *
 		 * // The following code is for IBM's JCE try{ random=SecureRandom.getInstance("IBMSecureRandom"); return; } catch(java.security.NoSuchAlgorithmException ee){ //System.err.println(ee); }
 		 */
 	}

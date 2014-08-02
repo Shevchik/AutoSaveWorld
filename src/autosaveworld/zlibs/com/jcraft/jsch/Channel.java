@@ -534,22 +534,22 @@ public abstract class Channel implements Runnable {
 
 	/*
 	 * http://www1.ietf.org/internet-drafts/draft-ietf-secsh-connect-24.txt
-	 * 
+	 *
 	 * 5.3 Closing a Channel When a party will no longer send more data to a channel, it SHOULD send SSH_MSG_CHANNEL_EOF.
-	 * 
+	 *
 	 * byte SSH_MSG_CHANNEL_EOF uint32 recipient_channel
-	 * 
+	 *
 	 * No explicit response is sent to this message. However, the application may send EOF to whatever is at the other end of the channel. Note that the channel remains open after this message, and
 	 * more data may still be sent in the other direction. This message does not consume window space and can be sent even if no window space is available.
-	 * 
+	 *
 	 * When either party wishes to terminate the channel, it sends SSH_MSG_CHANNEL_CLOSE. Upon receiving this message, a party MUST send back a SSH_MSG_CHANNEL_CLOSE unless it has already sent this
 	 * message for the channel. The channel is considered closed for a party when it has both sent and received SSH_MSG_CHANNEL_CLOSE, and the party may then reuse the channel number. A party MAY send
 	 * SSH_MSG_CHANNEL_CLOSE without having sent or received SSH_MSG_CHANNEL_EOF.
-	 * 
+	 *
 	 * byte SSH_MSG_CHANNEL_CLOSE uint32 recipient_channel
-	 * 
+	 *
 	 * This message does not consume window space and can be sent even if no window space is available.
-	 * 
+	 *
 	 * It is recommended that any data sent before this message is delivered to the actual destination, if possible.
 	 */
 

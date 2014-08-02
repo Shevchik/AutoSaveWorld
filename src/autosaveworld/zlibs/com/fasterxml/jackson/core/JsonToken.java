@@ -11,7 +11,7 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core;
 public enum JsonToken {
 	/*
 	 * Some notes on implementation:
-	 * 
+	 *
 	 * - Entries are to be ordered such that start/end array/object markers come first, then field name marker (if any), and finally scalar value tokens. This is assumed by some typing checks.
 	 */
 

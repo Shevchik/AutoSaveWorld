@@ -88,14 +88,14 @@ public class JsonPointer {
 
 	/*
 	 * Factory method that composes a pointer instance, given a set of 'raw' segments: raw meaning that no processing will be done, no escaping may is present.
-	 * 
+	 *
 	 * @param segments
-	 * 
+	 *
 	 * @return Constructed path instance
 	 */
 	/*
 	 * TODO! public static JsonPointer fromSegment(String... segments) { if (segments.length == 0) { return EMPTY; } JsonPointer prev = null;
-	 * 
+	 *
 	 * for (String segment : segments) { JsonPointer next = new JsonPointer() } }
 	 */
 

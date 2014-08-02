@@ -660,12 +660,12 @@ public final class BytesToNameCanonicalizer {
 	/*
 	 * @Override public String toString() { StringBuilder sb = new StringBuilder(); sb.append("[BytesToNameCanonicalizer, size: "); sb.append(_count); sb.append('/'); sb.append(_mainHash.length);
 	 * sb.append(", "); sb.append(_collCount); sb.append(" coll; avg length: ");
-	 * 
+	 *
 	 * // Average length: minimum of 1 for all (1 == primary hit); // and then 1 per each traversal for collisions/buckets //int maxDist = 1; int pathCount = _count; for (int i = 0; i < _collEnd; ++i)
 	 * { int spillLen = _collList[i].length(); for (int j = 1; j <= spillLen; ++j) { pathCount += j; } } double avgLength;
-	 * 
+	 *
 	 * if (_count == 0) { avgLength = 0.0; } else { avgLength = (double) pathCount / (double) _count; } // let's round up a bit (two 2 decimal places) //avgLength -= (avgLength % 0.01);
-	 * 
+	 *
 	 * sb.append(avgLength); sb.append(']'); return sb.toString(); }
 	 */
 
