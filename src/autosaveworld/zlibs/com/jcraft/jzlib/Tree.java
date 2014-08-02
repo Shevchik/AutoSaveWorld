@@ -332,12 +332,13 @@ final class Tree {
 	private final static int bi_reverse(int code, // the value to invert
 			int len // its bit length
 	) {
-		int res = 0;
-		do {
-			res |= code & 1;
-			code >>>= 1;
-			res <<= 1;
-		} while (--len > 0);
-		return res >>> 1;
+		int ret = 0;
+		for (int i = 0; i < len; i++) {
+			ret = ret << 1;
+			ret |= code & 1;
+			code = code >>> 1;
+		}
+		return ret;
 	}
+
 }
