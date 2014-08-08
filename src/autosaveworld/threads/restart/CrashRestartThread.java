@@ -106,9 +106,10 @@ public class CrashRestartThread extends Thread{
 					} catch (Throwable t) {
 					}
 					//unload plugins
-					for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+					Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+					for (int i = plugins.length - 1; i >= 0; i--) {
 						try {
-							Bukkit.getPluginManager().disablePlugin(plugin);
+							Bukkit.getPluginManager().disablePlugin(plugins[i]);
 						} catch (Throwable e) {
 							e.printStackTrace();
 						}
