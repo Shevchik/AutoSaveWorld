@@ -28,13 +28,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.StringUtils;
+import autosaveworld.utils.codeinvoker.CodeInvoker;
 
 public class CommandsHandler implements CommandExecutor {
 
@@ -185,6 +188,12 @@ public class CommandsHandler implements CommandExecutor {
 					return true;
 				}
 				plugin.worldregencopyThread.startworldregen(args[1]);
+				return true;
+			} else if (args.length == 2 && args[0].equalsIgnoreCase("invokecode")) {
+				File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + args[1]+".yml");
+				sender.sendMessage(ChatColor.BLUE + "Invoking code from file "+file.getPath());
+				new CodeInvoker().invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code"));
+				sender.sendMessage(ChatColor.BLUE + "Invoke code finished");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
 				//reload
