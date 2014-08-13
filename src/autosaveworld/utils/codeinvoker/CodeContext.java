@@ -37,20 +37,35 @@ public class CodeContext {
 
 	private Object parseObject(String object) {
 		String[] split = object.split("[:]");
-		switch (split[0]) {
-			case "String": {
+		switch (split[0].toUpperCase()) {
+			case "STRING": {
 				return new String(split[1].replace("{LINEREPLACER}", "|"));
 			}
-			case "Integer": {
+			case "LONG": {
+				return Long.parseLong(split[1]);
+			}
+			case "INTEGER": {
 				return Integer.parseInt(split[1]);
 			}
-			case "Context": {
+			case "SHORT": {
+				return Short.parseShort(split[1]);
+			}
+			case "BYTE": {
+				return Byte.parseByte(split[1]);
+			}
+			case "DOUBLE": {
+				return Double.parseDouble(split[1]);
+			}
+			case "FLOAT": {
+				return Float.parseFloat(split[1]);
+			}
+			case "CONTEXT": {
 				return objectsrefs.get(split[1]);
 			}
-			case "Null": {
+			case "NULL": {
 				return null;
 			}
-			case "Last": {
+			case "LAST": {
 				return returnedobject;
 			}
 			default: {

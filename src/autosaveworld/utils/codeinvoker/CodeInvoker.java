@@ -37,7 +37,7 @@ public class CodeInvoker {
 	private GetParser gparser = new GetParser(context);
 	private SetParser sparser = new SetParser(context);
 
-	//array of objects - (String:something - string, Integer:something - integer, and so on for primitives, Last - last returned object, Context:name - codeContext object, Null - for static use in working class), separated by |, to use | character use {LINEREPLACER}
+	//array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {LINEREPLACER}
 
 	//getclass classname - sets working class
 	//store name - stores last returned object
@@ -57,20 +57,20 @@ public class CodeInvoker {
 	//(print server online mode)
 	//code:
 	//	- getclass org.bukkit.Bukkit
-	//	- invoke getOnlineMode,Null
+	//	- invoke getOnlineMode,NULL
 	//	- print Last
 	//(print offline player _Shevchik_ uuid)
 	//code:
 	//	- getclass org.bukkit.Bukkit
-	//	- invoke getOfflinePlayer,Null,String:_Shevchik_
-	//	- invoke getUniqueId,Last
+	//	- invoke getOfflinePlayer,NULL,String:_Shevchik_
+	//	- invoke getUniqueId,LAST
 	//	- print Last
-	//(change server max players count to 201)
+	//(change server max players count to 201(works on 1.7.10))
 	//code:
 	//	- getclass org.bukkit.Bukkit
-	//	- invoke getServer,Null
-	//	- get playerList,Last
-	//	- set maxPlayers,Last,Integer:201
+	//	- invoke getServer,NULL
+	//	- get playerList,LAST
+	//	- set maxPlayers,LAST,INTEGER:201
 
 	public void invokeCode(List<String> commands) {
 		try {
