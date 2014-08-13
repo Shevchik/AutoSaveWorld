@@ -27,23 +27,18 @@ public class InvokeParser {
 	protected InvokeInfo getInvokeInfo(String string) {
 		InvokeInfo info = new InvokeInfo();
 		String[] split = string.split("[,]");
-		info.codecontextname = split[0];
-		info.methodname = split[1];
-		info.object = context.getObjects(split[2])[0];
-		if (split.length == 4) {
-			info.objects = context.getObjects(split[3]);
+		info.methodname = split[0];
+		info.object = context.getObjects(split[1])[0];
+		if (split.length == 3) {
+			info.objects = context.getObjects(split[2]);
 		}
 		return info;
 	}
 
 	protected static class InvokeInfo {
-		private String codecontextname;
 		private String methodname;
 		private Object object;
 		private Object[] objects;
-		protected String getName() {
-			return codecontextname;
-		}
 		protected String getMethodName() {
 			return methodname;
 		}

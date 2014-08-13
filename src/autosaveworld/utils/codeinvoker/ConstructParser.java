@@ -27,19 +27,14 @@ public class ConstructParser {
 	protected ConstructInfo getConstructInfo(String string) {
 		ConstructInfo info = new ConstructInfo();
 		String[] split = string.split("[,]");
-		info.codecontextname = split[0];
-		if (split.length == 2) {
-			info.objects = context.getObjects(split[1]);
+		if (split.length == 1) {
+			info.objects = context.getObjects(split[0]);
 		}
 		return info;
 	}
 
 	protected static class ConstructInfo {
-		private String codecontextname;
 		private Object[] objects;
-		protected String getName() {
-			return codecontextname;
-		}
 		protected Object[] getObjects() {
 			return objects;
 		}

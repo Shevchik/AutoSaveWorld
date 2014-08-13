@@ -23,6 +23,7 @@ import java.util.LinkedList;
 public class CodeContext {
 
 	protected Class<?> usedclass;
+	protected Object returnedobject;
 	protected HashMap<String, Object> objectsrefs = new HashMap<String, Object>();
 
 	protected Object[] getObjects(String objectsstring) {
@@ -48,6 +49,9 @@ public class CodeContext {
 			}
 			case "Null": {
 				return null;
+			}
+			case "Last": {
+				return returnedobject;
 			}
 			default: {
 				return new Object();
