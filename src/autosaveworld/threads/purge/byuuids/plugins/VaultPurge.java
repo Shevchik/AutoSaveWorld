@@ -34,6 +34,7 @@ import autosaveworld.utils.SchedulerUtils;
 public class VaultPurge {
 
 	private ArrayList<String> playerstopurgeperms = new ArrayList<String>(70);
+
 	public void doPermissionsPurgeTask(ActivePlayersList pacheck, String savecmd) {
 
 		MessageLogger.debug("Player permissions purge started");
@@ -43,14 +44,14 @@ public class VaultPurge {
 		int deleted = 0;
 
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
-		File playersdatfolder = new File(worldfoldername+ File.separator + "playerdata"+ File.separator);
+		File playersdatfolder = new File(worldfoldername + File.separator + "playerdata" + File.separator);
 		for (String playerfile : playersdatfolder.list()) {
 			if (playerfile.endsWith(".dat")) {
 				String playerUUID = playerfile.substring(0, playerfile.length() - 4);
 				if (!pacheck.isActiveUUID(playerUUID)) {
-					//add player to delete batch
+					// add player to delete batch
 					playerstopurgeperms.add(playerUUID);
-					//delete permissions if maximum batch size reached
+					// delete permissions if maximum batch size reached
 					if (playerstopurgeperms.size() == 40) {
 						flushPermsBatch(permission, savecmd);
 					}
@@ -58,22 +59,23 @@ public class VaultPurge {
 				}
 			}
 		}
-		//flush the rest of the batch
+		// flush the rest of the batch
 		flushPermsBatch(permission, savecmd);
 
-		MessageLogger.debug("Player permissions purge finished, deleted "+deleted+" players permissions");
+		MessageLogger.debug("Player permissions purge finished, deleted " + deleted + " players permissions");
 	}
+
 	private void flushPermsBatch(final Permission permission, final String savecmd) {
-		//delete permissions
+		// delete permissions
 		Runnable deleteperms = new Runnable() {
 			@Override
 			public void run() {
 				for (String playerUUID : playerstopurgeperms) {
 					MessageLogger.debug(playerUUID + " is inactive. Removing permissions");
 					OfflinePlayer offpl = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
-					//remove all player groups
+					// remove all player groups
 					for (String group : permission.getGroups()) {
-						permission.playerRemoveGroup((String)null, offpl, group);
+						permission.playerRemoveGroup((String) null, offpl, group);
 						for (World world : Bukkit.getWorlds()) {
 							permission.playerRemoveGroup(world.getName(), offpl, group);
 						}

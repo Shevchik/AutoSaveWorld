@@ -96,7 +96,7 @@ public class ChannelDirectTCPIP extends Channel {
 			Session _session = getSession();
 			int i = 0;
 
-			while (isConnected() && thread != null && io != null && io.in != null) {
+			while (isConnected() && (thread != null) && (io != null) && (io.in != null)) {
 				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14 - Session.buffer_margin);
 				if (i <= 0) {
 					eof();
@@ -147,11 +147,11 @@ public class ChannelDirectTCPIP extends Channel {
 	}
 
 	public void setOrgIPAddress(String foo) {
-		this.originator_IP_address = foo;
+		originator_IP_address = foo;
 	}
 
 	public void setOrgPort(int foo) {
-		this.originator_port = foo;
+		originator_port = foo;
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class ChannelDirectTCPIP extends Channel {
 		// uint32 maxmum packet size // 0x4000(16384)
 		packet.reset();
 		buf.putByte((byte) 90);
-		buf.putString(this.type);
+		buf.putString(type);
 		buf.putInt(id);
 		buf.putInt(lwsize);
 		buf.putInt(lmpsize);

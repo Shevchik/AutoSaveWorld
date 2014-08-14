@@ -206,7 +206,7 @@ public class FTPClient extends FTP {
 	}
 
 	protected Socket _openDataConnection_(String command, String arg) throws IOException {
-		if (__dataConnectionMode != ACTIVE_LOCAL_DATA_CONNECTION_MODE && __dataConnectionMode != PASSIVE_LOCAL_DATA_CONNECTION_MODE) {
+		if ((__dataConnectionMode != ACTIVE_LOCAL_DATA_CONNECTION_MODE) && (__dataConnectionMode != PASSIVE_LOCAL_DATA_CONNECTION_MODE)) {
 			return null;
 		}
 
@@ -255,7 +255,7 @@ public class FTPClient extends FTP {
 			}
 		} else {
 			boolean attemptEPSV = isUseEPSVwithIPv4() || isInet6Address;
-			if (attemptEPSV && epsv() == FTPReply.ENTERING_EPSV_MODE) {
+			if (attemptEPSV && (epsv() == FTPReply.ENTERING_EPSV_MODE)) {
 				_parseExtendedPassiveModeReply(_replyLines.get(0));
 			} else {
 				if (isInet6Address) {
@@ -459,11 +459,11 @@ public class FTPClient extends FTP {
 	}
 
 	private int getActivePort() {
-		if (__activeMinPort > 0 && __activeMaxPort >= __activeMinPort) {
+		if ((__activeMinPort > 0) && (__activeMaxPort >= __activeMinPort)) {
 			if (__activeMaxPort == __activeMinPort) {
 				return __activeMaxPort;
 			}
-			return __random.nextInt(__activeMaxPort - __activeMinPort + 1) + __activeMinPort;
+			return __random.nextInt((__activeMaxPort - __activeMinPort) + 1) + __activeMinPort;
 		} else {
 			return 0;
 		}
@@ -487,28 +487,28 @@ public class FTPClient extends FTP {
 	}
 
 	public void setActivePortRange(int minPort, int maxPort) {
-		this.__activeMinPort = minPort;
-		this.__activeMaxPort = maxPort;
+		__activeMinPort = minPort;
+		__activeMaxPort = maxPort;
 	}
 
 	public void setActiveExternalIPAddress(String ipAddress) throws UnknownHostException {
-		this.__activeExternalHost = InetAddress.getByName(ipAddress);
+		__activeExternalHost = InetAddress.getByName(ipAddress);
 	}
 
 	public void setPassiveLocalIPAddress(String ipAddress) throws UnknownHostException {
-		this.__passiveLocalHost = InetAddress.getByName(ipAddress);
+		__passiveLocalHost = InetAddress.getByName(ipAddress);
 	}
 
 	public void setPassiveLocalIPAddress(InetAddress inetAddress) {
-		this.__passiveLocalHost = inetAddress;
+		__passiveLocalHost = inetAddress;
 	}
 
 	public InetAddress getPassiveLocalIPAddress() {
-		return this.__passiveLocalHost;
+		return __passiveLocalHost;
 	}
 
 	public void setReportActiveExternalIPAddress(String ipAddress) throws UnknownHostException {
-		this.__reportActiveExternalHost = InetAddress.getByName(ipAddress);
+		__reportActiveExternalHost = InetAddress.getByName(ipAddress);
 	}
 
 	public boolean setFileType(int fileType) throws IOException {
@@ -540,35 +540,35 @@ public class FTPClient extends FTP {
 	}
 
 	public boolean remoteRetrieve(String filename) throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if ((__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE) || (__dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE)) {
 			return FTPReply.isPositivePreliminary(retr(filename));
 		}
 		return false;
 	}
 
 	public boolean remoteStore(String filename) throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if ((__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE) || (__dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE)) {
 			return FTPReply.isPositivePreliminary(stor(filename));
 		}
 		return false;
 	}
 
 	public boolean remoteStoreUnique(String filename) throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if ((__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE) || (__dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE)) {
 			return FTPReply.isPositivePreliminary(stou(filename));
 		}
 		return false;
 	}
 
 	public boolean remoteStoreUnique() throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if ((__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE) || (__dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE)) {
 			return FTPReply.isPositivePreliminary(stou());
 		}
 		return false;
 	}
 
 	public boolean remoteAppend(String filename) throws IOException {
-		if (__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE || __dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE) {
+		if ((__dataConnectionMode == ACTIVE_REMOTE_DATA_CONNECTION_MODE) || (__dataConnectionMode == PASSIVE_REMOTE_DATA_CONNECTION_MODE)) {
 			return FTPReply.isPositivePreliminary(appe(filename));
 		}
 		return false;
@@ -855,11 +855,11 @@ public class FTPClient extends FTP {
 	}
 
 	public void setListHiddenFiles(boolean listHiddenFiles) {
-		this.__listHiddenFiles = listHiddenFiles;
+		__listHiddenFiles = listHiddenFiles;
 	}
 
 	public boolean getListHiddenFiles() {
-		return this.__listHiddenFiles;
+		return __listHiddenFiles;
 	}
 
 	public boolean isUseEPSVwithIPv4() {
@@ -867,11 +867,11 @@ public class FTPClient extends FTP {
 	}
 
 	public void setUseEPSVwithIPv4(boolean selected) {
-		this.__useEPSVwithIPv4 = selected;
+		__useEPSVwithIPv4 = selected;
 	}
 
 	public void setPassiveNatWorkaround(boolean enabled) {
-		this.__passiveNatWorkaround = enabled;
+		__passiveNatWorkaround = enabled;
 	}
 
 	private OutputStream getBufferedOutputStream(OutputStream outputStream) {

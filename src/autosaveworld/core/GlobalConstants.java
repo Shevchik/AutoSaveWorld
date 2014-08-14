@@ -22,11 +22,12 @@ import java.io.File;
 public class GlobalConstants {
 
 	public static void init(AutoSaveWorld plugin) {
-		pluginfolder = plugin.getDataFolder().getPath()+File.separator;
+		pluginfolder = plugin.getDataFolder().getPath() + File.separator;
 	}
 
-	//main
+	// main
 	private static String pluginfolder;
+
 	public static String getAutoSaveWorldFolder() {
 		return pluginfolder;
 	}
@@ -35,50 +36,61 @@ public class GlobalConstants {
 		return new File(pluginfolder).getParentFile().getPath();
 	}
 
-	//config
+	// config
 	private static String configfile = "config.yml";
+
 	public static String getConfigPath() {
-		return getAutoSaveWorldFolder()+configfile;
+		return getAutoSaveWorldFolder() + configfile;
 	}
+
 	private static String configmsgfile = "configmsg.yml";
+
 	public static String getConfigMSGPath() {
-		return getAutoSaveWorldFolder()+configmsgfile;
+		return getAutoSaveWorldFolder() + configmsgfile;
 	}
 
-	//counter preserve files
+	// counter preserve files
 	private static String backuppreserverfile = "backupintervalpreserve.yml";
+
 	public static String getBackupIntervalPreservePath() {
-		return getAutoSaveWorldFolder()+backuppreserverfile;
+		return getAutoSaveWorldFolder() + backuppreserverfile;
 	}
 
-	//worldregen
-	private static String worldregentempfolder = "WorldRegenTemp"+File.separator;
+	// worldregen
+	private static String worldregentempfolder = "WorldRegenTemp" + File.separator;
 	private static String worldnamefile = "wname.yml";
-	private static String wgtempfolder = "WG"+File.separator;
-	private static String factionstempfolder = "Factions"+File.separator;
-	private static String griefpreventiontempfolder = "GP"+File.separator;
-	private static String townytempfolder = "Towny"+File.separator;
-	private static String pstonestempfolder = "PStones"+File.separator;
+	private static String wgtempfolder = "WG" + File.separator;
+	private static String factionstempfolder = "Factions" + File.separator;
+	private static String griefpreventiontempfolder = "GP" + File.separator;
+	private static String townytempfolder = "Towny" + File.separator;
+	private static String pstonestempfolder = "PStones" + File.separator;
+
 	public static String getWorldRegenTempFolder() {
-		return getAutoSaveWorldFolder()+worldregentempfolder;
+		return getAutoSaveWorldFolder() + worldregentempfolder;
 	}
+
 	public static String getWorldnameFile() {
-		return getWorldRegenTempFolder()+worldnamefile;
+		return getWorldRegenTempFolder() + worldnamefile;
 	}
+
 	public static String getWGTempFolder() {
-		return getWorldRegenTempFolder()+wgtempfolder;
+		return getWorldRegenTempFolder() + wgtempfolder;
 	}
+
 	public static String getFactionsTempFolder() {
-		return getWorldRegenTempFolder()+factionstempfolder;
+		return getWorldRegenTempFolder() + factionstempfolder;
 	}
+
 	public static String getGPTempFolder() {
-		return getWorldRegenTempFolder()+griefpreventiontempfolder;
+		return getWorldRegenTempFolder() + griefpreventiontempfolder;
 	}
+
 	public static String getTownyTempFolder() {
-		return getWorldRegenTempFolder()+townytempfolder;
+		return getWorldRegenTempFolder() + townytempfolder;
 	}
+
 	public static String getPStonesTempFolder() {
-		return getWorldRegenTempFolder()+pstonestempfolder;
+		return getWorldRegenTempFolder() + pstonestempfolder;
 	}
 
 }

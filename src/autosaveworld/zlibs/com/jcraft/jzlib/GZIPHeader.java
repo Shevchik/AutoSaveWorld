@@ -79,7 +79,7 @@ public class GZIPHeader implements Cloneable {
 	}
 
 	public void setOS(int os) {
-		if ((0 <= os && os <= 13) || os == 255) {
+		if (((0 <= os) && (os <= 13)) || (os == 255)) {
 			this.os = os;
 		} else {
 			throw new IllegalArgumentException("os: " + os);

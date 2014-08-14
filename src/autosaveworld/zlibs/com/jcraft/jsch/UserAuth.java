@@ -44,10 +44,10 @@ public abstract class UserAuth {
 	protected String username;
 
 	public boolean start(Session session) throws Exception {
-		this.userinfo = session.getUserInfo();
-		this.packet = session.packet;
-		this.buf = packet.getBuffer();
-		this.username = session.getUserName();
+		userinfo = session.getUserInfo();
+		packet = session.packet;
+		buf = packet.getBuffer();
+		username = session.getUserName();
 		return true;
 	}
 }

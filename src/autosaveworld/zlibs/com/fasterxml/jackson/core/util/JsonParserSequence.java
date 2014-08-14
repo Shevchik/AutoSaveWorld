@@ -36,12 +36,10 @@ public class JsonParserSequence extends JsonParserDelegate {
 	}
 
 	/**
-	 * Method that will construct a parser (possibly a sequence) that contains all given sub-parsers. All parsers given are checked to see if they are sequences: and if so, they will be "flattened",
-	 * that is, contained parsers are directly added in a new sequence instead of adding sequences within sequences. This is done to minimize delegation depth, ideally only having just a single level
-	 * of delegation.
+	 * Method that will construct a parser (possibly a sequence) that contains all given sub-parsers. All parsers given are checked to see if they are sequences: and if so, they will be "flattened", that is, contained parsers are directly added in a new sequence instead of adding sequences within sequences. This is done to minimize delegation depth, ideally only having just a single level of delegation.
 	 */
 	public static JsonParserSequence createFlattened(JsonParser first, JsonParser second) {
-		if (!(first instanceof JsonParserSequence || second instanceof JsonParserSequence)) {
+		if (!((first instanceof JsonParserSequence) || (second instanceof JsonParserSequence))) {
 			// simple:
 			return new JsonParserSequence(new JsonParser[] { first, second });
 		}
@@ -113,8 +111,7 @@ public class JsonParserSequence extends JsonParserDelegate {
 	 */
 
 	/**
-	 * Method that will switch active parser from the current one to next parser in sequence, if there is another parser left, making this the new delegate. Old delegate is returned if switch
-	 * succeeds.
+	 * Method that will switch active parser from the current one to next parser in sequence, if there is another parser left, making this the new delegate. Old delegate is returned if switch succeeds.
 	 *
 	 * @return True if switch succeeded; false otherwise
 	 */

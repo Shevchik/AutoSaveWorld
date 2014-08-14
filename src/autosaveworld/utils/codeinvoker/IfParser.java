@@ -20,6 +20,7 @@ package autosaveworld.utils.codeinvoker;
 public class IfParser {
 
 	private CodeContext context;
+
 	public IfParser(CodeContext context) {
 		this.context = context;
 	}
@@ -37,12 +38,15 @@ public class IfParser {
 		private int ife;
 		private int ifne;
 		private Object[] objects;
+
 		protected int getEIndex() {
 			return ife;
 		}
+
 		protected int getNEIndex() {
 			return ifne;
 		}
+
 		protected Object[] getObjects() {
 			return objects;
 		}

@@ -99,7 +99,7 @@ public class UTF32Reader extends Reader {
 			return len;
 		}
 		// Let's then ensure there's enough room...
-		if (start < 0 || (start + len) > cbuf.length) {
+		if ((start < 0) || ((start + len) > cbuf.length)) {
 			reportBounds(cbuf, start, len);
 		}
 
@@ -172,7 +172,7 @@ public class UTF32Reader extends Reader {
 	}
 
 	private void reportInvalid(int value, int offset, String msg) throws IOException {
-		int bytePos = _byteCount + _ptr - 1, charPos = _charCount + offset;
+		int bytePos = (_byteCount + _ptr) - 1, charPos = _charCount + offset;
 
 		throw new CharConversionException("Invalid UTF-32 character 0x" + Integer.toHexString(value) + msg + " at char #" + charPos + ", byte #" + bytePos + ")");
 	}

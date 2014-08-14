@@ -126,8 +126,8 @@ public class Session implements Runnable {
 	SocketFactory socket_factory = null;
 
 	static final int buffer_margin = 32 + // maximum padding length
-	20 + // maximum mac length
-	32; // margin for deflater; deflater may inflate data
+			20 + // maximum mac length
+			32; // margin for deflater; deflater may inflate data
 
 	private java.util.Hashtable<String, String> config = null;
 
@@ -159,7 +159,7 @@ public class Session implements Runnable {
 		buf = new Buffer();
 		packet = new Packet(buf);
 		this.username = username;
-		this.org_host = this.host = host;
+		org_host = this.host = host;
 		this.port = port;
 
 		applyConfig();
@@ -229,7 +229,7 @@ public class Session implements Runnable {
 				}
 			}
 
-			if (connectTimeout > 0 && socket != null) {
+			if ((connectTimeout > 0) && (socket != null)) {
 				socket.setSoTimeout(connectTimeout);
 			}
 
@@ -270,20 +270,20 @@ public class Session implements Runnable {
 
 				if (buf.buffer[i - 1] == 10) { // 0x0a
 					i--;
-					if (i > 0 && buf.buffer[i - 1] == 13) { // 0x0d
+					if ((i > 0) && (buf.buffer[i - 1] == 13)) { // 0x0d
 						i--;
 					}
 				}
 
-				if (i <= 3 || ((i != buf.buffer.length) && (buf.buffer[0] != 'S' || buf.buffer[1] != 'S' || buf.buffer[2] != 'H' || buf.buffer[3] != '-'))) {
+				if ((i <= 3) || ((i != buf.buffer.length) && ((buf.buffer[0] != 'S') || (buf.buffer[1] != 'S') || (buf.buffer[2] != 'H') || (buf.buffer[3] != '-')))) {
 					// It must not start with 'SSH-'
 					// System.err.println(new String(buf.buffer, 0, i);
 					continue;
 				}
 
-				if (i == buf.buffer.length || i < 7 || // SSH-1.99 or SSH-2.0
-						(buf.buffer[4] == '1' && buf.buffer[6] != '9') // SSH-1.5
-				) {
+				if ((i == buf.buffer.length) || (i < 7) || // SSH-1.99 or SSH-2.0
+						((buf.buffer[4] == '1') && (buf.buffer[6] != '9')) // SSH-1.5
+						) {
 					throw new JSchException("invalid server's version string");
 				}
 				break;
@@ -392,7 +392,7 @@ public class Session implements Runnable {
 
 			loop: while (true) {
 
-				while (!auth && cmethoda != null && methodi < cmethoda.length) {
+				while (!auth && (cmethoda != null) && (methodi < cmethoda.length)) {
 
 					String method = cmethoda[methodi++];
 					boolean acceptable = false;
@@ -412,7 +412,7 @@ public class Session implements Runnable {
 						String str = "Authentications that can continue: ";
 						for (int k = methodi - 1; k < cmethoda.length; k++) {
 							str += cmethoda[k];
-							if (k + 1 < cmethoda.length) {
+							if ((k + 1) < cmethoda.length) {
 								str += ",";
 							}
 						}
@@ -482,7 +482,7 @@ public class Session implements Runnable {
 				throw new JSchException("Auth fail");
 			}
 
-			if (socket != null && (connectTimeout > 0 || timeout > 0)) {
+			if ((socket != null) && ((connectTimeout > 0) || (timeout > 0))) {
 				socket.setSoTimeout(timeout);
 			}
 
@@ -509,7 +509,7 @@ public class Session implements Runnable {
 				if (isConnected) {
 					String message = e.toString();
 					packet.reset();
-					buf.checkFreeSize(1 + 4 * 3 + message.length() + 2 + buffer_margin);
+					buf.checkFreeSize(1 + (4 * 3) + message.length() + 2 + buffer_margin);
 					buf.putByte((byte) SSH_MSG_DISCONNECT);
 					buf.putInt(3);
 					buf.putString(Util.str2byte(message));
@@ -532,8 +532,8 @@ public class Session implements Runnable {
 			}
 			throw new JSchException("Session.connect: " + e);
 		} finally {
-			Util.bzero(this.password);
-			this.password = null;
+			Util.bzero(password);
+			password = null;
 		}
 	}
 
@@ -587,17 +587,17 @@ public class Session implements Runnable {
 		String ciphers2c = getConfig("cipher.s2c");
 
 		String[] not_available_ciphers = checkCiphers(getConfig("CheckCiphers"));
-		if (not_available_ciphers != null && not_available_ciphers.length > 0) {
+		if ((not_available_ciphers != null) && (not_available_ciphers.length > 0)) {
 			cipherc2s = Util.diffString(cipherc2s, not_available_ciphers);
 			ciphers2c = Util.diffString(ciphers2c, not_available_ciphers);
-			if (cipherc2s == null || ciphers2c == null) {
+			if ((cipherc2s == null) || (ciphers2c == null)) {
 				throw new JSchException("There are not any available ciphers.");
 			}
 		}
 
 		String kex = getConfig("kex");
 		String[] not_available_kexes = checkKexes(getConfig("CheckKexes"));
-		if (not_available_kexes != null && not_available_kexes.length > 0) {
+		if ((not_available_kexes != null) && (not_available_kexes.length > 0)) {
 			kex = Util.diffString(kex, not_available_kexes);
 			if (kex == null) {
 				throw new JSchException("There are not any available kexes.");
@@ -734,10 +734,10 @@ public class Session implements Runnable {
 			}
 			j = ((buf.buffer[0] << 24) & 0xff000000) | ((buf.buffer[1] << 16) & 0x00ff0000) | ((buf.buffer[2] << 8) & 0x0000ff00) | ((buf.buffer[3]) & 0x000000ff);
 			// RFC 4253 6.1. Maximum Packet Length
-			if (j < 5 || j > PACKET_MAX_SIZE) {
+			if ((j < 5) || (j > PACKET_MAX_SIZE)) {
 				start_discard(buf, s2ccipher, s2cmac, j, PACKET_MAX_SIZE);
 			}
-			int need = j + 4 - s2ccipher_size;
+			int need = (j + 4) - s2ccipher_size;
 			// if(need<0){
 			// throw new IOException("invalid data");
 			// }
@@ -819,8 +819,7 @@ public class Session implements Runnable {
 				buf.getInt();
 				buf.getShort();
 				/*
-				 * byte always_display=(byte)buf.getByte(); byte[] message=buf.getString(); byte[] language_tag=buf.getString(); System.err.println("SSH_MSG_DEBUG:"+ " "+Util.byte2str(message)+
-				 * " "+Util.byte2str(language_tag));
+				 * byte always_display=(byte)buf.getByte(); byte[] message=buf.getString(); byte[] language_tag=buf.getString(); System.err.println("SSH_MSG_DEBUG:"+ " "+Util.byte2str(message)+ " "+Util.byte2str(language_tag));
 				 */
 			} else if (type == SSH_MSG_CHANNEL_WINDOW_ADJUST) {
 				buf.rewind();
@@ -833,7 +832,7 @@ public class Session implements Runnable {
 				}
 			} else if (type == UserAuth.SSH_MSG_USERAUTH_SUCCESS) {
 				isAuthed = true;
-				if (inflater == null && deflater == null) {
+				if ((inflater == null) && (deflater == null)) {
 					String method;
 					method = guess[KeyExchange.PROPOSAL_COMP_ALGS_CTOS];
 					initDeflater(method);
@@ -856,7 +855,7 @@ public class Session implements Runnable {
 			throw new JSchException("Packet corrupt");
 		}
 
-		if (packet_length != PACKET_MAX_SIZE && mac != null) {
+		if ((packet_length != PACKET_MAX_SIZE) && (mac != null)) {
 			discard_mac = mac;
 		}
 
@@ -899,9 +898,7 @@ public class Session implements Runnable {
 		}
 
 		/*
-		 * Initial IV client to server: HASH (K || H || "A" || session_id) Initial IV server to client: HASH (K || H || "B" || session_id) Encryption key client to server: HASH (K || H || "C" ||
-		 * session_id) Encryption key server to client: HASH (K || H || "D" || session_id) Integrity key client to server: HASH (K || H || "E" || session_id) Integrity key server to client: HASH (K ||
-		 * H || "F" || session_id)
+		 * Initial IV client to server: HASH (K || H || "A" || session_id) Initial IV server to client: HASH (K || H || "B" || session_id) Encryption key client to server: HASH (K || H || "C" || session_id) Encryption key server to client: HASH (K || H || "D" || session_id) Integrity key client to server: HASH (K || H || "E" || session_id) Integrity key server to client: HASH (K || H || "F" || session_id)
 		 */
 
 		buf.reset();
@@ -1004,9 +1001,8 @@ public class Session implements Runnable {
 	}
 
 	/*
-	 * RFC 4253 7.2. Output from Key Exchange If the key length needed is longer than the output of the HASH, the key is extended by computing HASH of the concatenation of K and H and the entire key
-	 * so far, and appending the resulting bytes (as many as HASH generates) to the key. This process is repeated until enough key material is available; the key is taken from the beginning of this
-	 * value. In other words: K1 = HASH(K || H || X || session_id) (X is e.g., "A") K2 = HASH(K || H || K1) K3 = HASH(K || H || K1 || K2) ... key = K1 || K2 || K3 || ...
+	 * RFC 4253 7.2. Output from Key Exchange If the key length needed is longer than the output of the HASH, the key is extended by computing HASH of the concatenation of K and H and the entire key so far, and appending the resulting bytes (as many as HASH generates) to the key. This process is repeated until enough key material is available; the key is taken from the beginning of this value. In other words: K1 = HASH(K || H || X || session_id) (X is e.g., "A") K2 = HASH(K || H || K1) K3 =
+	 * HASH(K || H || K1 || K2) ... key = K1 || K2 || K3 || ...
 	 */
 	private byte[] expandKey(Buffer buf, byte[] K, byte[] H, byte[] key, HASH hash, int required_length) throws Exception {
 		byte[] result = key;
@@ -1030,7 +1026,7 @@ public class Session implements Runnable {
 		long t = getTimeout();
 		while (true) {
 			if (in_kex) {
-				if (t > 0L && (System.currentTimeMillis() - kex_start_time) > t) {
+				if ((t > 0L) && ((System.currentTimeMillis() - kex_start_time) > t)) {
 					throw new JSchException("timeout in wating for rekeying process.");
 				}
 				try {
@@ -1118,25 +1114,17 @@ public class Session implements Runnable {
 		// System.err.println("in_kex="+in_kex+" "+(packet.buffer.getCommand()));
 		long t = getTimeout();
 		while (in_kex) {
-			if (t > 0L && (System.currentTimeMillis() - kex_start_time) > t) {
+			if ((t > 0L) && ((System.currentTimeMillis() - kex_start_time) > t)) {
 				throw new JSchException("timeout in wating for rekeying process.");
 			}
 			byte command = packet.buffer.getCommand();
 			// System.err.println("command: "+command);
-			if (
-				command == SSH_MSG_KEXINIT ||
-				command == SSH_MSG_NEWKEYS ||
-				command == SSH_MSG_KEXDH_INIT ||
-				command == SSH_MSG_KEXDH_REPLY ||
+			if ((command == SSH_MSG_KEXINIT) || (command == SSH_MSG_NEWKEYS) || (command == SSH_MSG_KEXDH_INIT) || (command == SSH_MSG_KEXDH_REPLY) ||
 
-				//this two commands have the same number, and it is not a mistake, so find bugs warning can be ignored
-				command == SSH_MSG_KEX_DH_GEX_GROUP ||
-				command == SSH_MSG_KEX_DH_GEX_INIT ||
+					(// this two commands have the same number, and it is not a mistake, so find bugs warning can be ignored
+							command == SSH_MSG_KEX_DH_GEX_GROUP) || (command == SSH_MSG_KEX_DH_GEX_INIT) ||
 
-				command == SSH_MSG_KEX_DH_GEX_REPLY ||
-				command == SSH_MSG_KEX_DH_GEX_REQUEST ||
-				command == SSH_MSG_DISCONNECT
-			) {
+							(command == SSH_MSG_KEX_DH_GEX_REPLY) || (command == SSH_MSG_KEX_DH_GEX_REQUEST) || (command == SSH_MSG_DISCONNECT)) {
 				break;
 			}
 			try {
@@ -1175,16 +1163,16 @@ public class Session implements Runnable {
 
 		int stimeout = 0;
 		try {
-			while (isConnected && thread != null) {
+			while (isConnected && (thread != null)) {
 				try {
 					buf = read(buf);
 					stimeout = 0;
 				} catch (InterruptedIOException/* SocketTimeoutException */ee) {
-					if (!in_kex && stimeout < serverAliveCountMax) {
+					if (!in_kex && (stimeout < serverAliveCountMax)) {
 						sendKeepAliveMsg();
 						stimeout++;
 						continue;
-					} else if (in_kex && stimeout < serverAliveCountMax) {
+					} else if (in_kex && (stimeout < serverAliveCountMax)) {
 						stimeout++;
 						continue;
 					}
@@ -1193,7 +1181,7 @@ public class Session implements Runnable {
 
 				int msgType = buf.getCommand() & 0xff;
 
-				if (kex != null && kex.getState() == msgType) {
+				if ((kex != null) && (kex.getState() == msgType)) {
 					kex_start_time = System.currentTimeMillis();
 					boolean result = kex.next(buf);
 					if (!result) {
@@ -1242,7 +1230,7 @@ public class Session implements Runnable {
 						}
 						int len = length[0];
 						channel.setLocalWindowSize(channel.lwsize - len);
-						if (channel.lwsize < channel.lwsize_max / 2) {
+						if (channel.lwsize < (channel.lwsize_max / 2)) {
 							packet.reset();
 							buf.putByte((byte) SSH_MSG_CHANNEL_WINDOW_ADJUST);
 							buf.putInt(channel.getRecipient());
@@ -1277,7 +1265,7 @@ public class Session implements Runnable {
 
 						len = length[0];
 						channel.setLocalWindowSize(channel.lwsize - len);
-						if (channel.lwsize < channel.lwsize_max / 2) {
+						if (channel.lwsize < (channel.lwsize_max / 2)) {
 							packet.reset();
 							buf.putByte((byte) SSH_MSG_CHANNEL_WINDOW_ADJUST);
 							buf.putInt(channel.getRecipient());
@@ -1534,8 +1522,7 @@ public class Session implements Runnable {
 	}
 
 	/**
-	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or '*', the port should be available from all interfaces. If <code>bind_address</code> is
-	 * <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
+	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or '*', the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
 	 *
 	 * @param bind_address
 	 *            bind address for local port forwarding
@@ -1553,8 +1540,7 @@ public class Session implements Runnable {
 	}
 
 	/**
-	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is
-	 * <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
+	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
 	 *
 	 * @param bind_address
 	 *            bind address for local port forwarding
@@ -1574,8 +1560,7 @@ public class Session implements Runnable {
 	}
 
 	/**
-	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is
-	 * <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
+	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
 	 *
 	 * @param bind_address
 	 *            bind address for local port forwarding
@@ -1657,7 +1642,7 @@ public class Session implements Runnable {
 			StringBuffer sb = new StringBuffer(); // join
 			for (int i = 0; i < foo.size(); i++) {
 				sb.append((foo.elementAt(i)));
-				if (i + 1 < foo.size()) {
+				if ((i + 1) < foo.size()) {
 					sb.append(":");
 				}
 			}
@@ -1680,7 +1665,7 @@ public class Session implements Runnable {
 			if (conf.lastIndexOf(":") != -1) {
 				f.port = Integer.parseInt(conf.substring(conf.lastIndexOf(":") + 1));
 				conf = conf.substring(0, conf.lastIndexOf(":"));
-				if (conf.length() == 0 || conf.equals("*")) {
+				if ((conf.length() == 0) || conf.equals("*")) {
 					conf = "0.0.0.0";
 				}
 				if (conf.equals("localhost")) {
@@ -1698,8 +1683,7 @@ public class Session implements Runnable {
 	}
 
 	/**
-	 * Registers the local port forwarding. The argument should be in the format like "[bind_address:]port:host:hostport". If <code>bind_address</code> is an empty string or <code>"*"</code>, the port
-	 * should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or is not given, the listening port will be bound for local use only.
+	 * Registers the local port forwarding. The argument should be in the format like "[bind_address:]port:host:hostport". If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or is not given, the listening port will be bound for local use only.
 	 *
 	 * @param conf
 	 *            configuration of local port forwarding
@@ -1722,7 +1706,7 @@ public class Session implements Runnable {
 	public Channel getStreamForwarder(String host, int port) throws JSchException {
 		ChannelDirectTCPIP channel = new ChannelDirectTCPIP();
 		channel.init();
-		this.addChannel(channel);
+		addChannel(channel);
 		channel.setHost(host);
 		channel.setPort(port);
 		return channel;
@@ -1964,7 +1948,7 @@ public class Session implements Runnable {
 	 */
 	public void setServerAliveInterval(int interval) throws JSchException {
 		setTimeout(interval);
-		this.serverAliveInterval = interval;
+		serverAliveInterval = interval;
 	}
 
 	/**
@@ -1973,19 +1957,18 @@ public class Session implements Runnable {
 	 * @see #setServerAliveInterval(int)
 	 */
 	public int getServerAliveInterval() {
-		return this.serverAliveInterval;
+		return serverAliveInterval;
 	}
 
 	/**
-	 * Sets the number of keep-alive messages which may be sent without receiving any messages back from the server. If this threshold is reached while keep-alive messages are being sent, the
-	 * connection will be disconnected. The default value is one.
+	 * Sets the number of keep-alive messages which may be sent without receiving any messages back from the server. If this threshold is reached while keep-alive messages are being sent, the connection will be disconnected. The default value is one.
 	 *
 	 * @param count
 	 *            the specified count
 	 * @see #getServerAliveCountMax()
 	 */
 	public void setServerAliveCountMax(int count) {
-		this.serverAliveCountMax = count;
+		serverAliveCountMax = count;
 	}
 
 	/**
@@ -1994,15 +1977,15 @@ public class Session implements Runnable {
 	 * @see #setServerAliveCountMax(int)
 	 */
 	public int getServerAliveCountMax() {
-		return this.serverAliveCountMax;
+		return serverAliveCountMax;
 	}
 
 	public void setDaemonThread(boolean enable) {
-		this.daemon_thread = enable;
+		daemon_thread = enable;
 	}
 
 	private String[] checkCiphers(String ciphers) {
-		if (ciphers == null || ciphers.length() == 0) {
+		if ((ciphers == null) || (ciphers.length() == 0)) {
 			return null;
 		}
 
@@ -2017,7 +2000,7 @@ public class Session implements Runnable {
 		String[] _ciphers = Util.split(ciphers, ",");
 		for (int i = 0; i < _ciphers.length; i++) {
 			String cipher = _ciphers[i];
-			if (ciphers2c.indexOf(cipher) == -1 && cipherc2s.indexOf(cipher) == -1) {
+			if ((ciphers2c.indexOf(cipher) == -1) && (cipherc2s.indexOf(cipher) == -1)) {
 				continue;
 			}
 			if (!checkCipher(getConfig(cipher))) {
@@ -2051,7 +2034,7 @@ public class Session implements Runnable {
 	}
 
 	private String[] checkKexes(String kexes) {
-		if (kexes == null || kexes.length() == 0) {
+		if ((kexes == null) || (kexes.length() == 0)) {
 			return null;
 		}
 
@@ -2137,7 +2120,7 @@ public class Session implements Runnable {
 		value = config.getValue("ServerAliveInterval");
 		if (value != null) {
 			try {
-				this.setServerAliveInterval(Integer.parseInt(value));
+				setServerAliveInterval(Integer.parseInt(value));
 			} catch (NumberFormatException e) {
 			}
 		}

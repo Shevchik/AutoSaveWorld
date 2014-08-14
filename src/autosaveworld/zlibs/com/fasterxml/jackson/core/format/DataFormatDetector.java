@@ -11,8 +11,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
  */
 public class DataFormatDetector {
 	/**
-	 * By default we will look ahead at most 64 bytes; in most cases, much less (4 bytes or so) is needed, but we will allow bit more leniency to support data formats that need more complex
-	 * heuristics.
+	 * By default we will look ahead at most 64 bytes; in most cases, much less (4 bytes or so) is needed, but we will allow bit more leniency to support data formats that need more complex heuristics.
 	 */
 	public final static int DEFAULT_MAX_INPUT_LOOKAHEAD = 64;
 
@@ -152,7 +151,7 @@ public class DataFormatDetector {
 			MatchStrength strength = f.hasFormat(acc);
 			// if not better than what we have so far (including minimal level
 			// limit), skip
-			if (strength == null || strength.ordinal() < _minimalMatch.ordinal()) {
+			if ((strength == null) || (strength.ordinal() < _minimalMatch.ordinal())) {
 				continue;
 			}
 			// also, needs to better match than before

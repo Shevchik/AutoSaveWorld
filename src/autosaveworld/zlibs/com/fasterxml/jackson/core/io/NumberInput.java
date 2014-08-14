@@ -64,7 +64,7 @@ public final class NumberInput {
 		// must have 1 - 9 digits after optional sign:
 		// negative?
 		if (neg) {
-			if (len == 1 || len > 10) {
+			if ((len == 1) || (len > 10)) {
 				return Integer.parseInt(s);
 			}
 			c = s.charAt(offset++);
@@ -73,19 +73,19 @@ public final class NumberInput {
 				return Integer.parseInt(s);
 			}
 		}
-		if (c > '9' || c < '0') {
+		if ((c > '9') || (c < '0')) {
 			return Integer.parseInt(s);
 		}
 		int num = c - '0';
 		if (offset < len) {
 			c = s.charAt(offset++);
-			if (c > '9' || c < '0') {
+			if ((c > '9') || (c < '0')) {
 				return Integer.parseInt(s);
 			}
 			num = (num * 10) + (c - '0');
 			if (offset < len) {
 				c = s.charAt(offset++);
-				if (c > '9' || c < '0') {
+				if ((c > '9') || (c < '0')) {
 					return Integer.parseInt(s);
 				}
 				num = (num * 10) + (c - '0');
@@ -93,7 +93,7 @@ public final class NumberInput {
 				if (offset < len) {
 					do {
 						c = s.charAt(offset++);
-						if (c > '9' || c < '0') {
+						if ((c > '9') || (c < '0')) {
 							return Integer.parseInt(s);
 						}
 						num = (num * 10) + (c - '0');
@@ -124,8 +124,7 @@ public final class NumberInput {
 	}
 
 	/**
-	 * Helper method for determining if given String representation of an integral number would fit in 64-bit Java long or not. Note that input String must NOT contain leading minus sign (even if
-	 * 'negative' is set to true).
+	 * Helper method for determining if given String representation of an integral number would fit in 64-bit Java long or not. Note that input String must NOT contain leading minus sign (even if 'negative' is set to true).
 	 *
 	 * @param negative
 	 *            Whether original number had a minus sign (which is NOT passed to this method) or not
@@ -199,7 +198,7 @@ public final class NumberInput {
 		for (; i < len; ++i) {
 			char c = s.charAt(i);
 			// if other symbols, parse as Double, coerce
-			if (c > '9' || c < '0') {
+			if ((c > '9') || (c < '0')) {
 				try {
 					return (int) parseDouble(s);
 				} catch (NumberFormatException e) {
@@ -237,7 +236,7 @@ public final class NumberInput {
 		for (; i < len; ++i) {
 			char c = s.charAt(i);
 			// if other symbols, parse as Double, coerce
-			if (c > '9' || c < '0') {
+			if ((c > '9') || (c < '0')) {
 				try {
 					return (long) parseDouble(s);
 				} catch (NumberFormatException e) {

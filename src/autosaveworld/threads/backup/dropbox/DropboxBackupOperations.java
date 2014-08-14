@@ -34,6 +34,7 @@ public class DropboxBackupOperations {
 	private String path;
 	private List<String> excludefolders;
 	private boolean zip;
+
 	public DropboxBackupOperations(DbxClient client, String path, boolean zip, List<String> excludefolders) {
 		this.client = client;
 		this.path = path;
@@ -42,7 +43,7 @@ public class DropboxBackupOperations {
 	}
 
 	public void backupWorld(World world, boolean disableWorldSaving) {
-		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuping world " + world.getWorldFolder().getName());
 
 		boolean savestatus = world.isAutoSave();
 		if (disableWorldSaving) {
@@ -50,7 +51,7 @@ public class DropboxBackupOperations {
 		}
 		try {
 			File fromfolder = world.getWorldFolder().getAbsoluteFile();
-			String destfolder = path+"/worlds/"+world.getWorldFolder().getName();
+			String destfolder = path + "/worlds/" + world.getWorldFolder().getName();
 			backupFolder(fromfolder, destfolder);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,13 +59,13 @@ public class DropboxBackupOperations {
 			world.setAutoSave(savestatus);
 		}
 
-		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuped world " + world.getWorldFolder().getName());
 	}
 
 	public void backupPlugins() {
 		try {
 			File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
-			String destfolder = path+"/plugins";
+			String destfolder = path + "/plugins";
 			backupFolder(fromfolder, destfolder);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,15 +74,15 @@ public class DropboxBackupOperations {
 
 	public void backupOtherFolders(List<String> folders) {
 		for (String folder : folders) {
-			MessageLogger.debug("Backuping folder "+ folder);
+			MessageLogger.debug("Backuping folder " + folder);
 			try {
 				File fromfolder = new File(folder).getAbsoluteFile();
-				String destfolder = path+"/others/"+fromfolder.getName();
+				String destfolder = path + "/others/" + fromfolder.getName();
 				backupFolder(fromfolder, destfolder);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			MessageLogger.debug("Backuped folder "+ folder);
+			MessageLogger.debug("Backuped folder " + folder);
 		}
 	}
 

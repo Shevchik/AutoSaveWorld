@@ -9,8 +9,7 @@ import java.nio.ByteBuffer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
 
 /**
- * String token that can lazily serialize String contained and then reuse that serialization later on. This is similar to JDBC prepared statements, for example, in that instances should only be
- * created when they are used more than use; prime candidates are various serializers.
+ * String token that can lazily serialize String contained and then reuse that serialization later on. This is similar to JDBC prepared statements, for example, in that instances should only be created when they are used more than use; prime candidates are various serializers.
  * <p>
  * Class is final for performance reasons and since this is not designed to be extensible or customizable (customizations would occur in calling code)
  */
@@ -18,9 +17,8 @@ public class SerializedString implements SerializableString, java.io.Serializabl
 	protected final String _value;
 
 	/*
-	 * 13-Dec-2010, tatu: Whether use volatile or not is actually an important decision for multi-core use cases. Cost of volatility can be non-trivial for heavy use cases, and serialized-string
-	 * instances are accessed often. Given that all code paths with common Jackson usage patterns go through a few memory barriers (mostly with cache/reuse pool access) it seems safe enough to omit
-	 * volatiles here, given how simple lazy initialization is. This can be compared to how {@link String#intern} works; lazily and without synchronization or use of volatile keyword.
+	 * 13-Dec-2010, tatu: Whether use volatile or not is actually an important decision for multi-core use cases. Cost of volatility can be non-trivial for heavy use cases, and serialized-string instances are accessed often. Given that all code paths with common Jackson usage patterns go through a few memory barriers (mostly with cache/reuse pool access) it seems safe enough to omit volatiles here, given how simple lazy initialization is. This can be compared to how {@link String#intern} works;
+	 * lazily and without synchronization or use of volatile keyword.
 	 *
 	 * Change to remove volatile was a request by implementors of a high-throughput search framework; and they believed this is an important optimization for heaviest, multi-core deployed use cases.
 	 */
@@ -250,7 +248,7 @@ public class SerializedString implements SerializableString, java.io.Serializabl
 		if (o == this) {
 			return true;
 		}
-		if (o == null || o.getClass() != getClass()) {
+		if ((o == null) || (o.getClass() != getClass())) {
 			return false;
 		}
 		SerializedString other = (SerializedString) o;

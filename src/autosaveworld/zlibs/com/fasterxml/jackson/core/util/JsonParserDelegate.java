@@ -17,8 +17,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.Version;
 
 /**
- * Helper class that implements <a href="http://en.wikipedia.org/wiki/Delegation_pattern">delegation pattern</a> for {@link JsonParser}, to allow for simple overridability of basic parsing
- * functionality. The idea is that any functionality to be modified can be simply overridden; and anything else will be delegated by default.
+ * Helper class that implements <a href="http://en.wikipedia.org/wiki/Delegation_pattern">delegation pattern</a> for {@link JsonParser}, to allow for simple overridability of basic parsing functionality. The idea is that any functionality to be modified can be simply overridden; and anything else will be delegated by default.
  */
 public class JsonParserDelegate extends JsonParser {
 	/**

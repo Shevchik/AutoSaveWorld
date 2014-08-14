@@ -1,9 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.type;
 
 /**
- * Type abstraction that represents Java type that has been resolved (i.e. has all generic information, if any, resolved to concrete types). Note that this is an intermediate type, and all concrete
- * instances MUST be of type <code>JavaType</code> from "databind" bundle -- this abstraction is only needed so that types can be passed through
- * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser#readValueAs} methods.
+ * Type abstraction that represents Java type that has been resolved (i.e. has all generic information, if any, resolved to concrete types). Note that this is an intermediate type, and all concrete instances MUST be of type <code>JavaType</code> from "databind" bundle -- this abstraction is only needed so that types can be passed through {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser#readValueAs} methods.
  *
  * @since 2.0
  */
@@ -76,8 +74,7 @@ public abstract class ResolvedType {
 	public abstract ResolvedType containedType(int index);
 
 	/**
-	 * Method for accessing name of type variable in indicated position. If no name is bound, will use placeholders (derived from 0-based index); if no type variable or argument exists with given
-	 * index, null is returned.
+	 * Method for accessing name of type variable in indicated position. If no name is bound, will use placeholders (derived from 0-based index); if no type variable or argument exists with given index, null is returned.
 	 *
 	 * @param index
 	 *            Index of contained type to return
@@ -91,8 +88,7 @@ public abstract class ResolvedType {
 	 */
 
 	/**
-	 * Method that can be used to serialize type into form from which it can be fully deserialized from at a later point (using <code>TypeFactory</code> from mapper package). For simple types this is
-	 * same as calling {@link Class#getName}, but for structured types it may additionally contain type information about contents.
+	 * Method that can be used to serialize type into form from which it can be fully deserialized from at a later point (using <code>TypeFactory</code> from mapper package). For simple types this is same as calling {@link Class#getName}, but for structured types it may additionally contain type information about contents.
 	 */
 	public abstract String toCanonical();
 }

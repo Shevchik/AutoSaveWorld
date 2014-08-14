@@ -27,7 +27,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;
  * This is a concrete implementation of {@link JsonParser}, which is based on a {@link java.io.Reader} to handle low-level character conversion tasks.
  */
 public class ReaderBasedJsonParser // final in 2.3, earlier
-		extends ParserBase {
+extends ParserBase {
 	// Latin1 encoding is not supported, but we do use 8-bit subset for
 	// pre-processing task, to simplify first pass, keep it fast.
 	protected final static int[] _icLatin1 = CharTypes.getInputCodeLatin1();
@@ -173,8 +173,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	@Override
 	protected void _closeInput() throws IOException {
 		/*
-		 * 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close() on the underlying Reader, unless we "own" it, or auto-closing feature is enabled. One downside is that when using our
-		 * optimized Reader (granted, we only do that for UTF-32...) this means that buffer recycling won't work correctly.
+		 * 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close() on the underlying Reader, unless we "own" it, or auto-closing feature is enabled. One downside is that when using our optimized Reader (granted, we only do that for UTF-32...) this means that buffer recycling won't work correctly.
 		 */
 		if (_reader != null) {
 			if (_ioContext.isResourceManaged() || isEnabled(Feature.AUTO_CLOSE_SOURCE)) {
@@ -185,8 +184,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	}
 
 	/**
-	 * Method called to release internal buffers owned by the base reader. This may be called along with {@link #_closeInput} (for example, when explicitly closing this reader instance), or separately
-	 * (if need be).
+	 * Method called to release internal buffers owned by the base reader. This may be called along with {@link #_closeInput} (for example, when explicitly closing this reader instance), or separately (if need be).
 	 */
 	@Override
 	protected void _releaseBuffers() throws IOException {
@@ -208,8 +206,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	 */
 
 	/**
-	 * Method for accessing textual representation of the current event; if no current event (before first call to {@link #nextToken}, or after encountering end-of-input), returns null. Method can be
-	 * called for any event.
+	 * Method for accessing textual representation of the current event; if no current event (before first call to {@link #nextToken}, or after encountering end-of-input), returns null. Method can be called for any event.
 	 */
 	@Override
 	public final String getText() throws IOException {
@@ -353,7 +350,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 
 	@Override
 	public byte[] getBinaryValue(Base64Variant b64variant) throws IOException {
-		if (_currToken != JsonToken.VALUE_STRING && (_currToken != JsonToken.VALUE_EMBEDDED_OBJECT || _binaryValue == null)) {
+		if ((_currToken != JsonToken.VALUE_STRING) && ((_currToken != JsonToken.VALUE_EMBEDDED_OBJECT) || (_binaryValue == null))) {
 			_reportError("Current token (" + _currToken + ") not VALUE_STRING or VALUE_EMBEDDED_OBJECT, can not access as binary");
 		}
 		/*
@@ -382,7 +379,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	@Override
 	public int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException {
 		// if we have already read the token, just use whatever we may have
-		if (!_tokenIncomplete || _currToken != JsonToken.VALUE_STRING) {
+		if (!_tokenIncomplete || (_currToken != JsonToken.VALUE_STRING)) {
 			byte[] b = getBinaryValue(b64variant);
 			out.write(b);
 			return b.length;
@@ -454,10 +451,10 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				if (bits != Base64Variant.BASE64_VALUE_PADDING) {
 					// as per [JACKSON-631], could also just be 'missing'
 					// padding
-					if (ch == '"' && !b64variant.usesPadding()) {
+					if ((ch == '"') && !b64variant.usesPadding()) {
 						decodedData >>= 4;
-						buffer[outputPtr++] = (byte) decodedData;
-						break;
+			buffer[outputPtr++] = (byte) decodedData;
+			break;
 					}
 					bits = _decodeBase64Escape(b64variant, ch, 2);
 				}
@@ -472,8 +469,8 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 					}
 					// Got 12 bits, only need 8, need to shift
 					decodedData >>= 4;
-					buffer[outputPtr++] = (byte) decodedData;
-					continue;
+			buffer[outputPtr++] = (byte) decodedData;
+			continue;
 				}
 			}
 			// Nope, 2 or 3 bytes
@@ -488,18 +485,17 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				if (bits != Base64Variant.BASE64_VALUE_PADDING) {
 					// as per [JACKSON-631], could also just be 'missing'
 					// padding
-					if (ch == '"' && !b64variant.usesPadding()) {
+					if ((ch == '"') && !b64variant.usesPadding()) {
 						decodedData >>= 2;
-						buffer[outputPtr++] = (byte) (decodedData >> 8);
-						buffer[outputPtr++] = (byte) decodedData;
-						break;
+			buffer[outputPtr++] = (byte) (decodedData >> 8);
+			buffer[outputPtr++] = (byte) decodedData;
+			break;
 					}
 					bits = _decodeBase64Escape(b64variant, ch, 3);
 				}
 				if (bits == Base64Variant.BASE64_VALUE_PADDING) {
 					/*
-					 * With padding we only get 2 bytes; but we have to shift it a bit so it is identical to triplet case with partial output. 3 chars gives 3x6 == 18 bits, of which 2 are dummies,
-					 * need to discard:
+					 * With padding we only get 2 bytes; but we have to shift it a bit so it is identical to triplet case with partial output. 3 chars gives 3x6 == 18 bits, of which 2 are dummies, need to discard:
 					 */
 					decodedData >>= 2;
 					buffer[outputPtr++] = (byte) (decodedData >> 8);
@@ -553,7 +549,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		/*
 		 * First, need to ensure we know the starting location of token after skipping leading white space
 		 */
-		_tokenInputTotal = _currInputProcessed + _inputPtr - 1;
+		_tokenInputTotal = (_currInputProcessed + _inputPtr) - 1;
 		_tokenInputRow = _currInputRow;
 		_tokenInputCol = _inputPtr - _currInputRowStart - 1;
 
@@ -684,7 +680,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	@Override
 	public final String nextTextValue() throws IOException {
 		if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from
-													// '_nextAfterName'
+			// '_nextAfterName'
 			_nameCopied = false;
 			JsonToken t = _nextToken;
 			_nextToken = null;
@@ -733,7 +729,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	@Override
 	public final long nextLongValue(long defaultValue) throws IOException {
 		if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from
-													// '_nextAfterName'
+			// '_nextAfterName'
 			_nameCopied = false;
 			JsonToken t = _nextToken;
 			_nextToken = null;
@@ -756,7 +752,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	@Override
 	public final Boolean nextBooleanValue() throws IOException {
 		if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from
-													// '_nextAfterName'
+			// '_nextAfterName'
 			_nameCopied = false;
 			JsonToken t = _nextToken;
 			_nextToken = null;
@@ -792,17 +788,13 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	 */
 
 	/**
-	 * Initial parsing method for number values. It needs to be able to parse enough input to be able to determine whether the value is to be considered a simple integer value, or a more generic
-	 * decimal value: latter of which needs to be expressed as a floating point number. The basic rule is that if the number has no fractional or exponential part, it is an integer; otherwise a
-	 * floating point number.
+	 * Initial parsing method for number values. It needs to be able to parse enough input to be able to determine whether the value is to be considered a simple integer value, or a more generic decimal value: latter of which needs to be expressed as a floating point number. The basic rule is that if the number has no fractional or exponential part, it is an integer; otherwise a floating point number.
 	 * <p>
-	 * Because much of input has to be processed in any case, no partial parsing is done: all input text will be stored for further processing. However, actual numeric value conversion will be
-	 * deferred, since it is usually the most complicated and costliest part of processing.
+	 * Because much of input has to be processed in any case, no partial parsing is done: all input text will be stored for further processing. However, actual numeric value conversion will be deferred, since it is usually the most complicated and costliest part of processing.
 	 */
 	protected final JsonToken _parsePosNumber(int ch) throws IOException {
 		/*
-		 * Although we will always be complete with respect to textual representation (that is, all characters will be parsed), actual conversion to a number is deferred. Thus, need to note that no
-		 * representations are valid yet
+		 * Although we will always be complete with respect to textual representation (that is, all characters will be parsed), actual conversion to a number is deferred. Thus, need to note that no representations are valid yet
 		 */
 		int ptr = _inputPtr;
 		int startPtr = ptr - 1; // to include digit already read
@@ -814,8 +806,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		}
 
 		/*
-		 * First, let's see if the whole number is contained within the input buffer unsplit. This should be the common case; and to simplify processing, we will just reparse contents in the
-		 * alternative case (number split on buffer boundary)
+		 * First, let's see if the whole number is contained within the input buffer unsplit. This should be the common case; and to simplify processing, we will just reparse contents in the alternative case (number split on buffer boundary)
 		 */
 
 		int intLen = 1; // already got one
@@ -827,12 +818,12 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				return _parseNumber2(false, startPtr);
 			}
 			ch = _inputBuffer[ptr++];
-			if (ch < INT_0 || ch > INT_9) {
+			if ((ch < INT_0) || (ch > INT_9)) {
 				break int_loop;
 			}
 			++intLen;
 		}
-		if (ch == INT_PERIOD || ch == INT_e || ch == INT_E) {
+		if ((ch == INT_PERIOD) || (ch == INT_e) || (ch == INT_E)) {
 			_inputPtr = ptr;
 			return _parseFloat(ch, startPtr, ptr, false, intLen);
 		}
@@ -859,32 +850,32 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 					return _parseNumber2(neg, startPtr);
 				}
 				ch = _inputBuffer[ptr++];
-				if (ch < INT_0 || ch > INT_9) {
+				if ((ch < INT_0) || (ch > INT_9)) {
 					break fract_loop;
 				}
 				++fractLen;
 			}
-			// must be followed by sequence of ints, one minimum
-			if (fractLen == 0) {
-				reportUnexpectedNumberChar(ch, "Decimal point not followed by a digit");
-			}
+		// must be followed by sequence of ints, one minimum
+		if (fractLen == 0) {
+			reportUnexpectedNumberChar(ch, "Decimal point not followed by a digit");
+		}
 		}
 		int expLen = 0;
-		if (ch == 'e' || ch == 'E') { // and/or exponent
+		if ((ch == 'e') || (ch == 'E')) { // and/or exponent
 			if (ptr >= inputLen) {
 				_inputPtr = startPtr;
 				return _parseNumber2(neg, startPtr);
 			}
 			// Sign indicator?
 			ch = _inputBuffer[ptr++];
-			if (ch == INT_MINUS || ch == INT_PLUS) { // yup, skip for now
+			if ((ch == INT_MINUS) || (ch == INT_PLUS)) { // yup, skip for now
 				if (ptr >= inputLen) {
 					_inputPtr = startPtr;
 					return _parseNumber2(false, startPtr);
 				}
 				ch = _inputBuffer[ptr++];
 			}
-			while (ch <= INT_9 && ch >= INT_0) {
+			while ((ch <= INT_9) && (ch >= INT_0)) {
 				++expLen;
 				if (ptr >= inputLen) {
 					_inputPtr = startPtr;
@@ -919,7 +910,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		}
 		int ch = _inputBuffer[ptr++];
 		// First check: must have a digit to follow minus sign
-		if (ch > INT_9 || ch < INT_0) {
+		if ((ch > INT_9) || (ch < INT_0)) {
 			_inputPtr = ptr;
 			return _handleInvalidNumberStart(ch, true);
 		}
@@ -935,13 +926,13 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				return _parseNumber2(true, startPtr);
 			}
 			ch = _inputBuffer[ptr++];
-			if (ch < INT_0 || ch > INT_9) {
+			if ((ch < INT_0) || (ch > INT_9)) {
 				break int_loop;
 			}
 			++intLen;
 		}
 
-		if (ch == INT_PERIOD || ch == INT_e || ch == INT_E) {
+		if ((ch == INT_PERIOD) || (ch == INT_e) || (ch == INT_E)) {
 			_inputPtr = ptr;
 			return _parseFloat(ch, startPtr, ptr, true, intLen);
 		}
@@ -956,8 +947,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	}
 
 	/**
-	 * Method called to parse a number, when the primary parse method has failed to parse it, due to it being split on buffer boundary. As a result code is very similar, except that it has to
-	 * explicitly copy contents to the text buffer instead of just sharing the main input buffer.
+	 * Method called to parse a number, when the primary parse method has failed to parse it, due to it being split on buffer boundary. As a result code is very similar, except that it has to explicitly copy contents to the text buffer instead of just sharing the main input buffer.
 	 */
 	private final JsonToken _parseNumber2(boolean neg, int startPtr) throws IOException {
 		_inputPtr = neg ? (startPtr + 1) : startPtr;
@@ -978,14 +968,14 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		boolean eof = false;
 
 		// Ok, first the obligatory integer part:
-		int_loop: while (c >= '0' && c <= '9') {
+		int_loop: while ((c >= '0') && (c <= '9')) {
 			++intLen;
 			if (outPtr >= outBuf.length) {
 				outBuf = _textBuffer.finishCurrentSegment();
 				outPtr = 0;
 			}
 			outBuf[outPtr++] = c;
-			if (_inputPtr >= _inputEnd && !loadMore()) {
+			if ((_inputPtr >= _inputEnd) && !loadMore()) {
 				// EOF is legal for main level int values
 				c = CHAR_NULL;
 				eof = true;
@@ -1004,12 +994,12 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			outBuf[outPtr++] = c;
 
 			fract_loop: while (true) {
-				if (_inputPtr >= _inputEnd && !loadMore()) {
+				if ((_inputPtr >= _inputEnd) && !loadMore()) {
 					eof = true;
 					break fract_loop;
 				}
 				c = _inputBuffer[_inputPtr++];
-				if (c < INT_0 || c > INT_9) {
+				if ((c < INT_0) || (c > INT_9)) {
 					break fract_loop;
 				}
 				++fractLen;
@@ -1026,7 +1016,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		}
 
 		int expLen = 0;
-		if (c == 'e' || c == 'E') { // exponent?
+		if ((c == 'e') || (c == 'E')) { // exponent?
 			if (outPtr >= outBuf.length) {
 				outBuf = _textBuffer.finishCurrentSegment();
 				outPtr = 0;
@@ -1035,7 +1025,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			// Not optional, can require that we get one more char
 			c = (_inputPtr < _inputEnd) ? _inputBuffer[_inputPtr++] : getNextChar("expected a digit for number exponent");
 			// Sign indicator?
-			if (c == '-' || c == '+') {
+			if ((c == '-') || (c == '+')) {
 				if (outPtr >= outBuf.length) {
 					outBuf = _textBuffer.finishCurrentSegment();
 					outPtr = 0;
@@ -1045,14 +1035,14 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				c = (_inputPtr < _inputEnd) ? _inputBuffer[_inputPtr++] : getNextChar("expected a digit for number exponent");
 			}
 
-			exp_loop: while (c <= INT_9 && c >= INT_0) {
+			exp_loop: while ((c <= INT_9) && (c >= INT_0)) {
 				++expLen;
 				if (outPtr >= outBuf.length) {
 					outBuf = _textBuffer.finishCurrentSegment();
 					outPtr = 0;
 				}
 				outBuf[outPtr++] = c;
-				if (_inputPtr >= _inputEnd && !loadMore()) {
+				if ((_inputPtr >= _inputEnd) && !loadMore()) {
 					eof = true;
 					break exp_loop;
 				}
@@ -1085,7 +1075,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			char ch = _inputBuffer[_inputPtr];
 			// if not followed by a number (probably '.'); return zero as is, to
 			// be included
-			if (ch < '0' || ch > '9') {
+			if ((ch < '0') || (ch > '9')) {
 				return '0';
 			}
 		}
@@ -1094,11 +1084,11 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	}
 
 	private char _verifyNLZ2() throws IOException {
-		if (_inputPtr >= _inputEnd && !loadMore()) {
+		if ((_inputPtr >= _inputEnd) && !loadMore()) {
 			return '0';
 		}
 		char ch = _inputBuffer[_inputPtr];
-		if (ch < '0' || ch > '9') {
+		if ((ch < '0') || (ch > '9')) {
 			return '0';
 		}
 		if (!isEnabled(Feature.ALLOW_NUMERIC_LEADING_ZEROS)) {
@@ -1108,10 +1098,10 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		// or all but one (if non-number)
 		++_inputPtr; // Leading zero to be skipped
 		if (ch == INT_0) {
-			while (_inputPtr < _inputEnd || loadMore()) {
+			while ((_inputPtr < _inputEnd) || loadMore()) {
 				ch = _inputBuffer[_inputPtr];
-				if (ch < '0' || ch > '9') { // followed by non-number; retain
-											// one zero
+				if ((ch < '0') || (ch > '9')) { // followed by non-number; retain
+					// one zero
 					return '0';
 				}
 				++_inputPtr; // skip previous zero
@@ -1191,7 +1181,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 
 		while (ptr < _inputEnd) {
 			int ch = _inputBuffer[ptr];
-			if (ch < codes.length && codes[ch] != 0) {
+			if ((ch < codes.length) && (codes[ch] != 0)) {
 				if (ch == '"') {
 					int start = _inputPtr;
 					_inputPtr = ptr + 1; // to skip the quote
@@ -1261,12 +1251,11 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	}
 
 	/**
-	 * Method called when we see non-white space character other than double quote, when expecting a field name. In standard mode will just throw an expection; but in non-standard modes may be able to
-	 * parse name.
+	 * Method called when we see non-white space character other than double quote, when expecting a field name. In standard mode will just throw an expection; but in non-standard modes may be able to parse name.
 	 */
 	protected String _handleOddName(int i) throws IOException {
 		// [JACKSON-173]: allow single quotes
-		if (i == '\'' && isEnabled(Feature.ALLOW_SINGLE_QUOTES)) {
+		if ((i == '\'') && isEnabled(Feature.ALLOW_SINGLE_QUOTES)) {
 			return _parseAposName();
 		}
 		// [JACKSON-69]: allow unquoted names if feature enabled:
@@ -1297,7 +1286,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				if (ch < maxCode) {
 					if (codes[ch] != 0) {
 						int start = _inputPtr - 1; // -1 to bring back first
-													// char
+						// char
 						_inputPtr = ptr;
 						return _symbols.findSymbol(_inputBuffer, start, ptr - start, hash);
 					}
@@ -1332,7 +1321,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 					_inputPtr = ptr + 1; // to skip the quote
 					return _symbols.findSymbol(_inputBuffer, start, ptr - start, hash);
 				}
-				if (ch < maxCode && codes[ch] != 0) {
+				if ((ch < maxCode) && (codes[ch] != 0)) {
 					break;
 				}
 				hash = (hash * CharsToNameCanonicalizer.HASH_MULT) + ch;
@@ -1489,7 +1478,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 
 			do {
 				int ch = _inputBuffer[ptr];
-				if (ch < maxCode && codes[ch] != 0) {
+				if ((ch < maxCode) && (codes[ch] != 0)) {
 					if (ch == '"') {
 						_textBuffer.resetWithShared(_inputBuffer, _inputPtr, (ptr - _inputPtr));
 						_inputPtr = ptr + 1;
@@ -1524,7 +1513,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			}
 			char c = _inputBuffer[_inputPtr++];
 			int i = c;
-			if (i < maxCode && codes[i] != 0) {
+			if ((i < maxCode) && (codes[i] != 0)) {
 				if (i == INT_QUOTE) {
 					break;
 				} else if (i == INT_BACKSLASH) {
@@ -1599,7 +1588,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	 * We actually need to check the character value here (to see if we have \n following \r).
 	 */
 	protected final void _skipCR() throws IOException {
-		if (_inputPtr < _inputEnd || loadMore()) {
+		if ((_inputPtr < _inputEnd) || loadMore()) {
 			if (_inputBuffer[_inputPtr] == '\n') {
 				++_inputPtr;
 			}
@@ -1616,16 +1605,16 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		if (c == ':') { // common case, no leading space
 			int i = _inputBuffer[++_inputPtr];
 			if (i > INT_SPACE) { // nor trailing
-				if (i == INT_SLASH || i == INT_HASH) {
+				if ((i == INT_SLASH) || (i == INT_HASH)) {
 					return _skipColon2(true);
 				}
 				++_inputPtr;
 				return i;
 			}
-			if (i == INT_SPACE || i == INT_TAB) {
+			if ((i == INT_SPACE) || (i == INT_TAB)) {
 				i = _inputBuffer[++_inputPtr];
 				if (i > INT_SPACE) {
-					if (i == INT_SLASH || i == INT_HASH) {
+					if ((i == INT_SLASH) || (i == INT_HASH)) {
 						return _skipColon2(true);
 					}
 					++_inputPtr;
@@ -1634,22 +1623,22 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			}
 			return _skipColon2(true); // true -> skipped colon
 		}
-		if (c == ' ' || c == '\t') {
+		if ((c == ' ') || (c == '\t')) {
 			c = _inputBuffer[++_inputPtr];
 		}
 		if (c == ':') {
 			int i = _inputBuffer[++_inputPtr];
 			if (i > INT_SPACE) {
-				if (i == INT_SLASH || i == INT_HASH) {
+				if ((i == INT_SLASH) || (i == INT_HASH)) {
 					return _skipColon2(true);
 				}
 				++_inputPtr;
 				return i;
 			}
-			if (i == INT_SPACE || i == INT_TAB) {
+			if ((i == INT_SPACE) || (i == INT_TAB)) {
 				i = _inputBuffer[++_inputPtr];
 				if (i > INT_SPACE) {
-					if (i == INT_SLASH || i == INT_HASH) {
+					if ((i == INT_SLASH) || (i == INT_HASH)) {
 						return _skipColon2(true);
 					}
 					++_inputPtr;
@@ -1710,7 +1699,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		while (_inputPtr < _inputEnd) {
 			i = _inputBuffer[_inputPtr++];
 			if (i > INT_SPACE) {
-				if (i == INT_SLASH || i == INT_HASH) {
+				if ((i == INT_SLASH) || (i == INT_HASH)) {
 					--_inputPtr;
 					return _skipAfterComma2();
 				}
@@ -1731,7 +1720,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 	}
 
 	private final int _skipAfterComma2() throws IOException {
-		while (_inputPtr < _inputEnd || loadMore()) {
+		while ((_inputPtr < _inputEnd) || loadMore()) {
 			int i = _inputBuffer[_inputPtr++];
 			if (i > INT_SPACE) {
 				if (i == INT_SLASH) {
@@ -1769,7 +1758,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		}
 		int i = _inputBuffer[_inputPtr++];
 		if (i > INT_SPACE) {
-			if (i == INT_SLASH || i == INT_HASH) {
+			if ((i == INT_SLASH) || (i == INT_HASH)) {
 				--_inputPtr;
 				return _skipWSOrEnd2();
 			}
@@ -1789,7 +1778,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		while (_inputPtr < _inputEnd) {
 			i = _inputBuffer[_inputPtr++];
 			if (i > INT_SPACE) {
-				if (i == INT_SLASH || i == INT_HASH) {
+				if ((i == INT_SLASH) || (i == INT_HASH)) {
 					--_inputPtr;
 					return _skipWSOrEnd2();
 				}
@@ -1846,7 +1835,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			_reportUnexpectedChar('/', "maybe a (non-standard) comment? (not recognized as one since Feature 'ALLOW_COMMENTS' not enabled for parser)");
 		}
 		// First: check which comment (if either) it is:
-		if (_inputPtr >= _inputEnd && !loadMore()) {
+		if ((_inputPtr >= _inputEnd) && !loadMore()) {
 			_reportInvalidEOF(" in a comment");
 		}
 		char c = _inputBuffer[_inputPtr++];
@@ -1926,7 +1915,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		char c = _inputBuffer[_inputPtr++];
 
 		switch (c) {
-		// First, ones that are mapped
+			// First, ones that are mapped
 			case 'b':
 				return '\b';
 			case 't':
@@ -1973,9 +1962,9 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		int ptr = _inputPtr;
 		if ((ptr + 3) < _inputEnd) {
 			final char[] b = _inputBuffer;
-			if (b[ptr] == 'r' && b[++ptr] == 'u' && b[++ptr] == 'e') {
+			if ((b[ptr] == 'r') && (b[++ptr] == 'u') && (b[++ptr] == 'e')) {
 				char c = b[++ptr];
-				if (c < '0' || c == ']' || c == '}') { // expected/allowed chars
+				if ((c < '0') || (c == ']') || (c == '}')) { // expected/allowed chars
 					_inputPtr = ptr;
 					return;
 				}
@@ -1989,9 +1978,9 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		int ptr = _inputPtr;
 		if ((ptr + 4) < _inputEnd) {
 			final char[] b = _inputBuffer;
-			if (b[ptr] == 'a' && b[++ptr] == 'l' && b[++ptr] == 's' && b[++ptr] == 'e') {
+			if ((b[ptr] == 'a') && (b[++ptr] == 'l') && (b[++ptr] == 's') && (b[++ptr] == 'e')) {
 				char c = b[++ptr];
-				if (c < '0' || c == ']' || c == '}') { // expected/allowed chars
+				if ((c < '0') || (c == ']') || (c == '}')) { // expected/allowed chars
 					_inputPtr = ptr;
 					return;
 				}
@@ -2005,9 +1994,9 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 		int ptr = _inputPtr;
 		if ((ptr + 3) < _inputEnd) {
 			final char[] b = _inputBuffer;
-			if (b[ptr] == 'u' && b[++ptr] == 'l' && b[++ptr] == 'l') {
+			if ((b[ptr] == 'u') && (b[++ptr] == 'l') && (b[++ptr] == 'l')) {
 				char c = b[++ptr];
-				if (c < '0' || c == ']' || c == '}') { // expected/allowed chars
+				if ((c < '0') || (c == ']') || (c == '}')) { // expected/allowed chars
 					_inputPtr = ptr;
 					return;
 				}
@@ -2042,7 +2031,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 			}
 		}
 		char c = _inputBuffer[_inputPtr];
-		if (c < '0' || c == ']' || c == '}') { // expected/allowed chars
+		if ((c < '0') || (c == ']') || (c == '}')) { // expected/allowed chars
 			return;
 		}
 		// if Java letter, it's a problem tho
@@ -2108,10 +2097,10 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				if (bits != Base64Variant.BASE64_VALUE_PADDING) {
 					// as per [JACKSON-631], could also just be 'missing'
 					// padding
-					if (ch == '"' && !b64variant.usesPadding()) {
+					if ((ch == '"') && !b64variant.usesPadding()) {
 						decodedData >>= 4;
-						builder.append(decodedData);
-						return builder.toByteArray();
+			builder.append(decodedData);
+			return builder.toByteArray();
 					}
 					bits = _decodeBase64Escape(b64variant, ch, 2);
 				}
@@ -2126,8 +2115,8 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 					}
 					// Got 12 bits, only need 8, need to shift
 					decodedData >>= 4;
-					builder.append(decodedData);
-					continue;
+			builder.append(decodedData);
+			continue;
 				}
 				// otherwise we got escaped other char, to be processed below
 			}
@@ -2143,10 +2132,10 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 				if (bits != Base64Variant.BASE64_VALUE_PADDING) {
 					// as per [JACKSON-631], could also just be 'missing'
 					// padding
-					if (ch == '"' && !b64variant.usesPadding()) {
+					if ((ch == '"') && !b64variant.usesPadding()) {
 						decodedData >>= 2;
-						builder.appendTwoBytes(decodedData);
-						return builder.toByteArray();
+			builder.appendTwoBytes(decodedData);
+			return builder.toByteArray();
 					}
 					bits = _decodeBase64Escape(b64variant, ch, 3);
 				}
@@ -2157,8 +2146,8 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
 					// 3 chars gives 3x6 == 18 bits, of which 2 are
 					// dummies, need to discard:
 					decodedData >>= 2;
-					builder.appendTwoBytes(decodedData);
-					continue;
+		builder.appendTwoBytes(decodedData);
+		continue;
 				}
 				// otherwise we got escaped other char, to be processed below
 			}

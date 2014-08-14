@@ -9,8 +9,7 @@ import java.util.Arrays;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 /**
- * Abstract base class used to define specific details of which variant of Base64 encoding/decoding is to be used. Although there is somewhat standard basic version (so-called "MIME Base64"), other
- * variants exists, see <a href="http://en.wikipedia.org/wiki/Base64">Base64 Wikipedia entry</a> for details.
+ * Abstract base class used to define specific details of which variant of Base64 encoding/decoding is to be used. Although there is somewhat standard basic version (so-called "MIME Base64"), other variants exists, see <a href="http://en.wikipedia.org/wiki/Base64">Base64 Wikipedia entry</a> for details.
  *
  * @author Tatu Saloranta
  */
@@ -128,11 +127,11 @@ public final class Base64Variant implements java.io.Serializable {
 	public Base64Variant(Base64Variant base, String name, boolean usesPadding, char paddingChar, int maxLineLength) {
 		_name = name;
 		byte[] srcB = base._base64ToAsciiB;
-		System.arraycopy(srcB, 0, this._base64ToAsciiB, 0, srcB.length);
+		System.arraycopy(srcB, 0, _base64ToAsciiB, 0, srcB.length);
 		char[] srcC = base._base64ToAsciiC;
-		System.arraycopy(srcC, 0, this._base64ToAsciiC, 0, srcC.length);
+		System.arraycopy(srcC, 0, _base64ToAsciiC, 0, srcC.length);
 		int[] srcV = base._asciiToBase64;
-		System.arraycopy(srcV, 0, this._asciiToBase64, 0, srcV.length);
+		System.arraycopy(srcV, 0, _asciiToBase64, 0, srcV.length);
 
 		_usesPadding = usesPadding;
 		_paddingChar = paddingChar;
@@ -233,8 +232,7 @@ public final class Base64Variant implements java.io.Serializable {
 	}
 
 	/**
-	 * Method that outputs partial chunk (which only encodes one or two bytes of data). Data given is still aligned same as if it as full data; that is, missing data is at the "right end" (LSB) of
-	 * int.
+	 * Method that outputs partial chunk (which only encodes one or two bytes of data). Data given is still aligned same as if it as full data; that is, missing data is at the "right end" (LSB) of int.
 	 *
 	 * @param outputBytes
 	 *            Number of encoded bytes included (either 1 or 2)
@@ -283,8 +281,7 @@ public final class Base64Variant implements java.io.Serializable {
 	}
 
 	/**
-	 * Method that outputs partial chunk (which only encodes one or two bytes of data). Data given is still aligned same as if it as full data; that is, missing data is at the "right end" (LSB) of
-	 * int.
+	 * Method that outputs partial chunk (which only encodes one or two bytes of data). Data given is still aligned same as if it as full data; that is, missing data is at the "right end" (LSB) of int.
 	 *
 	 * @param outputBytes
 	 *            Number of encoded bytes included (either 1 or 2)
@@ -434,8 +431,8 @@ public final class Base64Variant implements java.io.Serializable {
 				// padding
 				if (!usesPadding()) {
 					decodedData >>= 4;
-					builder.append(decodedData);
-					break;
+			builder.append(decodedData);
+			break;
 				}
 				_reportBase64EOF();
 			}
@@ -457,8 +454,8 @@ public final class Base64Variant implements java.io.Serializable {
 				}
 				// Got 12 bits, only need 8, need to shift
 				decodedData >>= 4;
-				builder.append(decodedData);
-				continue;
+			builder.append(decodedData);
+			continue;
 			}
 			// Nope, 2 or 3 bytes
 			decodedData = (decodedData << 6) | bits;
@@ -468,8 +465,8 @@ public final class Base64Variant implements java.io.Serializable {
 				// padding
 				if (!usesPadding()) {
 					decodedData >>= 2;
-					builder.appendTwoBytes(decodedData);
-					break;
+			builder.appendTwoBytes(decodedData);
+			break;
 				}
 				_reportBase64EOF();
 			}
@@ -480,7 +477,7 @@ public final class Base64Variant implements java.io.Serializable {
 					_reportInvalidBase64(ch, 3, null);
 				}
 				decodedData >>= 2;
-				builder.appendTwoBytes(decodedData);
+			builder.appendTwoBytes(decodedData);
 			} else {
 				// otherwise, our triple is now complete
 				decodedData = (decodedData << 6) | bits;

@@ -51,9 +51,9 @@ public class NetworkWatcherProxySelector extends ProxySelector {
 			if (Bukkit.isPrimaryThread()) {
 				Plugin plugin = getRequestingPlugin();
 				if (plugin != null) {
-					MessageLogger.warn("Plugin "+plugin.getName()+" attempted to establish connection "+uri+" in main server thread");
+					MessageLogger.warn("Plugin " + plugin.getName() + " attempted to establish connection " + uri + " in main server thread");
 				} else {
-					MessageLogger.warn("Something attempted to access "+uri+" in main server thread, printing stack trace");
+					MessageLogger.warn("Something attempted to access " + uri + " in main server thread, printing stack trace");
 					Thread.dumpStack();
 				}
 			}

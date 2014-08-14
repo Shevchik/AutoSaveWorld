@@ -38,11 +38,11 @@ public class FormattingCodesParser {
 		message = message.replaceAll("(?i)&d", ChatColor.LIGHT_PURPLE + "");
 		message = message.replaceAll("(?i)&e", ChatColor.YELLOW + "");
 		message = message.replaceAll("(?i)&f", ChatColor.WHITE + "");
-		message = message.replaceAll("(?i)&l", ChatColor.BOLD+ "");
-		message = message.replaceAll("(?i)&o", ChatColor.ITALIC+ "");
-		message = message.replaceAll("(?i)&m", ChatColor.STRIKETHROUGH+ "");
-		message = message.replaceAll("(?i)&n", ChatColor.UNDERLINE+ "");
-		message = message.replaceAll("(?i)&k", ChatColor.MAGIC+ "");
+		message = message.replaceAll("(?i)&l", ChatColor.BOLD + "");
+		message = message.replaceAll("(?i)&o", ChatColor.ITALIC + "");
+		message = message.replaceAll("(?i)&m", ChatColor.STRIKETHROUGH + "");
+		message = message.replaceAll("(?i)&n", ChatColor.UNDERLINE + "");
+		message = message.replaceAll("(?i)&k", ChatColor.MAGIC + "");
 		return message;
 	}
 

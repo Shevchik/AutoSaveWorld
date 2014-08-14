@@ -41,7 +41,7 @@ class JSchPartialAuthException extends JSchException {
 
 	public JSchPartialAuthException(String s) {
 		super(s);
-		this.methods = s;
+		methods = s;
 	}
 
 	public String getMethods() {

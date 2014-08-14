@@ -57,7 +57,7 @@ public class StringUtil {
 					b.append("\\000");
 					break; // Inserting '\0' isn't safe if there's a digit after
 				default:
-					if (c >= 0x20 && c <= 0x7e) {
+					if ((c >= 0x20) && (c <= 0x7e)) {
 						b.append(c);
 					} else {
 						int h1 = (c >> 12) & 0xf;
@@ -90,15 +90,15 @@ public class StringUtil {
 	 * Convert a string of binary bytes to the equivalent hexadecimal string. The resulting String will have two characters for every byte in the input.
 	 */
 	public static String binaryToHex(byte[] data, int offset, int length) {
-		assert offset < data.length && offset >= 0 : offset + ", " + data.length;
+		assert (offset < data.length) && (offset >= 0) : offset + ", " + data.length;
 		int end = offset + length;
-		assert end <= data.length && end >= 0 : offset + ", " + length + ", " + data.length;
+		assert (end <= data.length) && (end >= 0) : offset + ", " + length + ", " + data.length;
 
 		char[] chars = new char[length * 2];
 		int j = 0;
 		for (int i = offset; i < end; i++) {
 			int b = data[i];
-			chars[j++] = StringUtil.HexDigits[b >>> 4 & 0xF];
+			chars[j++] = StringUtil.HexDigits[(b >>> 4) & 0xF];
 			chars[j++] = StringUtil.HexDigits[b & 0xF];
 		}
 
@@ -106,8 +106,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * When you're compating two strings for equality and one of them is a value that could be provided by an attacker and the other is a value that the attacker shouldn't know, use this function to
-	 * check for equality. Using regular {@code String.equals} is not secure.
+	 * When you're compating two strings for equality and one of them is a value that could be provided by an attacker and the other is a value that the attacker shouldn't know, use this function to check for equality. Using regular {@code String.equals} is not secure.
 	 */
 	public static boolean secureStringEquals(String a, String b) {
 		if (a.length() != b.length()) {
@@ -164,14 +163,14 @@ public class StringUtil {
 			int b3 = (data[i++]) & 0xff;
 
 			int d1 = b1 >>> 2;
-			int d2 = ((b1 & 0x3) << 4) | (b2 >>> 4);
-			int d3 = ((b2 & 0xf) << 2) | (b3 >>> 6);
-			int d4 = b3 & 0x3f;
+		int d2 = ((b1 & 0x3) << 4) | (b2 >>> 4);
+		int d3 = ((b2 & 0xf) << 2) | (b3 >>> 6);
+		int d4 = b3 & 0x3f;
 
-			buf.append(digits.charAt(d1));
-			buf.append(digits.charAt(d2));
-			buf.append(digits.charAt(d3));
-			buf.append(digits.charAt(d4));
+		buf.append(digits.charAt(d1));
+		buf.append(digits.charAt(d2));
+		buf.append(digits.charAt(d3));
+		buf.append(digits.charAt(d4));
 		}
 
 		// Do the leftover bytes (either 1 or 2)

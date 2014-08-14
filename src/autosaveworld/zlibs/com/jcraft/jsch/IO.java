@@ -48,16 +48,16 @@ public class IO {
 	}
 
 	void setOutputStream(OutputStream out, boolean dontclose) {
-		this.out_dontclose = dontclose;
+		out_dontclose = dontclose;
 		setOutputStream(out);
 	}
 
 	void setExtOutputStream(OutputStream out) {
-		this.out_ext = out;
+		out_ext = out;
 	}
 
 	void setExtOutputStream(OutputStream out, boolean dontclose) {
-		this.out_ext_dontclose = dontclose;
+		out_ext_dontclose = dontclose;
 		setExtOutputStream(out);
 	}
 
@@ -66,7 +66,7 @@ public class IO {
 	}
 
 	void setInputStream(InputStream in, boolean dontclose) {
-		this.in_dontclose = dontclose;
+		in_dontclose = dontclose;
 		setInputStream(in);
 	}
 
@@ -106,7 +106,7 @@ public class IO {
 
 	void out_close() {
 		try {
-			if (out != null && !out_dontclose) {
+			if ((out != null) && !out_dontclose) {
 				out.close();
 			}
 			out = null;
@@ -116,7 +116,7 @@ public class IO {
 
 	public void close() {
 		try {
-			if (in != null && !in_dontclose) {
+			if ((in != null) && !in_dontclose) {
 				in.close();
 			}
 			in = null;
@@ -126,7 +126,7 @@ public class IO {
 		out_close();
 
 		try {
-			if (out_ext != null && !out_ext_dontclose) {
+			if ((out_ext != null) && !out_ext_dontclose) {
 				out_ext.close();
 			}
 			out_ext = null;

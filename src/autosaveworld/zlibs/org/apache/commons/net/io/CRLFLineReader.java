@@ -37,7 +37,7 @@ public final class CRLFLineReader extends BufferedReader {
 		boolean prevWasCR = false;
 		synchronized (lock) { // make thread-safe (hopefully!)
 			while ((intch = read()) != -1) {
-				if (prevWasCR && intch == LF) {
+				if (prevWasCR && (intch == LF)) {
 					return sb.substring(0, sb.length() - 1);
 				}
 				if (intch == CR) {

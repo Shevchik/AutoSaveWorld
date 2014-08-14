@@ -39,6 +39,7 @@ public class AutoBackupThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
+
 	public AutoBackupThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
@@ -46,13 +47,16 @@ public class AutoBackupThread extends Thread {
 	}
 
 	public void stopThread() {
-		//save counter on disable
+		// save counter on disable
 		if (config.backupEnabled) {
 			FileConfiguration config = new YamlConfiguration();
 			config.set("counter", counter);
-			try {config.save(new File(GlobalConstants.getBackupIntervalPreservePath()));} catch (IOException e) {}
+			try {
+				config.save(new File(GlobalConstants.getBackupIntervalPreservePath()));
+			} catch (IOException e) {
+			}
 		}
-		//stop
+		// stop
 		run = false;
 	}
 
@@ -60,19 +64,19 @@ public class AutoBackupThread extends Thread {
 		command = true;
 	}
 
-
 	// The code to run...weee
 	private volatile boolean run = true;
 	private boolean command = false;
 	private int counter = 0;
+
 	@Override
 	public void run() {
 
 		MessageLogger.debug("AutoBackupThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
 
-		//load counter on enable
-		if (config.backupEnabled){
+		// load counter on enable
+		if (config.backupEnabled) {
 			File preservefile = new File(GlobalConstants.getBackupIntervalPreservePath());
 			FileConfiguration config = YamlConfiguration.loadConfiguration(preservefile);
 			counter = config.getInt("counter", 0);
@@ -82,8 +86,13 @@ public class AutoBackupThread extends Thread {
 		while (run) {
 			// Do our Sleep stuff!
 			for (; counter < config.backupInterval; counter++) {
-				if (!run || command) {break;}
-				try {Thread.sleep(1000);} catch (InterruptedException e) {}
+				if (!run || command) {
+					break;
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
 			}
 
 			counter = 0;
@@ -145,14 +154,10 @@ public class AutoBackupThread extends Thread {
 			MessageLogger.debug("Dropbox backup Finished");
 		}
 
-		MessageLogger.debug("Full backup time: "+(System.currentTimeMillis()-timestart)+" milliseconds");
+		MessageLogger.debug("Full backup time: " + (System.currentTimeMillis() - timestart) + " milliseconds");
 
 		MessageLogger.broadcast(configmsg.messageBackupBroadcastPost, config.backupBroadcast);
 
 	}
 
 }
-
-
-
-

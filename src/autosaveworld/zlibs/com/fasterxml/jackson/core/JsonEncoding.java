@@ -8,8 +8,7 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core;
 /**
  * Enumeration that defines legal encodings that can be used for JSON content, based on list of allowed encodings from <a href="http://www.ietf.org/rfc/rfc4627.txt">JSON specification</a>.
  * <p>
- * Note: if application want to explicitly disregard Encoding limitations (to read in JSON encoded using an encoding not listed as allowed), they can use {@link java.io.Reader} /
- * {@link java.io.Writer} instances as input
+ * Note: if application want to explicitly disregard Encoding limitations (to read in JSON encoded using an encoding not listed as allowed), they can use {@link java.io.Reader} / {@link java.io.Writer} instances as input
  */
 public enum JsonEncoding {
 	UTF8("UTF-8", false, 8), // N/A for big-endian, really

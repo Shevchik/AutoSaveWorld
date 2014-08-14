@@ -82,14 +82,9 @@ public class ChannelSftp extends ChannelSession {
 	public static final int SSH_FX_CONNECTION_LOST = 7;
 	public static final int SSH_FX_OP_UNSUPPORTED = 8;
 	/*
-	 * SSH_FX_OK Indicates successful completion of the operation. SSH_FX_EOF indicates end-of-file condition; for SSH_FX_READ it means that no more data is available in the file, and for
-	 * SSH_FX_READDIR it indicates that no more files are contained in the directory. SSH_FX_NO_SUCH_FILE is returned when a reference is made to a file which should exist but doesn't.
-	 * SSH_FX_PERMISSION_DENIED is returned when the authenticated user does not have sufficient permissions to perform the operation. SSH_FX_FAILURE is a generic catch-all error message; it should be
-	 * returned if an error occurs for which there is no more specific error code defined. SSH_FX_BAD_MESSAGE may be returned if a badly formatted packet or protocol incompatibility is detected.
-	 * SSH_FX_NO_CONNECTION is a pseudo-error which indicates that the client has no connection to the server (it can only be generated locally by the client, and MUST NOT be returned by servers).
-	 * SSH_FX_CONNECTION_LOST is a pseudo-error which indicates that the connection to the server has been lost (it can only be generated locally by the client, and MUST NOT be returned by servers).
-	 * SSH_FX_OP_UNSUPPORTED indicates that an attempt was made to perform an operation which is not supported for the server (it may be generated locally by the client if e.g. the version number
-	 * exchange indicates that a required feature is not supported by the server, or it may be returned by the server if the server does not implement an operation).
+	 * SSH_FX_OK Indicates successful completion of the operation. SSH_FX_EOF indicates end-of-file condition; for SSH_FX_READ it means that no more data is available in the file, and for SSH_FX_READDIR it indicates that no more files are contained in the directory. SSH_FX_NO_SUCH_FILE is returned when a reference is made to a file which should exist but doesn't. SSH_FX_PERMISSION_DENIED is returned when the authenticated user does not have sufficient permissions to perform the operation.
+	 * SSH_FX_FAILURE is a generic catch-all error message; it should be returned if an error occurs for which there is no more specific error code defined. SSH_FX_BAD_MESSAGE may be returned if a badly formatted packet or protocol incompatibility is detected. SSH_FX_NO_CONNECTION is a pseudo-error which indicates that the client has no connection to the server (it can only be generated locally by the client, and MUST NOT be returned by servers). SSH_FX_CONNECTION_LOST is a pseudo-error which
+	 * indicates that the connection to the server has been lost (it can only be generated locally by the client, and MUST NOT be returned by servers). SSH_FX_OP_UNSUPPORTED indicates that an attempt was made to perform an operation which is not supported for the server (it may be generated locally by the client if e.g. the version number exchange indicates that a required feature is not supported by the server, or it may be returned by the server if the server does not implement an operation).
 	 */
 	private static final int MAX_MSG_LENGTH = 256 * 1024;
 
@@ -120,10 +115,8 @@ public class ChannelSftp extends ChannelSession {
 	private boolean extension_hardlink = false;
 
 	/*
-	 * 10. Changes from previous protocol versions The SSH File Transfer Protocol has changed over time, before it's standardization. The following is a description of the incompatible changes between
-	 * different versions. 10.1 Changes between versions 3 and 2 o The SSH_FXP_READLINK and SSH_FXP_SYMLINK messages were added. o The SSH_FXP_EXTENDED and SSH_FXP_EXTENDED_REPLY messages were added.
-	 * o The SSH_FXP_STATUS message was changed to include fields `error message' and `language tag'. 10.2 Changes between versions 2 and 1 o The SSH_FXP_RENAME message was added. 10.3 Changes between
-	 * versions 1 and 0 o Implementation changes, no actual protocol changes.
+	 * 10. Changes from previous protocol versions The SSH File Transfer Protocol has changed over time, before it's standardization. The following is a description of the incompatible changes between different versions. 10.1 Changes between versions 3 and 2 o The SSH_FXP_READLINK and SSH_FXP_SYMLINK messages were added. o The SSH_FXP_EXTENDED and SSH_FXP_EXTENDED_REPLY messages were added. o The SSH_FXP_STATUS message was changed to include fields `error message' and `language tag'. 10.2
+	 * Changes between versions 2 and 1 o The SSH_FXP_RENAME message was added. 10.3 Changes between versions 1 and 0 o Implementation changes, no actual protocol changes.
 	 */
 
 	private static final String file_separator = java.io.File.separator;
@@ -227,15 +220,15 @@ public class ChannelSftp extends ChannelSession {
 				}
 			}
 
-			if (extensions.get("posix-rename@openssh.com") != null && extensions.get("posix-rename@openssh.com").equals("1")) {
+			if ((extensions.get("posix-rename@openssh.com") != null) && extensions.get("posix-rename@openssh.com").equals("1")) {
 				extension_posix_rename = true;
 			}
 
-			if (extensions.get("statvfs@openssh.com") != null && extensions.get("statvfs@openssh.com").equals("2")) {
+			if ((extensions.get("statvfs@openssh.com") != null) && extensions.get("statvfs@openssh.com").equals("2")) {
 				extension_statvfs = true;
 			}
 
-			if (extensions.get("hardlink@openssh.com") != null && extensions.get("hardlink@openssh.com").equals("1")) {
+			if ((extensions.get("hardlink@openssh.com") != null) && extensions.get("hardlink@openssh.com").equals("1")) {
 				extension_hardlink = true;
 			}
 
@@ -350,7 +343,7 @@ public class ChannelSftp extends ChannelSession {
 			_put(src, dst, monitor, mode);
 		} catch (Exception e) {
 			if (e instanceof SftpException) {
-				if (((SftpException) e).id == SSH_FX_FAILURE && isRemoteDir(dst)) {
+				if ((((SftpException) e).id == SSH_FX_FAILURE) && isRemoteDir(dst)) {
 					throw new SftpException(SSH_FX_FAILURE, dst + " is a directory");
 				}
 				throw (SftpException) e;
@@ -368,7 +361,7 @@ public class ChannelSftp extends ChannelSession {
 
 			byte[] dstb = Util.str2byte(dst, fEncoding);
 			long skip = 0;
-			if (mode == RESUME || mode == APPEND) {
+			if ((mode == RESUME) || (mode == APPEND)) {
 				try {
 					SftpATTRS attr = _stat(dstb);
 					skip = attr.getSize();
@@ -376,7 +369,7 @@ public class ChannelSftp extends ChannelSession {
 					// System.err.println(eee);
 				}
 			}
-			if (mode == RESUME && skip > 0) {
+			if ((mode == RESUME) && (skip > 0)) {
 				long skipped = src.skip(skip);
 				if (skipped < skip) {
 					throw new SftpException(SSH_FX_FAILURE, "failed to resume for " + dst);
@@ -396,7 +389,7 @@ public class ChannelSftp extends ChannelSession {
 
 			fill(buf, length);
 
-			if (type != SSH_FXP_STATUS && type != SSH_FXP_HANDLE) {
+			if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_HANDLE)) {
 				throw new SftpException(SSH_FX_FAILURE, "invalid type=" + type);
 			}
 			if (type == SSH_FXP_STATUS) {
@@ -413,7 +406,7 @@ public class ChannelSftp extends ChannelSession {
 			}
 
 			long offset = 0;
-			if (mode == RESUME || mode == APPEND) {
+			if ((mode == RESUME) || (mode == APPEND)) {
 				offset += skip;
 			}
 
@@ -445,18 +438,18 @@ public class ChannelSftp extends ChannelSession {
 						datalen -= nread;
 						count += nread;
 					}
-				} while (datalen > 0 && nread > 0);
+				} while ((datalen > 0) && (nread > 0));
 				if (count <= 0) {
 					break;
 				}
 
 				int foo = count;
 				while (foo > 0) {
-					if ((seq - 1) == startid || ((seq - startid) - ackcount) >= bulk_requests) {
+					if (((seq - 1) == startid) || (((seq - startid) - ackcount) >= bulk_requests)) {
 						while (((seq - startid) - ackcount) >= bulk_requests) {
 							if (checkStatus(ackid, header)) {
 								int _ackid = ackid[0];
-								if (startid > _ackid || _ackid > seq - 1) {
+								if ((startid > _ackid) || (_ackid > (seq - 1))) {
 									if (_ackid == seq) {
 										System.err.println("ack error: startid=" + startid + " seq=" + seq + " _ackid=" + _ackid);
 									} else {
@@ -472,7 +465,7 @@ public class ChannelSftp extends ChannelSession {
 					foo -= sendWRITE(handle, offset, data, 0, foo);
 				}
 				offset += count;
-				if (monitor != null && !monitor.count(count)) {
+				if ((monitor != null) && !monitor.count(count)) {
 					break;
 				}
 			}
@@ -659,7 +652,7 @@ public class ChannelSftp extends ChannelSession {
 
 			fill(buf, length);
 
-			if (type != SSH_FXP_STATUS && type != SSH_FXP_HANDLE) {
+			if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_HANDLE)) {
 				throw new SftpException(SSH_FX_FAILURE, "");
 			}
 			if (type == SSH_FXP_STATUS) {
@@ -710,7 +703,7 @@ public class ChannelSftp extends ChannelSession {
 					if (d == null) {
 						throw new NullPointerException();
 					}
-					if (s < 0 || len < 0 || s + len > d.length) {
+					if ((s < 0) || (len < 0) || ((s + len) > d.length)) {
 						throw new IndexOutOfBoundsException();
 					}
 					if (len == 0) {
@@ -738,10 +731,10 @@ public class ChannelSftp extends ChannelSession {
 						return foo;
 					}
 
-					if (buf.buffer.length - 13 < len) {
+					if ((buf.buffer.length - 13) < len) {
 						len = buf.buffer.length - 13;
 					}
-					if (server_version == 0 && len > 1024) {
+					if ((server_version == 0) && (len > 1024)) {
 						len = 1024;
 					}
 
@@ -776,7 +769,7 @@ public class ChannelSftp extends ChannelSession {
 						throw new IOException("error: " + e.toString());
 					}
 
-					if (type != SSH_FXP_STATUS && type != SSH_FXP_DATA) {
+					if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_DATA)) {
 						throw new IOException("error");
 					}
 					if (type == SSH_FXP_STATUS) {
@@ -909,8 +902,7 @@ public class ChannelSftp extends ChannelSession {
 	}
 
 	/**
-	 * List files specified by the remote <code>path</code>. Each files and directories will be passed to <code>LsEntrySelector#select(LsEntry)</code> method, and if that method returns
-	 * <code>LsEntrySelector#BREAK</code>, the operation will be canceled immediately.
+	 * List files specified by the remote <code>path</code>. Each files and directories will be passed to <code>LsEntrySelector#select(LsEntry)</code> method, and if that method returns <code>LsEntrySelector#BREAK</code>, the operation will be canceled immediately.
 	 *
 	 * @see ChannelSftp.LsEntrySelector
 	 * @since 0.1.47
@@ -942,8 +934,7 @@ public class ChannelSftp extends ChannelSession {
 					dir = upath;
 				} else {
 					/*
-					 * // If we can generage longname by ourself, // we don't have to use openDIR. String filename=Util.unquote(_pattern); String longname=... v.addElement(new LsEntry(filename,
-					 * longname, attr)); return v;
+					 * // If we can generage longname by ourself, // we don't have to use openDIR. String filename=Util.unquote(_pattern); String longname=... v.addElement(new LsEntry(filename, longname, attr)); return v;
 					 */
 					if (fEncoding_is_utf8) {
 						pattern = _pattern_utf8[0];
@@ -965,7 +956,7 @@ public class ChannelSftp extends ChannelSession {
 
 			fill(buf, length);
 
-			if (type != SSH_FXP_STATUS && type != SSH_FXP_HANDLE) {
+			if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_HANDLE)) {
 				throw new SftpException(SSH_FX_FAILURE, "");
 			}
 			if (type == SSH_FXP_STATUS) {
@@ -983,7 +974,7 @@ public class ChannelSftp extends ChannelSession {
 				header = header(buf, header);
 				length = header.length;
 				type = header.type;
-				if (type != SSH_FXP_STATUS && type != SSH_FXP_NAME) {
+				if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_NAME)) {
 					throw new SftpException(SSH_FX_FAILURE, "");
 				}
 				if (type == SSH_FXP_STATUS) {
@@ -1056,8 +1047,7 @@ public class ChannelSftp extends ChannelSession {
 			_sendCLOSE(handle, header);
 
 			/*
-			 * if(v.size()==1 && pattern_has_wildcard){ LsEntry le=(LsEntry)v.elementAt(0); if(le.getAttrs().isDir()){ String f=le.getFilename(); if(isPattern(f)){ f=Util.quote(f); }
-			 * if(!dir.endsWith("/")){ dir+="/"; } v=null; return ls(dir+f); } }
+			 * if(v.size()==1 && pattern_has_wildcard){ LsEntry le=(LsEntry)v.elementAt(0); if(le.getAttrs().isDir()){ String f=le.getFilename(); if(isPattern(f)){ f=Util.quote(f); } if(!dir.endsWith("/")){ dir+="/"; } v=null; return ls(dir+f); } }
 			 */
 
 		} catch (Exception e) {
@@ -1092,7 +1082,7 @@ public class ChannelSftp extends ChannelSession {
 
 			fill(buf, length);
 
-			if (type != SSH_FXP_STATUS && type != SSH_FXP_NAME) {
+			if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_NAME)) {
 				throw new SftpException(SSH_FX_FAILURE, "");
 			}
 			if (type == SSH_FXP_NAME) {
@@ -1712,7 +1702,7 @@ public class ChannelSftp extends ChannelSession {
 
 		fill(buf, length);
 
-		if (type != SSH_FXP_STATUS && type != SSH_FXP_NAME) {
+		if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_NAME)) {
 			throw new SftpException(SSH_FX_FAILURE, "");
 		}
 		int i;
@@ -2003,7 +1993,7 @@ public class ChannelSftp extends ChannelSession {
 	private int sendWRITE(byte[] handle, long offset, byte[] data, int start, int length) throws Exception {
 		int _length = length;
 		opacket.reset();
-		if (obuf.buffer.length < obuf.index + 13 + 21 + handle.length + length + Session.buffer_margin) {
+		if (obuf.buffer.length < (obuf.index + 13 + 21 + handle.length + length + Session.buffer_margin)) {
 			_length = obuf.buffer.length - (obuf.index + 13 + 21 + handle.length + Session.buffer_margin);
 			// System.err.println("_length="+_length+" length="+length);
 		}
@@ -2085,7 +2075,7 @@ public class ChannelSftp extends ChannelSession {
 
 		fill(buf, length);
 
-		if (type != SSH_FXP_STATUS && type != SSH_FXP_HANDLE) {
+		if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_HANDLE)) {
 			throw new SftpException(SSH_FX_FAILURE, "");
 		}
 		if (type == SSH_FXP_STATUS) {
@@ -2102,7 +2092,7 @@ public class ChannelSftp extends ChannelSession {
 			length = header.length;
 			type = header.type;
 
-			if (type != SSH_FXP_STATUS && type != SSH_FXP_NAME) {
+			if ((type != SSH_FXP_STATUS) && (type != SSH_FXP_NAME)) {
 				throw new SftpException(SSH_FX_FAILURE, "");
 			}
 			if (type == SSH_FXP_STATUS) {
@@ -2170,10 +2160,10 @@ public class ChannelSftp extends ChannelSession {
 		int length = path.length;
 		int i = 0;
 		while (i < length) {
-			if (path[i] == '*' || path[i] == '?') {
+			if ((path[i] == '*') || (path[i] == '?')) {
 				return true;
 			}
-			if (path[i] == '\\' && (i + 1) < length) {
+			if ((path[i] == '\\') && ((i + 1) < length)) {
 				i++;
 			}
 			i++;
@@ -2182,7 +2172,7 @@ public class ChannelSftp extends ChannelSession {
 	}
 
 	private void throwStatusError(Buffer buf, int i) throws SftpException {
-		if (server_version >= 3 && buf.getLength() >= 4) { // WindRiver's sftp will send invalid SSH_FXP_STATUS packet.
+		if ((server_version >= 3) && (buf.getLength() >= 4)) { // WindRiver's sftp will send invalid SSH_FXP_STATUS packet.
 			byte[] str = buf.getString();
 			throw new SftpException(i, Util.byte2str(str, UTF8));
 		} else {
@@ -2301,7 +2291,7 @@ public class ChannelSftp extends ChannelSession {
 
 	public void setFilenameEncoding(String encoding) throws SftpException {
 		int sversion = getServerVersion();
-		if (3 <= sversion && sversion <= 5 && !encoding.equals(UTF8)) {
+		if ((3 <= sversion) && (sversion <= 5) && !encoding.equals(UTF8)) {
 			throw new SftpException(SSH_FX_FAILURE, "The encoding can not be changed for this sftp server.");
 		}
 		if (encoding.equals(UTF8)) {

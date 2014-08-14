@@ -40,8 +40,9 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 public class TownyCopy {
 
 	private World wtoregen;
+
 	public TownyCopy(String worldtoregen) {
-		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
 	public void copyAllToSchematics() {
@@ -54,39 +55,25 @@ public class TownyCopy {
 			for (Town town : towns) {
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0) {
-					MessageLogger.debug("Saving town claim "+town.getName()+" to schematic");
-					//create temp folder for town
-					new File(GlobalConstants.getTownyTempFolder()+town.getName()).mkdirs();
-					//save all chunks
+					MessageLogger.debug("Saving town claim " + town.getName() + " to schematic");
+					// create temp folder for town
+					new File(GlobalConstants.getTownyTempFolder() + town.getName()).mkdirs();
+					// save all chunks
 					LinkedList<SchematicToSave> schematics = new LinkedList<SchematicToSave>();
 					for (TownBlock tb : tblocks) {
 						if (tb.getWorld().getName().equals(wtoregen.getName())) {
-							//get coords
+							// get coords
 							final int xcoord = tb.getX();
 							final int zcoord = tb.getZ();
-							final Vector bvmin = BukkitUtil.toVector(
-								new Location(
-									wtoregen,
-									xcoord*16,
-									0,
-									zcoord*16
-								)
-							);
-							final Vector bvmax = BukkitUtil.toVector(
-								new Location(
-									wtoregen,
-									xcoord*16+15,
-									wtoregen.getMaxHeight(),
-									zcoord*16+15
-								)
-							);
-							//add to save list
-							SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getTownyTempFolder()+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord, bvmin, bvmax);
+							final Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xcoord * 16, 0, zcoord * 16));
+							final Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, (xcoord * 16) + 15, wtoregen.getMaxHeight(), (zcoord * 16) + 15));
+							// add to save list
+							SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getTownyTempFolder() + town.getName() + File.separator + "X" + xcoord + "Z" + zcoord, bvmin, bvmax);
 							schematics.add(schematicdata);
 						}
 					}
 					SchematicOperations.saveToSchematic(wtoregen, schematics);
-					MessageLogger.debug("Towny claim "+town.getName()+" saved");
+					MessageLogger.debug("Towny claim " + town.getName() + " saved");
 				}
 			}
 		} catch (NotRegisteredException e) {

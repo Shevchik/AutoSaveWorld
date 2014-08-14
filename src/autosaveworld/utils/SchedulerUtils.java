@@ -42,16 +42,13 @@ public class SchedulerUtils {
 
 	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
 		final LinkedBlockingQueue<Boolean> lock = new LinkedBlockingQueue<Boolean>(1);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(
-			plugin,
-			new Runnable() {
-				@Override
-				public void run() {
-					run.run();
-					lock.offer(true);
-				}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				run.run();
+				lock.offer(true);
 			}
-		);
+		});
 		try {
 			if (timeout == 0) {
 				lock.take();

@@ -63,7 +63,7 @@ public class CodeContext {
 				try {
 					return Class.forName(split[1]);
 				} catch (Exception e) {
-					throw new RuntimeException("Class "+split[1]+" not found");
+					throw new RuntimeException("Class " + split[1] + " not found");
 				}
 			}
 			case "CONTEXT": {

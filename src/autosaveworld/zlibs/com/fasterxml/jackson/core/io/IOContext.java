@@ -5,8 +5,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.BufferRecycler;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;
 
 /**
- * To limit number of configuration and state objects to pass, all contextual objects that need to be passed by the factory to readers and writers are combined under this object. One instance is
- * created for each reader and writer.
+ * To limit number of configuration and state objects to pass, all contextual objects that need to be passed by the factory to readers and writers are combined under this object. One instance is created for each reader and writer.
  * <p>
  * NOTE: non-final since 2.4, to allow sub-classing.
  */
@@ -26,8 +25,7 @@ public class IOContext {
 	protected JsonEncoding _encoding;
 
 	/**
-	 * Flag that indicates whether underlying input/output source/target object is fully managed by the owner of this context (parser or generator). If true, it is, and is to be closed by
-	 * parser/generator; if false, calling application has to do closing (unless auto-closing feature is enabled for the parser/generator in question; in which case it acts like the owner).
+	 * Flag that indicates whether underlying input/output source/target object is fully managed by the owner of this context (parser or generator). If true, it is, and is to be closed by parser/generator; if false, calling application has to do closing (unless auto-closing feature is enabled for the parser/generator in question; in which case it acts like the owner).
 	 */
 	protected final boolean _managedResource;
 
@@ -66,8 +64,7 @@ public class IOContext {
 	protected char[] _concatCBuffer = null;
 
 	/**
-	 * Reference temporary buffer Parser instances need if calling app decides it wants to access name via 'getTextCharacters' method. Regular text buffer can not be used as it may contain textual
-	 * representation of the value token.
+	 * Reference temporary buffer Parser instances need if calling app decides it wants to access name via 'getTextCharacters' method. Regular text buffer can not be used as it may contain textual representation of the value token.
 	 */
 	protected char[] _nameCopyBuffer = null;
 
@@ -197,7 +194,7 @@ public class IOContext {
 
 	public void releaseBase64Buffer(byte[] buf) {
 		if (buf != null) { // sanity checks, release once-and-only-once, must be
-							// one owned
+			// one owned
 			_verifyRelease(buf, _base64Buffer);
 			_base64Buffer = null;
 			_bufferRecycler.releaseByteBuffer(BufferRecycler.BYTE_BASE64_CODEC_BUFFER, buf);

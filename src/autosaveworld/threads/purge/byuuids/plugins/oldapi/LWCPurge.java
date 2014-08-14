@@ -43,46 +43,46 @@ public class LWCPurge {
 
 		int deleted = 0;
 
-		//we will check LWC database and remove protections that belongs to away player
+		// we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections()) {
 			if (!pacheck.isActiveNameCS(pr.getOwner()) && !pacheck.isActiveUUID(pr.getOwner())) {
-				//add protected to delete batch
+				// add protected to delete batch
 				prtodel.add(pr);
-				//delete protections if maximum batch size reached
+				// delete protections if maximum batch size reached
 				if (prtodel.size() == 80) {
 					flushBatch(lwc, delblocks);
 				}
-				//count deleted protections
+				// count deleted protections
 				deleted += 1;
 			}
 		}
-		//flush the rest of the batch;
+		// flush the rest of the batch;
 		flushBatch(lwc, delblocks);
 
-		MessageLogger.debug("LWC purge finished, deleted "+ deleted+" inactive protections");
+		MessageLogger.debug("LWC purge finished, deleted " + deleted + " inactive protections");
 	}
 
 	private ArrayList<Protection> prtodel = new ArrayList<Protection>(100);
+
 	private void flushBatch(final LWCPlugin lwc, final boolean delblocks) {
 		Runnable rempr = new Runnable() {
 			@Override
 			public void run() {
 				for (Protection pr : prtodel) {
-					//delete block
+					// delete block
 					if (delblocks) {
-						MessageLogger.debug("Removing protected block for inactive player "+pr.getOwner());
+						MessageLogger.debug("Removing protected block for inactive player " + pr.getOwner());
 						Block block = pr.getBlock();
 						BlockState bs = block.getState();
 						if (bs instanceof Chest) {
 							((Chest) bs).getBlockInventory().clear();
-						} else
-						if (bs instanceof DoubleChest) {
+						} else if (bs instanceof DoubleChest) {
 							((DoubleChest) bs).getInventory().clear();
 						}
 						block.setType(Material.AIR);
 					}
-					//delete protection
-					MessageLogger.debug("Removing protection for inactive player "+pr.getOwner());
+					// delete protection
+					MessageLogger.debug("Removing protection for inactive player " + pr.getOwner());
 					lwc.getLWC().getPhysicalDatabase().removeProtection(pr.getId());
 				}
 				prtodel.clear();

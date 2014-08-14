@@ -9,11 +9,9 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 
 /**
- * Helper class that is similar to {@link java.io.ByteArrayOutputStream} in usage, but more geared to Jackson use cases internally. Specific changes include segment storage (no need to have linear
- * backing buffer, can avoid reallocations, copying), as well API not based on {@link java.io.OutputStream}. In short, a very much specialized builder object.
+ * Helper class that is similar to {@link java.io.ByteArrayOutputStream} in usage, but more geared to Jackson use cases internally. Specific changes include segment storage (no need to have linear backing buffer, can avoid reallocations, copying), as well API not based on {@link java.io.OutputStream}. In short, a very much specialized builder object.
  * <p>
- * Also implements {@link OutputStream} to allow efficient aggregation of output content as a byte array, similar to how {@link java.io.ByteArrayOutputStream} works, but somewhat more efficiently for
- * many use cases.
+ * Also implements {@link OutputStream} to allow efficient aggregation of output content as a byte array, similar to how {@link java.io.ByteArrayOutputStream} works, but somewhat more efficiently for many use cases.
  */
 public final class ByteArrayBuilder extends OutputStream {
 	private final static byte[] NO_BYTES = new byte[0];
@@ -68,7 +66,7 @@ public final class ByteArrayBuilder extends OutputStream {
 	 */
 	public void release() {
 		reset();
-		if (_bufferRecycler != null && _currBlock != null) {
+		if ((_bufferRecycler != null) && (_currBlock != null)) {
 			_bufferRecycler.releaseByteBuffer(BufferRecycler.BYTE_WRITE_CONCAT_BUFFER, _currBlock);
 			_currBlock = null;
 		}
@@ -227,8 +225,7 @@ public final class ByteArrayBuilder extends OutputStream {
 		_pastLen += _currBlock.length;
 
 		/*
-		 * Let's allocate block that's half the total size, except never smaller than twice the initial block size. The idea is just to grow with reasonable rate, to optimize between minimal number of
-		 * chunks and minimal amount of wasted space.
+		 * Let's allocate block that's half the total size, except never smaller than twice the initial block size. The idea is just to grow with reasonable rate, to optimize between minimal number of chunks and minimal amount of wasted space.
 		 */
 		int newSize = Math.max((_pastLen >> 1), (INITIAL_BLOCK_SIZE + INITIAL_BLOCK_SIZE));
 		// plus not to exceed max we define...

@@ -15,8 +15,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.VersionUtil;
 
 /**
- * This base class implements part of API that a JSON generator exposes to applications, adds shared internal methods that sub-classes can use and adds some abstract methods sub-classes must
- * implement.
+ * This base class implements part of API that a JSON generator exposes to applications, adds shared internal methods that sub-classes can use and adds some abstract methods sub-classes must implement.
  */
 public abstract class GeneratorBase extends JsonGenerator {
 	/*
@@ -31,8 +30,7 @@ public abstract class GeneratorBase extends JsonGenerator {
 	protected int _features;
 
 	/**
-	 * Flag set to indicate that implicit conversion from number to JSON String is needed (as per {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#WRITE_NUMBERS_AS_STRINGS}
-	 * ).
+	 * Flag set to indicate that implicit conversion from number to JSON String is needed (as per {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#WRITE_NUMBERS_AS_STRINGS} ).
 	 */
 	protected boolean _cfgNumbersAsStrings;
 
@@ -215,8 +213,7 @@ public abstract class GeneratorBase extends JsonGenerator {
 	// Not implemented at this level, added as placeholders
 
 	/*
-	 * public abstract void writeNumber(int i) public abstract void writeNumber(long l) public abstract void writeNumber(double d) public abstract void writeNumber(float f) public abstract void
-	 * writeNumber(BigDecimal dec) public abstract void writeBoolean(boolean state) public abstract void writeNull()
+	 * public abstract void writeNumber(int i) public abstract void writeNumber(long l) public abstract void writeNumber(double d) public abstract void writeNumber(float f) public abstract void writeNumber(BigDecimal dec) public abstract void writeBoolean(boolean state) public abstract void writeNull()
 	 */
 
 	/*
@@ -230,8 +227,7 @@ public abstract class GeneratorBase extends JsonGenerator {
 			writeNull();
 		} else {
 			/*
-			 * 02-Mar-2009, tatu: we are NOT to call _verifyValueWrite here, because that will be done when codec actually serializes contained POJO. If we did call it it would advance state causing
-			 * exception later on
+			 * 02-Mar-2009, tatu: we are NOT to call _verifyValueWrite here, because that will be done when codec actually serializes contained POJO. If we did call it it would advance state causing exception later on
 			 */
 			if (_objectCodec != null) {
 				_objectCodec.writeValue(this, value);

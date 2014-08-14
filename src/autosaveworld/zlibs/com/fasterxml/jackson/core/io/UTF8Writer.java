@@ -21,8 +21,7 @@ public final class UTF8Writer extends Writer {
 	private int _outPtr;
 
 	/**
-	 * When outputting chars from BMP, surrogate pairs need to be coalesced. To do this, both pairs must be known first; and since it is possible pairs may be split, we need temporary storage for the
-	 * first half
+	 * When outputting chars from BMP, surrogate pairs need to be coalesced. To do this, both pairs must be known first; and since it is possible pairs may be split, we need temporary storage for the first half
 	 */
 	private int _surrogate = 0;
 
@@ -152,7 +151,7 @@ public final class UTF8Writer extends Writer {
 				outBuf[outPtr++] = (byte) (0x80 | (c & 0x3f));
 			} else { // 3 or 4 bytes
 				// Surrogates?
-				if (c < SURR1_FIRST || c > SURR2_LAST) {
+				if ((c < SURR1_FIRST) || (c > SURR2_LAST)) {
 					outBuf[outPtr++] = (byte) (0xe0 | (c >> 12));
 					outBuf[outPtr++] = (byte) (0x80 | ((c >> 6) & 0x3f));
 					outBuf[outPtr++] = (byte) (0x80 | (c & 0x3f));
@@ -188,7 +187,7 @@ public final class UTF8Writer extends Writer {
 		if (_surrogate > 0) {
 			c = convertSurrogate(c);
 			// If not, do we start with a surrogate?
-		} else if (c >= SURR1_FIRST && c <= SURR2_LAST) {
+		} else if ((c >= SURR1_FIRST) && (c <= SURR2_LAST)) {
 			// Illegal to get second part without first:
 			if (c > SURR1_LAST) {
 				illegalSurrogate(c);
@@ -296,7 +295,7 @@ public final class UTF8Writer extends Writer {
 				outBuf[outPtr++] = (byte) (0x80 | (c & 0x3f));
 			} else { // 3 or 4 bytes
 				// Surrogates?
-				if (c < SURR1_FIRST || c > SURR2_LAST) {
+				if ((c < SURR1_FIRST) || (c > SURR2_LAST)) {
 					outBuf[outPtr++] = (byte) (0xe0 | (c >> 12));
 					outBuf[outPtr++] = (byte) (0x80 | ((c >> 6) & 0x3f));
 					outBuf[outPtr++] = (byte) (0x80 | (c & 0x3f));
@@ -338,7 +337,7 @@ public final class UTF8Writer extends Writer {
 		_surrogate = 0;
 
 		// Ok, then, is the second part valid?
-		if (secondPart < SURR2_FIRST || secondPart > SURR2_LAST) {
+		if ((secondPart < SURR2_FIRST) || (secondPart > SURR2_LAST)) {
 			throw new IOException("Broken surrogate pair: first char 0x" + Integer.toHexString(firstPart) + ", second 0x" + Integer.toHexString(secondPart) + "; illegal combination");
 		}
 		return 0x10000 + ((firstPart - SURR1_FIRST) << 10) + (secondPart - SURR2_FIRST);
@@ -354,7 +353,7 @@ public final class UTF8Writer extends Writer {
 		}
 		if (code >= SURR1_FIRST) {
 			if (code <= SURR1_LAST) { // Unmatched first part (closing without
-										// second part?)
+				// second part?)
 				return "Unmatched first part of surrogate pair (0x" + Integer.toHexString(code) + ")";
 			}
 			return "Unmatched second part of surrogate pair (0x" + Integer.toHexString(code) + ")";

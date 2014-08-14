@@ -36,30 +36,30 @@ public class PluginManager {
 
 	public void handlePluginManagerCommand(CommandSender sender, String command, String pluginname) {
 		if (command.equalsIgnoreCase("load")) {
-			loadPlugin(sender,pluginname);
+			loadPlugin(sender, pluginname);
 		} else if (command.equalsIgnoreCase("unload")) {
-			unloadPlugin(sender,pluginname);
+			unloadPlugin(sender, pluginname);
 		} else if (command.equalsIgnoreCase("reload")) {
-			reloadPlugin(sender,pluginname);
+			reloadPlugin(sender, pluginname);
 		} else {
 			MessageLogger.sendMessage(sender, "Invalid plugin manager command");
 		}
 	}
 
 	private void loadPlugin(CommandSender sender, String pluginname) {
-		//ignore if plugin is already loaded
+		// ignore if plugin is already loaded
 		if (isPluginAlreadyLoaded(pluginname)) {
 			MessageLogger.sendMessage(sender, "Plugin is already loaded");
 			return;
 		}
-		//find plugin file
+		// find plugin file
 		File pmpluginfile = findPluginFile(pluginname);
-		//ignore if we can't find plugin file
+		// ignore if we can't find plugin file
 		if (!pmpluginfile.exists()) {
 			MessageLogger.sendMessage(sender, "File with this plugin name not found");
 			return;
 		}
-		//now load plugin
+		// now load plugin
 		try {
 			iutils.loadPlugin(pmpluginfile);
 			MessageLogger.sendMessage(sender, "Plugin loaded");
@@ -70,14 +70,14 @@ public class PluginManager {
 	}
 
 	private void unloadPlugin(CommandSender sender, String pluginname) {
-		//find plugin
+		// find plugin
 		Plugin pmplugin = findPlugin(pluginname);
-		//ignore if plugin is not loaded
+		// ignore if plugin is not loaded
 		if (pmplugin == null) {
 			MessageLogger.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
-		//now unload plugin
+		// now unload plugin
 		try {
 			iutils.unloadPlugin(pmplugin);
 			MessageLogger.sendMessage(sender, "Plugin unloaded");
@@ -88,21 +88,21 @@ public class PluginManager {
 	}
 
 	private void reloadPlugin(CommandSender sender, String pluginname) {
-		//find plugin
+		// find plugin
 		Plugin pmplugin = findPlugin(pluginname);
-		//ignore if plugin is not loaded
+		// ignore if plugin is not loaded
 		if (pmplugin == null) {
 			MessageLogger.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
-		//find plugin file
+		// find plugin file
 		File pmpluginfile = findPluginFile(pluginname);
-		//ignore if we can't find plugin file
+		// ignore if we can't find plugin file
 		if (!pmpluginfile.exists()) {
 			MessageLogger.sendMessage(sender, "File with this plugin name not found");
 			return;
 		}
-		//now reload plugin
+		// now reload plugin
 		try {
 			iutils.unloadPlugin(pmplugin);
 			iutils.loadPlugin(pmpluginfile);
@@ -131,14 +131,14 @@ public class PluginManager {
 		if (file != null) {
 			return file;
 		}
-		return new File(GlobalConstants.getPluginsFolder(), pluginname+".jar");
+		return new File(GlobalConstants.getPluginsFolder(), pluginname + ".jar");
 	}
 
 	private File checkFolder(File folder, String pluginname) {
 		if (folder.exists() && folder.isDirectory()) {
 			for (File pluginfile : folder.listFiles()) {
 				String pluginName = getPluginName(pluginfile);
-				if (pluginName != null && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
+				if ((pluginName != null) && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
 					return pluginfile;
 				}
 			}

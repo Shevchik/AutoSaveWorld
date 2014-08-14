@@ -20,6 +20,7 @@ package autosaveworld.utils.codeinvoker;
 public class SetParser {
 
 	private CodeContext context;
+
 	public SetParser(CodeContext context) {
 		this.context = context;
 	}
@@ -37,12 +38,15 @@ public class SetParser {
 		private String fieldname;
 		private Object object;
 		private Object set;
+
 		protected String getFieldName() {
 			return fieldname;
 		}
+
 		protected Object getObject() {
 			return object;
 		}
+
 		protected Object getNew() {
 			return set;
 		}

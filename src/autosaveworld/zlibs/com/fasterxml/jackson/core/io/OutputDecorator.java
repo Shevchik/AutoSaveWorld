@@ -5,8 +5,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 /**
- * Handler class that can be used to decorate output destinations. Typical use is to use a filter abstraction (filtered output stream, writer) around original output destination, and apply additional
- * processing during write operations.
+ * Handler class that can be used to decorate output destinations. Typical use is to use a filter abstraction (filtered output stream, writer) around original output destination, and apply additional processing during write operations.
  */
 @SuppressWarnings("serial")
 public abstract class OutputDecorator implements java.io.Serializable // since

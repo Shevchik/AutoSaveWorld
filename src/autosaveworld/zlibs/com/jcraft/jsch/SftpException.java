@@ -44,7 +44,7 @@ public class SftpException extends Exception {
 	public SftpException(int id, String message, Throwable e) {
 		super(message);
 		this.id = id;
-		this.cause = e;
+		cause = e;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class SftpException extends Exception {
 
 	@Override
 	public Throwable getCause() {
-		return this.cause;
+		return cause;
 	}
 
 }

@@ -44,19 +44,19 @@ public class InternalUtils {
 	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, NoSuchMethodException, InvocationTargetException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
-		//disable plugin
+		// disable plugin
 		pluginmanager.disablePlugin(plugin);
-		//remove from plugins field
+		// remove from plugins field
 		Field pluginsField = managerclass.getDeclaredField("plugins");
 		pluginsField.setAccessible(true);
 		List<Plugin> plugins = (List<Plugin>) pluginsField.get(pluginmanager);
 		plugins.remove(plugin);
-		//remove from lookupnames field
+		// remove from lookupnames field
 		Field lookupNamesField = managerclass.getDeclaredField("lookupNames");
 		lookupNamesField.setAccessible(true);
 		Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
 		lookupNames.values().remove(plugin);
-		//remove from commands field
+		// remove from commands field
 		Field commandMapField = managerclass.getDeclaredField("commandMap");
 		commandMapField.setAccessible(true);
 		CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
@@ -69,14 +69,14 @@ public class InternalUtils {
 				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName())) {
 					removeCommand(commandMap, commands, cmd);
 				}
-			} else  if (cmd.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
+			} else if (cmd.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
 				removeCommand(commandMap, commands, cmd);
 			}
 		}
-		//close file in url classloader
+		// close file in url classloader
 		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
 		if (pluginClassLoader instanceof URLClassLoader) {
-			URLClassLoader urlloader= (URLClassLoader) pluginClassLoader;
+			URLClassLoader urlloader = (URLClassLoader) pluginClassLoader;
 			urlloader.close();
 		}
 	}
@@ -96,9 +96,9 @@ public class InternalUtils {
 
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
-		//load plugin
+		// load plugin
 		Plugin plugin = pluginmanager.loadPlugin(pluginfile);
-		//enable plugin
+		// enable plugin
 		plugin.onLoad();
 		pluginmanager.enablePlugin(plugin);
 	}

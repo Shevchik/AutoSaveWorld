@@ -61,7 +61,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 	}
 
 	public boolean isSnapshot() {
-		return (_snapshotInfo != null && _snapshotInfo.length() > 0);
+		return ((_snapshotInfo != null) && (_snapshotInfo.length() > 0));
 	}
 
 	public int getMajorVersion() {
@@ -102,7 +102,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 
 	@Override
 	public int hashCode() {
-		return _artifactId.hashCode() ^ _groupId.hashCode() + _majorVersion - _minorVersion + _patchLevel;
+		return _artifactId.hashCode() ^ (((_groupId.hashCode() + _majorVersion) - _minorVersion) + _patchLevel);
 	}
 
 	@Override
@@ -117,8 +117,7 @@ public class Version implements Comparable<Version>, java.io.Serializable {
 			return false;
 		}
 		Version other = (Version) o;
-		return (other._majorVersion == _majorVersion) && (other._minorVersion == _minorVersion) && (other._patchLevel == _patchLevel) && other._artifactId.equals(_artifactId)
-				&& other._groupId.equals(_groupId);
+		return (other._majorVersion == _majorVersion) && (other._minorVersion == _minorVersion) && (other._patchLevel == _patchLevel) && other._artifactId.equals(_artifactId) && other._groupId.equals(_groupId);
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class ProxyHTTP implements Proxy {
 			}
 		}
 		this.proxy_host = host;
-		this.proxy_port = port;
+		proxy_port = port;
 	}
 
 	public ProxyHTTP(String proxy_host, int proxy_port) {
@@ -88,7 +88,7 @@ public class ProxyHTTP implements Proxy {
 
 			out.write(Util.str2byte("CONNECT " + host + ":" + port + " HTTP/1.0\r\n"));
 
-			if (user != null && passwd != null) {
+			if ((user != null) && (passwd != null)) {
 				byte[] code = Util.str2byte(user + ":" + passwd);
 				code = Util.toBase64(code, 0, code.length);
 				out.write(Util.str2byte("Proxy-Authorization: Basic "));

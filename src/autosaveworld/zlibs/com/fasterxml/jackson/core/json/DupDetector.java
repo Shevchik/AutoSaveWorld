@@ -8,9 +8,8 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 
 /**
- * Helper class used if {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#STRICT_DUPLICATE_DETECTION} is enabled. Optimized to try to limit memory usage and processing overhead
- * for smallest entries, but without adding trashing (immutable objects would achieve optimal memory usage but lead to significant number of discarded temp objects for scopes with large number of
- * entries). Another consideration is trying to limit actual number of compiled classes as it contributes significantly to overall jar size (due to linkage etc).
+ * Helper class used if {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#STRICT_DUPLICATE_DETECTION} is enabled. Optimized to try to limit memory usage and processing overhead for smallest entries, but without adding trashing (immutable objects would achieve optimal memory usage but lead to significant number of discarded temp objects for scopes with large number of entries). Another consideration is trying to limit actual number of compiled classes as it contributes
+ * significantly to overall jar size (due to linkage etc).
  *
  * @since 2.3
  */

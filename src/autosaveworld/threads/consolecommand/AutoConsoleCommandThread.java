@@ -29,33 +29,33 @@ import autosaveworld.utils.SchedulerUtils;
 public class AutoConsoleCommandThread extends Thread {
 
 	private AutoSaveWorldConfig config;
+
 	public AutoConsoleCommandThread(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
 
 	public void stopThread() {
-		this.run = false;
+		run = false;
 	}
 
 	private volatile boolean run = true;
+
 	@Override
 	public void run() {
 
 		MessageLogger.debug("AutoConsoleCommandThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 
-		//wait for server to start
-		SchedulerUtils.callSyncTaskAndWait(
-			new Runnable() {
-				@Override
-				public void run() {
-				}
+		// wait for server to start
+		SchedulerUtils.callSyncTaskAndWait(new Runnable() {
+			@Override
+			public void run() {
 			}
-		);
+		});
 
 		while (run) {
 
-			//handle times mode
+			// handle times mode
 			if (config.ccTimesModeEnabled) {
 				for (String ctime : getTimesToExecute()) {
 					MessageLogger.debug("Executing console commands (timesmode)");
@@ -63,7 +63,7 @@ public class AutoConsoleCommandThread extends Thread {
 				}
 			}
 
-			//handle interval mode
+			// handle interval mode
 			if (config.ccIntervalsModeEnabled) {
 				for (int interval : getIntervalsToExecute()) {
 					MessageLogger.debug("Executing console commands (intervalmode)");
@@ -71,52 +71,53 @@ public class AutoConsoleCommandThread extends Thread {
 				}
 			}
 
-			//sleep for a second
-			try {Thread.sleep(1000);} catch (InterruptedException e) {}
+			// sleep for a second
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
 		}
 
 		MessageLogger.debug("Graceful quit of AutoConsoleCommandThread");
 
 	}
 
-
 	private void executeCommands(final List<String> commands) {
 		if (run) {
-			SchedulerUtils.scheduleSyncTask(
-				new Runnable() {
-					@Override
-					public void run() {
-						for (String command : commands) {
-							CommandUtils.dispatchCommandAsConsole(command);
-						}
+			SchedulerUtils.scheduleSyncTask(new Runnable() {
+				@Override
+				public void run() {
+					for (String command : commands) {
+						CommandUtils.dispatchCommandAsConsole(command);
 					}
 				}
-			);
+			});
 		}
 	}
 
-
-	//timesmode checks
+	// timesmode checks
 	private int minute = -1;
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 	private SimpleDateFormat msdf = new SimpleDateFormat("mm");
+
 	private List<String> getTimesToExecute() {
 		List<String> timestoexecute = new ArrayList<String>();
 		int cminute = Integer.parseInt(msdf.format(System.currentTimeMillis()));
 		String ctime = sdf.format(System.currentTimeMillis());
-		if (cminute != minute && config.ccTimesModeCommands.containsKey(ctime)) {
+		if ((cminute != minute) && config.ccTimesModeCommands.containsKey(ctime)) {
 			minute = cminute;
 			timestoexecute.add(ctime);
 		}
 		return timestoexecute;
 	}
 
-	//intervalmode checks
+	// intervalmode checks
 	private long intervalcounter = 0;
+
 	private List<Integer> getIntervalsToExecute() {
 		List<Integer> inttoexecute = new ArrayList<Integer>();
 		for (int interval : config.ccIntervalsModeCommands.keySet()) {
-			if (intervalcounter != 0 && intervalcounter % interval == 0) {
+			if ((intervalcounter != 0) && ((intervalcounter % interval) == 0)) {
 				inttoexecute.add(interval);
 			}
 		}

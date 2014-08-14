@@ -59,13 +59,14 @@ public class MyWarpPurge {
 	}
 
 	private ArrayList<Warp> warptodel = new ArrayList<Warp>(100);
+
 	private void flushBatch(final MyWarp mywarp) {
 		Runnable rempr = new Runnable() {
 			@Override
 			public void run() {
 				for (Warp warp : warptodel) {
 					// delete warp
-					MessageLogger.debug("Removing warp for inactive player "+ warp.getCreator());
+					MessageLogger.debug("Removing warp for inactive player " + warp.getCreator());
 					mywarp.getWarpManager().deleteWarp(warp);
 				}
 				warptodel.clear();

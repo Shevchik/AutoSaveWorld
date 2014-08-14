@@ -40,32 +40,32 @@ public class MVInvPurge {
 
 		try {
 			MultiverseInventories mvpl = (MultiverseInventories) Bukkit.getPluginManager().getPlugin("Multiverse-Inventories");
-			File mcinvpfld = new File(GlobalConstants.getPluginsFolder(), "Multiverse-Inventories" +File.separator+ "players" + File.separator);
-			//We will get all files from MVInv player directory, and get player names from there
+			File mcinvpfld = new File(GlobalConstants.getPluginsFolder(), "Multiverse-Inventories" + File.separator + "players" + File.separator);
+			// We will get all files from MVInv player directory, and get player names from there
 			for (String plfile : mcinvpfld.list()) {
 				String plname = plfile.substring(0, plfile.lastIndexOf("."));
 
 				if (!pacheck.isActiveNameCS(plname)) {
-					MessageLogger.debug("Removing "+plname+" MVInv files");
-					//remove files from MVInv world folders
+					MessageLogger.debug("Removing " + plname + " MVInv files");
+					// remove files from MVInv world folders
 					for (World wname : Bukkit.getWorlds()) {
 						mvpl.getWorldManager().getWorldProfile(wname.getName()).removeAllPlayerData(Bukkit.getOfflinePlayer(plname));
 					}
-					//remove files from MVInv player folder
-					new File(mcinvpfld,plfile).delete();
-					//remove files from MVInv groups folder
-					for (WorldGroupProfile gname: mvpl.getGroupManager().getGroups()) {
-						File mcinvgfld = new File("plugins" + File.separator + "Multiverse-Inventories" +File.separator+ "groups" + File.separator);
-						new File(mcinvgfld, gname.getName()+File.separator+plfile).delete();
+					// remove files from MVInv player folder
+					new File(mcinvpfld, plfile).delete();
+					// remove files from MVInv groups folder
+					for (WorldGroupProfile gname : mvpl.getGroupManager().getGroups()) {
+						File mcinvgfld = new File("plugins" + File.separator + "Multiverse-Inventories" + File.separator + "groups" + File.separator);
+						new File(mcinvgfld, gname.getName() + File.separator + plfile).delete();
 					}
-					//count deleted player file
+					// count deleted player file
 					deleted += 1;
 				}
 			}
 		} catch (Exception e) {
 		}
 
-		MessageLogger.debug("MVInv purge finished, deleted "+deleted+" player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
+		MessageLogger.debug("MVInv purge finished, deleted " + deleted + " player files, Warning: on some Multiverse-Inventories versions you should divide this number by 2 to know the real count");
 	}
 
 }

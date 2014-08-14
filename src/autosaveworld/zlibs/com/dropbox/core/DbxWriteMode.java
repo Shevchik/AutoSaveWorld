@@ -34,8 +34,7 @@ public final class DbxWriteMode {
 	private static final DbxWriteMode AddInstance = new DbxWriteMode("overwrite", "false");
 
 	/**
-	 * Returns a {@link DbxWriteMode} for forcing a file to be at a certain path. If there's already a file at that path, the existing file will be overwritten. If there's a folder at that path,
-	 * however, it will not be overwritten and the API call will fail.
+	 * Returns a {@link DbxWriteMode} for forcing a file to be at a certain path. If there's already a file at that path, the existing file will be overwritten. If there's a folder at that path, however, it will not be overwritten and the API call will fail.
 	 */
 	public static DbxWriteMode force() {
 		return ForceInstance;
@@ -44,16 +43,14 @@ public final class DbxWriteMode {
 	private static final DbxWriteMode ForceInstance = new DbxWriteMode("overwrite", "true");
 
 	/**
-	 * Returns a {@link DbxWriteMode} for updating an existing file. This is useful for when you have downloaded a file and made modifications and want to save your modifications back to Dropbox. You
-	 * need to specify the revision of the copy of the file you downloaded (it's in {@link DbxEntry.File#rev}).
+	 * Returns a {@link DbxWriteMode} for updating an existing file. This is useful for when you have downloaded a file and made modifications and want to save your modifications back to Dropbox. You need to specify the revision of the copy of the file you downloaded (it's in {@link DbxEntry.File#rev}).
 	 *
 	 * <p>
 	 * If, when you attempt to save, the revision of the file currently on Dropbox matches {@code revisionToReplace}, the file on Dropbox will be overwritten with the new contents you provide.
 	 * </p>
 	 *
 	 * <p>
-	 * If the rev of the file currently on Dropbox doesn't match {@code revisionToReplace}, Dropbox leave the original file alone and save your contents to a new file. For example, if the original
-	 * file path is {@literal "/Notes/Groceries.txt"}, the new file's path might be {@literal "/Notes/Groceries (conflicted copy).txt"}.
+	 * If the rev of the file currently on Dropbox doesn't match {@code revisionToReplace}, Dropbox leave the original file alone and save your contents to a new file. For example, if the original file path is {@literal "/Notes/Groceries.txt"}, the new file's path might be {@literal "/Notes/Groceries (conflicted copy).txt"}.
 	 * </p>
 	 *
 	 * <p>

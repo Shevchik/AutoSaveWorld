@@ -62,7 +62,7 @@ public class ProxySOCKS5 implements Proxy {
 			}
 		}
 		this.proxy_host = host;
-		this.proxy_port = port;
+		proxy_port = port;
 	}
 
 	public ProxySOCKS5(String proxy_host, int proxy_port) {
@@ -128,20 +128,16 @@ public class ProxySOCKS5 implements Proxy {
 					check = true;
 					break;
 				case 2: // USERNAME/PASSWORD
-					if (user == null || passwd == null) {
+					if ((user == null) || (passwd == null)) {
 						break;
 					}
 
 					/*
-					 * Once the SOCKS V5 server has started, and the client has selected the Username/Password Authentication protocol, the Username/Password subnegotiation begins. This begins with
-					 * the client producing a Username/Password request:
+					 * Once the SOCKS V5 server has started, and the client has selected the Username/Password Authentication protocol, the Username/Password subnegotiation begins. This begins with the client producing a Username/Password request:
 					 *
-					 * +----+------+----------+------+----------+ |VER | ULEN | UNAME | PLEN | PASSWD | +----+------+----------+------+----------+ | 1 | 1 | 1 to 255 | 1 | 1 to 255 |
-					 * +----+------+----------+------+----------+
+					 * +----+------+----------+------+----------+ |VER | ULEN | UNAME | PLEN | PASSWD | +----+------+----------+------+----------+ | 1 | 1 | 1 to 255 | 1 | 1 to 255 | +----+------+----------+------+----------+
 					 *
-					 * The VER field contains the current version of the subnegotiation, which is X'01'. The ULEN field contains the length of the UNAME field that follows. The UNAME field contains
-					 * the username as known to the source operating system. The PLEN field contains the length of the PASSWD field that follows. The PASSWD field contains the password association
-					 * with the given UNAME.
+					 * The VER field contains the current version of the subnegotiation, which is X'01'. The ULEN field contains the length of the UNAME field that follows. The UNAME field contains the username as known to the source operating system. The PLEN field contains the length of the PASSWD field that follows. The PASSWD field contains the password association with the given UNAME.
 					 */
 					index = 0;
 					buf[index++] = 1;
@@ -181,13 +177,11 @@ public class ProxySOCKS5 implements Proxy {
 			/*
 			 * The SOCKS request is formed as follows:
 			 *
-			 * +----+-----+-------+------+----------+----------+ |VER | CMD | RSV | ATYP | DST.ADDR | DST.PORT | +----+-----+-------+------+----------+----------+ | 1 | 1 | X'00' | 1 | Variable | 2 |
-			 * +----+-----+-------+------+----------+----------+
+			 * +----+-----+-------+------+----------+----------+ |VER | CMD | RSV | ATYP | DST.ADDR | DST.PORT | +----+-----+-------+------+----------+----------+ | 1 | 1 | X'00' | 1 | Variable | 2 | +----+-----+-------+------+----------+----------+
 			 *
 			 * Where:
 			 *
-			 * o VER protocol version: X'05' o CMD o CONNECT X'01' o BIND X'02' o UDP ASSOCIATE X'03' o RSV RESERVED o ATYP address type of following address o IP V4 address: X'01' o DOMAINNAME: X'03'
-			 * o IP V6 address: X'04' o DST.ADDR desired destination address o DST.PORT desired destination port in network octet order
+			 * o VER protocol version: X'05' o CMD o CONNECT X'01' o BIND X'02' o UDP ASSOCIATE X'03' o RSV RESERVED o ATYP address type of following address o IP V4 address: X'01' o DOMAINNAME: X'03' o IP V6 address: X'04' o DST.ADDR desired destination address o DST.PORT desired destination port in network octet order
 			 */
 
 			index = 0;
@@ -207,17 +201,14 @@ public class ProxySOCKS5 implements Proxy {
 			out.write(buf, 0, index);
 
 			/*
-			 * The SOCKS request information is sent by the client as soon as it has established a connection to the SOCKS server, and completed the authentication negotiations. The server evaluates
-			 * the request, and returns a reply formed as follows:
+			 * The SOCKS request information is sent by the client as soon as it has established a connection to the SOCKS server, and completed the authentication negotiations. The server evaluates the request, and returns a reply formed as follows:
 			 *
-			 * +----+-----+-------+------+----------+----------+ |VER | REP | RSV | ATYP | BND.ADDR | BND.PORT | +----+-----+-------+------+----------+----------+ | 1 | 1 | X'00' | 1 | Variable | 2 |
-			 * +----+-----+-------+------+----------+----------+
+			 * +----+-----+-------+------+----------+----------+ |VER | REP | RSV | ATYP | BND.ADDR | BND.PORT | +----+-----+-------+------+----------+----------+ | 1 | 1 | X'00' | 1 | Variable | 2 | +----+-----+-------+------+----------+----------+
 			 *
 			 * Where:
 			 *
-			 * o VER protocol version: X'05' o REP Reply field: o X'00' succeeded o X'01' general SOCKS server failure o X'02' connection not allowed by ruleset o X'03' Network unreachable o X'04'
-			 * Host unreachable o X'05' Connection refused o X'06' TTL expired o X'07' Command not supported o X'08' Address type not supported o X'09' to X'FF' unassigned o RSV RESERVED o ATYP
-			 * address type of following address o IP V4 address: X'01' o DOMAINNAME: X'03' o IP V6 address: X'04' o BND.ADDR server bound address o BND.PORT server bound port in network octet order
+			 * o VER protocol version: X'05' o REP Reply field: o X'00' succeeded o X'01' general SOCKS server failure o X'02' connection not allowed by ruleset o X'03' Network unreachable o X'04' Host unreachable o X'05' Connection refused o X'06' TTL expired o X'07' Command not supported o X'08' Address type not supported o X'09' to X'FF' unassigned o RSV RESERVED o ATYP address type of following address o IP V4 address: X'01' o DOMAINNAME: X'03' o IP V6 address: X'04' o BND.ADDR server bound
+			 * address o BND.PORT server bound port in network octet order
 			 */
 
 			// in.read(buf, 0, 4);

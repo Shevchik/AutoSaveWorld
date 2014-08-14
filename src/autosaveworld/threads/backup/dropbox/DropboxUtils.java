@@ -55,17 +55,20 @@ public class DropboxUtils {
 
 	public static void zipAndUploadDirectory(DbxClient dbx, File src, String path, List<String> excludefolders) throws IOException {
 		InputStream is = MemoryZip.startZIP(src, excludefolders);
-		storeFile(dbx, is, path, src.getName()+".zip");
+		storeFile(dbx, is, path, src.getName() + ".zip");
 		is.close();
 	}
 
 	private static void storeFile(DbxClient client, InputStream is, String path, String filename) {
 		try {
-			client.uploadFileChunked(path+"/"+filename, DbxWriteMode.force(), -1, new DbxStreamWriter.InputStreamCopier(is));
+			client.uploadFileChunked(path + "/" + filename, DbxWriteMode.force(), -1, new DbxStreamWriter.InputStreamCopier(is));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {Thread.sleep(0);} catch (InterruptedException e) {}
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	public static void deleteDirectory(DbxClient client, String directory) throws DbxException {

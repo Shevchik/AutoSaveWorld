@@ -58,26 +58,26 @@ public class WGPurge {
 				int inactive = 0;
 				for (String checkPlayer : owners) {
 					if (!pacheck.isActiveNameNCS(checkPlayer)) {
-						MessageLogger.debug(checkPlayer+ " is inactive");
+						MessageLogger.debug(checkPlayer + " is inactive");
 						inactive++;
 					}
 				}
 				for (String checkPlayer : members) {
 					if (!pacheck.isActiveNameNCS(checkPlayer)) {
-						MessageLogger.debug(checkPlayer+ " is inactive");
+						MessageLogger.debug(checkPlayer + " is inactive");
 						inactive++;
 					}
 				}
 				// check region for remove (ignore regions without owners and members)
-				if (rg.hasMembersOrOwners() && inactive == owners.size() + members.size()) {
-					MessageLogger.debug("No active owners and members for region "+rg.getId()+". Purging region");
+				if (rg.hasMembersOrOwners() && (inactive == (owners.size() + members.size()))) {
+					MessageLogger.debug("No active owners and members for region " + rg.getId() + ". Purging region");
 					if (regenrg) {
-						//regen and delete region
-						purgeRG(m,w,rg,regenrg,noregenoverlap,safeids);
+						// regen and delete region
+						purgeRG(m, w, rg, regenrg, noregenoverlap, safeids);
 					} else {
-						//add region to delete batch
+						// add region to delete batch
 						rgtodel.add(rg.getId());
-						//delete regions if maximum batch size reached
+						// delete regions if maximum batch size reached
 						if (rgtodel.size() == 40) {
 							flushBatch(m);
 						}
@@ -86,22 +86,23 @@ public class WGPurge {
 				}
 			}
 			if (!regenrg) {
-				//delete the rest of the regions in batch
+				// delete the rest of the regions in batch
 				flushBatch(m);
 			}
 		}
 
-		MessageLogger.debug("WG purge finished, deleted "+ deletedrg +" inactive regions");
+		MessageLogger.debug("WG purge finished, deleted " + deletedrg + " inactive regions");
 	}
 
 	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, final boolean noregenoverlap, final Set<Integer> safeids) {
-		Runnable rgregen =  new Runnable() {
+		Runnable rgregen = new Runnable() {
 			BlockVector minpoint = rg.getMinimumPoint();
 			BlockVector maxpoint = rg.getMaximumPoint();
+
 			@Override
 			public void run() {
 				try {
-					if (!(noregenoverlap && m.getApplicableRegions(rg).size() > 1)) {
+					if (!(noregenoverlap && (m.getApplicableRegions(rg).size() > 1))) {
 						MessageLogger.debug("Regenerating region " + rg.getId());
 						WorldEditRegeneration.get().regenerateRegion(w, minpoint, maxpoint, new RegenOptions(safeids));
 					}
@@ -116,8 +117,9 @@ public class WGPurge {
 	}
 
 	private ArrayList<String> rgtodel = new ArrayList<String>(70);
+
 	private void flushBatch(final RegionManager m) {
-		//delete regions
+		// delete regions
 		Runnable deleteregions = new Runnable() {
 			@Override
 			public void run() {

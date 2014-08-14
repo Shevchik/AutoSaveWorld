@@ -25,16 +25,16 @@ import autosaveworld.core.logging.MessageLogger;
 public class ScriptBackup {
 
 	private AutoSaveWorldConfig config;
+
 	public ScriptBackup(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
-
 
 	public void performBackup() {
 		for (String scriptpath : config.backupScriptPaths) {
 			File scriptfile = new File(scriptpath);
 			if (!scriptpath.isEmpty() && scriptfile.exists() && scriptfile.isFile()) {
-				MessageLogger.debug("Executing script "+ scriptfile.getAbsolutePath());
+				MessageLogger.debug("Executing script " + scriptfile.getAbsolutePath());
 				final Process p;
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.command(scriptfile.getAbsolutePath());

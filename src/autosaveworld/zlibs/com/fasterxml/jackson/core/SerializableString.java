@@ -10,8 +10,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Interface that defines how Jackson package can interact with efficient pre-serialized or lazily-serialized and reused String representations. Typically implementations store possible serialized
- * version(s) so that serialization of String can be done more efficiently, especially when used multiple times.
+ * Interface that defines how Jackson package can interact with efficient pre-serialized or lazily-serialized and reused String representations. Typically implementations store possible serialized version(s) so that serialization of String can be done more efficiently, especially when used multiple times.
  * <p>
  * Note that "quoted" in methods means quoting of 'special' characters using JSON backlash notation (and not use of actual double quotes).
  *

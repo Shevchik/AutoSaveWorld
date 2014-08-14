@@ -39,7 +39,7 @@ public class ProcessManager {
 
 	private ProcessStorage storage = new ProcessStorage();
 
-	private void runProcess(CommandSender sender, String prname,  String [] args) {
+	private void runProcess(CommandSender sender, String prname, String[] args) {
 		if (prname == null) {
 			sender.sendMessage("Process name is empty");
 		}

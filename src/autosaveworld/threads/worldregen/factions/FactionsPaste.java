@@ -37,8 +37,9 @@ import com.massivecraft.mcore.ps.PS;
 public class FactionsPaste {
 
 	private World wtopaste;
+
 	public FactionsPaste(String worldtopasteto) {
-		this.wtopaste = Bukkit.getWorld(worldtopasteto);
+		wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
 	public void pasteAllFromSchematics() {
@@ -48,21 +49,21 @@ public class FactionsPaste {
 
 		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll()) {
 			Set<PS> chunks = BoardColls.get().getChunks(f);
-			//ignore factions with no claimed land
+			// ignore factions with no claimed land
 			if (chunks.size() != 0) {
-				MessageLogger.debug("Pasting faction land "+f.getName()+" from schematic");
+				MessageLogger.debug("Pasting faction land " + f.getName() + " from schematic");
 				LinkedList<SchematicToLoad> schematics = new LinkedList<SchematicToLoad>();
-				//paste all chunks
-				for (PS ps: chunks) {
+				// paste all chunks
+				for (PS ps : chunks) {
 					if (ps.getWorld().equalsIgnoreCase(wtopaste.getName())) {
 						final int xcoord = ps.getChunkX();
 						final int zcoord = ps.getChunkZ();
-						SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord);
+						SchematicToLoad schematicdata = new SchematicToLoad(schemfolder + f.getName() + File.separator + "X" + xcoord + "Z" + zcoord);
 						schematics.add(schematicdata);
 					}
 				}
 				SchematicOperations.pasteFromSchematic(wtopaste, schematics);
-				MessageLogger.debug("Pasted faction land "+f.getName()+" from schematic");
+				MessageLogger.debug("Pasted faction land " + f.getName() + " from schematic");
 			}
 		}
 	}

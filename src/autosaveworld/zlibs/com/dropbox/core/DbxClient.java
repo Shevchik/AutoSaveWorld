@@ -34,8 +34,7 @@ public final class DbxClient {
 
 	/**
 	 * @param accessToken
-	 *            The OAuth 2 access token (that you got from Dropbox) that gives your app the ability to make Dropbox API calls against some particular user's account. The standard way to get one of
-	 *            these is to use {@link DbxWebAuth} to send your user through Dropbox's OAuth 2 authorization flow.
+	 *            The OAuth 2 access token (that you got from Dropbox) that gives your app the ability to make Dropbox API calls against some particular user's account. The standard way to get one of these is to use {@link DbxWebAuth} to send your user through Dropbox's OAuth 2 authorization flow.
 	 */
 	public DbxClient(DbxRequestConfig requestConfig, String accessToken) {
 		this(requestConfig, accessToken, DbxHost.Default);
@@ -240,8 +239,7 @@ public final class DbxClient {
 	private static final int ChunkedUploadChunkSize = 4 * 1024 * 1024;
 
 	/**
-	 * Start an API request to upload a file to Dropbox. Returns a {@link DbxClient.Uploader} object that lets you actually send the file contents via {@link DbxClient.Uploader#getBody()}. When you're
-	 * done copying the file body, call {@link DbxClient.Uploader#finish}.
+	 * Start an API request to upload a file to Dropbox. Returns a {@link DbxClient.Uploader} object that lets you actually send the file contents via {@link DbxClient.Uploader#getBody()}. When you're done copying the file body, call {@link DbxClient.Uploader#finish}.
 	 *
 	 * <p>
 	 * You need to close the {@link Uploader} when you're done with it. Use a {@code try}/{@code finally} to make sure you close it in all cases.
@@ -345,12 +343,12 @@ public final class DbxClient {
 
 			this.httpUploader = httpUploader;
 			this.claimedBytes = claimedBytes;
-			this.body = new CountingOutputStream(httpUploader.body);
+			body = new CountingOutputStream(httpUploader.body);
 		}
 
 		@Override
 		public OutputStream getBody() {
-			return this.body;
+			return body;
 		}
 
 		/**
@@ -368,8 +366,7 @@ public final class DbxClient {
 		}
 
 		/**
-		 * Release the resources related to this {@code Uploader} instance. If {@code close()} or {@link #abort()} has already been called, this does nothing. If neither has been called, this is
-		 * equivalent to calling {@link #abort()}.
+		 * Release the resources related to this {@code Uploader} instance. If {@code close()} or {@link #abort()} has already been called, this does nothing. If neither has been called, this is equivalent to calling {@link #abort()}.
 		 */
 		@Override
 		public void close() {
@@ -382,8 +379,7 @@ public final class DbxClient {
 		}
 
 		/**
-		 * When you're done writing the file contents to {@link #body}, call this to indicate that you're done. This will actually finish the underlying HTTP request and return the uploaded file's
-		 * {@link DbxEntry}.
+		 * When you're done writing the file contents to {@link #body}, call this to indicate that you're done. This will actually finish the underlying HTTP request and return the uploaded file's {@link DbxEntry}.
 		 */
 		@Override
 		public DbxEntry.File finish() throws DbxException {
@@ -396,7 +392,7 @@ public final class DbxClient {
 			HttpRequestor.Response response;
 			final long bytesWritten;
 			try {
-				bytesWritten = this.body.getBytesWritten();
+				bytesWritten = body.getBytesWritten();
 
 				// Make sure the uploaded the same number of bytes they said
 				// they were going to upload.
@@ -624,8 +620,7 @@ public final class DbxClient {
 	 *            The identifier returned by {@link #chunkedUploadFirst} to identify the chunked upload session.
 	 *
 	 * @param uploadOffset
-	 *            The current number of bytes uploaded to the chunked upload session. The server checks this value to make sure it is correct. If it is correct, the contents of {@code data} is
-	 *            appended and -1 is returned. If it is incorrect, the correct offset is returned.
+	 *            The current number of bytes uploaded to the chunked upload session. The server checks this value to make sure it is correct. If it is correct, the contents of {@code data} is appended and -1 is returned. If it is incorrect, the correct offset is returned.
 	 *
 	 * @param data
 	 *            The data to append.
@@ -651,8 +646,7 @@ public final class DbxClient {
 	 *            The identifier returned by {@link #chunkedUploadFirst} to identify the chunked upload session.
 	 *
 	 * @param uploadOffset
-	 *            The current number of bytes uploaded to the chunked upload session. The server checks this value to make sure it is correct. If it is correct, the contents of {@code data} is
-	 *            appended and -1 is returned. If it is incorrect, the correct offset is returned.
+	 *            The current number of bytes uploaded to the chunked upload session. The server checks this value to make sure it is correct. If it is correct, the contents of {@code data} is appended and -1 is returned. If it is incorrect, the correct offset is returned.
 	 *
 	 * @param chunkSize
 	 *            The size of the chunk.
@@ -839,8 +833,8 @@ public final class DbxClient {
 		private long uploadOffset;
 
 		private ChunkedUploadOutputStream(int chunkSize) {
-			this.chunk = new byte[chunkSize];
-			this.chunkPos = 0;
+			chunk = new byte[chunkSize];
+			chunkPos = 0;
 		}
 
 		@Override
@@ -934,8 +928,7 @@ public final class DbxClient {
 	}
 
 	/**
-	 * A DbxException wrapped inside an IOException. This is necessary because sometimes we present an interface (such as OutputStream.write) that is only declared to throw {@code IOException}, but we
-	 * need to throw {@code DbxException}.
+	 * A DbxException wrapped inside an IOException. This is necessary because sometimes we present an interface (such as OutputStream.write) that is only declared to throw {@code IOException}, but we need to throw {@code DbxException}.
 	 */
 	public static final class IODbxException extends IOException {
 		private static final long serialVersionUID = 1L;
@@ -1042,8 +1035,7 @@ public final class DbxClient {
 	 * For uploading file content to Dropbox. Write stuff to the {@link #getBody} stream.
 	 *
 	 * <p>
-	 * Don't call {@code close()} directly on the {@link #getBody}. Instead call either call either {@link #finish} or {@link #close} to make sure the stream and other resources are released. A safe
-	 * idiom is to use the object within a {@code try} block and put a call to {@link #close()} in the {@code finally} block.
+	 * Don't call {@code close()} directly on the {@link #getBody}. Instead call either call either {@link #finish} or {@link #close} to make sure the stream and other resources are released. A safe idiom is to use the object within a {@code try} block and put a call to {@link #close()} in the {@code finally} block.
 	 * </p>
 	 *
 	 * <pre>
@@ -1066,14 +1058,12 @@ public final class DbxClient {
 		public abstract void abort();
 
 		/**
-		 * Release the resources related to this {@code Uploader} instance. If {@code close()} or {@link #abort()} has already been called, this does nothing. If neither has been called, this is
-		 * equivalent to calling {@link #abort()}.
+		 * Release the resources related to this {@code Uploader} instance. If {@code close()} or {@link #abort()} has already been called, this does nothing. If neither has been called, this is equivalent to calling {@link #abort()}.
 		 */
 		public abstract void close();
 
 		/**
-		 * When you're done writing the file contents to {@link #getBody}, call this to indicate that you're done. This will actually finish the underlying HTTP request and return the uploaded file's
-		 * {@link DbxEntry}.
+		 * When you're done writing the file contents to {@link #getBody}, call this to indicate that you're done. This will actually finish the underlying HTTP request and return the uploaded file's {@link DbxEntry}.
 		 */
 		public abstract DbxEntry.File finish() throws DbxException;
 	}

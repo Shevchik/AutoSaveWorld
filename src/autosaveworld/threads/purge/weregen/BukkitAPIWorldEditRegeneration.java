@@ -60,10 +60,10 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
 
-		//register listener that will prevent trash items from spawning
+		// register listener that will prevent trash items from spawning
 		ListenerUtils.registerListener(itemremover);
 
-		//first save all blocks that are inside affected chunks but outside the region
+		// first save all blocks that are inside affected chunks but outside the region
 		for (Vector2D chunk : region.getChunks()) {
 			Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
 			for (int x = 0; x < 16; ++x) {
@@ -78,7 +78,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 			}
 		}
 
-		//remove all unsafe blocks
+		// remove all unsafe blocks
 		if (options.shouldRemoveUnsafeBlocks()) {
 			for (Vector2D chunk : region.getChunks()) {
 				Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
@@ -96,7 +96,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 			}
 		}
 
-		//regenerate all affected chunks
+		// regenerate all affected chunks
 		for (Vector2D chunk : region.getChunks()) {
 			try {
 				world.regenerateChunk(chunk.getBlockX(), chunk.getBlockZ());
@@ -105,45 +105,38 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 			}
 		}
 
-		//set all blocks that were outside the region back
+		// set all blocks that were outside the region back
 		for (PlaceBackStage stage : placeBackStages) {
 			stage.processBlockPlaceBack(world, es, placeBackQueue);
 		}
 
-		//unregister listener that prevents item drop
+		// unregister listener that prevents item drop
 		ListenerUtils.unregisterListener(itemremover);
 	}
 
 	private static PlaceBackStage[] placeBackStages = new PlaceBackStage[] {
-		//normal stage place back
-		new PlaceBackStage(
-			new PlaceBackStage.PlaceBackCheck() {
-				@Override
-				public boolean shouldPlaceBack(BaseBlock block) {
-					return !BlockType.shouldPlaceLast(block.getId()) && !BlockType.shouldPlaceFinal(block.getId());
-				}
+		// normal stage place back
+		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
+			@Override
+			public boolean shouldPlaceBack(BaseBlock block) {
+				return !BlockType.shouldPlaceLast(block.getId()) && !BlockType.shouldPlaceFinal(block.getId());
 			}
-		),
-		//last stage place back
-		new PlaceBackStage(
-			new PlaceBackStage.PlaceBackCheck() {
-				@Override
-				public boolean shouldPlaceBack(BaseBlock block) {
-					return BlockType.shouldPlaceLast(block.getId());
-				}
+		}),
+		// last stage place back
+		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
+			@Override
+			public boolean shouldPlaceBack(BaseBlock block) {
+				return BlockType.shouldPlaceLast(block.getId());
 			}
-		),
-		//final stage place back
-		new PlaceBackStage(
-			new PlaceBackStage.PlaceBackCheck() {
-				@Override
-				public boolean shouldPlaceBack(BaseBlock block) {
-					return BlockType.shouldPlaceFinal(block.getId());
-				}
+		}),
+		// final stage place back
+		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
+			@Override
+			public boolean shouldPlaceBack(BaseBlock block) {
+				return BlockType.shouldPlaceFinal(block.getId());
 			}
-		)
+		})
 	};
-
 
 	private static class PlaceBackStage {
 
@@ -152,6 +145,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		}
 
 		private PlaceBackCheck check;
+
 		public PlaceBackStage(PlaceBackCheck check) {
 			this.check = check;
 		}
@@ -164,9 +158,9 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 				if (check.shouldPlaceBack(block)) {
 					Vector pt = blockToPlaceBack.getPosition();
 					try {
-						//set block to air to fix one really weird problem
+						// set block to air to fix one really weird problem
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
-						//set block back if it is not air
+						// set block back if it is not air
 						if (!block.isAir()) {
 							es.rawSetBlock(pt, block);
 						}

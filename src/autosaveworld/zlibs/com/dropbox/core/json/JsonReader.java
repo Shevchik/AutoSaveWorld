@@ -35,8 +35,7 @@ public abstract class JsonReader<T> {
 	/**
 	 * A wrapper around 'JsonParser.nextToken' that throws our own better {@link JsonReadException} instead of Jackson's {@link JsonParseException} .
 	 * <p>
-	 * JsonParseException is bad for two reasons. First, it extends IOException, which makes it easy to miss. Second, there's no way to get the original error message, which makes it hard to chain
-	 * logical location information (see {@link JsonReadException#addFieldContext} and {@link JsonReadException#addArrayContext}).
+	 * JsonParseException is bad for two reasons. First, it extends IOException, which makes it easy to miss. Second, there's no way to get the original error message, which makes it hard to chain logical location information (see {@link JsonReadException#addFieldContext} and {@link JsonReadException#addArrayContext}).
 	 */
 	public static JsonToken nextToken(JsonParser parser) throws IOException, JsonReadException {
 		try {

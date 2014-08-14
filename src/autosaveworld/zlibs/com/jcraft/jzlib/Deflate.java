@@ -80,16 +80,16 @@ public final class Deflate implements Cloneable {
 	}
 
 	static final private String[] z_errmsg = { "need dictionary", // Z_NEED_DICT
-			// 2
-			"stream end", // Z_STREAM_END 1
-			"", // Z_OK 0
-			"file error", // Z_ERRNO (-1)
-			"stream error", // Z_STREAM_ERROR (-2)
-			"data error", // Z_DATA_ERROR (-3)
-			"insufficient memory", // Z_MEM_ERROR (-4)
-			"buffer error", // Z_BUF_ERROR (-5)
-			"incompatible version",// Z_VERSION_ERROR (-6)
-			"" };
+		// 2
+		"stream end", // Z_STREAM_END 1
+		"", // Z_OK 0
+		"file error", // Z_ERRNO (-1)
+		"stream error", // Z_STREAM_ERROR (-2)
+		"data error", // Z_DATA_ERROR (-3)
+		"insufficient memory", // Z_MEM_ERROR (-4)
+		"buffer error", // Z_BUF_ERROR (-5)
+		"incompatible version",// Z_VERSION_ERROR (-6)
+	"" };
 
 	// block not completed, need more input or more output
 	static final private int NeedMore = 0;
@@ -158,7 +158,7 @@ public final class Deflate implements Cloneable {
 	static final private int LENGTH_CODES = 29;
 	static final private int LITERALS = 256;
 	static final private int L_CODES = (LITERALS + 1 + LENGTH_CODES);
-	static final private int HEAP_SIZE = (2 * L_CODES + 1);
+	static final private int HEAP_SIZE = ((2 * L_CODES) + 1);
 
 	static final private int END_BLOCK = 256;
 
@@ -260,7 +260,7 @@ public final class Deflate implements Cloneable {
 	short[] next_code = new short[MAX_BITS + 1];
 
 	// heap used to build the Huffman trees
-	int[] heap = new int[2 * L_CODES + 1];
+	int[] heap = new int[(2 * L_CODES) + 1];
 
 	int heap_len; // number of elements in the heap
 	int heap_max; // element of largest frequency
@@ -268,7 +268,7 @@ public final class Deflate implements Cloneable {
 	// The same heap array is used to build all trees.
 
 	// Depth of each subtree used as tie breaker for trees of equal frequency
-	byte[] depth = new byte[2 * L_CODES + 1];
+	byte[] depth = new byte[(2 * L_CODES) + 1];
 
 	byte[] l_buf; // index for literals or lengths */
 
@@ -317,8 +317,8 @@ public final class Deflate implements Cloneable {
 	Deflate(ZStream strm) {
 		this.strm = strm;
 		dyn_ltree = new short[HEAP_SIZE * 2];
-		dyn_dtree = new short[(2 * D_CODES + 1) * 2]; // distance tree
-		bl_tree = new short[(2 * BL_CODES + 1) * 2]; // Huffman tree for bit
+		dyn_dtree = new short[((2 * D_CODES) + 1) * 2]; // distance tree
+		bl_tree = new short[((2 * BL_CODES) + 1) * 2]; // Huffman tree for bit
 		// lengths
 	}
 
@@ -326,7 +326,7 @@ public final class Deflate implements Cloneable {
 		window_size = 2 * w_size;
 
 		head[hash_size - 1] = 0;
-		for (int i = 0; i < hash_size - 1; i++) {
+		for (int i = 0; i < (hash_size - 1); i++) {
 			head[i] = 0;
 		}
 
@@ -388,12 +388,12 @@ public final class Deflate implements Cloneable {
 	// two sons).
 	void pqdownheap(short[] tree, // the tree to restore
 			int k // node to move down
-	) {
+			) {
 		int v = heap[k];
 		int j = k << 1; // left son of k
 		while (j <= heap_len) {
 			// Set j to the smallest of the two sons:
-			if (j < heap_len && smaller(tree, heap[j + 1], heap[j], depth)) {
+			if ((j < heap_len) && smaller(tree, heap[j + 1], heap[j], depth)) {
 				j++;
 			}
 			// Exit if v is smaller than both sons
@@ -413,18 +413,18 @@ public final class Deflate implements Cloneable {
 	static boolean smaller(short[] tree, int n, int m, byte[] depth) {
 		short tn2 = tree[n * 2];
 		short tm2 = tree[m * 2];
-		return (tn2 < tm2 || (tn2 == tm2 && depth[n] <= depth[m]));
+		return ((tn2 < tm2) || ((tn2 == tm2) && (depth[n] <= depth[m])));
 	}
 
 	// Scan a literal or distance tree to determine the frequencies of the codes
 	// in the bit length tree.
 	void scan_tree(short[] tree,// the tree to be scanned
 			int max_code // and its largest code of non zero frequency
-	) {
+			) {
 		int n; // iterates over all tree elements
 		int prevlen = -1; // last emitted length
 		int curlen; // length of current code
-		int nextlen = tree[0 * 2 + 1]; // length of next code
+		int nextlen = tree[(0 * 2) + 1]; // length of next code
 		int count = 0; // repeat count of the current code
 		int max_count = 7; // max repeat count
 		int min_count = 4; // min repeat count
@@ -433,12 +433,12 @@ public final class Deflate implements Cloneable {
 			max_count = 138;
 			min_count = 3;
 		}
-		tree[(max_code + 1) * 2 + 1] = (short) 0xffff; // guard
+		tree[((max_code + 1) * 2) + 1] = (short) 0xffff; // guard
 
 		for (n = 0; n <= max_code; n++) {
 			curlen = nextlen;
-			nextlen = tree[(n + 1) * 2 + 1];
-			if (++count < max_count && curlen == nextlen) {
+			nextlen = tree[((n + 1) * 2) + 1];
+			if ((++count < max_count) && (curlen == nextlen)) {
 				continue;
 			} else if (count < min_count) {
 				bl_tree[curlen * 2] += count;
@@ -486,12 +486,12 @@ public final class Deflate implements Cloneable {
 		// requires that at least 4 bit length codes be sent. (appnote.txt says
 		// 3 but the actual value used is 4.)
 		for (max_blindex = BL_CODES - 1; max_blindex >= 3; max_blindex--) {
-			if (bl_tree[Tree.bl_order[max_blindex] * 2 + 1] != 0) {
+			if (bl_tree[(Tree.bl_order[max_blindex] * 2) + 1] != 0) {
 				break;
 			}
 		}
 		// Update opt_len to include the bit length tree and counts
-		opt_len += 3 * (max_blindex + 1) + 5 + 5 + 4;
+		opt_len += (3 * (max_blindex + 1)) + 5 + 5 + 4;
 
 		return max_blindex;
 	}
@@ -506,7 +506,7 @@ public final class Deflate implements Cloneable {
 		send_bits(dcodes - 1, 5);
 		send_bits(blcodes - 4, 4); // not -3 as stated in appnote.txt
 		for (rank = 0; rank < blcodes; rank++) {
-			send_bits(bl_tree[Tree.bl_order[rank] * 2 + 1], 3);
+			send_bits(bl_tree[(Tree.bl_order[rank] * 2) + 1], 3);
 		}
 		send_tree(dyn_ltree, lcodes - 1); // literal tree
 		send_tree(dyn_dtree, dcodes - 1); // distance tree
@@ -516,11 +516,11 @@ public final class Deflate implements Cloneable {
 	// bl_tree.
 	void send_tree(short[] tree,// the tree to be sent
 			int max_code // and its largest code of non zero frequency
-	) {
+			) {
 		int n; // iterates over all tree elements
 		int prevlen = -1; // last emitted length
 		int curlen; // length of current code
-		int nextlen = tree[0 * 2 + 1]; // length of next code
+		int nextlen = tree[(0 * 2) + 1]; // length of next code
 		int count = 0; // repeat count of the current code
 		int max_count = 7; // max repeat count
 		int min_count = 4; // min repeat count
@@ -532,8 +532,8 @@ public final class Deflate implements Cloneable {
 
 		for (n = 0; n <= max_code; n++) {
 			curlen = nextlen;
-			nextlen = tree[(n + 1) * 2 + 1];
-			if (++count < max_count && curlen == nextlen) {
+			nextlen = tree[((n + 1) * 2) + 1];
+			if ((++count < max_count) && (curlen == nextlen)) {
 				continue;
 			} else if (count < min_count) {
 				do {
@@ -596,7 +596,7 @@ public final class Deflate implements Cloneable {
 
 	void send_bits(int value, int length) {
 		int len = length;
-		if (bi_valid > Buf_size - len) {
+		if (bi_valid > (Buf_size - len)) {
 			int val = value;
 			// bi_buf |= (val << bi_valid);
 			bi_buf |= ((val << bi_valid) & 0xffff);
@@ -629,7 +629,7 @@ public final class Deflate implements Cloneable {
 		// (10 - bi_valid) bits. The lookahead for the last real code (before
 		// the EOB of the previous block) was thus at least one plus the length
 		// of the EOB plus what we have just sent of the empty static block.
-		if (1 + last_eob_len + 10 - bi_valid < 9) {
+		if (((1 + last_eob_len + 10) - bi_valid) < 9) {
 			send_bits(STATIC_TREES << 1, 3);
 			send_code(END_BLOCK, StaticTree.static_ltree);
 			bi_flush();
@@ -641,10 +641,10 @@ public final class Deflate implements Cloneable {
 	// the current block must be flushed.
 	boolean _tr_tally(int dist, // distance of matched string
 			int lc // match length-MIN_MATCH or unmatched char (if dist==0)
-	) {
+			) {
 
-		pending_buf[d_buf + last_lit * 2] = (byte) (dist >>> 8);
-		pending_buf[d_buf + last_lit * 2 + 1] = (byte) dist;
+		pending_buf[d_buf + (last_lit * 2)] = (byte) (dist >>> 8);
+		pending_buf[d_buf + (last_lit * 2) + 1] = (byte) dist;
 
 		l_buf[last_lit] = (byte) lc;
 		last_lit++;
@@ -660,7 +660,7 @@ public final class Deflate implements Cloneable {
 			dyn_dtree[Tree.d_code(dist) * 2]++;
 		}
 
-		if ((last_lit & 0x1fff) == 0 && level > 2) {
+		if (((last_lit & 0x1fff) == 0) && (level > 2)) {
 			// Compute an upper bound for the compressed length
 			int out_length = last_lit * 8;
 			int in_length = strstart - block_start;
@@ -669,12 +669,12 @@ public final class Deflate implements Cloneable {
 				out_length += dyn_dtree[dcode * 2] * (5L + Tree.extra_dbits[dcode]);
 			}
 			out_length >>>= 3;
-			if ((matches < (last_lit / 2)) && out_length < in_length / 2) {
-				return true;
-			}
+		if ((matches < (last_lit / 2)) && (out_length < (in_length / 2))) {
+			return true;
+		}
 		}
 
-		return (last_lit == lit_bufsize - 1);
+		return (last_lit == (lit_bufsize - 1));
 		// We avoid equality with lit_bufsize because of wraparound at 64K
 		// on 16 bit machines and because stored blocks are restricted to
 		// 64K-1 bytes.
@@ -690,7 +690,7 @@ public final class Deflate implements Cloneable {
 
 		if (last_lit != 0) {
 			do {
-				dist = ((pending_buf[d_buf + lx * 2] << 8) & 0xff00) | (pending_buf[d_buf + lx * 2 + 1] & 0xff);
+				dist = ((pending_buf[d_buf + (lx * 2)] << 8) & 0xff00) | (pending_buf[d_buf + (lx * 2) + 1] & 0xff);
 				lc = (l_buf[lx]) & 0xff;
 				lx++;
 
@@ -724,7 +724,7 @@ public final class Deflate implements Cloneable {
 		}
 
 		send_code(END_BLOCK, ltree);
-		last_eob_len = ltree[END_BLOCK * 2 + 1];
+		last_eob_len = ltree[(END_BLOCK * 2) + 1];
 	}
 
 	// Set the data type to ASCII or BINARY, using a crude approximation:
@@ -759,7 +759,7 @@ public final class Deflate implements Cloneable {
 		} else if (bi_valid >= 8) {
 			put_byte((byte) bi_buf);
 			bi_buf >>>= 8;
-			bi_valid -= 8;
+		bi_valid -= 8;
 		}
 	}
 
@@ -779,7 +779,7 @@ public final class Deflate implements Cloneable {
 	void copy_block(int buf, // the input data
 			int len, // its length
 			boolean header // true if block header must be written
-	) {
+			) {
 		bi_windup(); // align on byte boundary
 		last_eob_len = 8; // enough lookahead for inflate
 
@@ -816,7 +816,7 @@ public final class Deflate implements Cloneable {
 		int max_block_size = 0xffff;
 		int max_start;
 
-		if (max_block_size > pending_buf_size - 5) {
+		if (max_block_size > (pending_buf_size - 5)) {
 			max_block_size = pending_buf_size - 5;
 		}
 
@@ -825,7 +825,7 @@ public final class Deflate implements Cloneable {
 			// Fill the window as much as possible:
 			if (lookahead <= 1) {
 				fill_window();
-				if (lookahead == 0 && flush == Z_NO_FLUSH) {
+				if ((lookahead == 0) && (flush == Z_NO_FLUSH)) {
 					return NeedMore;
 				}
 				if (lookahead == 0) {
@@ -838,7 +838,7 @@ public final class Deflate implements Cloneable {
 
 			// Emit a stored block if pending_buf will be full:
 			max_start = block_start + max_block_size;
-			if (strstart == 0 || strstart >= max_start) {
+			if ((strstart == 0) || (strstart >= max_start)) {
 				// strstart == 0 is possible when wraparound on 16-bit machine
 				lookahead = strstart - max_start;
 				strstart = max_start;
@@ -852,7 +852,7 @@ public final class Deflate implements Cloneable {
 
 			// Flush if we may have to slide, otherwise block_start may become
 			// negative and the data will be gone:
-			if (strstart - block_start >= w_size - MIN_LOOKAHEAD) {
+			if ((strstart - block_start) >= (w_size - MIN_LOOKAHEAD)) {
 				flush_block_only(false);
 				if (strm.avail_out == 0) {
 					return NeedMore;
@@ -872,7 +872,7 @@ public final class Deflate implements Cloneable {
 	void _tr_stored_block(int buf, // input block
 			int stored_len, // length of input block
 			boolean eof // true if this is the last block for a file
-	) {
+			) {
 		send_bits((STORED_BLOCK << 1) + (eof ? 1 : 0), 3); // send block type
 		copy_block(buf, stored_len, true); // with header
 	}
@@ -882,7 +882,7 @@ public final class Deflate implements Cloneable {
 	void _tr_flush_block(int buf, // input block, or NULL if too old
 			int stored_len, // length of input block
 			boolean eof // true if this is the last block for a file
-	) {
+			) {
 		int opt_lenb, static_lenb;// opt_len and static_len in bytes
 		int max_blindex = 0; // index of last bit length code of non zero freq
 
@@ -912,14 +912,14 @@ public final class Deflate implements Cloneable {
 			opt_lenb = (opt_len + 3 + 7) >>> 3;
 			static_lenb = (static_len + 3 + 7) >>> 3;
 
-			if (static_lenb <= opt_lenb) {
-				opt_lenb = static_lenb;
-			}
+		if (static_lenb <= opt_lenb) {
+			opt_lenb = static_lenb;
+		}
 		} else {
 			opt_lenb = static_lenb = stored_len + 5; // force a stored block
 		}
 
-		if (stored_len + 4 <= opt_lenb && buf != -1) {
+		if (((stored_len + 4) <= opt_lenb) && (buf != -1)) {
 			// 4: two words for the lengths
 			// The test buf != NULL is only necessary if LIT_BUFSIZE > WSIZE.
 			// Otherwise we can't have processed more than WSIZE input bytes
@@ -964,7 +964,7 @@ public final class Deflate implements Cloneable {
 			more = (window_size - lookahead - strstart);
 
 			// Deal with !@#$% 64K limit:
-			if (more == 0 && strstart == 0 && lookahead == 0) {
+			if ((more == 0) && (strstart == 0) && (lookahead == 0)) {
 				more = w_size;
 			} else if (more == -1) {
 				// Very unlikely, but possible on 16 bit machine if strstart ==
@@ -976,7 +976,7 @@ public final class Deflate implements Cloneable {
 				// lookahead,
 				// move the upper half to the lower one to make room in the
 				// upper half.
-			} else if (strstart >= w_size + w_size - MIN_LOOKAHEAD) {
+			} else if (strstart >= ((w_size + w_size) - MIN_LOOKAHEAD)) {
 				System.arraycopy(window, w_size, window, 0, w_size);
 				match_start -= w_size;
 				strstart -= w_size; // we now have strstart >= MAX_DIST
@@ -1035,7 +1035,7 @@ public final class Deflate implements Cloneable {
 			// garbage,
 			// but this is not important since only literal bytes will be
 			// emitted.
-		} while (lookahead < MIN_LOOKAHEAD && strm.avail_in != 0);
+		} while ((lookahead < MIN_LOOKAHEAD) && (strm.avail_in != 0));
 	}
 
 	// Compress as much as possible from the input stream, return the current
@@ -1055,7 +1055,7 @@ public final class Deflate implements Cloneable {
 			// string following the next match.
 			if (lookahead < MIN_LOOKAHEAD) {
 				fill_window();
-				if (lookahead < MIN_LOOKAHEAD && flush == Z_NO_FLUSH) {
+				if ((lookahead < MIN_LOOKAHEAD) && (flush == Z_NO_FLUSH)) {
 					return NeedMore;
 				}
 				if (lookahead == 0) {
@@ -1077,7 +1077,7 @@ public final class Deflate implements Cloneable {
 			// Find the longest match, discarding those <= prev_length.
 			// At this point we have always match_length < MIN_MATCH
 
-			if (hash_head != 0L && ((strstart - hash_head) & 0xffff) <= w_size - MIN_LOOKAHEAD) {
+			if ((hash_head != 0L) && (((strstart - hash_head) & 0xffff) <= (w_size - MIN_LOOKAHEAD))) {
 				// To simplify the code, we prevent matches with the string
 				// of window index 0 (in particular we have to avoid a match
 				// of the string with itself at the start of the input file).
@@ -1095,7 +1095,7 @@ public final class Deflate implements Cloneable {
 
 				// Insert new strings in the hash table only if the match length
 				// is not too large. This saves time but degrades compression.
-				if (match_length <= max_lazy_match && lookahead >= MIN_MATCH) {
+				if ((match_length <= max_lazy_match) && (lookahead >= MIN_MATCH)) {
 					match_length--; // string at strstart already in hash table
 					do {
 						strstart++;
@@ -1164,7 +1164,7 @@ public final class Deflate implements Cloneable {
 
 			if (lookahead < MIN_LOOKAHEAD) {
 				fill_window();
-				if (lookahead < MIN_LOOKAHEAD && flush == Z_NO_FLUSH) {
+				if ((lookahead < MIN_LOOKAHEAD) && (flush == Z_NO_FLUSH)) {
 					return NeedMore;
 				}
 				if (lookahead == 0) {
@@ -1188,7 +1188,7 @@ public final class Deflate implements Cloneable {
 			prev_match = match_start;
 			match_length = MIN_MATCH - 1;
 
-			if (hash_head != 0 && prev_length < max_lazy_match && ((strstart - hash_head) & 0xffff) <= w_size - MIN_LOOKAHEAD) {
+			if ((hash_head != 0) && (prev_length < max_lazy_match) && (((strstart - hash_head) & 0xffff) <= (w_size - MIN_LOOKAHEAD))) {
 				// To simplify the code, we prevent matches with the string
 				// of window index 0 (in particular we have to avoid a match
 				// of the string with itself at the start of the input file).
@@ -1198,7 +1198,7 @@ public final class Deflate implements Cloneable {
 				}
 				// longest_match() sets match_start
 
-				if (match_length <= 5 && (strategy == Z_FILTERED || (match_length == MIN_MATCH && strstart - match_start > 4096))) {
+				if ((match_length <= 5) && ((strategy == Z_FILTERED) || ((match_length == MIN_MATCH) && ((strstart - match_start) > 4096)))) {
 
 					// If prev_match is also MIN_MATCH, match_start is garbage
 					// but we will ignore the current match anyway.
@@ -1208,8 +1208,8 @@ public final class Deflate implements Cloneable {
 
 			// If there was a match at the previous step and the current
 			// match is not better, output the previous match:
-			if (prev_length >= MIN_MATCH && match_length <= prev_length) {
-				int max_insert = strstart + lookahead - MIN_MATCH;
+			if ((prev_length >= MIN_MATCH) && (match_length <= prev_length)) {
+				int max_insert = (strstart + lookahead) - MIN_MATCH;
 				// Do not insert strings in hash table beyond this.
 
 				// check_match(strstart-1, prev_match, prev_length);
@@ -1299,7 +1299,7 @@ public final class Deflate implements Cloneable {
 		int wmask = w_mask;
 
 		int strend = strstart + MAX_MATCH;
-		byte scan_end1 = window[scan + best_len - 1];
+		byte scan_end1 = window[(scan + best_len) - 1];
 		byte scan_end = window[scan + best_len];
 
 		// The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of
@@ -1323,7 +1323,7 @@ public final class Deflate implements Cloneable {
 
 			// Skip to next match if the match length cannot increase
 			// or if the match length is less than 2:
-			if (window[match + best_len] != scan_end || window[match + best_len - 1] != scan_end1 || window[match] != window[scan] || window[++match] != window[scan + 1]) {
+			if ((window[match + best_len] != scan_end) || (window[(match + best_len) - 1] != scan_end1) || (window[match] != window[scan]) || (window[++match] != window[scan + 1])) {
 				continue;
 			}
 
@@ -1338,8 +1338,7 @@ public final class Deflate implements Cloneable {
 			// We check for insufficient lookahead only every 8th comparison;
 			// the 256th check will be made at strstart+258.
 			do {
-			} while (window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match]
-					&& window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && scan < strend);
+			} while ((window[++scan] == window[++match]) && (window[++scan] == window[++match]) && (window[++scan] == window[++match]) && (window[++scan] == window[++match]) && (window[++scan] == window[++match]) && (window[++scan] == window[++match]) && (window[++scan] == window[++match]) && (window[++scan] == window[++match]) && (scan < strend));
 
 			len = MAX_MATCH - (strend - scan);
 			scan = strend - MAX_MATCH;
@@ -1350,11 +1349,11 @@ public final class Deflate implements Cloneable {
 				if (len >= nice_match) {
 					break;
 				}
-				scan_end1 = window[scan + best_len - 1];
+				scan_end1 = window[(scan + best_len) - 1];
 				scan_end = window[scan + best_len];
 			}
 
-		} while ((cur_match = (prev[cur_match & wmask] & 0xffff)) > limit && --chain_length != 0);
+		} while (((cur_match = (prev[cur_match & wmask] & 0xffff)) > limit) && (--chain_length != 0));
 
 		if (best_len <= lookahead) {
 			return best_len;
@@ -1399,7 +1398,7 @@ public final class Deflate implements Cloneable {
 			strm.adler = new CRC32();
 		}
 
-		if (memLevel < 1 || memLevel > MAX_MEM_LEVEL || method != Z_DEFLATED || windowBits < 9 || windowBits > 15 || level < 0 || level > 9 || strategy < 0 || strategy > Z_HUFFMAN_ONLY) {
+		if ((memLevel < 1) || (memLevel > MAX_MEM_LEVEL) || (method != Z_DEFLATED) || (windowBits < 9) || (windowBits > 15) || (level < 0) || (level > 9) || (strategy < 0) || (strategy > Z_HUFFMAN_ONLY)) {
 			return Z_STREAM_ERROR;
 		}
 
@@ -1413,7 +1412,7 @@ public final class Deflate implements Cloneable {
 		hash_bits = memLevel + 7;
 		hash_size = 1 << hash_bits;
 		hash_mask = hash_size - 1;
-		hash_shift = ((hash_bits + MIN_MATCH - 1) / MIN_MATCH);
+		hash_shift = (((hash_bits + MIN_MATCH) - 1) / MIN_MATCH);
 
 		window = new byte[w_size * 2];
 		prev = new short[w_size];
@@ -1459,7 +1458,7 @@ public final class Deflate implements Cloneable {
 	}
 
 	int deflateEnd() {
-		if (status != INIT_STATE && status != BUSY_STATE && status != FINISH_STATE) {
+		if ((status != INIT_STATE) && (status != BUSY_STATE) && (status != FINISH_STATE)) {
 			return Z_STREAM_ERROR;
 		}
 		// Deallocate in reverse order of allocations:
@@ -1479,11 +1478,11 @@ public final class Deflate implements Cloneable {
 		if (_level == Z_DEFAULT_COMPRESSION) {
 			_level = 6;
 		}
-		if (_level < 0 || _level > 9 || _strategy < 0 || _strategy > Z_HUFFMAN_ONLY) {
+		if ((_level < 0) || (_level > 9) || (_strategy < 0) || (_strategy > Z_HUFFMAN_ONLY)) {
 			return Z_STREAM_ERROR;
 		}
 
-		if (config_table[level].func != config_table[_level].func && strm.total_in != 0) {
+		if ((config_table[level].func != config_table[_level].func) && (strm.total_in != 0)) {
 			// Flush the last buffer:
 			err = strm.deflate(Z_PARTIAL_FLUSH);
 		}
@@ -1503,7 +1502,7 @@ public final class Deflate implements Cloneable {
 		int length = dictLength;
 		int index = 0;
 
-		if (dictionary == null || status != INIT_STATE) {
+		if ((dictionary == null) || (status != INIT_STATE)) {
 			return Z_STREAM_ERROR;
 		}
 
@@ -1512,7 +1511,7 @@ public final class Deflate implements Cloneable {
 		if (length < MIN_MATCH) {
 			return Z_OK;
 		}
-		if (length > w_size - MIN_LOOKAHEAD) {
+		if (length > (w_size - MIN_LOOKAHEAD)) {
 			length = w_size - MIN_LOOKAHEAD;
 			index = dictLength - length; // use the tail of the dictionary
 		}
@@ -1527,7 +1526,7 @@ public final class Deflate implements Cloneable {
 		ins_h = window[0] & 0xff;
 		ins_h = (((ins_h) << hash_shift) ^ (window[1] & 0xff)) & hash_mask;
 
-		for (int n = 0; n <= length - MIN_MATCH; n++) {
+		for (int n = 0; n <= (length - MIN_MATCH); n++) {
 			ins_h = (((ins_h) << hash_shift) ^ (window[(n) + (MIN_MATCH - 1)] & 0xff)) & hash_mask;
 			prev[n & w_mask] = head[ins_h];
 			head[ins_h] = (short) n;
@@ -1538,11 +1537,11 @@ public final class Deflate implements Cloneable {
 	int deflate(int flush) {
 		int old_flush;
 
-		if (flush > Z_FINISH || flush < 0) {
+		if ((flush > Z_FINISH) || (flush < 0)) {
 			return Z_STREAM_ERROR;
 		}
 
-		if (strm.next_out == null || (strm.next_in == null && strm.avail_in != 0) || (status == FINISH_STATE && flush != Z_FINISH)) {
+		if ((strm.next_out == null) || ((strm.next_in == null) && (strm.avail_in != 0)) || ((status == FINISH_STATE) && (flush != Z_FINISH))) {
 			strm.msg = z_errmsg[Z_NEED_DICT - (Z_STREAM_ERROR)];
 			return Z_STREAM_ERROR;
 		}
@@ -1603,19 +1602,19 @@ public final class Deflate implements Cloneable {
 			// consecutive
 			// flushes. For repeated and useless calls with Z_FINISH, we keep
 			// returning Z_STREAM_END instead of Z_BUFF_ERROR.
-		} else if (strm.avail_in == 0 && flush <= old_flush && flush != Z_FINISH) {
+		} else if ((strm.avail_in == 0) && (flush <= old_flush) && (flush != Z_FINISH)) {
 			strm.msg = z_errmsg[Z_NEED_DICT - (Z_BUF_ERROR)];
 			return Z_BUF_ERROR;
 		}
 
 		// User must not provide more input after the first FINISH:
-		if (status == FINISH_STATE && strm.avail_in != 0) {
+		if ((status == FINISH_STATE) && (strm.avail_in != 0)) {
 			strm.msg = z_errmsg[Z_NEED_DICT - (Z_BUF_ERROR)];
 			return Z_BUF_ERROR;
 		}
 
 		// Start a new block or continue the current one.
-		if (strm.avail_in != 0 || lookahead != 0 || (flush != Z_NO_FLUSH && status != FINISH_STATE)) {
+		if ((strm.avail_in != 0) || (lookahead != 0) || ((flush != Z_NO_FLUSH) && (status != FINISH_STATE))) {
 			int bstate = -1;
 			switch (config_table[level].func) {
 				case STORED:
@@ -1630,10 +1629,10 @@ public final class Deflate implements Cloneable {
 				default:
 			}
 
-			if (bstate == FinishStarted || bstate == FinishDone) {
+			if ((bstate == FinishStarted) || (bstate == FinishDone)) {
 				status = FINISH_STATE;
 			}
-			if (bstate == NeedMore || bstate == FinishStarted) {
+			if ((bstate == NeedMore) || (bstate == FinishStarted)) {
 				if (strm.avail_out == 0) {
 					last_flush = -1; // avoid BUF_ERROR next call, see above
 				}

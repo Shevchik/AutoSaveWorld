@@ -7,22 +7,16 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.InternCache;
 
 /**
- * This class is a kind of specialized type-safe Map, from char array to String value. Specialization means that in addition to type-safety and specific access patterns (key char array, Value
- * optionally interned String; values added on access if necessary), and that instances are meant to be used concurrently, but by using well-defined mechanisms to obtain such concurrently usable
- * instances. Main use for the class is to store symbol table information for things like compilers and parsers; especially when number of symbols (keywords) is limited.
+ * This class is a kind of specialized type-safe Map, from char array to String value. Specialization means that in addition to type-safety and specific access patterns (key char array, Value optionally interned String; values added on access if necessary), and that instances are meant to be used concurrently, but by using well-defined mechanisms to obtain such concurrently usable instances. Main use for the class is to store symbol table information for things like compilers and parsers;
+ * especially when number of symbols (keywords) is limited.
  * <p>
- * For optimal performance, usage pattern should be one where matches should be very common (especially after "warm-up"), and as with most hash-based maps/sets, that hash codes are uniformly
- * distributed. Also, collisions are slightly more expensive than with HashMap or HashSet, since hash codes are not used in resolving collisions; that is, equals() comparison is done with all symbols
- * in same bucket index.<br />
- * Finally, rehashing is also more expensive, as hash codes are not stored; rehashing requires all entries' hash codes to be recalculated. Reason for not storing hash codes is reduced memory usage,
- * hoping for better memory locality.
+ * For optimal performance, usage pattern should be one where matches should be very common (especially after "warm-up"), and as with most hash-based maps/sets, that hash codes are uniformly distributed. Also, collisions are slightly more expensive than with HashMap or HashSet, since hash codes are not used in resolving collisions; that is, equals() comparison is done with all symbols in same bucket index.<br />
+ * Finally, rehashing is also more expensive, as hash codes are not stored; rehashing requires all entries' hash codes to be recalculated. Reason for not storing hash codes is reduced memory usage, hoping for better memory locality.
  * <p>
- * Usual usage pattern is to create a single "master" instance, and either use that instance in sequential fashion, or to create derived "child" instances, which after use, are asked to return
- * possible symbol additions to master instance. In either case benefit is that symbol table gets initialized so that further uses are more efficient, as eventually all symbols needed will already be
- * in symbol table. At that point no more Symbol String allocations are needed, nor changes to symbol table itself.
+ * Usual usage pattern is to create a single "master" instance, and either use that instance in sequential fashion, or to create derived "child" instances, which after use, are asked to return possible symbol additions to master instance. In either case benefit is that symbol table gets initialized so that further uses are more efficient, as eventually all symbols needed will already be in symbol table. At that point no more Symbol String allocations are needed, nor changes to symbol table
+ * itself.
  * <p>
- * Note that while individual SymbolTable instances are NOT thread-safe (much like generic collection classes), concurrently used "child" instances can be freely used without synchronization. However,
- * using master table concurrently with child instances can only be done if access to master instance is read-only (i.e. no modifications done).
+ * Note that while individual SymbolTable instances are NOT thread-safe (much like generic collection classes), concurrently used "child" instances can be freely used without synchronization. However, using master table concurrently with child instances can only be done if access to master instance is read-only (i.e. no modifications done).
  */
 public final class CharsToNameCanonicalizer {
 	/*
@@ -31,8 +25,7 @@ public final class CharsToNameCanonicalizer {
 	public final static int HASH_MULT = 33;
 
 	/**
-	 * Default initial table size. Shouldn't be miniscule (as there's cost to both array realloc and rehashing), but let's keep it reasonably small. For systems that properly reuse factories it
-	 * doesn't matter either way; but when recreating factories often, initial overhead may dominate.
+	 * Default initial table size. Shouldn't be miniscule (as there's cost to both array realloc and rehashing), but let's keep it reasonably small. For systems that properly reuse factories it doesn't matter either way; but when recreating factories often, initial overhead may dominate.
 	 */
 	protected static final int DEFAULT_T_SIZE = 64;
 
@@ -47,8 +40,7 @@ public final class CharsToNameCanonicalizer {
 	final static int MAX_ENTRIES_FOR_REUSE = 12000;
 
 	/**
-	 * Also: to thwart attacks based on hash collisions (which may or may not be cheap to calculate), we will need to detect "too long" collision chains. Let's start with static value of 255 entries
-	 * for the longest legal chain.
+	 * Also: to thwart attacks based on hash collisions (which may or may not be cheap to calculate), we will need to detect "too long" collision chains. Let's start with static value of 255 entries for the longest legal chain.
 	 * <p>
 	 * Note: longest chain we have been able to produce without malicious intent has been 38 (with "com.fasterxml.jackson.core.main.TestWithTonsaSymbols"); our setting should be reasonable here.
 	 * <p>
@@ -65,14 +57,12 @@ public final class CharsToNameCanonicalizer {
 	 */
 
 	/**
-	 * Sharing of learnt symbols is done by optional linking of symbol table instances with their parents. When parent linkage is defined, and child instance is released (call to <code>release</code>
-	 * ), parent's shared tables may be updated from the child instance.
+	 * Sharing of learnt symbols is done by optional linking of symbol table instances with their parents. When parent linkage is defined, and child instance is released (call to <code>release</code> ), parent's shared tables may be updated from the child instance.
 	 */
 	protected CharsToNameCanonicalizer _parent;
 
 	/**
-	 * Seed value we use as the base to make hash codes non-static between different runs, but still stable for lifetime of a single symbol table instance. This is done for security reasons, to avoid
-	 * potential DoS attack via hash collisions.
+	 * Seed value we use as the base to make hash codes non-static between different runs, but still stable for lifetime of a single symbol table instance. This is done for security reasons, to avoid potential DoS attack via hash collisions.
 	 *
 	 * @since 2.1
 	 */
@@ -128,8 +118,7 @@ public final class CharsToNameCanonicalizer {
 	 */
 
 	/**
-	 * Flag that indicates if any changes have been made to the data; used to both determine if bucket array needs to be copied when (first) change is made, and potentially if updated bucket list is
-	 * to be resync'ed back to master instance.
+	 * Flag that indicates if any changes have been made to the data; used to both determine if bucket array needs to be copied when (first) change is made, and potentially if updated bucket list is to be resync'ed back to master instance.
 	 */
 	protected boolean _dirty;
 
@@ -138,8 +127,7 @@ public final class CharsToNameCanonicalizer {
 	 */
 
 	/**
-	 * Lazily constructed structure that is used to keep track of collision buckets that have overflowed once: this is used to detect likely attempts at denial-of-service attacks that uses hash
-	 * collisions.
+	 * Lazily constructed structure that is used to keep track of collision buckets that have overflowed once: this is used to detect likely attempts at denial-of-service attacks that uses hash collisions.
 	 *
 	 * @since 2.4
 	 */
@@ -150,8 +138,7 @@ public final class CharsToNameCanonicalizer {
 	 */
 
 	/**
-	 * Method called to create root canonicalizer for a {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory} instance. Root instance is never used directly; its main use is for storing
-	 * and sharing underlying symbol arrays as needed.
+	 * Method called to create root canonicalizer for a {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory} instance. Root instance is never used directly; its main use is for storing and sharing underlying symbol arrays as needed.
 	 */
 	public static CharsToNameCanonicalizer createRoot() {
 		/*
@@ -220,11 +207,9 @@ public final class CharsToNameCanonicalizer {
 	}
 
 	/**
-	 * "Factory" method; will create a new child instance of this symbol table. It will be a copy-on-write instance, ie. it will only use read-only copy of parent's data, but when changes are needed,
-	 * a copy will be created.
+	 * "Factory" method; will create a new child instance of this symbol table. It will be a copy-on-write instance, ie. it will only use read-only copy of parent's data, but when changes are needed, a copy will be created.
 	 * <p>
-	 * Note: while this method is synchronized, it is generally not safe to both use makeChild/mergeChild, AND to use instance actively. Instead, a separate 'root' instance should be used on which
-	 * only makeChild/mergeChild are called, but instance itself is not used as a symbol table.
+	 * Note: while this method is synchronized, it is generally not safe to both use makeChild/mergeChild, AND to use instance actively. Instead, a separate 'root' instance should be used on which only makeChild/mergeChild are called, but instance itself is not used as a symbol table.
 	 */
 	public CharsToNameCanonicalizer makeChild(int flags) {
 		/*
@@ -257,8 +242,7 @@ public final class CharsToNameCanonicalizer {
 	 */
 	private void mergeChild(CharsToNameCanonicalizer child) {
 		/*
-		 * One caveat: let's try to avoid problems with degenerate cases of documents with generated "random" names: for these, symbol tables would bloat indefinitely. One way to do this is to just
-		 * purge tables if they grow too large, and that's what we'll do here.
+		 * One caveat: let's try to avoid problems with degenerate cases of documents with generated "random" names: for these, symbol tables would bloat indefinitely. One way to do this is to just purge tables if they grow too large, and that's what we'll do here.
 		 */
 		if (child.size() > MAX_ENTRIES_FOR_REUSE) {
 			// Should there be a way to get notified about this event, to log it
@@ -267,7 +251,7 @@ public final class CharsToNameCanonicalizer {
 			// At any rate, need to clean up the tables, then:
 			synchronized (this) {
 				initTables(DEFAULT_T_SIZE * 4); // no point in starting from
-												// tiny tho
+				// tiny tho
 				// Dirty flag... well, let's just clear it. Shouldn't really
 				// matter for master tables
 				// (which this is, given something is merged to it)
@@ -302,8 +286,8 @@ public final class CharsToNameCanonicalizer {
 		if (!maybeDirty()) {
 			return;
 		}
-		if (_parent != null && _canonicalize) { // canonicalize set to false if
-												// max size was reached
+		if ((_parent != null) && _canonicalize) { // canonicalize set to false if
+			// max size was reached
 			_parent.mergeChild(this);
 			/*
 			 * Let's also mark this instance as dirty, so that just in case release was too early, there's no corruption of possibly shared data.
@@ -375,8 +359,7 @@ public final class CharsToNameCanonicalizer {
 		}
 
 		/*
-		 * Related to problems with sub-standard hashing (somewhat relevant for collision attacks too), let's try little bit of shuffling to improve hash codes. (note, however, that this can't help
-		 * with full collisions)
+		 * Related to problems with sub-standard hashing (somewhat relevant for collision attacks too), let's try little bit of shuffling to improve hash codes. (note, however, that this can't help with full collisions)
 		 */
 		int index = _hashToIndex(h);
 		String sym = _symbols[index];
@@ -488,13 +471,12 @@ public final class CharsToNameCanonicalizer {
 	 */
 	public int _hashToIndex(int rawHash) {
 		rawHash += (rawHash >>> 15); // this seems to help quite a bit, at least
-										// for our tests
+		// for our tests
 		return (rawHash & _indexMask);
 	}
 
 	/**
-	 * Implementation of a hashing method for variable length Strings. Most of the time intention is that this calculation is done by caller during parsing, not here; however, sometimes it needs to be
-	 * done for parsed "String" too.
+	 * Implementation of a hashing method for variable length Strings. Most of the time intention is that this calculation is done by caller during parsing, not here; however, sometimes it needs to be done for parsed "String" too.
 	 *
 	 * @param len
 	 *            Length of String; has to be at least 1 (caller guarantees this pre-condition)
@@ -534,8 +516,7 @@ public final class CharsToNameCanonicalizer {
 	}
 
 	/**
-	 * Method called when size (number of entries) of symbol table grows so big that load factor is exceeded. Since size has to remain power of two, arrays will then always be doubled. Main work is
-	 * really redistributing old entries into new String/Bucket entries.
+	 * Method called when size (number of entries) of symbol table grows so big that load factor is exceeded. Since size has to remain power of two, arrays will then always be doubled. Main work is really redistributing old entries into new String/Bucket entries.
 	 */
 	private void rehash() {
 		int size = _symbols.length;
@@ -625,11 +606,9 @@ public final class CharsToNameCanonicalizer {
 	/*
 	 * @Override public String toString() { StringBuilder sb = new StringBuilder(); int primaryCount = 0; for (String s : _symbols) { if (s != null) ++primaryCount; }
 	 *
-	 * sb.append("[BytesToNameCanonicalizer, size: "); sb.append(_size); sb.append('/'); sb.append(_symbols.length); sb.append(", "); sb.append(primaryCount); sb.append('/'); sb.append(_size -
-	 * primaryCount); sb.append(" coll; avg length: ");
+	 * sb.append("[BytesToNameCanonicalizer, size: "); sb.append(_size); sb.append('/'); sb.append(_symbols.length); sb.append(", "); sb.append(primaryCount); sb.append('/'); sb.append(_size - primaryCount); sb.append(" coll; avg length: ");
 	 *
-	 * // Average length: minimum of 1 for all (1 == primary hit); // and then 1 per each traversal for collisions/buckets //int maxDist = 1; int pathCount = _size; for (Bucket b : _buckets) { if (b
-	 * != null) { int spillLen = b.length; for (int j = 1; j <= spillLen; ++j) { pathCount += j; } } } double avgLength;
+	 * // Average length: minimum of 1 for all (1 == primary hit); // and then 1 per each traversal for collisions/buckets //int maxDist = 1; int pathCount = _size; for (Bucket b : _buckets) { if (b != null) { int spillLen = b.length; for (int j = 1; j <= spillLen; ++j) { pathCount += j; } } } double avgLength;
 	 *
 	 * if (_size == 0) { avgLength = 0.0; } else { avgLength = (double) pathCount / (double) _size; } // let's round up a bit (two 2 decimal places) //avgLength -= (avgLength % 0.01);
 	 *

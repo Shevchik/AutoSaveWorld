@@ -38,12 +38,11 @@ final class InfBlocks {
 	static final private int MANY = 1440;
 
 	// And'ing with mask[n] masks the lower n bits
-	static final private int[] inflate_mask = { 0x00000000, 0x00000001, 0x00000003, 0x00000007, 0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff,
-			0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff };
+	static final private int[] inflate_mask = { 0x00000000, 0x00000001, 0x00000003, 0x00000007, 0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f, 0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff, 0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff };
 
 	// Table for deflate from PKZIP's appnote.txt.
 	static final int[] border = { // Order of the bit length code lengths
-	16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
+		16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 
 	static final private int Z_OK = 0;
 	static final private int Z_STREAM_END = 1;
@@ -101,17 +100,17 @@ final class InfBlocks {
 
 	InfBlocks(ZStream z, int w) {
 		this.z = z;
-		this.codes = new InfCodes(this.z, this);
+		codes = new InfCodes(this.z, this);
 		hufts = new int[MANY * 3];
 		window = new byte[w];
 		end = w;
-		this.check = (z.istate.wrap == 0) ? false : true;
+		check = (z.istate.wrap == 0) ? false : true;
 		mode = TYPE;
 		reset();
 	}
 
 	void reset() {
-		if (mode == BTREE || mode == DTREE) {
+		if ((mode == BTREE) || (mode == DTREE)) {
 		}
 		if (mode == CODES) {
 			codes.free(z);
@@ -177,14 +176,14 @@ final class InfBlocks {
 							b >>>= (3);
 							k -= (3);
 						}
-							t = k & 7; // go to byte boundary
+						t = k & 7; // go to byte boundary
 
-							{
-								b >>>= (t);
-								k -= (t);
-							}
-							mode = LENS; // get length of stored block
-							break;
+						{
+							b >>>= (t);
+							k -= (t);
+						}
+						mode = LENS; // get length of stored block
+						break;
 						case 1: // fixed
 							InfTree.inflate_trees_fixed(bl, bd, tl, td, z);
 							codes.init(bl[0], bd[0], tl[0], 0, td[0], 0);
@@ -203,25 +202,25 @@ final class InfBlocks {
 							k -= (3);
 						}
 
-							mode = TABLE;
-							break;
+						mode = TABLE;
+						break;
 						case 3: // illegal
 
 						{
 							b >>>= (3);
 							k -= (3);
 						}
-							mode = BAD;
-							z.msg = "invalid block type";
-							r = Z_DATA_ERROR;
+						mode = BAD;
+						z.msg = "invalid block type";
+						r = Z_DATA_ERROR;
 
-							bitb = b;
-							bitk = k;
-							z.avail_in = n;
-							z.total_in += p - z.next_in_index;
-							z.next_in_index = p;
-							write = q;
-							return inflate_flush(r);
+						bitb = b;
+						bitk = k;
+						z.avail_in = n;
+						z.total_in += p - z.next_in_index;
+						z.next_in_index = p;
+						write = q;
+						return inflate_flush(r);
 					}
 					break;
 				case LENS:
@@ -273,7 +272,7 @@ final class InfBlocks {
 					}
 
 					if (m == 0) {
-						if (q == end && read != 0) {
+						if ((q == end) && (read != 0)) {
 							q = 0;
 							m = q < read ? read - q - 1 : end - q;
 						}
@@ -282,7 +281,7 @@ final class InfBlocks {
 							r = inflate_flush(r);
 							q = write;
 							m = q < read ? read - q - 1 : end - q;
-							if (q == end && read != 0) {
+							if ((q == end) && (read != 0)) {
 								q = 0;
 								m = q < read ? read - q - 1 : end - q;
 							}
@@ -337,7 +336,7 @@ final class InfBlocks {
 					}
 
 					table = t = (b & 0x3fff);
-					if ((t & 0x1f) > 29 || ((t >> 5) & 0x1f) > 29) {
+					if (((t & 0x1f) > 29) || (((t >> 5) & 0x1f) > 29)) {
 						mode = BAD;
 						z.msg = "too many length or distance symbols";
 						r = Z_DATA_ERROR;
@@ -351,7 +350,7 @@ final class InfBlocks {
 						return inflate_flush(r);
 					}
 					t = 258 + (t & 0x1f) + ((t >> 5) & 0x1f);
-					if (blens == null || blens.length < t) {
+					if ((blens == null) || (blens.length < t)) {
 						blens = new int[t];
 					} else {
 						for (int i = 0; i < t; i++) {
@@ -361,13 +360,13 @@ final class InfBlocks {
 
 					{
 						b >>>= (14);
-						k -= (14);
+					k -= (14);
 					}
 
 					index = 0;
 					mode = BTREE;
 				case BTREE:
-					while (index < 4 + (table >>> 10)) {
+					while (index < (4 + (table >>> 10))) {
 						while (k < (3)) {
 							if (n != 0) {
 								r = Z_OK;
@@ -421,7 +420,7 @@ final class InfBlocks {
 				case DTREE:
 					while (true) {
 						t = table;
-						if (!(index < 258 + (t & 0x1f) + ((t >> 5) & 0x1f))) {
+						if (!(index < (258 + (t & 0x1f) + ((t >> 5) & 0x1f)))) {
 							break;
 						}
 
@@ -451,8 +450,8 @@ final class InfBlocks {
 							// System.err.println("null...");
 						}
 
-						t = hufts[(tb[0] + (b & inflate_mask[t])) * 3 + 1];
-						c = hufts[(tb[0] + (b & inflate_mask[t])) * 3 + 2];
+						t = hufts[((tb[0] + (b & inflate_mask[t])) * 3) + 1];
+						c = hufts[((tb[0] + (b & inflate_mask[t])) * 3) + 2];
 
 						if (c < 16) {
 							b >>>= (t);
@@ -481,35 +480,35 @@ final class InfBlocks {
 							}
 
 							b >>>= (t);
-							k -= (t);
+								k -= (t);
 
-							j += (b & inflate_mask[i]);
+								j += (b & inflate_mask[i]);
 
-							b >>>= (i);
-							k -= (i);
+								b >>>= (i);
+								k -= (i);
 
-							i = index;
-							t = table;
-							if (i + j > 258 + (t & 0x1f) + ((t >> 5) & 0x1f) || (c == 16 && i < 1)) {
-								blens = null;
-								mode = BAD;
-								z.msg = "invalid bit length repeat";
-								r = Z_DATA_ERROR;
+								i = index;
+								t = table;
+								if (((i + j) > (258 + (t & 0x1f) + ((t >> 5) & 0x1f))) || ((c == 16) && (i < 1))) {
+									blens = null;
+									mode = BAD;
+									z.msg = "invalid bit length repeat";
+									r = Z_DATA_ERROR;
 
-								bitb = b;
-								bitk = k;
-								z.avail_in = n;
-								z.total_in += p - z.next_in_index;
-								z.next_in_index = p;
-								write = q;
-								return inflate_flush(r);
-							}
+									bitb = b;
+									bitk = k;
+									z.avail_in = n;
+									z.total_in += p - z.next_in_index;
+									z.next_in_index = p;
+									write = q;
+									return inflate_flush(r);
+								}
 
-							c = c == 16 ? blens[i - 1] : 0;
-							do {
-								blens[i++] = c;
-							} while (--j != 0);
-							index = i;
+								c = c == 16 ? blens[i - 1] : 0;
+								do {
+									blens[i++] = c;
+								} while (--j != 0);
+								index = i;
 						}
 					}
 
@@ -647,7 +646,7 @@ final class InfBlocks {
 		if (n > z.avail_out) {
 			n = z.avail_out;
 		}
-		if (n != 0 && r == Z_BUF_ERROR) {
+		if ((n != 0) && (r == Z_BUF_ERROR)) {
 			r = Z_OK;
 		}
 
@@ -656,7 +655,7 @@ final class InfBlocks {
 		z.total_out += n;
 
 		// update check information
-		if (check && n > 0) {
+		if (check && (n > 0)) {
 			z.adler.update(window, q, n);
 		}
 
@@ -678,7 +677,7 @@ final class InfBlocks {
 			if (n > z.avail_out) {
 				n = z.avail_out;
 			}
-			if (n != 0 && r == Z_BUF_ERROR) {
+			if ((n != 0) && (r == Z_BUF_ERROR)) {
 				r = Z_OK;
 			}
 
@@ -687,7 +686,7 @@ final class InfBlocks {
 			z.total_out += n;
 
 			// update check information
-			if (check && n > 0) {
+			if (check && (n > 0)) {
 				z.adler.update(window, q, n);
 			}
 

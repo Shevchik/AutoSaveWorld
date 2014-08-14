@@ -9,8 +9,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;
 /**
  * Helper class used for efficient encoding of JSON String values (including JSON field names) into Strings or UTF-8 byte arrays.
  * <p>
- * Note that methods in here are somewhat optimized, but not ridiculously so. Reason is that conversion method results are expected to be cached so that these methods will not be hot spots during
- * normal operation.
+ * Note that methods in here are somewhat optimized, but not ridiculously so. Reason is that conversion method results are expected to be cached so that these methods will not be hot spots during normal operation.
  */
 public final class JsonStringEncoder {
 	private final static char[] HC = CharTypes.copyHexChars();
@@ -94,7 +93,7 @@ public final class JsonStringEncoder {
 		outer: while (inPtr < inputLen) {
 			tight_loop: while (true) {
 				char c = input.charAt(inPtr);
-				if (c < escCodeCount && escCodes[c] != 0) {
+				if ((c < escCodeCount) && (escCodes[c] != 0)) {
 					break tight_loop;
 				}
 				if (outPtr >= outputBuffer.length) {
@@ -106,24 +105,24 @@ public final class JsonStringEncoder {
 					break outer;
 				}
 			}
-			// something to escape; 2 or 6-char variant?
-			char d = input.charAt(inPtr++);
-			int escCode = escCodes[d];
-			int length = (escCode < 0) ? _appendNumeric(d, _qbuf) : _appendNamed(escCode, _qbuf);
-			;
-			if ((outPtr + length) > outputBuffer.length) {
-				int first = outputBuffer.length - outPtr;
-				if (first > 0) {
-					System.arraycopy(_qbuf, 0, outputBuffer, outPtr, first);
-				}
-				outputBuffer = textBuffer.finishCurrentSegment();
-				int second = length - first;
-				System.arraycopy(_qbuf, first, outputBuffer, 0, second);
-				outPtr = second;
-			} else {
-				System.arraycopy(_qbuf, 0, outputBuffer, outPtr, length);
-				outPtr += length;
+		// something to escape; 2 or 6-char variant?
+		char d = input.charAt(inPtr++);
+		int escCode = escCodes[d];
+		int length = (escCode < 0) ? _appendNumeric(d, _qbuf) : _appendNamed(escCode, _qbuf);
+		;
+		if ((outPtr + length) > outputBuffer.length) {
+			int first = outputBuffer.length - outPtr;
+			if (first > 0) {
+				System.arraycopy(_qbuf, 0, outputBuffer, outPtr, first);
 			}
+			outputBuffer = textBuffer.finishCurrentSegment();
+			int second = length - first;
+			System.arraycopy(_qbuf, first, outputBuffer, 0, second);
+			outPtr = second;
+		} else {
+			System.arraycopy(_qbuf, 0, outputBuffer, outPtr, length);
+			outPtr += length;
+		}
 		}
 		textBuffer.setCurrentLength(outPtr);
 		return textBuffer.contentsAsArray();
@@ -147,20 +146,20 @@ public final class JsonStringEncoder {
 			final int[] escCodes = CharTypes.get7BitOutputEscapes();
 
 			inner_loop: // ASCII and escapes
-			while (true) {
-				int ch = text.charAt(inputPtr);
-				if (ch > 0x7F || escCodes[ch] != 0) {
-					break inner_loop;
+				while (true) {
+					int ch = text.charAt(inputPtr);
+					if ((ch > 0x7F) || (escCodes[ch] != 0)) {
+						break inner_loop;
+					}
+					if (outputPtr >= outputBuffer.length) {
+						outputBuffer = bb.finishCurrentSegment();
+						outputPtr = 0;
+					}
+					outputBuffer[outputPtr++] = (byte) ch;
+					if (++inputPtr >= inputEnd) {
+						break main;
+					}
 				}
-				if (outputPtr >= outputBuffer.length) {
-					outputBuffer = bb.finishCurrentSegment();
-					outputPtr = 0;
-				}
-				outputBuffer[outputPtr++] = (byte) ch;
-				if (++inputPtr >= inputEnd) {
-					break main;
-				}
-			}
 			if (outputPtr >= outputBuffer.length) {
 				outputBuffer = bb.finishCurrentSegment();
 				outputPtr = 0;
@@ -179,7 +178,7 @@ public final class JsonStringEncoder {
 				ch = (0x80 | (ch & 0x3f));
 			} else { // 3 or 4 bytes
 				// Surrogates?
-				if (ch < SURR1_FIRST || ch > SURR2_LAST) { // nope
+				if ((ch < SURR1_FIRST) || (ch > SURR2_LAST)) { // nope
 					outputBuffer[outputPtr++] = (byte) (0xe0 | (ch >> 12));
 					if (outputPtr >= outputBuffer.length) {
 						outputBuffer = bb.finishCurrentSegment();
@@ -265,7 +264,7 @@ public final class JsonStringEncoder {
 				outputBuffer[outputPtr++] = (byte) (0xc0 | (c >> 6));
 			} else { // 3 or 4 bytes
 				// Surrogates?
-				if (c < SURR1_FIRST || c > SURR2_LAST) { // nope
+				if ((c < SURR1_FIRST) || (c > SURR2_LAST)) { // nope
 					outputBuffer[outputPtr++] = (byte) (0xe0 | (c >> 12));
 					if (outputPtr >= outputEnd) {
 						outputBuffer = byteBuilder.finishCurrentSegment();
@@ -351,7 +350,7 @@ public final class JsonStringEncoder {
 
 	private static int _convert(int p1, int p2) {
 		// Ok, then, is the second part valid?
-		if (p2 < SURR2_FIRST || p2 > SURR2_LAST) {
+		if ((p2 < SURR2_FIRST) || (p2 > SURR2_LAST)) {
 			throw new IllegalArgumentException("Broken surrogate pair: first char 0x" + Integer.toHexString(p1) + ", second 0x" + Integer.toHexString(p2) + "; illegal combination");
 		}
 		return 0x10000 + ((p1 - SURR1_FIRST) << 10) + (p2 - SURR2_FIRST);

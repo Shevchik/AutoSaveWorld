@@ -40,8 +40,9 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 public class FactionsCopy {
 
 	private World wtoregen;
+
 	public FactionsCopy(String worldtoregen) {
-		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
 	public void copyAllToSchematics() {
@@ -51,41 +52,27 @@ public class FactionsCopy {
 
 		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll()) {
 			Set<PS> chunks = BoardColls.get().getChunks(f);
-			//ignore factions with no claimed land
+			// ignore factions with no claimed land
 			if (chunks.size() != 0) {
-				MessageLogger.debug("Saving faction land "+f.getName()+" to schematic");
-				//create temp folder for faction
-				new File(GlobalConstants.getFactionsTempFolder()+f.getName()).mkdirs();
-				//save all chunks
+				MessageLogger.debug("Saving faction land " + f.getName() + " to schematic");
+				// create temp folder for faction
+				new File(GlobalConstants.getFactionsTempFolder() + f.getName()).mkdirs();
+				// save all chunks
 				LinkedList<SchematicToSave> schematics = new LinkedList<SchematicToSave>();
 				for (PS ps : chunks) {
 					if (ps.getWorld().equalsIgnoreCase(wtoregen.getName())) {
-						//get coords
+						// get coords
 						final int xcoord = ps.getChunkX();
 						final int zcoord = ps.getChunkZ();
-						final Vector bvmin = BukkitUtil.toVector(
-							new Location(
-								wtoregen,
-								xcoord*16,
-								0,
-								zcoord*16
-							)
-						);
-						final Vector bvmax = BukkitUtil.toVector(
-							new Location(
-								wtoregen,
-								xcoord*16+15,
-								wtoregen.getMaxHeight(),
-								zcoord*16+15
-							)
-						);
-						//add to save list
-						SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getFactionsTempFolder()+f.getName()+File.separator+"X"+xcoord+"Z"+zcoord, bvmin, bvmax);
+						final Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xcoord * 16, 0, zcoord * 16));
+						final Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, (xcoord * 16) + 15, wtoregen.getMaxHeight(), (zcoord * 16) + 15));
+						// add to save list
+						SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getFactionsTempFolder() + f.getName() + File.separator + "X" + xcoord + "Z" + zcoord, bvmin, bvmax);
 						schematics.add(schematicdata);
 					}
 				}
 				SchematicOperations.saveToSchematic(wtoregen, schematics);
-				MessageLogger.debug("Faction land "+f.getName()+" saved");
+				MessageLogger.debug("Faction land " + f.getName() + " saved");
 			}
 		}
 	}

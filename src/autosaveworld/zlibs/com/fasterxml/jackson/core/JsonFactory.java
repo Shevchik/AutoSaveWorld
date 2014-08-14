@@ -39,11 +39,9 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 /**
  * The main factory class of Jackson package, used to configure and construct reader (aka parser, {@link JsonParser}) and writer (aka generator, {@link JsonGenerator}) instances.
  * <p>
- * Factory instances are thread-safe and reusable after configuration (if any). Typically applications and services use only a single globally shared factory instance, unless they need differently
- * configured factories. Factory reuse is important if efficiency matters; most recycling of expensive construct is done on per-factory basis.
+ * Factory instances are thread-safe and reusable after configuration (if any). Typically applications and services use only a single globally shared factory instance, unless they need differently configured factories. Factory reuse is important if efficiency matters; most recycling of expensive construct is done on per-factory basis.
  * <p>
- * Creation of a factory instance is a light-weight operation, and since there is no need for pluggable alternative implementations (as there is no "standard" JSON processor API to implement), the
- * default constructor is used for constructing factory instances.
+ * Creation of a factory instance is a light-weight operation, and since there is no need for pluggable alternative implementations (as there is no "standard" JSON processor API to implement), the default constructor is used for constructing factory instances.
  *
  * @author Tatu Saloranta
  */
@@ -65,9 +63,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 		// // // Symbol handling (interning etc)
 
 		/**
-		 * Feature that determines whether JSON object field names are to be canonicalized using {@link String#intern} or not: if enabled, all field names will be intern()ed (and caller can count on
-		 * this being true for all such names); if disabled, no intern()ing is done. There may still be basic canonicalization (that is, same String will be used to represent all identical object
-		 * property names for a single document).
+		 * Feature that determines whether JSON object field names are to be canonicalized using {@link String#intern} or not: if enabled, all field names will be intern()ed (and caller can count on this being true for all such names); if disabled, no intern()ing is done. There may still be basic canonicalization (that is, same String will be used to represent all identical object property names for a single document).
 		 * <p>
 		 * Note: this setting only has effect if {@link #CANONICALIZE_FIELD_NAMES} is true -- otherwise no canonicalization of any sort is done.
 		 * <p>
@@ -83,9 +79,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 		CANONICALIZE_FIELD_NAMES(true),
 
 		/**
-		 * Feature that determines what happens if we encounter a case in symbol handling where number of hash collisions exceeds a safety threshold -- which almost certainly means a denial-of-service
-		 * attack via generated duplicate hash codes. If feature is enabled, an {@link IllegalStateException} is thrown to indicate the suspected denial-of-service attack; if disabled, processing
-		 * continues but canonicalization (and thereby <code>intern()</code>ing) is disabled) as protective measure.
+		 * Feature that determines what happens if we encounter a case in symbol handling where number of hash collisions exceeds a safety threshold -- which almost certainly means a denial-of-service attack via generated duplicate hash codes. If feature is enabled, an {@link IllegalStateException} is thrown to indicate the suspected denial-of-service attack; if disabled, processing continues but canonicalization (and thereby <code>intern()</code>ing) is disabled) as protective measure.
 		 * <p>
 		 * This setting is enabled by default.
 		 *
@@ -182,8 +176,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 
 	/**
-	 * Object that implements conversion functionality between Java objects and JSON content. For base JsonFactory implementation usually not set by default, but can be explicitly set. Sub-classes
-	 * (like @link org.codehaus.jackson.map.MappingJsonFactory} usually provide an implementation.
+	 * Object that implements conversion functionality between Java objects and JSON content. For base JsonFactory implementation usually not set by default, but can be explicitly set. Sub-classes (like @link org.codehaus.jackson.map.MappingJsonFactory} usually provide an implementation.
 	 */
 	protected ObjectCodec _objectCodec;
 
@@ -229,9 +222,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 
 	/**
-	 * Default constructor used to create factory instances. Creation of a factory instance is a light-weight operation, but it is still a good idea to reuse limited number of factory instances (and
-	 * quite often just a single instance): factories are used as context for storing some reused processing objects (such as symbol tables parsers use) and this reuse only works within context of a
-	 * single factory instance.
+	 * Default constructor used to create factory instances. Creation of a factory instance is a light-weight operation, but it is still a good idea to reuse limited number of factory instances (and quite often just a single instance): factories are used as context for storing some reused processing objects (such as symbol tables parsers use) and this reuse only works within context of a single factory instance.
 	 */
 	public JsonFactory() {
 		this(null);
@@ -262,9 +253,8 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	}
 
 	/**
-	 * Method for constructing a new {@link JsonFactory} that has the same settings as this instance, but is otherwise independent (i.e. nothing is actually shared, symbol tables are separate). Note
-	 * that {@link ObjectCodec} reference is not copied but is set to null; caller typically needs to set it after calling this method. Reason for this is that the codec is used for callbacks, and
-	 * assumption is that there is strict 1-to-1 mapping between codec, factory. Caller has to, then, explicitly set codec after making the copy.
+	 * Method for constructing a new {@link JsonFactory} that has the same settings as this instance, but is otherwise independent (i.e. nothing is actually shared, symbol tables are separate). Note that {@link ObjectCodec} reference is not copied but is set to null; caller typically needs to set it after calling this method. Reason for this is that the codec is used for callbacks, and assumption is that there is strict 1-to-1 mapping between codec, factory. Caller has to, then, explicitly set
+	 * codec after making the copy.
 	 *
 	 * @since 2.1
 	 */
@@ -300,11 +290,9 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 
 	/**
-	 * Introspection method that higher-level functionality may call to see whether underlying data format requires a stable ordering of object properties or not. This is usually used for determining
-	 * whether to force a stable ordering (like alphabetic ordering by name) if no ordering if explicitly specified.
+	 * Introspection method that higher-level functionality may call to see whether underlying data format requires a stable ordering of object properties or not. This is usually used for determining whether to force a stable ordering (like alphabetic ordering by name) if no ordering if explicitly specified.
 	 * <p>
-	 * Default implementation returns <code>false</code> as JSON does NOT require stable ordering. Formats that require ordering include positional textual formats like <code>CSV</code>, and
-	 * schema-based binary formats like <code>Avro</code>.
+	 * Default implementation returns <code>false</code> as JSON does NOT require stable ordering. Formats that require ordering include positional textual formats like <code>CSV</code>, and schema-based binary formats like <code>Avro</code>.
 	 *
 	 * @since 2.3
 	 */
@@ -313,11 +301,9 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	}
 
 	/**
-	 * Introspection method that higher-level functionality may call to see whether underlying data format can read and write binary data natively; that is, embeded it as-is without using encodings
-	 * such as Base64.
+	 * Introspection method that higher-level functionality may call to see whether underlying data format can read and write binary data natively; that is, embeded it as-is without using encodings such as Base64.
 	 * <p>
-	 * Default implementation returns <code>false</code> as JSON does not support native access: all binary content must use Base64 encoding. Most binary formats (like Smile and Avro) support native
-	 * binary content.
+	 * Default implementation returns <code>false</code> as JSON does not support native access: all binary content must use Base64 encoding. Most binary formats (like Smile and Avro) support native binary content.
 	 *
 	 * @since 2.3
 	 */
@@ -326,9 +312,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	}
 
 	/**
-	 * Introspection method that can be used by base factory to check whether access using <code>char[]</code> is something that actual parser implementations can take advantage of, over having to use
-	 * {@link java.io.Reader}. Sub-types are expected to override definition; default implementation (suitable for JSON) alleges that optimization are possible; and thereby is likely to try to access
-	 * {@link java.lang.String} content by first copying it into recyclable intermediate buffer.
+	 * Introspection method that can be used by base factory to check whether access using <code>char[]</code> is something that actual parser implementations can take advantage of, over having to use {@link java.io.Reader}. Sub-types are expected to override definition; default implementation (suitable for JSON) alleges that optimization are possible; and thereby is likely to try to access {@link java.lang.String} content by first copying it into recyclable intermediate buffer.
 	 *
 	 * @since 2.4
 	 */
@@ -341,8 +325,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 
 	/**
-	 * Method that can be used to quickly check whether given schema is something that parsers and/or generators constructed by this factory could use. Note that this means possible use, at the level
-	 * of data format (i.e. schema is for same data format as parsers and generators this factory constructs); individual schema instances may have further usage restrictions.
+	 * Method that can be used to quickly check whether given schema is something that parsers and/or generators constructed by this factory could use. Note that this means possible use, at the level of data format (i.e. schema is for same data format as parsers and generators this factory constructs); individual schema instances may have further usage restrictions.
 	 *
 	 * @since 2.1
 	 */
@@ -376,8 +359,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	}
 
 	/**
-	 * Method that can be called to determine if a custom {@link ObjectCodec} is needed for binding data parsed using {@link JsonParser} constructed by this factory (which typically also implies the
-	 * same for serialization with {@link JsonGenerator}).
+	 * Method that can be called to determine if a custom {@link ObjectCodec} is needed for binding data parsed using {@link JsonParser} constructed by this factory (which typically also implies the same for serialization with {@link JsonGenerator}).
 	 *
 	 * @return True if custom codec is needed with parsers and generators created by this factory; false if a general {@link ObjectCodec} is enough
 	 *
@@ -575,8 +557,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 
 	/**
-	 * Method for associating a {@link ObjectCodec} (typically a <code>com.fasterxml.jackson.databind.ObjectMapper</code>) with this factory (and more importantly, parsers and generators it
-	 * constructs). This is needed to use data-binding methods of {@link JsonParser} and {@link JsonGenerator} instances.
+	 * Method for associating a {@link ObjectCodec} (typically a <code>com.fasterxml.jackson.databind.ObjectMapper</code>) with this factory (and more importantly, parsers and generators it constructs). This is needed to use data-binding methods of {@link JsonParser} and {@link JsonGenerator} instances.
 	 */
 	public JsonFactory setCodec(ObjectCodec oc) {
 		_objectCodec = oc;
@@ -628,8 +609,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing JSON parser instance to parse the contents accessed via specified input stream.
 	 * <p>
-	 * The input stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if)
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
+	 * The input stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if) {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
 	 * <p>
 	 * Note: no encoding argument is taken since it can always be auto-detected as suggested by JSON RFC.
 	 *
@@ -646,8 +626,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing parser for parsing the contents accessed via specified Reader.
 	 * <p>
-	 * The read stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if)
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
+	 * The read stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if) {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
 	 *
 	 * @param r
 	 *            Reader to use for reading JSON content to parse
@@ -709,7 +688,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 		final int strLen = content.length();
 		// Actually, let's use this for medium-sized content, up to 64kB chunk
 		// (32kb char)
-		if (_inputDecorator != null || strLen > 0x8000 || !canUseCharArrays()) {
+		if ((_inputDecorator != null) || (strLen > 0x8000) || !canUseCharArrays()) {
 			// easier to just wrap in a Reader than extend InputDecorator; or,
 			// if content
 			// is too long for us to copy it over
@@ -737,11 +716,11 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 	public JsonParser createParser(char[] content, int offset, int len) throws IOException {
 		if (_inputDecorator != null) { // easier to just wrap in a Reader than
-										// extend InputDecorator
+			// extend InputDecorator
 			return createParser(new CharArrayReader(content, offset, len));
 		}
 		return _createParser(content, offset, len, _createContext(content, true),
-		// important: buffer is NOT recyclable, as it's from caller
+				// important: buffer is NOT recyclable, as it's from caller
 				false);
 	}
 
@@ -782,8 +761,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing JSON parser instance to parse the contents accessed via specified input stream.
 	 * <p>
-	 * The input stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if)
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
+	 * The input stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if) {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
 	 * <p>
 	 * Note: no encoding argument is taken since it can always be auto-detected as suggested by JSON RFC.
 	 *
@@ -800,8 +778,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing parser for parsing the contents accessed via specified Reader.
 	 * <p>
-	 * The read stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if)
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
+	 * The read stream will <b>not be owned</b> by the parser, it will still be managed (i.e. closed if end-of-stream is reacher, or parser close method called) if (and only if) {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser.Feature#AUTO_CLOSE_SOURCE} is enabled.
 	 *
 	 * @param r
 	 *            Reader to use for reading JSON content to parse
@@ -855,11 +832,9 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 
 	/**
-	 * Method for constructing JSON generator for writing JSON content using specified output stream. Encoding to use must be specified, and needs to be one of available types (as per JSON
-	 * specification).
+	 * Method for constructing JSON generator for writing JSON content using specified output stream. Encoding to use must be specified, and needs to be one of available types (as per JSON specification).
 	 * <p>
-	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the output stream when {@link JsonGenerator#close} is called (unless auto-closing feature,
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly if this is the case.
+	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the output stream when {@link JsonGenerator#close} is called (unless auto-closing feature, {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly if this is the case.
 	 * <p>
 	 * Note: there are formats that use fixed encoding (like most binary data formats) and that ignore passed in encoding.
 	 *
@@ -895,8 +870,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing JSON generator for writing JSON content using specified Writer.
 	 * <p>
-	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the Reader when {@link JsonGenerator#close} is called (unless auto-closing feature,
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly.
+	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the Reader when {@link JsonGenerator#close} is called (unless auto-closing feature, {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly.
 	 *
 	 * @since 2.1
 	 *
@@ -909,8 +883,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	}
 
 	/**
-	 * Method for constructing JSON generator for writing JSON content to specified file, overwriting contents it might have (or creating it if such file does not yet exist). Encoding to use must be
-	 * specified, and needs to be one of available types (as per JSON specification).
+	 * Method for constructing JSON generator for writing JSON content to specified file, overwriting contents it might have (or creating it if such file does not yet exist). Encoding to use must be specified, and needs to be one of available types (as per JSON specification).
 	 * <p>
 	 * Underlying stream <b>is owned</b> by the generator constructed, i.e. generator will handle closing of file when {@link JsonGenerator#close} is called.
 	 *
@@ -938,11 +911,9 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	 */
 
 	/**
-	 * Method for constructing JSON generator for writing JSON content using specified output stream. Encoding to use must be specified, and needs to be one of available types (as per JSON
-	 * specification).
+	 * Method for constructing JSON generator for writing JSON content using specified output stream. Encoding to use must be specified, and needs to be one of available types (as per JSON specification).
 	 * <p>
-	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the output stream when {@link JsonGenerator#close} is called (unless auto-closing feature,
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly if this is the case.
+	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the output stream when {@link JsonGenerator#close} is called (unless auto-closing feature, {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly if this is the case.
 	 * <p>
 	 * Note: there are formats that use fixed encoding (like most binary data formats) and that ignore passed in encoding.
 	 *
@@ -961,8 +932,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Method for constructing JSON generator for writing JSON content using specified Writer.
 	 * <p>
-	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the Reader when {@link JsonGenerator#close} is called (unless auto-closing feature,
-	 * {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly.
+	 * Underlying stream <b>is NOT owned</b> by the generator constructed, so that generator will NOT close the Reader when {@link JsonGenerator#close} is called (unless auto-closing feature, {@link autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET} is enabled). Using application needs to close it explicitly.
 	 *
 	 * @param out
 	 *            Writer to use for writing JSON content
@@ -987,8 +957,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	}
 
 	/**
-	 * Method for constructing JSON generator for writing JSON content to specified file, overwriting contents it might have (or creating it if such file does not yet exist). Encoding to use must be
-	 * specified, and needs to be one of available types (as per JSON specification).
+	 * Method for constructing JSON generator for writing JSON content to specified file, overwriting contents it might have (or creating it if such file does not yet exist). Encoding to use must be specified, and needs to be one of available types (as per JSON specification).
 	 * <p>
 	 * Underlying stream <b>is owned</b> by the generator constructed, i.e. generator will handle closing of file when {@link JsonGenerator#close} is called.
 	 *
@@ -1005,15 +974,13 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	}
 
 	/*
-	 * /********************************************************** /* Factory methods used by factory for creating parser instances, /* overridable by sub-classes
-	 * /**********************************************************
+	 * /********************************************************** /* Factory methods used by factory for creating parser instances, /* overridable by sub-classes /**********************************************************
 	 */
 
 	/**
 	 * Overridable factory method that actually instantiates desired parser given {@link InputStream} and context object.
 	 * <p>
-	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from
-	 * sub-class perspective, although not a public method available to users of factory implementations.
+	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from sub-class perspective, although not a public method available to users of factory implementations.
 	 *
 	 * @since 2.1
 	 */
@@ -1025,8 +992,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Overridable factory method that actually instantiates parser using given {@link Reader} object for reading content.
 	 * <p>
-	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from
-	 * sub-class perspective, although not a public method available to users of factory implementations.
+	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from sub-class perspective, although not a public method available to users of factory implementations.
 	 *
 	 * @since 2.1
 	 */
@@ -1046,23 +1012,20 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Overridable factory method that actually instantiates parser using given {@link Reader} object for reading content passed as raw byte array.
 	 * <p>
-	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from
-	 * sub-class perspective, although not a public method available to users of factory implementations.
+	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from sub-class perspective, although not a public method available to users of factory implementations.
 	 */
 	protected JsonParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException {
 		return new ByteSourceJsonBootstrapper(ctxt, data, offset, len).constructParser(_parserFeatures, _objectCodec, _rootByteSymbols, _rootCharSymbols, _factoryFeatures);
 	}
 
 	/*
-	 * /********************************************************** /* Factory methods used by factory for creating generator instances, /* overridable by sub-classes
-	 * /**********************************************************
+	 * /********************************************************** /* Factory methods used by factory for creating generator instances, /* overridable by sub-classes /**********************************************************
 	 */
 
 	/**
 	 * Overridable factory method that actually instantiates generator for given {@link Writer} and context object.
 	 * <p>
-	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from
-	 * sub-class perspective, although not a public method available to users of factory implementations.
+	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from sub-class perspective, although not a public method available to users of factory implementations.
 	 */
 	protected JsonGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException {
 		WriterBasedJsonGenerator gen = new WriterBasedJsonGenerator(ctxt, _generatorFeatures, _objectCodec, out);
@@ -1079,8 +1042,7 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	/**
 	 * Overridable factory method that actually instantiates generator for given {@link OutputStream} and context object, using UTF-8 encoding.
 	 * <p>
-	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from
-	 * sub-class perspective, although not a public method available to users of factory implementations.
+	 * This method is specifically designed to remain compatible between minor versions so that sub-classes can count on it being called as expected. That is, it is part of official interface from sub-class perspective, although not a public method available to users of factory implementations.
 	 */
 	protected JsonGenerator _createUTF8Generator(OutputStream out, IOContext ctxt) throws IOException {
 		UTF8JsonGenerator gen = new UTF8JsonGenerator(ctxt, _generatorFeatures, _objectCodec, out);
@@ -1193,11 +1155,10 @@ public class JsonFactory implements Versioned, java.io.Serializable {
 	protected InputStream _optimizedStreamFromURL(URL url) throws IOException {
 		if ("file".equals(url.getProtocol())) {
 			/*
-			 * Can not do this if the path refers to a network drive on windows. This fixes the problem; might not be needed on all platforms (NFS?), but should not matter a lot: performance penalty
-			 * of extra wrapping is more relevant when accessing local file system.
+			 * Can not do this if the path refers to a network drive on windows. This fixes the problem; might not be needed on all platforms (NFS?), but should not matter a lot: performance penalty of extra wrapping is more relevant when accessing local file system.
 			 */
 			String host = url.getHost();
-			if (host == null || host.length() == 0) {
+			if ((host == null) || (host.length() == 0)) {
 				// [Issue#48]: Let's try to avoid probs with URL encoded stuff
 				String path = url.getPath();
 				if (path.indexOf('%') < 0) {

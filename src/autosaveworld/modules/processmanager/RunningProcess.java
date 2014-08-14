@@ -30,6 +30,7 @@ import org.bukkit.command.CommandSender;
 public class RunningProcess {
 
 	private String[] args;
+
 	public RunningProcess(String[] args) {
 		this.args = args;
 	}
@@ -56,7 +57,7 @@ public class RunningProcess {
 				BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				String line;
 				try {
-					while (p != null && (line = br.readLine()) != null) {
+					while ((p != null) && ((line = br.readLine()) != null)) {
 						output.add(line);
 					}
 				} catch (IOException e) {
@@ -74,7 +75,7 @@ public class RunningProcess {
 		}
 		try {
 			int exit = p.exitValue();
-			sender.sendMessage("Process finished exit code "+exit);
+			sender.sendMessage("Process finished exit code " + exit);
 		} catch (Exception e) {
 		}
 		sender.sendMessage("Process output print finished");

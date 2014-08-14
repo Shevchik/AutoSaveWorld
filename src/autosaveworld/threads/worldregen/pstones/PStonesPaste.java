@@ -34,10 +34,10 @@ import autosaveworld.threads.worldregen.SchematicOperations;
 public class PStonesPaste {
 
 	private World wtopaste;
-	public PStonesPaste(String worldtopasteto) {
-		this.wtopaste = Bukkit.getWorld(worldtopasteto);
-	}
 
+	public PStonesPaste(String worldtopasteto) {
+		wtopaste = Bukkit.getWorld(worldtopasteto);
+	}
 
 	public void pasteAllFromSchematics() {
 		MessageLogger.debug("Pasting PreciousStones regions from schematics");
@@ -46,10 +46,10 @@ public class PStonesPaste {
 
 		String schemfolder = GlobalConstants.getPStonesTempFolder();
 		for (Field field : pstones.getForceFieldManager().getFields("*", wtopaste)) {
-			MessageLogger.debug("Pasting PreciousStones region "+field.getId()+" from schematic");
-			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+field.getId());
+			MessageLogger.debug("Pasting PreciousStones region " + field.getId() + " from schematic");
+			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder + field.getId());
 			SchematicOperations.pasteFromSchematic(wtopaste, new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
-			MessageLogger.debug("Pasted PreciousStones region "+field.getId()+" from schematic");
+			MessageLogger.debug("Pasted PreciousStones region " + field.getId() + " from schematic");
 		}
 	}
 

@@ -45,8 +45,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase {
 	protected int[] _outputEscapes = sOutputEscapes;
 
 	/**
-	 * Value between 128 (0x80) and 65535 (0xFFFF) that indicates highest Unicode code point that will not need escaping; or 0 to indicate that all characters can be represented without escaping.
-	 * Typically used to force escaping of some portion of character set; for example to always escape non-ASCII characters (if value was 127).
+	 * Value between 128 (0x80) and 65535 (0xFFFF) that indicates highest Unicode code point that will not need escaping; or 0 to indicate that all characters can be represented without escaping. Typically used to force escaping of some portion of character set; for example to always escape non-ASCII characters (if value was 127).
 	 * <p>
 	 * NOTE: not all sub-classes make use of this setting.
 	 */

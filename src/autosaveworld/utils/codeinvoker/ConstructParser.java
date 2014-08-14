@@ -20,6 +20,7 @@ package autosaveworld.utils.codeinvoker;
 public class ConstructParser {
 
 	private CodeContext context;
+
 	public ConstructParser(CodeContext context) {
 		this.context = context;
 	}
@@ -35,6 +36,7 @@ public class ConstructParser {
 
 	protected static class ConstructInfo {
 		private Object[] objects;
+
 		protected Object[] getObjects() {
 			return objects;
 		}

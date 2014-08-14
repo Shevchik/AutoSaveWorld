@@ -37,6 +37,7 @@ public class PurgeByNames {
 
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
+
 	public PurgeByNames(AutoSaveWorld plugin, AutoSaveWorldConfig config) {
 		this.plugin = plugin;
 		this.config = config;
@@ -46,7 +47,7 @@ public class PurgeByNames {
 		MessageLogger.debug("Gathering active players list");
 		ActivePlayersList aplist = new ActivePlayersList(config);
 		aplist.gatherActivePlayersList(config.purgeAwayTime * 1000);
-		MessageLogger.debug("Found "+aplist.getActivePlayersCount()+" active players");
+		MessageLogger.debug("Found " + aplist.getActivePlayersCount() + " active players");
 
 		HashSet<Integer> safeids = new HashSet<Integer>();
 		if (config.purgeWERemoveUnsafe) {
@@ -73,7 +74,7 @@ public class PurgeByNames {
 			}
 		}
 
-		if ((pm.getPlugin("Multiverse-Inventories") !=null) && config.purgeMVInv) {
+		if ((pm.getPlugin("Multiverse-Inventories") != null) && config.purgeMVInv) {
 			MessageLogger.debug("Multiverse-Inventories found, purging");
 			try {
 				new MVInvPurge().doMVInvPurgeTask(aplist);
@@ -82,7 +83,7 @@ public class PurgeByNames {
 			}
 		}
 
-		if ((pm.getPlugin("Residence") !=null) && config.purgeResidence) {
+		if ((pm.getPlugin("Residence") != null) && config.purgeResidence) {
 			MessageLogger.debug("Residence found, purging");
 			try {
 				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeResidenceRegenArea, safeids);
@@ -91,7 +92,7 @@ public class PurgeByNames {
 			}
 		}
 
-		if (pm.getPlugin("MyWarp") != null && config.purgeMyWarp) {
+		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
 			MessageLogger.debug("MyWarp found, purging");
 			try {
 				new MyWarpPurge().doMyWarpPurgeTask(aplist);
@@ -100,7 +101,7 @@ public class PurgeByNames {
 			}
 		}
 
-		if (pm.getPlugin("Vault") != null && config.purgePerms) {
+		if ((pm.getPlugin("Vault") != null) && config.purgePerms) {
 			MessageLogger.debug("Vault found, purging permissions");
 			try {
 				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgePermsSaveCMD);

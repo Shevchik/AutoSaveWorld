@@ -91,11 +91,11 @@ public class FTP extends SocketClient {
 	}
 
 	private boolean __strictCheck(String line, String code) {
-		return (!(line.startsWith(code) && line.charAt(REPLY_CODE_LEN) == ' '));
+		return (!(line.startsWith(code) && (line.charAt(REPLY_CODE_LEN) == ' ')));
 	}
 
 	private boolean __lenientCheck(String line) {
-		return (!(line.length() > REPLY_CODE_LEN && line.charAt(REPLY_CODE_LEN) != '-' && Character.isDigit(line.charAt(0))));
+		return (!((line.length() > REPLY_CODE_LEN) && (line.charAt(REPLY_CODE_LEN) != '-') && Character.isDigit(line.charAt(0))));
 	}
 
 	private void __getReply() throws IOException {
@@ -133,7 +133,7 @@ public class FTP extends SocketClient {
 
 		_replyLines.add(line);
 
-		if (length > REPLY_CODE_LEN && line.charAt(REPLY_CODE_LEN) == '-') {
+		if ((length > REPLY_CODE_LEN) && (line.charAt(REPLY_CODE_LEN) == '-')) {
 			do {
 				line = _controlInput_.readLine();
 

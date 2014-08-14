@@ -29,29 +29,30 @@ public class ResidencePurge {
 		List<String> reslist = new ArrayList<String>(Arrays.asList(Residence.getResidenceManager().getResidenceList()));
 		boolean wepresent = (Bukkit.getPluginManager().getPlugin("WorldEdit") != null);
 
-		//search for residences with inactive players
+		// search for residences with inactive players
 		for (final String res : reslist) {
 			MessageLogger.debug("Checking residence " + res);
 			final ClaimedResidence cres = Residence.getResidenceManager().getByName(res);
 			if (!pacheck.isActiveCS(cres.getOwner())) {
-				MessageLogger.debug("Owner of residence "+res+" is inactive. Purging residence");
+				MessageLogger.debug("Owner of residence " + res + " is inactive. Purging residence");
 
-				//regen residence areas if needed
+				// regen residence areas if needed
 				if (regenres && wepresent) {
 					for (final CuboidArea ca : cres.getAreaArray()) {
-						Runnable caregen =  new Runnable() {
+						Runnable caregen = new Runnable() {
 							Vector minpoint = ca.getLowLoc().toVector();
 							Vector maxpoint = ca.getHighLoc().toVector();
+
 							@Override
 							public void run() {
-								MessageLogger.debug("Regenerating residence "+res+" cuboid area");
+								MessageLogger.debug("Regenerating residence " + res + " cuboid area");
 								WorldEditRegeneration.get().regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint, new RegenOptions(safeids));
 							}
 						};
 						SchedulerUtils.callSyncTaskAndWait(caregen);
 					}
-					//delete residence from db
-					MessageLogger.debug("Deleting residence "+res);
+					// delete residence from db
+					MessageLogger.debug("Deleting residence " + res);
 					Runnable delres = new Runnable() {
 						@Override
 						public void run() {
@@ -66,7 +67,7 @@ public class ResidencePurge {
 			}
 		}
 
-		MessageLogger.debug("Residence purge finished, deleted "+ deletedres+" inactive residences");
+		MessageLogger.debug("Residence purge finished, deleted " + deletedres + " inactive residences");
 	}
 
 }

@@ -33,6 +33,7 @@ public class LocalFSBackupOperations {
 	private boolean zip;
 	private String extpath;
 	private List<String> excludefolders;
+
 	public LocalFSBackupOperations(boolean zip, String extpath, List<String> excludefolders) {
 		this.zip = zip;
 		this.extpath = extpath;
@@ -40,7 +41,7 @@ public class LocalFSBackupOperations {
 	}
 
 	public void backupWorld(World world, int maxBackupsCount, String latestbackuptimestamp, boolean disableWorldSaving) {
-		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuping world " + world.getWorldFolder().getName());
 
 		boolean savestatus = world.isAutoSave();
 		if (disableWorldSaving) {
@@ -48,7 +49,7 @@ public class LocalFSBackupOperations {
 		}
 		try {
 			File fromfolder = world.getWorldFolder().getAbsoluteFile();
-			String destfolder = extpath+File.separator+"backups"+File.separator+"worlds"+File.separator+world.getWorldFolder().getName();
+			String destfolder = extpath + File.separator + "backups" + File.separator + "worlds" + File.separator + world.getWorldFolder().getName();
 			backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,13 +57,13 @@ public class LocalFSBackupOperations {
 			world.setAutoSave(savestatus);
 		}
 
-		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuped world " + world.getWorldFolder().getName());
 	}
 
 	public void backupPlugins(int maxBackupsCount, String latestbackuptimestamp) {
 		try {
 			File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
-			String destfolder = extpath+File.separator+"backups"+File.separator+"plugins";
+			String destfolder = extpath + File.separator + "backups" + File.separator + "plugins";
 			backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,24 +72,24 @@ public class LocalFSBackupOperations {
 
 	public void backupOtherFolders(List<String> folders, int maxBackupsCount, String latestbackuptimestamp) {
 		for (String folder : folders) {
-			MessageLogger.debug("Backuping folder "+ folder);
+			MessageLogger.debug("Backuping folder " + folder);
 			try {
 				File fromfolder = new File(folder).getAbsoluteFile();
-				String destfolder = extpath+File.separator+"backups"+File.separator+"others"+File.separator+fromfolder.getName();
+				String destfolder = extpath + File.separator + "backups" + File.separator + "others" + File.separator + fromfolder.getName();
 				backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			MessageLogger.debug("Backuped folder "+ folder);
+			MessageLogger.debug("Backuped folder " + folder);
 		}
 	}
 
 	private void backupFolder(File fromfolder, String destfolder, int maxBackupsCount, String latestbackuptimestamp) {
-		//check oldest backup count
-		if (maxBackupsCount != 0 && new File(destfolder).exists() && new File(destfolder).list().length >= maxBackupsCount) {
-			//find oldest backup
+		// check oldest backup count
+		if ((maxBackupsCount != 0) && new File(destfolder).exists() && (new File(destfolder).list().length >= maxBackupsCount)) {
+			// find oldest backup
 			String oldestBackupName = BackupUtils.findOldestBackupName(new File(destfolder).list());
-			//delete oldest backup
+			// delete oldest backup
 			if (oldestBackupName != null) {
 				File oldestBakup = new File(destfolder, oldestBackupName);
 				FileUtils.deleteDirectory(oldestBakup);
@@ -97,8 +98,8 @@ public class LocalFSBackupOperations {
 		String bfolder = destfolder + File.separator + latestbackuptimestamp;
 		if (!zip) {
 			LocalFSUtils.copyDirectory(fromfolder, new File(bfolder), excludefolders);
-		} else  {
-			ZipUtils.zipFolder(fromfolder, new File(bfolder+".zip"), excludefolders);
+		} else {
+			ZipUtils.zipFolder(fromfolder, new File(bfolder + ".zip"), excludefolders);
 		}
 	}
 

@@ -130,8 +130,7 @@ public class DHGEX extends KeyExchange {
 				p = _buf.getMPInt();
 				g = _buf.getMPInt();
 				/*
-				 * for(int iii=0; iii<p.length; iii++){ System.err.println("0x"+Integer.toHexString(p[iii]&0xff)+","); } System.err.println(""); for(int iii=0; iii<g.length; iii++){
-				 * System.err.println("0x"+Integer.toHexString(g[iii]&0xff)+","); }
+				 * for(int iii=0; iii<p.length; iii++){ System.err.println("0x"+Integer.toHexString(p[iii]&0xff)+","); } System.err.println(""); for(int iii=0; iii<g.length; iii++){ System.err.println("0x"+Integer.toHexString(g[iii]&0xff)+","); }
 				 */
 				dh.setP(p);
 				dh.setG(g);

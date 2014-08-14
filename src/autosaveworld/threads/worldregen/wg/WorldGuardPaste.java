@@ -35,10 +35,10 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 public class WorldGuardPaste {
 
 	private World wtopaste;
-	public WorldGuardPaste(String worldtopasteto) {
-		this.wtopaste = Bukkit.getWorld(worldtopasteto);
-	}
 
+	public WorldGuardPaste(String worldtopasteto) {
+		wtopaste = Bukkit.getWorld(worldtopasteto);
+	}
 
 	public void pasteAllFromSchematics() {
 		MessageLogger.debug("Pasting WG regions from schematics");
@@ -47,15 +47,17 @@ public class WorldGuardPaste {
 
 		String schemfolder = GlobalConstants.getWGTempFolder();
 		final RegionManager m = wg.getRegionManager(wtopaste);
-		//paste all regions
+		// paste all regions
 		for (final ProtectedRegion rg : m.getRegions().values()) {
-			//ignore global region
-			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
-			//paste
-			MessageLogger.debug("Pasting WG region "+rg.getId()+" from schematic");
-			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+rg.getId());
+			// ignore global region
+			if (rg.getId().equalsIgnoreCase("__global__")) {
+				continue;
+			}
+			// paste
+			MessageLogger.debug("Pasting WG region " + rg.getId() + " from schematic");
+			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder + rg.getId());
 			SchematicOperations.pasteFromSchematic(wtopaste, new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
-			MessageLogger.debug("Pasted WG region "+rg.getId()+" from schematic");
+			MessageLogger.debug("Pasted WG region " + rg.getId() + " from schematic");
 		}
 	}
 

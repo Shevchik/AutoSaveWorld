@@ -30,7 +30,7 @@ public class SchematicData {
 		private Vector bvmax;
 
 		public SchematicToSave(String filepath, Vector bvmin, Vector bvmax) {
-			this.file = new File(filepath);
+			file = new File(filepath);
 			this.bvmin = bvmin;
 			this.bvmax = bvmax;
 		}
@@ -54,7 +54,7 @@ public class SchematicData {
 		private File file;
 
 		public SchematicToLoad(String filepath) {
-			this.file = new File(filepath);
+			file = new File(filepath);
 		}
 
 		public File getFile() {

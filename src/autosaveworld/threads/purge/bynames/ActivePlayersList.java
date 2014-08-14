@@ -32,6 +32,7 @@ import autosaveworld.core.logging.MessageLogger;
 public class ActivePlayersList {
 
 	private AutoSaveWorldConfig config;
+
 	public ActivePlayersList(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
@@ -42,41 +43,41 @@ public class ActivePlayersList {
 	@SuppressWarnings("deprecation")
 	public void gatherActivePlayersList(long awaytime) {
 		try {
-			//fill lists
-			//add online players
+			// fill lists
+			// add online players
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				MessageLogger.debug("Adding online player "+player.getName()+" to active list");
+				MessageLogger.debug("Adding online player " + player.getName() + " to active list");
 				plactivecs.add(player.getName());
 				plactivencs.add(player.getName().toLowerCase());
 			}
-			//add offline players that were away not for that long
-			//due to bukkit fucks up itself when we have two player files with different case (test.dat and Test.dat), i had to write this...
+			// add offline players that were away not for that long
+			// due to bukkit fucks up itself when we have two player files with different case (test.dat and Test.dat), i had to write this...
 			Server server = Bukkit.getServer();
 			Class<?> craftofflineplayer = Bukkit.getOfflinePlayer("fakeautopurgeplayer").getClass();
-			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(),String.class);
+			Constructor<?> ctor = craftofflineplayer.getDeclaredConstructor(server.getClass(), String.class);
 			ctor.setAccessible(true);
-			File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(),"players");
+			File playersdir = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "players");
 			for (String file : playersdir.list()) {
 				if (file.endsWith(".dat")) {
 					String nickname = file.substring(0, file.length() - 4);
-					MessageLogger.debug("Checking player "+nickname);
-					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server,nickname);
-					if (System.currentTimeMillis() - offplayer.getLastPlayed() < awaytime) {
-						MessageLogger.debug("Adding player "+nickname+" to active list");
+					MessageLogger.debug("Checking player " + nickname);
+					OfflinePlayer offplayer = (OfflinePlayer) ctor.newInstance(server, nickname);
+					if ((System.currentTimeMillis() - offplayer.getLastPlayed()) < awaytime) {
+						MessageLogger.debug("Adding player " + nickname + " to active list");
 						plactivecs.add(offplayer.getName());
 						plactivencs.add(offplayer.getName().toLowerCase());
 					}
 				}
 			}
-			//add players from ignored list
+			// add players from ignored list
 			for (String ignorednick : config.purgeIgnoredNicks) {
-				MessageLogger.debug("Adding ignored player "+ignorednick+" to active list");
+				MessageLogger.debug("Adding ignored player " + ignorednick + " to active list");
 				plactivecs.add(ignorednick);
 				plactivencs.add(ignorednick.toLowerCase());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException("Failed to gather active players list. "+e.getMessage());
+			throw new RuntimeException("Failed to gather active players list. " + e.getMessage());
 		}
 	}
 
@@ -91,6 +92,5 @@ public class ActivePlayersList {
 	public boolean isActiveCS(String playername) {
 		return plactivecs.contains(playername);
 	}
-
 
 }

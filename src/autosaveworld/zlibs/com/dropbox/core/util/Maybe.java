@@ -53,7 +53,7 @@ public final class Maybe<T> {
 	}
 
 	public boolean equals(Maybe<?> other) {
-		return this.isJust == other.isJust && eq(this.value, other.value);
+		return (this.isJust == other.isJust) && eq(this.value, other.value);
 	}
 
 	private static boolean eq(Object a, Object b) {

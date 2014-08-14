@@ -45,28 +45,28 @@ import autosaveworld.utils.StringUtils;
 
 public class AutoSaveWorld extends JavaPlugin {
 
-	//save
+	// save
 	public AutoSaveThread saveThread;
-	//backup
+	// backup
 	public AutoBackupThread backupThread;
-	//purge
+	// purge
 	public AutoPurgeThread purgeThread;
-	//restart
+	// restart
 	public CrashRestartThread crashrestartThread;
 	public AutoRestartThread autorestartThread;
 	private RestartJVMshutdownhook JVMsh;
-	//autoconsolecommand
+	// autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread;
-	//worldregen
+	// worldregen
 	public WorldRegenCopyThread worldregencopyThread;
 	public WorldRegenPasteThread worldregenpasteThread;
-	//plugin manager
+	// plugin manager
 	public PluginManager pluginmanager;
-	//process manager
+	// process manager
 	public ProcessManager processmanager;
-	//network watcher
+	// network watcher
 	public NetworkWatcher watcher;
-	//configs
+	// configs
 	public AutoSaveWorldConfigMSG configmsg;
 	public AutoSaveWorldConfig config;
 
@@ -112,7 +112,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.WORLDREGENPASTE);
 	}
 
-
 	@Override
 	public void onDisable() {
 		if (config.saveOnASWDisable) {
@@ -134,70 +133,69 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.CONSOLECOMMAND);
 		stopThread(ThreadType.WORLDREGENCOPY);
 		stopThread(ThreadType.WORLDREGENPASTE);
-		//stop network watcher
+		// stop network watcher
 		watcher.unregister();
 		watcher = null;
-		//null some variables
+		// null some variables
 		pluginmanager = null;
 		processmanager = null;
 		configmsg = null;
 		config = null;
 	}
 
-
 	protected void startThread(ThreadType type) {
 		switch (type) {
 			case SAVE: {
-				if (saveThread == null || !saveThread.isAlive()) {
+				if ((saveThread == null) || !saveThread.isAlive()) {
 					saveThread = new AutoSaveThread(config, configmsg);
 					saveThread.start();
 				}
 				return;
 			}
 			case BACKUP: {
-				if (backupThread == null || !backupThread.isAlive()) {
+				if ((backupThread == null) || !backupThread.isAlive()) {
 					backupThread = new AutoBackupThread(this, config, configmsg);
 					backupThread.start();
 				}
 				return;
 			}
 			case PURGE: {
-				if (purgeThread == null || !purgeThread.isAlive()) {
+				if ((purgeThread == null) || !purgeThread.isAlive()) {
 					purgeThread = new AutoPurgeThread(this, config, configmsg);
 					purgeThread.start();
 				}
 				return;
 			}
 			case CRASHRESTART: {
-				if (crashrestartThread == null || !crashrestartThread.isAlive()) {
+				if ((crashrestartThread == null) || !crashrestartThread.isAlive()) {
 					crashrestartThread = new CrashRestartThread(Thread.currentThread(), config, JVMsh);
 					crashrestartThread.start();
 				}
 				return;
 			}
 			case AUTORESTART: {
-				if (autorestartThread == null || !autorestartThread.isAlive()) {
+				if ((autorestartThread == null) || !autorestartThread.isAlive()) {
 					autorestartThread = new AutoRestartThread(config, configmsg, JVMsh);
 					autorestartThread.start();
 				}
 				return;
 			}
 			case CONSOLECOMMAND: {
-				if (consolecommandThread == null || !consolecommandThread.isAlive()) {
+				if ((consolecommandThread == null) || !consolecommandThread.isAlive()) {
 					consolecommandThread = new AutoConsoleCommandThread(config);
 					consolecommandThread.start();
 				}
 				return;
 			}
 			case WORLDREGENCOPY: {
-				if (worldregencopyThread == null || !worldregencopyThread.isAlive()) {
-					worldregencopyThread = new WorldRegenCopyThread(this, config ,configmsg);
+				if ((worldregencopyThread == null) || !worldregencopyThread.isAlive()) {
+					worldregencopyThread = new WorldRegenCopyThread(this, config, configmsg);
 					worldregencopyThread.start();
 				}
 				return;
 			}
 			case WORLDREGENPASTE: {
-				if (worldregenpasteThread == null || !worldregenpasteThread.isAlive()) {
+				if ((worldregenpasteThread == null) || !worldregenpasteThread.isAlive()) {
 					worldregenpasteThread = new WorldRegenPasteThread(this, config, configmsg);
 					worldregenpasteThread.checkIfShouldPaste();
 					worldregenpasteThread.start();
@@ -206,8 +204,6 @@ public class AutoSaveWorld extends JavaPlugin {
 			}
 		}
 	}
-
-
 
 	protected void stopThread(ThreadType type) {
 		switch (type) {

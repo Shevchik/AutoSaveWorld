@@ -65,7 +65,7 @@ public class InflaterInputStream extends FilterInputStream {
 
 	public InflaterInputStream(InputStream in, Inflater inflater, int size, boolean close_in) throws IOException {
 		super(in);
-		if (in == null || inflater == null) {
+		if ((in == null) || (inflater == null)) {
 			throw new NullPointerException();
 		} else if (size <= 0) {
 			throw new IllegalArgumentException("buffer size must be greater than 0");
@@ -94,7 +94,7 @@ public class InflaterInputStream extends FilterInputStream {
 		}
 		if (b == null) {
 			throw new NullPointerException();
-		} else if (off < 0 || len < 0 || len > b.length - off) {
+		} else if ((off < 0) || (len < 0) || (len > (b.length - off))) {
 			throw new IndexOutOfBoundsException();
 		} else if (len == 0) {
 			return 0;
@@ -190,7 +190,7 @@ public class InflaterInputStream extends FilterInputStream {
 		}
 		int len = in.read(buf, 0, buf.length);
 		if (len == -1) {
-			if (inflater.istate.wrap == 0 && !inflater.finished()) {
+			if ((inflater.istate.wrap == 0) && !inflater.finished()) {
 				buf[0] = 0;
 				len = 1;
 			} else if (inflater.istate.was != -1) { // in reading trailer

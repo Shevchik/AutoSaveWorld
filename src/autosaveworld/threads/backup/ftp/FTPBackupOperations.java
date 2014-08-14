@@ -32,6 +32,7 @@ public class FTPBackupOperations {
 	private boolean zip;
 	private List<String> excludefolders;
 	private FTPClient ftp;
+
 	public FTPBackupOperations(FTPClient ftp, boolean zip, List<String> excludefolders) {
 		this.zip = zip;
 		this.excludefolders = excludefolders;
@@ -39,7 +40,7 @@ public class FTPBackupOperations {
 	}
 
 	public void backupWorld(World world, boolean disableWorldSaving) {
-		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuping world " + world.getWorldFolder().getName());
 		boolean savestaus = world.isAutoSave();
 		if (disableWorldSaving) {
 			world.setAutoSave(false);
@@ -52,7 +53,7 @@ public class FTPBackupOperations {
 		} finally {
 			world.setAutoSave(savestaus);
 		}
-		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuped world " + world.getWorldFolder().getName());
 	}
 
 	public void backupPlugins() {
@@ -66,21 +67,21 @@ public class FTPBackupOperations {
 
 	public void backupOtherFolders(List<String> folders) {
 		for (String folder : folders) {
-			MessageLogger.debug("Backuping folder "+ folder);
+			MessageLogger.debug("Backuping folder " + folder);
 			try {
 				File fld = new File(folder).getAbsoluteFile();
 				backupFolder(fld);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			MessageLogger.debug("Backuped folder "+ folder);
+			MessageLogger.debug("Backuped folder " + folder);
 		}
 	}
 
 	private void backupFolder(File folder) throws IOException {
 		if (!zip) {
 			FTPUtils.uploadDirectory(ftp, folder, excludefolders);
-		} else  {
+		} else {
 			FTPUtils.zipAndUploadDirectory(ftp, folder, excludefolders);
 		}
 	}

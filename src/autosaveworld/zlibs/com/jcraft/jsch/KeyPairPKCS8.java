@@ -80,8 +80,7 @@ public class KeyPairPKCS8 extends KeyPair {
 	boolean parse(byte[] plain) {
 
 		/*
-		 * from RFC5208 PrivateKeyInfo ::= SEQUENCE { version Version, privateKeyAlgorithm PrivateKeyAlgorithmIdentifier, privateKey PrivateKey, attributes [0] IMPLICIT Attributes OPTIONAL } Version
-		 * ::= INTEGER PrivateKeyAlgorithmIdentifier ::= AlgorithmIdentifier PrivateKey ::= OCTET STRING Attributes ::= SET OF Attribute }
+		 * from RFC5208 PrivateKeyInfo ::= SEQUENCE { version Version, privateKeyAlgorithm PrivateKeyAlgorithmIdentifier, privateKey PrivateKey, attributes [0] IMPLICIT Attributes OPTIONAL } Version ::= INTEGER PrivateKeyAlgorithmIdentifier ::= AlgorithmIdentifier PrivateKey ::= OCTET STRING Attributes ::= SET OF Attribute }
 		 */
 
 		try {
@@ -202,8 +201,7 @@ public class KeyPairPKCS8 extends KeyPair {
 		}
 
 		/*
-		 * SEQUENCE SEQUENCE OBJECT :PBES2 SEQUENCE SEQUENCE OBJECT :PBKDF2 SEQUENCE OCTET STRING [HEX DUMP]:E4E24ADC9C00BD4D INTEGER :0800 SEQUENCE OBJECT :aes-128-cbc OCTET STRING [HEX
-		 * DUMP]:5B66E6B3BF03944C92317BC370CC3AD0 OCTET STRING [HEX DUMP]:
+		 * SEQUENCE SEQUENCE OBJECT :PBES2 SEQUENCE SEQUENCE OBJECT :PBKDF2 SEQUENCE OCTET STRING [HEX DUMP]:E4E24ADC9C00BD4D INTEGER :0800 SEQUENCE OBJECT :aes-128-cbc OCTET STRING [HEX DUMP]:5B66E6B3BF03944C92317BC370CC3AD0 OCTET STRING [HEX DUMP]:
 		 *
 		 * or
 		 *

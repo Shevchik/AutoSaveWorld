@@ -8,14 +8,11 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core;
 import java.util.Iterator;
 
 /**
- * Marker interface used to denote JSON Tree nodes, as far as the core package knows them (which is very little): mostly needed to allow {@link ObjectCodec} to have some level of interoperability.
- * Most functionality is within <code>JsonNode</code> base class in <code>mapper</code> package.
+ * Marker interface used to denote JSON Tree nodes, as far as the core package knows them (which is very little): mostly needed to allow {@link ObjectCodec} to have some level of interoperability. Most functionality is within <code>JsonNode</code> base class in <code>mapper</code> package.
  * <p>
- * Note that in Jackson 1.x <code>JsonNode</code> itself was part of core package: Jackson 2.x refactored this since conceptually Tree Model is part of mapper package, and so part visible to
- * <code>core</code> package should be minimized.
+ * Note that in Jackson 1.x <code>JsonNode</code> itself was part of core package: Jackson 2.x refactored this since conceptually Tree Model is part of mapper package, and so part visible to <code>core</code> package should be minimized.
  * <p>
- * NOTE: starting with Jackson 2.2, there is more functionality available via this class, and the intent is that this should form actual base for multiple alternative tree representations; for
- * example, immutable trees could use different implementation than mutable trees. It should also be possible to move actual Tree Model implementation out of databind package eventually (Jackson 3?).
+ * NOTE: starting with Jackson 2.2, there is more functionality available via this class, and the intent is that this should form actual base for multiple alternative tree representations; for example, immutable trees could use different implementation than mutable trees. It should also be possible to move actual Tree Model implementation out of databind package eventually (Jackson 3?).
  *
  * @since 2.2
  */
@@ -25,8 +22,7 @@ public interface TreeNode {
 	 */
 
 	/**
-	 * Method that can be used for efficient type detection when using stream abstraction for traversing nodes. Will return the first {@link JsonToken} that equivalent stream event would produce (for
-	 * most nodes there is just one token but for structured/container types multiple)
+	 * Method that can be used for efficient type detection when using stream abstraction for traversing nodes. Will return the first {@link JsonToken} that equivalent stream event would produce (for most nodes there is just one token but for structured/container types multiple)
 	 */
 	JsonToken asToken();
 
@@ -47,8 +43,7 @@ public interface TreeNode {
 	int size();
 
 	/**
-	 * Method that returns true for all value nodes: ones that are not containers, and that do not represent "missing" nodes in the path. Such value nodes represent String, Number, Boolean and null
-	 * values from JSON.
+	 * Method that returns true for all value nodes: ones that are not containers, and that do not represent "missing" nodes in the path. Such value nodes represent String, Number, Boolean and null values from JSON.
 	 * <p>
 	 * Note: one and only one of methods {@link #isValueNode}, {@link #isContainerNode} and {@link #isMissingNode} ever returns true for any given node.
 	 *
@@ -93,8 +88,7 @@ public interface TreeNode {
 	 */
 
 	/**
-	 * Method for accessing value of the specified field of an object node. If this node is not an object (or it does not have a value for specified field name), or if there is no field with such
-	 * name, null is returned.
+	 * Method for accessing value of the specified field of an object node. If this node is not an object (or it does not have a value for specified field name), or if there is no field with such name, null is returned.
 	 * <p>
 	 * NOTE: handling of explicit null values may vary between implementations; some trees may retain explicit nulls, others not.
 	 *
@@ -107,8 +101,7 @@ public interface TreeNode {
 	/**
 	 * Method for accessing value of the specified element of an array node. For other nodes, null is returned.
 	 * <p>
-	 * For array nodes, index specifies exact location within array and allows for efficient iteration over child elements (underlying storage is guaranteed to be efficiently indexable, i.e. has
-	 * random-access to elements). If index is less than 0, or equal-or-greater than <code>node.size()</code>, null is returned; no exception is thrown for any index.
+	 * For array nodes, index specifies exact location within array and allows for efficient iteration over child elements (underlying storage is guaranteed to be efficiently indexable, i.e. has random-access to elements). If index is less than 0, or equal-or-greater than <code>node.size()</code>, null is returned; no exception is thrown for any index.
 	 *
 	 * @return Node that represent value of the specified element, if this node is an array and has specified element. Null otherwise.
 	 *
@@ -128,8 +121,7 @@ public interface TreeNode {
 	/**
 	 * Method for accessing value of the specified element of an array node. For other nodes, a "missing node" (virtual node for which {@link #isMissingNode} returns true) is returned.
 	 * <p>
-	 * For array nodes, index specifies exact location within array and allows for efficient iteration over child elements (underlying storage is guaranteed to be efficiently indexable, i.e. has
-	 * random-access to elements). If index is less than 0, or equal-or-greater than <code>node.size()</code>, "missing node" is returned; no exception is thrown for any index.
+	 * For array nodes, index specifies exact location within array and allows for efficient iteration over child elements (underlying storage is guaranteed to be efficiently indexable, i.e. has random-access to elements). If index is less than 0, or equal-or-greater than <code>node.size()</code>, "missing node" is returned; no exception is thrown for any index.
 	 *
 	 * @return Node that represent value of the specified element, if this node is an array and has specified element; otherwise "missing node" is returned.
 	 *
@@ -145,8 +137,7 @@ public interface TreeNode {
 	Iterator<String> fieldNames();
 
 	/**
-	 * Method for locating node specified by given JSON pointer instances. Method will never return null; if no matching node exists, will return a node for which {@link TreeNode#isMissingNode()}
-	 * returns true.
+	 * Method for locating node specified by given JSON pointer instances. Method will never return null; if no matching node exists, will return a node for which {@link TreeNode#isMissingNode()} returns true.
 	 *
 	 * @return Node that matches given JSON Pointer: if no match exists, will return a node for which {@link TreeNode#isMissingNode()} returns true.
 	 *
@@ -177,14 +168,12 @@ public interface TreeNode {
 	 */
 
 	/**
-	 * Method for constructing a {@link JsonParser} instance for iterating over contents of the tree that this node is root of. Functionally equivalent to first serializing tree using
-	 * {@link ObjectCodec} and then re-parsing but more efficient.
+	 * Method for constructing a {@link JsonParser} instance for iterating over contents of the tree that this node is root of. Functionally equivalent to first serializing tree using {@link ObjectCodec} and then re-parsing but more efficient.
 	 */
 	JsonParser traverse();
 
 	/**
-	 * Same as {@link #traverse()}, but additionally passes {@link autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec} to use if {@link JsonParser#readValueAs(Class)} is used (otherwise caller
-	 * must call {@link JsonParser#setCodec} on response explicitly).
+	 * Same as {@link #traverse()}, but additionally passes {@link autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec} to use if {@link JsonParser#readValueAs(Class)} is used (otherwise caller must call {@link JsonParser#setCodec} on response explicitly).
 	 *
 	 * @since 2.1
 	 */

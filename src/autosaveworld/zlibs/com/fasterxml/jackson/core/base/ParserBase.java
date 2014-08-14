@@ -67,14 +67,12 @@ public abstract class ParserBase extends ParserMinimalBase {
 	protected int _currInputRow = 1;
 
 	/**
-	 * Current index of the first character of the current row in input buffer. Needed to calculate column position, if necessary; benefit of not having column itself is that this only has to be
-	 * updated once per line.
+	 * Current index of the first character of the current row in input buffer. Needed to calculate column position, if necessary; benefit of not having column itself is that this only has to be updated once per line.
 	 */
 	protected int _currInputRowStart = 0;
 
 	/*
-	 * /********************************************************** /* Information about starting location of event /* Reader is pointing to; updated on-demand
-	 * /**********************************************************
+	 * /********************************************************** /* Information about starting location of event /* Reader is pointing to; updated on-demand /**********************************************************
 	 */
 
 	// // // Location info at point when current token was started
@@ -260,7 +258,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	@Override
 	public String getCurrentName() throws IOException {
 		// [JACKSON-395]: start markers require information from parent
-		if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
+		if ((_currToken == JsonToken.START_OBJECT) || (_currToken == JsonToken.START_ARRAY)) {
 			JsonReadContext parent = _parsingContext.getParent();
 			return parent.getCurrentName();
 		}
@@ -271,7 +269,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	public void overrideCurrentName(String name) {
 		// Simple, but need to look for START_OBJECT/ARRAY's "off-by-one" thing:
 		JsonReadContext ctxt = _parsingContext;
-		if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
+		if ((_currToken == JsonToken.START_OBJECT) || (_currToken == JsonToken.START_ARRAY)) {
 			ctxt = ctxt.getParent();
 		}
 		/*
@@ -322,7 +320,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	 */
 	@Override
 	public JsonLocation getCurrentLocation() {
-		int col = _inputPtr - _currInputRowStart + 1; // 1-based
+		int col = (_inputPtr - _currInputRowStart) + 1; // 1-based
 		return new JsonLocation(_ioContext.getSourceReference(), -1L, _currInputProcessed + _inputPtr, // bytes, chars
 				_currInputRow, col);
 	}
@@ -392,8 +390,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	 */
 
 	/**
-	 * Method called to release internal buffers owned by the base reader. This may be called along with {@link #_closeInput} (for example, when explicitly closing this reader instance), or separately
-	 * (if need be).
+	 * Method called to release internal buffers owned by the base reader. This may be called along with {@link #_closeInput} (for example, when explicitly closing this reader instance), or separately (if need be).
 	 */
 	protected void _releaseBuffers() throws IOException {
 		_textBuffer.releaseBuffers();
@@ -451,7 +448,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	// // // Life-cycle of number-parsing
 
 	protected final JsonToken reset(boolean negative, int intLen, int fractLen, int expLen) {
-		if (fractLen < 1 && expLen < 1) { // integer
+		if ((fractLen < 1) && (expLen < 1)) { // integer
 			return resetInt(negative, intLen);
 		}
 		return resetFloat(negative, intLen, fractLen, expLen);
@@ -534,8 +531,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		}
 
 		/*
-		 * And then floating point types. Here optimal type needs to be big decimal, to avoid losing any data? However... using BD is slow, so let's allow returning double as type if no explicit call
-		 * has been made to access data as BD?
+		 * And then floating point types. Here optimal type needs to be big decimal, to avoid losing any data? However... using BD is slow, so let's allow returning double as type if no explicit call has been made to access data as BD?
 		 */
 		if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
 			return NumberType.BIG_DECIMAL;
@@ -625,8 +621,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 	 */
 
 	/**
-	 * Method that will parse actual numeric value out of a syntactically valid number value. Type it will parse into depends on whether it is a floating point number, as well as its magnitude:
-	 * smallest legal type (of ones available) is used for efficiency.
+	 * Method that will parse actual numeric value out of a syntactically valid number value. Type it will parse into depends on whether it is a floating point number, as well as its magnitude: smallest legal type (of ones available) is used for efficiency.
 	 *
 	 * @param expType
 	 *            Numeric type that we will immediately need, if any; mostly necessary to optimize handling of floating point numbers
@@ -647,7 +642,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 				return;
 			}
 			if (len <= 18) { // definitely fits AND is easy to parse using 2 int
-								// parse calls
+				// parse calls
 				long l = NumberInput.parseLong(buf, offset, len);
 				if (_numberNegative) {
 					l = -l;
@@ -684,8 +679,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 
 	private void _parseSlowFloat(int expType) throws IOException {
 		/*
-		 * Nope: floating point. Here we need to be careful to get optimal parsing strategy: choice is between accurate but slow (BigDecimal) and lossy but fast (Double). For now let's only use BD
-		 * when explicitly requested -- it can still be constructed correctly at any point since we do retain textual representation
+		 * Nope: floating point. Here we need to be careful to get optimal parsing strategy: choice is between accurate but slow (BigDecimal) and lossy but fast (Double). For now let's only use BD when explicitly requested -- it can still be constructed correctly at any point since we do retain textual representation
 		 */
 		try {
 			if (expType == NR_BIGDECIMAL) {
@@ -736,18 +730,18 @@ public abstract class ParserBase extends ParserMinimalBase {
 			}
 			_numberInt = result;
 		} else if ((_numTypesValid & NR_BIGINT) != 0) {
-			if (BI_MIN_INT.compareTo(_numberBigInt) > 0 || BI_MAX_INT.compareTo(_numberBigInt) < 0) {
+			if ((BI_MIN_INT.compareTo(_numberBigInt) > 0) || (BI_MAX_INT.compareTo(_numberBigInt) < 0)) {
 				reportOverflowInt();
 			}
 			_numberInt = _numberBigInt.intValue();
 		} else if ((_numTypesValid & NR_DOUBLE) != 0) {
 			// Need to check boundaries
-			if (_numberDouble < MIN_INT_D || _numberDouble > MAX_INT_D) {
+			if ((_numberDouble < MIN_INT_D) || (_numberDouble > MAX_INT_D)) {
 				reportOverflowInt();
 			}
 			_numberInt = (int) _numberDouble;
 		} else if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
-			if (BD_MIN_INT.compareTo(_numberBigDecimal) > 0 || BD_MAX_INT.compareTo(_numberBigDecimal) < 0) {
+			if ((BD_MIN_INT.compareTo(_numberBigDecimal) > 0) || (BD_MAX_INT.compareTo(_numberBigDecimal) < 0)) {
 				reportOverflowInt();
 			}
 			_numberInt = _numberBigDecimal.intValue();
@@ -761,18 +755,18 @@ public abstract class ParserBase extends ParserMinimalBase {
 		if ((_numTypesValid & NR_INT) != 0) {
 			_numberLong = _numberInt;
 		} else if ((_numTypesValid & NR_BIGINT) != 0) {
-			if (BI_MIN_LONG.compareTo(_numberBigInt) > 0 || BI_MAX_LONG.compareTo(_numberBigInt) < 0) {
+			if ((BI_MIN_LONG.compareTo(_numberBigInt) > 0) || (BI_MAX_LONG.compareTo(_numberBigInt) < 0)) {
 				reportOverflowLong();
 			}
 			_numberLong = _numberBigInt.longValue();
 		} else if ((_numTypesValid & NR_DOUBLE) != 0) {
 			// Need to check boundaries
-			if (_numberDouble < MIN_LONG_D || _numberDouble > MAX_LONG_D) {
+			if ((_numberDouble < MIN_LONG_D) || (_numberDouble > MAX_LONG_D)) {
 				reportOverflowLong();
 			}
 			_numberLong = (long) _numberDouble;
 		} else if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
-			if (BD_MIN_LONG.compareTo(_numberBigDecimal) > 0 || BD_MAX_LONG.compareTo(_numberBigDecimal) < 0) {
+			if ((BD_MIN_LONG.compareTo(_numberBigDecimal) > 0) || (BD_MAX_LONG.compareTo(_numberBigDecimal) < 0)) {
 				reportOverflowLong();
 			}
 			_numberLong = _numberBigDecimal.longValue();
@@ -883,7 +877,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		// if white space, skip if first triplet; otherwise errors
 		if (unescaped <= INT_SPACE) {
 			if (index == 0) { // whitespace only allowed to be skipped between
-								// triplets
+				// triplets
 				return -1;
 			}
 		}
@@ -904,7 +898,7 @@ public abstract class ParserBase extends ParserMinimalBase {
 		// if white space, skip if first triplet; otherwise errors
 		if (unescaped <= INT_SPACE) {
 			if (index == 0) { // whitespace only allowed to be skipped between
-								// triplets
+				// triplets
 				return -1;
 			}
 		}

@@ -201,7 +201,7 @@ public class SftpATTRS {
 				attr.extended = new String[count * 2];
 				for (int i = 0; i < count; i++) {
 					attr.extended[i * 2] = Util.byte2str(buf.getString());
-					attr.extended[i * 2 + 1] = Util.byte2str(buf.getString());
+					attr.extended[(i * 2) + 1] = Util.byte2str(buf.getString());
 				}
 			}
 		}
@@ -231,7 +231,7 @@ public class SftpATTRS {
 					len += 4;
 					len += extended[i * 2].length();
 					len += 4;
-					len += extended[i * 2 + 1].length();
+					len += extended[(i * 2) + 1].length();
 				}
 			}
 		}
@@ -261,7 +261,7 @@ public class SftpATTRS {
 			if (count > 0) {
 				for (int i = 0; i < count; i++) {
 					buf.putString(Util.str2byte(extended[i * 2]));
-					buf.putString(Util.str2byte(extended[i * 2 + 1]));
+					buf.putString(Util.str2byte(extended[(i * 2) + 1]));
 				}
 			}
 		}
@@ -295,7 +295,7 @@ public class SftpATTRS {
 	}
 
 	private boolean isType(int mask) {
-		return (flags & SSH_FILEXFER_ATTR_PERMISSIONS) != 0 && (permissions & S_IFMT) == mask;
+		return ((flags & SSH_FILEXFER_ATTR_PERMISSIONS) != 0) && ((permissions & S_IFMT) == mask);
 	}
 
 	public boolean isReg() {
@@ -363,8 +363,6 @@ public class SftpATTRS {
 		return (getPermissionsString() + " " + getUId() + " " + getGId() + " " + getSize() + " " + getMtimeString());
 	}
 	/*
-	 * public String toString(){ return (((flags&SSH_FILEXFER_ATTR_SIZE)!=0) ? ("size:"+size+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_UIDGID)!=0) ? ("uid:"+uid+",gid:"+gid+" ") : "")+
-	 * (((flags&SSH_FILEXFER_ATTR_PERMISSIONS)!=0) ? ("permissions:0x"+Integer.toHexString(permissions)+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_ACMODTIME)!=0) ? ("atime:"+atime+",mtime:"+mtime+" ") :
-	 * "")+ (((flags&SSH_FILEXFER_ATTR_EXTENDED)!=0) ? ("extended:?"+" ") : ""); }
+	 * public String toString(){ return (((flags&SSH_FILEXFER_ATTR_SIZE)!=0) ? ("size:"+size+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_UIDGID)!=0) ? ("uid:"+uid+",gid:"+gid+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_PERMISSIONS)!=0) ? ("permissions:0x"+Integer.toHexString(permissions)+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_ACMODTIME)!=0) ? ("atime:"+atime+",mtime:"+mtime+" ") : "")+ (((flags&SSH_FILEXFER_ATTR_EXTENDED)!=0) ? ("extended:?"+" ") : ""); }
 	 */
 }

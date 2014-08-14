@@ -46,7 +46,7 @@ public class SFTPUtils {
 			if (!src.getName().endsWith(".lck")) {
 				try {
 					InputStream is = new FileInputStream(src);
-					storeFile(sftp, is, src.getName()+".zip");
+					storeFile(sftp, is, src.getName() + ".zip");
 					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,7 +57,7 @@ public class SFTPUtils {
 
 	public static void zipAndUploadDirectory(ChannelSftp sftp, File src, List<String> excludefolders) throws IOException {
 		InputStream is = MemoryZip.startZIP(src, excludefolders);
-		storeFile(sftp, is, src.getName()+".zip");
+		storeFile(sftp, is, src.getName() + ".zip");
 		is.close();
 	}
 
@@ -67,7 +67,10 @@ public class SFTPUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {Thread.sleep(0);} catch (InterruptedException e) {}
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	public static void deleteDirectory(ChannelSftp sftp, String oldestBackup) throws SftpException {

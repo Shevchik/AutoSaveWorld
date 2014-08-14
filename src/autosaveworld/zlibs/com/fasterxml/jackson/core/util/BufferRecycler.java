@@ -1,8 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
 /**
- * This is a small utility class, whose main functionality is to allow simple reuse of raw byte/char buffers. It is usually used through <code>ThreadLocal</code> member of the owning class pointing to
- * instance of this class through a <code>SoftReference</code>. The end result is a low-overhead GC-cleanable recycling: hopefully ideal for use by stream readers.
+ * This is a small utility class, whose main functionality is to allow simple reuse of raw byte/char buffers. It is usually used through <code>ThreadLocal</code> member of the owning class pointing to instance of this class through a <code>SoftReference</code>. The end result is a low-overhead GC-cleanable recycling: hopefully ideal for use by stream readers.
  */
 public class BufferRecycler {
 	/**
@@ -31,8 +30,8 @@ public class BufferRecycler {
 	public final static int CHAR_CONCAT_BUFFER = 1; // concatenated output
 	public final static int CHAR_TEXT_BUFFER = 2; // Text content from input
 	public final static int CHAR_NAME_COPY_BUFFER = 3; // Temporary buffer for
-														// getting name
-														// characters
+	// getting name
+	// characters
 
 	// Buffer lengths, defined in 2.4 (smaller before that)
 
@@ -81,7 +80,7 @@ public class BufferRecycler {
 			minSize = DEF_SIZE;
 		}
 		byte[] buffer = _byteBuffers[ix];
-		if (buffer == null || buffer.length < minSize) {
+		if ((buffer == null) || (buffer.length < minSize)) {
 			buffer = balloc(minSize);
 		} else {
 			_byteBuffers[ix] = null;
@@ -107,7 +106,7 @@ public class BufferRecycler {
 			minSize = DEF_SIZE;
 		}
 		char[] buffer = _charBuffers[ix];
-		if (buffer == null || buffer.length < minSize) {
+		if ((buffer == null) || (buffer.length < minSize)) {
 			buffer = calloc(minSize);
 		} else {
 			_charBuffers[ix] = null;

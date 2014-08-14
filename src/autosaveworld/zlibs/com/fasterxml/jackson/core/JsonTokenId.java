@@ -1,8 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Interface defined to contain ids accessible with {@link JsonToken#id()}. Needed because it is impossible to define these constants in {@link JsonToken} itself, as static constants (oddity of how
- * Enums are implemented by JVM).
+ * Interface defined to contain ids accessible with {@link JsonToken#id()}. Needed because it is impossible to define these constants in {@link JsonToken} itself, as static constants (oddity of how Enums are implemented by JVM).
  *
  * @since 2.3
  */
@@ -13,8 +12,7 @@ public interface JsonTokenId {
 	public final static int ID_NOT_AVAILABLE = -1;
 
 	/**
-	 * Id used to represent the case where no {@link JsonToken} is available: either because {@link JsonParser} has not been advanced to first token, or because no more tokens will be available
-	 * (end-of-input or explicit closing of parser}.
+	 * Id used to represent the case where no {@link JsonToken} is available: either because {@link JsonParser} has not been advanced to first token, or because no more tokens will be available (end-of-input or explicit closing of parser}.
 	 */
 	public final static int ID_NO_TOKEN = 0;
 

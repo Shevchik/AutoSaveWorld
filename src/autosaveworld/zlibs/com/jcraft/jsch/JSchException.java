@@ -45,12 +45,12 @@ public class JSchException extends Exception {
 
 	public JSchException(String s, Throwable e) {
 		super(s);
-		this.cause = e;
+		cause = e;
 	}
 
 	@Override
 	public Throwable getCause() {
-		return this.cause;
+		return cause;
 	}
 
 }

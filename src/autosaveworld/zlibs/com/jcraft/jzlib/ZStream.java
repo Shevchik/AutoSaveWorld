@@ -160,7 +160,7 @@ public class ZStream {
 	}
 
 	public int deflateInit(int level, int bits, int memlevel, JZlib.WrapperType wrapperType) {
-		if (bits < 9 || bits > 15) {
+		if ((bits < 9) || (bits > 15)) {
 			return Z_STREAM_ERROR;
 		}
 		if (wrapperType == JZlib.W_NONE) {
@@ -228,7 +228,7 @@ public class ZStream {
 			return;
 		}
 
-		if (dstate.pending_buf.length <= dstate.pending_out || next_out.length <= next_out_index || dstate.pending_buf.length < (dstate.pending_out + len) || next_out.length < (next_out_index + len)) {
+		if ((dstate.pending_buf.length <= dstate.pending_out) || (next_out.length <= next_out_index) || (dstate.pending_buf.length < (dstate.pending_out + len)) || (next_out.length < (next_out_index + len))) {
 			// System.out.println(dstate.pending_buf.length+", "+dstate.pending_out+
 			// ", "+next_out.length+", "+next_out_index+", "+len);
 			// System.out.println("avail_out="+avail_out);
@@ -301,11 +301,11 @@ public class ZStream {
 	}
 
 	public void setInput(byte[] buf, int off, int len, boolean append) {
-		if (len <= 0 && append && next_in != null) {
+		if ((len <= 0) && append && (next_in != null)) {
 			return;
 		}
 
-		if (avail_in > 0 && append) {
+		if ((avail_in > 0) && append) {
 			byte[] tmp = new byte[avail_in + len];
 			System.arraycopy(next_in, next_in_index, tmp, 0, avail_in);
 			System.arraycopy(buf, off, tmp, avail_in, len);

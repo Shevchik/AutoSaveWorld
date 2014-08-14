@@ -95,7 +95,7 @@ final public class Deflater extends ZStream {
 	}
 
 	public int init(int level, int bits, int memlevel, JZlib.WrapperType wrapperType) {
-		if (bits < 9 || bits > 15) {
+		if ((bits < 9) || (bits > 15)) {
 			return Z_STREAM_ERROR;
 		}
 		if (wrapperType == JZlib.W_NONE) {
@@ -165,7 +165,7 @@ final public class Deflater extends ZStream {
 	}
 
 	public int copy(Deflater src) {
-		this.finished = src.finished;
+		finished = src.finished;
 		return Deflate.deflateCopy(this, src);
 	}
 }

@@ -54,7 +54,7 @@ class Util {
 		try {
 			byte[] foo = new byte[length];
 			int j = 0;
-			for (int i = start; i < start + length; i += 4) {
+			for (int i = start; i < (start + length); i += 4) {
 				foo[j] = (byte) ((val(buf[i]) << 2) | ((val(buf[i + 1]) & 0x30) >>> 4));
 				if (buf[i + 2] == (byte) '=') {
 					j++;
@@ -81,14 +81,14 @@ class Util {
 		byte[] tmp = new byte[length * 2];
 		int i, j, k;
 
-		int foo = (length / 3) * 3 + start;
+		int foo = ((length / 3) * 3) + start;
 		i = 0;
 		for (j = start; j < foo; j += 3) {
 			k = (buf[j] >>> 2) & 0x3f;
 			tmp[i++] = b64[k];
-			k = (buf[j] & 0x03) << 4 | (buf[j + 1] >>> 4) & 0x0f;
+			k = ((buf[j] & 0x03) << 4) | ((buf[j + 1] >>> 4) & 0x0f);
 			tmp[i++] = b64[k];
-			k = (buf[j + 1] & 0x0f) << 2 | (buf[j + 2] >>> 6) & 0x03;
+			k = ((buf[j + 1] & 0x0f) << 2) | ((buf[j + 2] >>> 6) & 0x03);
 			tmp[i++] = b64[k];
 			k = buf[j + 2] & 0x3f;
 			tmp[i++] = b64[k];
@@ -105,7 +105,7 @@ class Util {
 		} else if (foo == 2) {
 			k = (buf[j] >>> 2) & 0x3f;
 			tmp[i++] = b64[k];
-			k = (buf[j] & 0x03) << 4 | (buf[j + 1] >>> 4) & 0x0f;
+			k = ((buf[j] & 0x03) << 4) | ((buf[j + 1] >>> 4) & 0x0f);
 			tmp[i++] = b64[k];
 			k = ((buf[j + 1] & 0x0f) << 2) & 0x3f;
 			tmp[i++] = b64[k];
@@ -147,9 +147,9 @@ class Util {
 	}
 
 	static private boolean glob0(byte[] pattern, int pattern_index, byte[] name, int name_index) {
-		if (name.length > 0 && name[0] == '.') {
-			if (pattern.length > 0 && pattern[0] == '.') {
-				if (pattern.length == 2 && pattern[1] == '*') {
+		if ((name.length > 0) && (name[0] == '.')) {
+			if ((pattern.length > 0) && (pattern[0] == '.')) {
+				if ((pattern.length == 2) && (pattern[1] == '*')) {
 					return true;
 				}
 				return glob(pattern, pattern_index + 1, name, name_index + 1);
@@ -173,9 +173,9 @@ class Util {
 		int i = pattern_index;
 		int j = name_index;
 
-		while (i < patternlen && j < namelen) {
+		while ((i < patternlen) && (j < namelen)) {
 			if (pattern[i] == '\\') {
-				if (i + 1 == patternlen) {
+				if ((i + 1) == patternlen) {
 					return false;
 				}
 				i++;
@@ -209,7 +209,7 @@ class Util {
 					}
 					return false;
 				} else if (foo == '\\') {
-					if (i + 1 == patternlen) {
+					if ((i + 1) == patternlen) {
 						return false;
 					}
 					i++;
@@ -260,12 +260,12 @@ class Util {
 			continue;
 		}
 
-		if (i == patternlen && j == namelen) {
+		if ((i == patternlen) && (j == namelen)) {
 			return true;
 		}
 
 		if (!(j < namelen) && // name is end
-				pattern[i] == '*') {
+				(pattern[i] == '*')) {
 			boolean ok = true;
 			while (i < patternlen) {
 				if (pattern[i++] != '*') {
@@ -284,7 +284,7 @@ class Util {
 		int count = 0;
 		for (int i = 0; i < _path.length; i++) {
 			byte b = _path[i];
-			if (b == '\\' || b == '?' || b == '*') {
+			if ((b == '\\') || (b == '?') || (b == '*')) {
 				count++;
 			}
 		}
@@ -294,7 +294,7 @@ class Util {
 		byte[] _path2 = new byte[_path.length + count];
 		for (int i = 0, j = 0; i < _path.length; i++) {
 			byte b = _path[i];
-			if (b == '\\' || b == '?' || b == '*') {
+			if ((b == '\\') || (b == '?') || (b == '*')) {
 				_path2[j++] = '\\';
 			}
 			_path2[j++] = b;
@@ -316,7 +316,7 @@ class Util {
 		int i = 0;
 		while (i < pathlen) {
 			if (path[i] == '\\') {
-				if (i + 1 == pathlen) {
+				if ((i + 1) == pathlen) {
 					break;
 				}
 				System.arraycopy(path, i + 1, path, i, path.length - (i + 1));
@@ -347,7 +347,7 @@ class Util {
 				bar = foo[i] & 0xff;
 				sb.append(chars[(bar >>> 4) & 0xf]);
 				sb.append(chars[(bar) & 0xf]);
-				if (i + 1 < foo.length) {
+				if ((i + 1) < foo.length) {
 					sb.append(":");
 				}
 			}
@@ -399,7 +399,7 @@ class Util {
 					sockp[0] = new Socket(_host, _port);
 				} catch (Exception e) {
 					ee[0] = e;
-					if (sockp[0] != null && sockp[0].isConnected()) {
+					if ((sockp[0] != null) && sockp[0].isConnected()) {
 						try {
 							sockp[0].close();
 						} catch (Exception eee) {
@@ -416,7 +416,7 @@ class Util {
 			message = "timeout: ";
 		} catch (java.lang.InterruptedException eee) {
 		}
-		if (sockp[0] != null && sockp[0].isConnected()) {
+		if ((sockp[0] != null) && sockp[0].isConnected()) {
 			socket = sockp[0];
 		} else {
 			message += "socket is not established";
@@ -470,7 +470,7 @@ class Util {
 		for (int i = 0; i < str.length; i++) {
 			String foo = Integer.toHexString(str[i] & 0xff);
 			sb.append("0x" + (foo.length() == 1 ? "0" : "") + foo);
-			if (i + 1 < str.length) {
+			if ((i + 1) < str.length) {
 				sb.append(":");
 			}
 		}
@@ -480,8 +480,7 @@ class Util {
 	static final byte[] empty = str2byte("");
 
 	/*
-	 * static byte[] char2byte(char[] foo){ int len=0; for(int i=0; i<foo.length; i++){ if((foo[i]&0xff00)==0) len++; else len+=2; } byte[] bar=new byte[len]; for(int i=0, j=0; i<foo.length; i++){
-	 * if((foo[i]&0xff00)==0){ bar[j++]=(byte)foo[i]; } else{ bar[j++]=(byte)(foo[i]>>>8); bar[j++]=(byte)foo[i]; } } return bar; }
+	 * static byte[] char2byte(char[] foo){ int len=0; for(int i=0; i<foo.length; i++){ if((foo[i]&0xff00)==0) len++; else len+=2; } byte[] bar=new byte[len]; for(int i=0, j=0; i<foo.length; i++){ if((foo[i]&0xff00)==0){ bar[j++]=(byte)foo[i]; } else{ bar[j++]=(byte)(foo[i]>>>8); bar[j++]=(byte)foo[i]; } } return bar; }
 	 */
 	static void bzero(byte[] foo) {
 		if (foo == null) {

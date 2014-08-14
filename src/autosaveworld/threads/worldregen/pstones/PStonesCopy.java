@@ -38,8 +38,9 @@ import com.sk89q.worldedit.bukkit.BukkitUtil;
 public class PStonesCopy {
 
 	private World wtoregen;
+
 	public PStonesCopy(String worldtoregen) {
-		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
 	public void copyAllToSchematics() {
@@ -50,12 +51,12 @@ public class PStonesCopy {
 		new File(GlobalConstants.getPStonesTempFolder()).mkdirs();
 
 		for (Field field : pstones.getForceFieldManager().getFields("*", wtoregen)) {
-			MessageLogger.debug("Saving PreciousStones Region "+field.getId()+" to schematic");
+			MessageLogger.debug("Saving PreciousStones Region " + field.getId() + " to schematic");
 			Vector min = new Vector(field.getMinx(), field.getMiny(), field.getMinz());
 			Vector max = new Vector(field.getMaxx(), field.getMaxy(), field.getMaxz());
-			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getPStonesTempFolder()+field.getId(), BukkitUtil.toVector(min), BukkitUtil.toVector(max));
+			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getPStonesTempFolder() + field.getId(), BukkitUtil.toVector(min), BukkitUtil.toVector(max));
 			SchematicOperations.saveToSchematic(wtoregen, new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
-			MessageLogger.debug("PreciousStones Region "+field.getId()+" saved");
+			MessageLogger.debug("PreciousStones Region " + field.getId() + " saved");
 		}
 
 	}

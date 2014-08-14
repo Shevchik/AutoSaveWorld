@@ -27,12 +27,12 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.CommandUtils;
 import autosaveworld.utils.SchedulerUtils;
 
-
-public class AutoRestartThread  extends Thread{
+public class AutoRestartThread extends Thread {
 
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 	private RestartJVMshutdownhook jvmsh;
+
 	public AutoRestartThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
 		this.config = config;
 		this.configmsg = configmsg;
@@ -40,25 +40,30 @@ public class AutoRestartThread  extends Thread{
 	}
 
 	public void stopThread() {
-		this.run = false;
+		run = false;
 	}
 
 	public void startrestart(boolean skipcountdown) {
-		this.command = true;
+		command = true;
 		this.skipcountdown = skipcountdown;
 	}
-
 
 	private volatile boolean run = true;
 	private boolean command = false;
 	private boolean skipcountdown = false;
+
 	@Override
 	public void run() {
 		MessageLogger.debug("AutoRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld AutoRestartThread");
 
-		//check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
-		if  (config.autoRestartTimes.contains(getCurTime()))	{try {Thread.sleep(61000);} catch (InterruptedException e) {}}
+		// check if we just restarted (server can restart faster than 1 minute. Without this check AutoRestartThread will stop working after restart)
+		if (config.autoRestartTimes.contains(getCurTime())) {
+			try {
+				Thread.sleep(61000);
+			} catch (InterruptedException e) {
+			}
+		}
 
 		while (run) {
 			if ((config.autoRestart && config.autoRestartTimes.contains(getCurTime())) || command) {
@@ -66,11 +71,14 @@ public class AutoRestartThread  extends Thread{
 				command = false;
 
 				if (config.autoRestartCountdown && !skipcountdown) {
-					for (int i = config.autoRestartCountdownSeconds.get(0); i>0; i--) {
+					for (int i = config.autoRestartCountdownSeconds.get(0); i > 0; i--) {
 						if (config.autoRestartCountdownSeconds.contains(i)) {
 							MessageLogger.broadcast(configmsg.messageAutoRestartCountdown.replace("{SECONDS}", String.valueOf(i)), true);
 						}
-						try {Thread.sleep(1000);} catch (InterruptedException e) {}
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+						}
 					}
 				}
 
@@ -83,22 +91,22 @@ public class AutoRestartThread  extends Thread{
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 
-				SchedulerUtils.callSyncTaskAndWait(
-					new Runnable() {
-						@Override
-						public void run() {
-							for (String command : config.autoRestartPreStopCommmands) {
-								CommandUtils.dispatchCommandAsConsole(command);
-							}
+				SchedulerUtils.callSyncTaskAndWait(new Runnable() {
+					@Override
+					public void run() {
+						for (String command : config.autoRestartPreStopCommmands) {
+							CommandUtils.dispatchCommandAsConsole(command);
 						}
-					},
-					10
-				);
+					}
+				}, 10);
 
 				Bukkit.shutdown();
 
 			}
-			try {Thread.sleep(1000);} catch (InterruptedException e) {}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
 		}
 
 		MessageLogger.debug("Graceful quit of AutoRestartThread");
@@ -106,6 +114,7 @@ public class AutoRestartThread  extends Thread{
 	}
 
 	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
 	private String getCurTime() {
 		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;

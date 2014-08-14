@@ -154,7 +154,7 @@ public abstract class KeyPair {
 			}
 			int i = 0;
 			while (i < prv.length) {
-				if (i + 64 < prv.length) {
+				if ((i + 64) < prv.length) {
 					out.write(prv, i, 64);
 					out.write(cr);
 					i += 64;
@@ -334,9 +334,9 @@ public abstract class KeyPair {
 		{
 			// int bsize=cipher.getBlockSize();
 			int bsize = cipher.getIVSize();
-			byte[] foo = new byte[(encoded.length / bsize + 1) * bsize];
+			byte[] foo = new byte[((encoded.length / bsize) + 1) * bsize];
 			System.arraycopy(encoded, 0, foo, 0, encoded.length);
-			int padding = bsize - encoded.length % bsize;
+			int padding = bsize - (encoded.length % bsize);
 			for (int i = foo.length - 1; (foo.length - padding) <= i; i--) {
 				foo[i] = (byte) padding;
 			}
@@ -391,7 +391,7 @@ public abstract class KeyPair {
 		}
 		while (len > 0) {
 			len >>>= 8;
-			i++;
+				i++;
 		}
 		return i;
 	}
@@ -405,7 +405,7 @@ public abstract class KeyPair {
 		data[index++] = (byte) (0x80 | i);
 		int j = index + i;
 		while (i > 0) {
-			data[index + i - 1] = (byte) (len & 0xff);
+			data[(index + i) - 1] = (byte) (len & 0xff);
 			len >>>= 8;
 			i--;
 		}
@@ -457,11 +457,11 @@ public abstract class KeyPair {
 
 		byte[] key = new byte[cipher.getBlockSize()];
 		int hsize = hash.getBlockSize();
-		byte[] hn = new byte[key.length / hsize * hsize + (key.length % hsize == 0 ? 0 : hsize)];
+		byte[] hn = new byte[((key.length / hsize) * hsize) + ((key.length % hsize) == 0 ? 0 : hsize)];
 		try {
 			byte[] tmp = null;
 			if (vendor == VENDOR_OPENSSH) {
-				for (int index = 0; index + hsize <= hn.length;) {
+				for (int index = 0; (index + hsize) <= hn.length;) {
 					if (tmp != null) {
 						hash.update(tmp, 0, tmp.length);
 					}
@@ -473,7 +473,7 @@ public abstract class KeyPair {
 				}
 				System.arraycopy(hn, 0, key, 0, key.length);
 			} else if (vendor == VENDOR_FSECURE) {
-				for (int index = 0; index + hsize <= hn.length;) {
+				for (int index = 0; (index + hsize) <= hn.length;) {
 					if (tmp != null) {
 						hash.update(tmp, 0, tmp.length);
 					}
@@ -507,7 +507,7 @@ public abstract class KeyPair {
 	 */
 	@Deprecated
 	public void setPassphrase(String passphrase) {
-		if (passphrase == null || passphrase.length() == 0) {
+		if ((passphrase == null) || (passphrase.length() == 0)) {
 			setPassphrase((byte[]) null);
 		} else {
 			setPassphrase(Util.str2byte(passphrase));
@@ -519,7 +519,7 @@ public abstract class KeyPair {
 	 */
 	@Deprecated
 	public void setPassphrase(byte[] passphrase) {
-		if (passphrase != null && passphrase.length == 0) {
+		if ((passphrase != null) && (passphrase.length == 0)) {
 			passphrase = null;
 		}
 		this.passphrase = passphrase;
@@ -535,7 +535,7 @@ public abstract class KeyPair {
 	}
 
 	public boolean decrypt(String _passphrase) {
-		if (_passphrase == null || _passphrase.length() == 0) {
+		if ((_passphrase == null) || (_passphrase.length() == 0)) {
 			return !encrypted;
 		}
 		return decrypt(Util.str2byte(_passphrase));
@@ -613,7 +613,7 @@ public abstract class KeyPair {
 		Cipher cipher = null;
 
 		// prvkey from "ssh-add" command on the remote.
-		if (pubkey == null && prvkey != null && (prvkey.length > 11 && prvkey[0] == 0 && prvkey[1] == 0 && prvkey[2] == 0 && prvkey[3] == 7)) {
+		if ((pubkey == null) && (prvkey != null) && ((prvkey.length > 11) && (prvkey[0] == 0) && (prvkey[1] == 0) && (prvkey[2] == 0) && (prvkey[3] == 7))) {
 
 			Buffer buf = new Buffer(prvkey);
 			buf.skip(prvkey.length); // for using Buffer#available()
@@ -646,32 +646,31 @@ public abstract class KeyPair {
 
 			// skip garbage lines.
 			while (i < len) {
-				if (buf[i] == '-' && i + 4 < len && buf[i + 1] == '-' && buf[i + 2] == '-' && buf[i + 3] == '-' && buf[i + 4] == '-') {
+				if ((buf[i] == '-') && ((i + 4) < len) && (buf[i + 1] == '-') && (buf[i + 2] == '-') && (buf[i + 3] == '-') && (buf[i + 4] == '-')) {
 					break;
 				}
 				i++;
 			}
 
 			while (i < len) {
-				if (buf[i] == 'B' && i + 3 < len && buf[i + 1] == 'E' && buf[i + 2] == 'G' && buf[i + 3] == 'I') {
+				if ((buf[i] == 'B') && ((i + 3) < len) && (buf[i + 1] == 'E') && (buf[i + 2] == 'G') && (buf[i + 3] == 'I')) {
 					i += 6;
-					if (i + 2 >= len) {
+					if ((i + 2) >= len) {
 						throw new JSchException("invalid privatekey: " + prvkey);
 					}
-					if (buf[i] == 'D' && buf[i + 1] == 'S' && buf[i + 2] == 'A') {
+					if ((buf[i] == 'D') && (buf[i + 1] == 'S') && (buf[i + 2] == 'A')) {
 						type = DSA;
-					} else if (buf[i] == 'R' && buf[i + 1] == 'S' && buf[i + 2] == 'A') {
+					} else if ((buf[i] == 'R') && (buf[i + 1] == 'S') && (buf[i + 2] == 'A')) {
 						type = RSA;
-					} else if (buf[i] == 'S' && buf[i + 1] == 'S' && buf[i + 2] == 'H') { // FSecure
+					} else if ((buf[i] == 'S') && (buf[i + 1] == 'S') && (buf[i + 2] == 'H')) { // FSecure
 						type = UNKNOWN;
 						vendor = VENDOR_FSECURE;
-					} else if (i + 6 < len && buf[i] == 'P' && buf[i + 1] == 'R' && buf[i + 2] == 'I' && buf[i + 3] == 'V' && buf[i + 4] == 'A' && buf[i + 5] == 'T' && buf[i + 6] == 'E') {
+					} else if (((i + 6) < len) && (buf[i] == 'P') && (buf[i + 1] == 'R') && (buf[i + 2] == 'I') && (buf[i + 3] == 'V') && (buf[i + 4] == 'A') && (buf[i + 5] == 'T') && (buf[i + 6] == 'E')) {
 						type = UNKNOWN;
 						vendor = VENDOR_PKCS8;
 						encrypted = false;
 						i += 3;
-					} else if (i + 8 < len && buf[i] == 'E' && buf[i + 1] == 'N' && buf[i + 2] == 'C' && buf[i + 3] == 'R' && buf[i + 4] == 'Y' && buf[i + 5] == 'P' && buf[i + 6] == 'T'
-							&& buf[i + 7] == 'E' && buf[i + 8] == 'D') {
+					} else if (((i + 8) < len) && (buf[i] == 'E') && (buf[i + 1] == 'N') && (buf[i + 2] == 'C') && (buf[i + 3] == 'R') && (buf[i + 4] == 'Y') && (buf[i + 5] == 'P') && (buf[i + 6] == 'T') && (buf[i + 7] == 'E') && (buf[i + 8] == 'D')) {
 						type = UNKNOWN;
 						vendor = VENDOR_PKCS8;
 						i += 5;
@@ -681,7 +680,7 @@ public abstract class KeyPair {
 					i += 3;
 					continue;
 				}
-				if (buf[i] == 'A' && i + 7 < len && buf[i + 1] == 'E' && buf[i + 2] == 'S' && buf[i + 3] == '-' && buf[i + 4] == '2' && buf[i + 5] == '5' && buf[i + 6] == '6' && buf[i + 7] == '-') {
+				if ((buf[i] == 'A') && ((i + 7) < len) && (buf[i + 1] == 'E') && (buf[i + 2] == 'S') && (buf[i + 3] == '-') && (buf[i + 4] == '2') && (buf[i + 5] == '5') && (buf[i + 6] == '6') && (buf[i + 7] == '-')) {
 					i += 8;
 					if (Session.checkCipher(JSch.getConfig("aes256-cbc"))) {
 						Class<?> c = Class.forName(JSch.getConfig("aes256-cbc"));
@@ -693,7 +692,7 @@ public abstract class KeyPair {
 					}
 					continue;
 				}
-				if (buf[i] == 'A' && i + 7 < len && buf[i + 1] == 'E' && buf[i + 2] == 'S' && buf[i + 3] == '-' && buf[i + 4] == '1' && buf[i + 5] == '9' && buf[i + 6] == '2' && buf[i + 7] == '-') {
+				if ((buf[i] == 'A') && ((i + 7) < len) && (buf[i + 1] == 'E') && (buf[i + 2] == 'S') && (buf[i + 3] == '-') && (buf[i + 4] == '1') && (buf[i + 5] == '9') && (buf[i + 6] == '2') && (buf[i + 7] == '-')) {
 					i += 8;
 					if (Session.checkCipher(JSch.getConfig("aes192-cbc"))) {
 						Class<?> c = Class.forName(JSch.getConfig("aes192-cbc"));
@@ -705,7 +704,7 @@ public abstract class KeyPair {
 					}
 					continue;
 				}
-				if (buf[i] == 'A' && i + 7 < len && buf[i + 1] == 'E' && buf[i + 2] == 'S' && buf[i + 3] == '-' && buf[i + 4] == '1' && buf[i + 5] == '2' && buf[i + 6] == '8' && buf[i + 7] == '-') {
+				if ((buf[i] == 'A') && ((i + 7) < len) && (buf[i + 1] == 'E') && (buf[i + 2] == 'S') && (buf[i + 3] == '-') && (buf[i + 4] == '1') && (buf[i + 5] == '2') && (buf[i + 6] == '8') && (buf[i + 7] == '-')) {
 					i += 8;
 					if (Session.checkCipher(JSch.getConfig("aes128-cbc"))) {
 						Class<?> c = Class.forName(JSch.getConfig("aes128-cbc"));
@@ -717,23 +716,23 @@ public abstract class KeyPair {
 					}
 					continue;
 				}
-				if (buf[i] == 'C' && i + 3 < len && buf[i + 1] == 'B' && buf[i + 2] == 'C' && buf[i + 3] == ',') {
+				if ((buf[i] == 'C') && ((i + 3) < len) && (buf[i + 1] == 'B') && (buf[i + 2] == 'C') && (buf[i + 3] == ',')) {
 					i += 4;
 					for (int ii = 0; ii < iv.length; ii++) {
 						iv[ii] = (byte) (((a2b(buf[i++]) << 4) & 0xf0) + (a2b(buf[i++]) & 0xf));
 					}
 					continue;
 				}
-				if (buf[i] == 0x0d && i + 1 < buf.length && buf[i + 1] == 0x0a) {
+				if ((buf[i] == 0x0d) && ((i + 1) < buf.length) && (buf[i + 1] == 0x0a)) {
 					i++;
 					continue;
 				}
-				if (buf[i] == 0x0a && i + 1 < buf.length) {
+				if ((buf[i] == 0x0a) && ((i + 1) < buf.length)) {
 					if (buf[i + 1] == 0x0a) {
 						i += 2;
 						break;
 					}
-					if (buf[i + 1] == 0x0d && i + 2 < buf.length && buf[i + 2] == 0x0a) {
+					if ((buf[i + 1] == 0x0d) && ((i + 2) < buf.length) && (buf[i + 2] == 0x0a)) {
 						i += 3;
 						break;
 					}
@@ -773,7 +772,7 @@ public abstract class KeyPair {
 					i++;
 				}
 
-				if ((len - i) == 0 || (i - start) == 0) {
+				if (((len - i) == 0) || ((i - start) == 0)) {
 					throw new JSchException("invalid privatekey: " + prvkey);
 				}
 
@@ -803,15 +802,15 @@ public abstract class KeyPair {
 					i++;
 				}
 
-				if (i - start > 0) {
+				if ((i - start) > 0) {
 					data = Util.fromBase64(_buf, start, i - start);
 				}
 
 				Util.bzero(_buf);
 			}
 
-			if (data != null && data.length > 4 && // FSecure
-					data[0] == (byte) 0x3f && data[1] == (byte) 0x6f && data[2] == (byte) 0xf9 && data[3] == (byte) 0xeb) {
+			if ((data != null) && (data.length > 4) && // FSecure
+					(data[0] == (byte) 0x3f) && (data[1] == (byte) 0x6f) && (data[2] == (byte) 0xf9) && (data[3] == (byte) 0xeb)) {
 
 				Buffer _buf = new Buffer(data);
 				_buf.getInt(); // 0x3f6ff9be
@@ -843,14 +842,14 @@ public abstract class KeyPair {
 				try {
 					buf = pubkey;
 					len = buf.length;
-					if (buf.length > 4 && // FSecure's public key
-							buf[0] == '-' && buf[1] == '-' && buf[2] == '-' && buf[3] == '-') {
+					if ((buf.length > 4) && // FSecure's public key
+							(buf[0] == '-') && (buf[1] == '-') && (buf[2] == '-') && (buf[3] == '-')) {
 
 						boolean valid = true;
 						i = 0;
 						do {
 							i++;
-						} while (buf.length > i && buf[i] != 0x0a);
+						} while ((buf.length > i) && (buf[i] != 0x0a));
 						if (buf.length <= i) {
 							valid = false;
 						}
@@ -879,7 +878,7 @@ public abstract class KeyPair {
 						}
 
 						int start = i;
-						while (valid && i < len) {
+						while (valid && (i < len)) {
 							if (buf[i] == 0x0a) {
 								System.arraycopy(buf, i + 1, buf, i, len - i - 1);
 								len--;
@@ -892,7 +891,7 @@ public abstract class KeyPair {
 						}
 						if (valid) {
 							publickeyblob = Util.fromBase64(buf, start, i - start);
-							if (prvkey == null || type == UNKNOWN) {
+							if ((prvkey == null) || (type == UNKNOWN)) {
 								if (publickeyblob[8] == 'd') {
 									type = DSA;
 								} else if (publickeyblob[8] == 'r') {
@@ -901,8 +900,8 @@ public abstract class KeyPair {
 							}
 						}
 					} else {
-						if (buf[0] == 's' && buf[1] == 's' && buf[2] == 'h' && buf[3] == '-') {
-							if (prvkey == null && buf.length > 7) {
+						if ((buf[0] == 's') && (buf[1] == 's') && (buf[2] == 'h') && (buf[3] == '-')) {
+							if ((prvkey == null) && (buf.length > 7)) {
 								if (buf[4] == 'd') {
 									type = DSA;
 								} else if (buf[4] == 'r') {
@@ -935,7 +934,7 @@ public abstract class KeyPair {
 									}
 									i++;
 								}
-								if (i > 0 && buf[i - 1] == 0x0d) {
+								if ((i > 0) && (buf[i - 1] == 0x0d)) {
 									i--;
 								}
 								if (start < i) {
@@ -991,17 +990,17 @@ public abstract class KeyPair {
 	}
 
 	static private byte a2b(byte c) {
-		if ('0' <= c && c <= '9') {
+		if (('0' <= c) && (c <= '9')) {
 			return (byte) (c - '0');
 		}
-		return (byte) (c - 'a' + 10);
+		return (byte) ((c - 'a') + 10);
 	}
 
 	static private byte b2a(byte c) {
-		if (0 <= c && c <= 9) {
+		if ((0 <= c) && (c <= 9)) {
 			return (byte) (c + '0');
 		}
-		return (byte) (c - 10 + 'A');
+		return (byte) ((c - 10) + 'A');
 	}
 
 	public void dispose() {
@@ -1125,7 +1124,7 @@ public abstract class KeyPair {
 						data = new byte[i - index - 1];
 						System.arraycopy(buf, index, data, 0, i - index - 1);
 					} else {
-						byte[] tmp = new byte[data.length + i - index - 1];
+						byte[] tmp = new byte[(data.length + i) - index - 1];
 						System.arraycopy(data, 0, tmp, 0, data.length);
 						System.arraycopy(buf, index, tmp, data.length, i - index - 1);
 						for (int j = 0; j < data.length; j++) {
@@ -1161,7 +1160,7 @@ public abstract class KeyPair {
 			if (buf[i] == ':') {
 				key = new String(buf, index, i - index);
 				i++;
-				if (i < buf.length && buf[i] == ' ') {
+				if ((i < buf.length) && (buf[i] == ' ')) {
 					i++;
 				}
 				index = i;
@@ -1177,7 +1176,7 @@ public abstract class KeyPair {
 			if (buf[i] == 0x0d) {
 				value = new String(buf, index, i - index);
 				i++;
-				if (i < buf.length && buf[i] == 0x0a) {
+				if ((i < buf.length) && (buf[i] == 0x0a)) {
 					i++;
 				}
 				index = i;
@@ -1190,14 +1189,14 @@ public abstract class KeyPair {
 			buffer.index = index;
 		}
 
-		return (key != null && value != null);
+		return ((key != null) && (value != null));
 	}
 
 	void copy(KeyPair kpair) {
-		this.publickeyblob = kpair.publickeyblob;
-		this.vendor = kpair.vendor;
-		this.publicKeyComment = kpair.publicKeyComment;
-		this.cipher = kpair.cipher;
+		publickeyblob = kpair.publickeyblob;
+		vendor = kpair.vendor;
+		publicKeyComment = kpair.publicKeyComment;
+		cipher = kpair.cipher;
 	}
 
 	class ASN1Exception extends Exception {
@@ -1217,7 +1216,7 @@ public abstract class KeyPair {
 			this.buf = buf;
 			this.start = start;
 			this.length = length;
-			if (start + length > buf.length) {
+			if ((start + length) > buf.length) {
 				throw new ASN1Exception();
 			}
 		}

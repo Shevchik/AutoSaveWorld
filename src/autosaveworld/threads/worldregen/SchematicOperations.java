@@ -46,24 +46,20 @@ public class SchematicOperations {
 			public void run() {
 				for (SchematicToSave schematicdata : schematicdatas) {
 					try {
-						//create clipboard
+						// create clipboard
 						BukkitWorld bw = new BukkitWorld(world);
 						EditSession es = new EditSession(bw, Integer.MAX_VALUE);
-						CuboidClipboard clipboard = new CuboidClipboard(
-							schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)),
-							schematicdata.getMin(),
-							schematicdata.getMin().subtract(schematicdata.getMax())
-						);
+						CuboidClipboard clipboard = new CuboidClipboard(schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)), schematicdata.getMin(), schematicdata.getMin().subtract(schematicdata.getMax()));
 						Region region = new CuboidRegion(bw, schematicdata.getMin(), schematicdata.getMax());
 						es.setFastMode(true);
-						//copy blocks
+						// copy blocks
 						clipboard.copy(es);
-						//copy entities (note: worldedit doesn't save entities to schematic, but i will just leave it here in case worldedit will start doing it some day)
+						// copy entities (note: worldedit doesn't save entities to schematic, but i will just leave it here in case worldedit will start doing it some day)
 						LocalEntity[] entities = bw.getEntities(region);
 						for (LocalEntity entity : entities) {
 							clipboard.storeEntity(entity);
 						}
-						//save to schematic
+						// save to schematic
 						SchematicFormat.MCEDIT.save(clipboard, schematicdata.getFile());
 					} catch (IOException | DataException e) {
 						e.printStackTrace();
@@ -76,7 +72,7 @@ public class SchematicOperations {
 
 	public static void pasteFromSchematic(final World world, final LinkedList<SchematicToLoad> schematicdatas) {
 		final LinkedList<CuboidClipboard> clipboards = new LinkedList<CuboidClipboard>();
-		//load from schematics to clipboards
+		// load from schematics to clipboards
 		for (SchematicToLoad schematicdata : schematicdatas) {
 			try {
 				clipboards.add(SchematicFormat.MCEDIT.load(schematicdata.getFile()));
@@ -84,24 +80,24 @@ public class SchematicOperations {
 				e.printStackTrace();
 			}
 		}
-		//generate chunks
+		// generate chunks
 		Runnable genchunks = new Runnable() {
 			@Override
 			public void run() {
 				for (CuboidClipboard clipboard : clipboards) {
 					final Vector size = clipboard.getSize();
 					final Vector origin = clipboard.getOrigin();
-					//generate chunks at schematic position and 3 chunk radius nearby
-					for (int x = -16*3; x < size.getBlockX() + 16*3; x+=16) {
-						for (int z = -16*3; z < size.getBlockZ() + 16*3; z+=16) {
-							world.getChunkAt(origin.getBlockX()+x, origin.getBlockZ()+z).load();
+					// generate chunks at schematic position and 3 chunk radius nearby
+					for (int x = -16 * 3; x < (size.getBlockX() + (16 * 3)); x += 16) {
+						for (int z = -16 * 3; z < (size.getBlockZ() + (16 * 3)); z += 16) {
+							world.getChunkAt(origin.getBlockX() + x, origin.getBlockZ() + z).load();
 						}
 					}
 				}
 			}
 		};
 		SchedulerUtils.callSyncTaskAndWait(genchunks);
-		//paste schematics
+		// paste schematics
 		Runnable paste = new Runnable() {
 			@Override
 			public void run() {
@@ -111,7 +107,7 @@ public class SchematicOperations {
 					es.enableQueue();
 					final Vector size = clipboard.getSize();
 					final Vector origin = clipboard.getOrigin();
-					//paste blocks
+					// paste blocks
 					for (int x = 0; x < size.getBlockX(); ++x) {
 						for (int y = 0; y < size.getBlockY(); ++y) {
 							for (int z = 0; z < size.getBlockZ(); ++z) {
@@ -135,7 +131,7 @@ public class SchematicOperations {
 					} catch (Throwable t) {
 						t.printStackTrace();
 					}
-					//paste entities (note: worldedit doesn't paste entities from schematic, but i will just leave it here in case worldedit will start doing it some day)
+					// paste entities (note: worldedit doesn't paste entities from schematic, but i will just leave it here in case worldedit will start doing it some day)
 					try {
 						clipboard.pasteEntities(origin);
 					} catch (Throwable t) {

@@ -15,8 +15,8 @@ public class PemLoader {
 	private KeyStore keyStore;
 
 	public PemLoader() throws InitException {
-		this.certFactory = createX509CertificateFactory();
-		this.keyStore = createEmptyKeyStore();
+		certFactory = createX509CertificateFactory();
+		keyStore = createEmptyKeyStore();
 	}
 
 	public KeyStore load(String[][] certs) throws IOException, LoadException {

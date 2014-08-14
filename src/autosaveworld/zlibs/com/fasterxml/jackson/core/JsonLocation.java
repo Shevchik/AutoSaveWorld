@@ -33,8 +33,7 @@ public class JsonLocation implements java.io.Serializable // as per
 
 	public JsonLocation(Object srcRef, long totalChars, int lineNr, int colNr) {
 		/*
-		 * Unfortunately, none of legal encodings are straight single-byte encodings. Could determine offset for UTF-16/UTF-32, but the most important one is UTF-8... so for now, we'll just not report
-		 * any real byte count
+		 * Unfortunately, none of legal encodings are straight single-byte encodings. Could determine offset for UTF-16/UTF-32, but the most important one is UTF-8... so for now, we'll just not report any real byte count
 		 */
 		this(srcRef, -1L, totalChars, lineNr, colNr);
 	}
@@ -48,8 +47,7 @@ public class JsonLocation implements java.io.Serializable // as per
 	}
 
 	/**
-	 * Reference to the original resource being read, if one available. For example, when a parser has been constructed by passing a {@link java.io.File} instance, this method would return that File.
-	 * Will return null if no such reference is available, for example when {@link java.io.InputStream} was used to construct the parser instance.
+	 * Reference to the original resource being read, if one available. For example, when a parser has been constructed by passing a {@link java.io.File} instance, this method would return that File. Will return null if no such reference is available, for example when {@link java.io.InputStream} was used to construct the parser instance.
 	 */
 	public Object getSourceRef() {
 		return _sourceRef;

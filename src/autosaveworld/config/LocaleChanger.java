@@ -20,16 +20,17 @@ public class LocaleChanger {
 
 	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfigMSG configmsg;
+
 	public LocaleChanger(AutoSaveWorld plugin, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.configmsg = configmsg;
 	}
 
-	//available locales
+	// available locales
 	public List<String> getAvailableLocales() {
 		List<String> locales = new LinkedList<String>();
 		try {
-			//add additional locales based on files in the jar.
+			// add additional locales based on files in the jar.
 			final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
@@ -52,18 +53,18 @@ public class LocaleChanger {
 	}
 
 	public void loadLocale(String locale) {
-		//load messages file from package
-		MessageLogger.debug("switching to "+locale);
+		// load messages file from package
+		MessageLogger.debug("switching to " + locale);
 		loadLocaleFile(locale);
-		//now load it
+		// now load it
 		MessageLogger.debug("loading configs");
 		configmsg.loadmsg();
 	}
 
-	//load needed locale file
+	// load needed locale file
 	private void loadLocaleFile(String locale) {
 		try {
-			InputStream is = LocaleFiles.class.getResourceAsStream("configmsg_"+locale+".yml");
+			InputStream is = LocaleFiles.class.getResourceAsStream("configmsg_" + locale + ".yml");
 			Path file = new File(GlobalConstants.getConfigMSGPath()).toPath();
 			Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
 		} catch (Exception e) {

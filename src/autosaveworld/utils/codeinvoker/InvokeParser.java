@@ -20,6 +20,7 @@ package autosaveworld.utils.codeinvoker;
 public class InvokeParser {
 
 	private CodeContext context;
+
 	public InvokeParser(CodeContext context) {
 		this.context = context;
 	}
@@ -41,15 +42,19 @@ public class InvokeParser {
 		private Class<?> returntype;
 		private Object object;
 		private Object[] objects;
+
 		protected String getMethodName() {
 			return methodname;
 		}
+
 		protected Class<?> getReturnType() {
 			return returntype;
 		}
+
 		protected Object getObject() {
 			return object;
 		}
+
 		protected Object[] getObjects() {
 			return objects;
 		}

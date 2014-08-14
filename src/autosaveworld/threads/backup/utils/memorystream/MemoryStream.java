@@ -24,11 +24,13 @@ import java.io.OutputStream;
 public class MemoryStream {
 
 	private MemoryOutputStream os = new MemoryOutputStream();
+
 	public MemoryOutputStream getOutputStream() {
 		return os;
 	}
 
 	private MemoryInputStream is = new MemoryInputStream();
+
 	public MemoryInputStream getInputStream() {
 		return is;
 	}
@@ -72,14 +74,14 @@ public class MemoryStream {
 		}
 
 		@Override
-	    public void write(byte b[]) throws IOException {
-	        write(b, 0, b.length);
-	    }
+		public void write(byte b[]) throws IOException {
+			write(b, 0, b.length);
+		}
 
 		@Override
-	    public void write(byte b[], int off, int len) {
+		public void write(byte b[], int off, int len) {
 			stream.put(b, off, len);
-	    }
+		}
 
 	}
 

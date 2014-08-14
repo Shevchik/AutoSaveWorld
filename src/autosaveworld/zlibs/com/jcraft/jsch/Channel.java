@@ -84,7 +84,7 @@ public abstract class Channel implements Runnable {
 		synchronized (pool) {
 			for (int i = 0; i < pool.size(); i++) {
 				Channel c = (pool.elementAt(i));
-				if (c.id == id && c.session == session) {
+				if ((c.id == id) && (c.session == session)) {
 					return c;
 				}
 			}
@@ -135,7 +135,7 @@ public abstract class Channel implements Runnable {
 	}
 
 	synchronized void setRecipient(int foo) {
-		this.recipient = foo;
+		recipient = foo;
 		if (notifyme > 0) {
 			notifyAll();
 		}
@@ -217,7 +217,7 @@ public abstract class Channel implements Runnable {
 				// should be
 				// customizable.
 				max_input_buffer_size);
-		boolean resizable = 32 * 1024 < max_input_buffer_size;
+		boolean resizable = (32 * 1024) < max_input_buffer_size;
 		io.setOutputStream(new PassiveOutputStream(in, resizable), false);
 		return in;
 	}
@@ -232,7 +232,7 @@ public abstract class Channel implements Runnable {
 				// should be
 				// customizable.
 				max_input_buffer_size);
-		boolean resizable = 32 * 1024 < max_input_buffer_size;
+		boolean resizable = (32 * 1024) < max_input_buffer_size;
 		io.setExtOutputStream(new PassiveOutputStream(in, resizable), false);
 		return in;
 	}
@@ -251,7 +251,7 @@ public abstract class Channel implements Runnable {
 				packet = new Packet(buffer);
 
 				byte[] _buf = buffer.buffer;
-				if (_buf.length - (14 + 0) - Session.buffer_margin <= 0) {
+				if ((_buf.length - (14 + 0) - Session.buffer_margin) <= 0) {
 					buffer = null;
 					packet = null;
 					throw new IOException("failed to initialize the channel.");
@@ -281,7 +281,7 @@ public abstract class Channel implements Runnable {
 				int _bufl = _buf.length;
 				while (l > 0) {
 					int _l = l;
-					if (l > _bufl - (14 + dataLen) - Session.buffer_margin) {
+					if (l > (_bufl - (14 + dataLen) - Session.buffer_margin)) {
 						_l = _bufl - (14 + dataLen) - Session.buffer_margin;
 					}
 
@@ -433,7 +433,7 @@ public abstract class Channel implements Runnable {
 					in = buffer.length;
 				}
 				buffer = tmp;
-			} else if (buffer.length == size && size > BUFFER_SIZE) {
+			} else if ((buffer.length == size) && (size > BUFFER_SIZE)) {
 				int i = size / 2;
 				if (i < BUFFER_SIZE) {
 					i = BUFFER_SIZE;
@@ -445,30 +445,30 @@ public abstract class Channel implements Runnable {
 	}
 
 	void setLocalWindowSizeMax(int foo) {
-		this.lwsize_max = foo;
+		lwsize_max = foo;
 	}
 
 	void setLocalWindowSize(int foo) {
-		this.lwsize = foo;
+		lwsize = foo;
 	}
 
 	void setLocalPacketSize(int foo) {
-		this.lmpsize = foo;
+		lmpsize = foo;
 	}
 
 	synchronized void setRemoteWindowSize(long foo) {
-		this.rwsize = foo;
+		rwsize = foo;
 	}
 
 	synchronized void addRemoteWindowSize(long foo) {
-		this.rwsize += foo;
+		rwsize += foo;
 		if (notifyme > 0) {
 			notifyAll();
 		}
 	}
 
 	void setRemotePacketSize(int foo) {
-		this.rmpsize = foo;
+		rmpsize = foo;
 	}
 
 	@Override
@@ -539,12 +539,9 @@ public abstract class Channel implements Runnable {
 	 *
 	 * byte SSH_MSG_CHANNEL_EOF uint32 recipient_channel
 	 *
-	 * No explicit response is sent to this message. However, the application may send EOF to whatever is at the other end of the channel. Note that the channel remains open after this message, and
-	 * more data may still be sent in the other direction. This message does not consume window space and can be sent even if no window space is available.
+	 * No explicit response is sent to this message. However, the application may send EOF to whatever is at the other end of the channel. Note that the channel remains open after this message, and more data may still be sent in the other direction. This message does not consume window space and can be sent even if no window space is available.
 	 *
-	 * When either party wishes to terminate the channel, it sends SSH_MSG_CHANNEL_CLOSE. Upon receiving this message, a party MUST send back a SSH_MSG_CHANNEL_CLOSE unless it has already sent this
-	 * message for the channel. The channel is considered closed for a party when it has both sent and received SSH_MSG_CHANNEL_CLOSE, and the party may then reuse the channel number. A party MAY send
-	 * SSH_MSG_CHANNEL_CLOSE without having sent or received SSH_MSG_CHANNEL_EOF.
+	 * When either party wishes to terminate the channel, it sends SSH_MSG_CHANNEL_CLOSE. Upon receiving this message, a party MUST send back a SSH_MSG_CHANNEL_CLOSE unless it has already sent this message for the channel. The channel is considered closed for a party when it has both sent and received SSH_MSG_CHANNEL_CLOSE, and the party may then reuse the channel number. A party MAY send SSH_MSG_CHANNEL_CLOSE without having sent or received SSH_MSG_CHANNEL_EOF.
 	 *
 	 * byte SSH_MSG_CHANNEL_CLOSE uint32 recipient_channel
 	 *
@@ -636,7 +633,7 @@ public abstract class Channel implements Runnable {
 	}
 
 	public boolean isConnected() {
-		Session _session = this.session;
+		Session _session = session;
 		if (_session != null) {
 			return _session.isConnected() && connected;
 		}
@@ -674,7 +671,7 @@ public abstract class Channel implements Runnable {
 		@Override
 		public void close() throws IOException {
 			if (out != null) {
-				this.out.close();
+				out.close();
 			}
 			out = null;
 		}
@@ -686,7 +683,7 @@ public abstract class Channel implements Runnable {
 		PassiveOutputStream(PipedInputStream in, boolean resizable_buffer) throws IOException {
 			super(in);
 			if (resizable_buffer && (in instanceof MyPipedInputStream)) {
-				this._sink = (MyPipedInputStream) in;
+				_sink = (MyPipedInputStream) in;
 			}
 		}
 
@@ -768,10 +765,10 @@ public abstract class Channel implements Runnable {
 		// uint32 maxmum packet size // 0x4000(16384)
 		packet.reset();
 		buf.putByte((byte) 90);
-		buf.putString(this.type);
-		buf.putInt(this.id);
-		buf.putInt(this.lwsize);
-		buf.putInt(this.lmpsize);
+		buf.putString(type);
+		buf.putInt(id);
+		buf.putInt(lwsize);
+		buf.putInt(lmpsize);
 		return packet;
 	}
 
@@ -791,7 +788,7 @@ public abstract class Channel implements Runnable {
 			retry = 1;
 		}
 		synchronized (this) {
-			while (this.getRecipient() == -1 && _session.isConnected() && retry > 0) {
+			while ((getRecipient() == -1) && _session.isConnected() && (retry > 0)) {
 				if (timeout > 0L) {
 					if ((System.currentTimeMillis() - start) > timeout) {
 						retry = 0;
@@ -800,11 +797,11 @@ public abstract class Channel implements Runnable {
 				}
 				try {
 					long t = timeout == 0L ? 10L : timeout;
-					this.notifyme = 1;
+					notifyme = 1;
 					wait(t);
 				} catch (java.lang.InterruptedException e) {
 				} finally {
-					this.notifyme = 0;
+					notifyme = 0;
 				}
 				retry--;
 			}
@@ -812,10 +809,10 @@ public abstract class Channel implements Runnable {
 		if (!_session.isConnected()) {
 			throw new JSchException("session is down");
 		}
-		if (this.getRecipient() == -1) { // timeout
+		if (getRecipient() == -1) { // timeout
 			throw new JSchException("channel is not opened.");
 		}
-		if (this.open_confirmation == false) { // SSH_MSG_CHANNEL_OPEN_FAILURE
+		if (open_confirmation == false) { // SSH_MSG_CHANNEL_OPEN_FAILURE
 			throw new JSchException("channel is not opened.");
 		}
 		connected = true;

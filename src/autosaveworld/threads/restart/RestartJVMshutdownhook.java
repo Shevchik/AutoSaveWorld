@@ -29,19 +29,21 @@ public class RestartJVMshutdownhook extends Thread {
 	private String crashrestartscriptpath = "";
 
 	public void setPath(String path) {
-		this.crashrestartscriptpath = path;
+		crashrestartscriptpath = path;
 	}
 
-
 	public void restart() {
-		//Wait if need
+		// Wait if need
 		while (RestartWaiter.shouldWait()) {
-			try {Thread.sleep(1000);} catch (InterruptedException e) {}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
 		}
-		//Force gc (attempt to ensure that the new instance of server will have enough mem)
+		// Force gc (attempt to ensure that the new instance of server will have enough mem)
 		System.gc();
 		System.gc();
-		//Start process
+		// Start process
 		try {
 			ProcessBuilder pb = new ProcessBuilder();
 			File restartscript = new File(crashrestartscriptpath);
@@ -55,7 +57,7 @@ public class RestartJVMshutdownhook extends Thread {
 				System.out.flush();
 				String jarfilename = Bukkit.class.getResource("").getFile();
 				jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
-				jarfilename = new File(jarfilename).getName()+".jar";
+				jarfilename = new File(jarfilename).getName() + ".jar";
 				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
 				List<String> execsequence = new ArrayList<String>();
 				execsequence.add("java");
@@ -72,7 +74,6 @@ public class RestartJVMshutdownhook extends Thread {
 			e.printStackTrace();
 		}
 	}
-
 
 	@Override
 	public void run() {

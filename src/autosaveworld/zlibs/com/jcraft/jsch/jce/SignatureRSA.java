@@ -78,7 +78,7 @@ public class SignatureRSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 		int j = 0;
 		byte[] tmp;
 
-		if (sig[0] == 0 && sig[1] == 0 && sig[2] == 0) {
+		if ((sig[0] == 0) && (sig[1] == 0) && (sig[2] == 0)) {
 			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);
 			i += j;
 			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);

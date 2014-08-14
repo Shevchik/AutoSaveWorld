@@ -36,10 +36,10 @@ class RequestWindowChange extends Request {
 	int height_pixels = 480;
 
 	void setSize(int col, int row, int wp, int hp) {
-		this.width_columns = col;
-		this.height_rows = row;
-		this.width_pixels = wp;
-		this.height_pixels = hp;
+		width_columns = col;
+		height_rows = row;
+		width_pixels = wp;
+		height_pixels = hp;
 	}
 
 	@Override

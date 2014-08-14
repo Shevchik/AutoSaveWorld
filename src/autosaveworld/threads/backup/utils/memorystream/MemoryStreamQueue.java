@@ -27,7 +27,7 @@ public class MemoryStreamQueue {
 		int item;
 
 		Node(int b) {
-			this.item = b;
+			item = b;
 		}
 
 		Node next;
@@ -39,7 +39,6 @@ public class MemoryStreamQueue {
 
 	private Node head;
 	private Node last;
-
 
 	private final ReentrantLock takeLock = new ReentrantLock();
 	private final Condition notEmpty = takeLock.newCondition();
@@ -175,14 +174,14 @@ public class MemoryStreamQueue {
 		if (c > 0) {
 			notEmpty.signal();
 		}
-        takeLock.unlock();
+		takeLock.unlock();
 		if (c < capacity) {
 			signalNotFull();
 		}
-		if (eof && i == 1) {
+		if (eof && (i == 1)) {
 			return -1;
 		}
 		return i;
-    }
+	}
 
 }

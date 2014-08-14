@@ -30,15 +30,15 @@ public class AutoPurgeThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
+
 	public AutoPurgeThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
 	}
 
-
 	public void stopThread() {
-		this.run = false;
+		run = false;
 	}
 
 	public void startpurge() {
@@ -48,19 +48,26 @@ public class AutoPurgeThread extends Thread {
 	// The code to run...weee
 	private volatile boolean run = true;
 	private boolean command = false;
+
 	@Override
 	public void run() {
 
 		MessageLogger.debug("AutoPurgeThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoPurgeThread");
 
-
 		while (run) {
 			// Do our Sleep stuff!
 			for (int i = 0; i < config.purgeInterval; i++) {
-				if (!run) {break;}
-				if (command) {break;}
-				try {Thread.sleep(1000);} catch (InterruptedException e) {}
+				if (!run) {
+					break;
+				}
+				if (command) {
+					break;
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
 			}
 
 			if (run && (config.purgeEnabled || command)) {
@@ -77,9 +84,6 @@ public class AutoPurgeThread extends Thread {
 
 	}
 
-
-
-
 	public void performPurge() {
 
 		MessageLogger.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
@@ -89,7 +93,7 @@ public class AutoPurgeThread extends Thread {
 		MessageLogger.debug("Getting player unique identifier type");
 		UniquePlayerIdentifierType type = UniquePlayerIdentifierDetector.getUniquePlayerIdentifierType();
 
-		MessageLogger.debug("Player unique identifier type is "+type.toString());
+		MessageLogger.debug("Player unique identifier type is " + type.toString());
 		if (type == UniquePlayerIdentifierType.NAME) {
 			new PurgeByNames(plugin, config).startPurge();
 		} else if (type == UniquePlayerIdentifierType.UUID) {

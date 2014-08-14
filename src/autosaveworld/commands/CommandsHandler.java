@@ -45,6 +45,7 @@ public class CommandsHandler implements CommandExecutor {
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 	private LocaleChanger localeChanger;
+
 	public CommandsHandler(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, LocaleChanger localeChanger) {
 		this.plugin = plugin;
 		this.config = config;
@@ -59,7 +60,7 @@ public class CommandsHandler implements CommandExecutor {
 
 		String commandName = command.getName().toLowerCase();
 
-		//check permissions
+		// check permissions
 		if (!permCheck.isAllowed(sender, commandName, args, config.commandOnlyFromConsole)) {
 			MessageLogger.sendMessage(sender, configmsg.messageInsufficientPermissions);
 			return true;
@@ -67,20 +68,20 @@ public class CommandsHandler implements CommandExecutor {
 
 		// now handle commands
 		if (commandName.equalsIgnoreCase("autosave")) {
-			//"autosave" command handler
+			// "autosave" command handler
 			plugin.saveThread.startsave();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autobackup")) {
-			//"autobackup" command handler
+			// "autobackup" command handler
 			plugin.backupThread.startbackup();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autopurge")) {
-			//"autopurge" command handler
+			// "autopurge" command handler
 			plugin.purgeThread.startpurge();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autosaveworld")) {
-			//"autosaveworld" command handler
-			if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
+			// "autosaveworld" command handler
+			if ((args.length == 1) && args[0].equalsIgnoreCase("help")) {
 				// help
 				MessageLogger.sendMessage(sender, "&f/asw save&7 - &3Saves all worlds and players");
 				MessageLogger.sendMessage(sender, "&f/save&7 - &3Same as /asw save");
@@ -108,7 +109,7 @@ public class CommandsHandler implements CommandExecutor {
 				MessageLogger.sendMessage(sender, "&f/asw locale load {locale}&7 - &3Set meesages locale to one of the available locales");
 				MessageLogger.sendMessage(sender, "&f/asw version&7 - &3Shows plugin version");
 				return true;
-			} else if (args.length >= 2 && args[0].equalsIgnoreCase("process")) {
+			} else if ((args.length >= 2) && args[0].equalsIgnoreCase("process")) {
 				String processname = null;
 				if (args.length > 2) {
 					processname = args[2];
@@ -119,11 +120,11 @@ public class CommandsHandler implements CommandExecutor {
 				}
 				plugin.processmanager.handleProcessManagerCommand(sender, args[1], processname, processargs);
 				return true;
-			} else if (args.length >= 3 && args[0].equalsIgnoreCase("pmanager")) {
+			} else if ((args.length >= 3) && args[0].equalsIgnoreCase("pmanager")) {
 				String[] nameArray = Arrays.copyOfRange(args, 2, args.length);
 				plugin.pluginmanager.handlePluginManagerCommand(sender, args[1], StringUtils.join(nameArray, " "));
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcegc")) {
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("forcegc")) {
 				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
 				if (arguments.contains("-XX:+DisableExplicitGC")) {
 					MessageLogger.sendMessage(sender, "&4Your JVM is configured to ignore GC calls, can't force gc");
@@ -134,51 +135,52 @@ public class CommandsHandler implements CommandExecutor {
 				System.gc();
 				MessageLogger.sendMessage(sender, "&9GC finished");
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("serverstatus")) {
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("serverstatus")) {
 				DecimalFormat df = new DecimalFormat("0.00");
-				//processor (if available)
+				// processor (if available)
 				try {
 					com.sun.management.OperatingSystemMXBean systemBean = (com.sun.management.OperatingSystemMXBean) java.lang.management.ManagementFactory.getOperatingSystemMXBean();
-					double cpuusage = systemBean.getProcessCpuLoad()*100;
+					double cpuusage = systemBean.getProcessCpuLoad() * 100;
 					if (cpuusage > 0) {
-						sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.RED+df.format(cpuusage)+"%");
+						sender.sendMessage(ChatColor.GOLD + "Cpu usage: " + ChatColor.RED + df.format(cpuusage) + "%");
 					} else {
-						sender.sendMessage(ChatColor.GOLD+"Cpu usage: "+ChatColor.RED+"not available");
+						sender.sendMessage(ChatColor.GOLD + "Cpu usage: " + ChatColor.RED + "not available");
 					}
-				} catch (Exception e) {}
-				//memory
+				} catch (Exception e) {
+				}
+				// memory
 				Runtime runtime = Runtime.getRuntime();
-				long maxmemmb = runtime.maxMemory()/1024/1024;
-				long freememmb = (runtime.maxMemory()-(runtime.totalMemory()-runtime.freeMemory()))/1024/1024;
-				sender.sendMessage(ChatColor.GOLD+"Memory usage: "+ChatColor.RED+df.format((maxmemmb-freememmb)*100/maxmemmb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+(maxmemmb-freememmb)+"/"+maxmemmb+" MB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
-				//hard drive
+				long maxmemmb = runtime.maxMemory() / 1024 / 1024;
+				long freememmb = (runtime.maxMemory() - (runtime.totalMemory() - runtime.freeMemory())) / 1024 / 1024;
+				sender.sendMessage(ChatColor.GOLD + "Memory usage: " + ChatColor.RED + df.format(((maxmemmb - freememmb) * 100) / maxmemmb) + "% " + ChatColor.DARK_AQUA + "(" + ChatColor.DARK_GREEN + (maxmemmb - freememmb) + "/" + maxmemmb + " MB" + ChatColor.DARK_AQUA + ")" + ChatColor.RESET);
+				// hard drive
 				File file = new File(".");
-				long maxspacegb = file.getTotalSpace()/1024/1024/1024;
-				long freespacegb = file.getFreeSpace()/1024/1024/1024;
-				sender.sendMessage(ChatColor.GOLD+"Disk usage: "+ChatColor.RED+df.format((maxspacegb-freespacegb)*100/maxspacegb)+"% "+ChatColor.DARK_AQUA+"("+ChatColor.DARK_GREEN+(maxspacegb-freespacegb)+"/"+maxspacegb+" GB"+ChatColor.DARK_AQUA+")"+ChatColor.RESET);
+				long maxspacegb = file.getTotalSpace() / 1024 / 1024 / 1024;
+				long freespacegb = file.getFreeSpace() / 1024 / 1024 / 1024;
+				sender.sendMessage(ChatColor.GOLD + "Disk usage: " + ChatColor.RED + df.format(((maxspacegb - freespacegb) * 100) / maxspacegb) + "% " + ChatColor.DARK_AQUA + "(" + ChatColor.DARK_GREEN + (maxspacegb - freespacegb) + "/" + maxspacegb + " GB" + ChatColor.DARK_AQUA + ")" + ChatColor.RESET);
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("save")) {
-				//save
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("save")) {
+				// save
 				plugin.saveThread.startsave();
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("backup")) {
-				//backup
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("backup")) {
+				// backup
 				plugin.backupThread.startbackup();
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("purge")) {
-				//purge
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("purge")) {
+				// purge
 				plugin.purgeThread.startpurge();
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("restart")) {
-				//restart
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("restart")) {
+				// restart
 				plugin.autorestartThread.startrestart(false);
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("forcerestart")) {
-				//restrat without countdown
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("forcerestart")) {
+				// restrat without countdown
 				plugin.autorestartThread.startrestart(true);
 				return true;
-			} else if ((args.length == 2 && args[0].equalsIgnoreCase("regenworld"))) {
-				//regen world
+			} else if (((args.length == 2) && args[0].equalsIgnoreCase("regenworld"))) {
+				// regen world
 				if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
 					MessageLogger.sendMessage(sender, "You need WorldEdit installed to do that");
 					return true;
@@ -189,46 +191,46 @@ public class CommandsHandler implements CommandExecutor {
 				}
 				plugin.worldregencopyThread.startworldregen(args[1]);
 				return true;
-			} else if (args.length == 2 && args[0].equalsIgnoreCase("invokecode")) {
-				//invoke code
-				File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + args[1]+".yml");
+			} else if ((args.length == 2) && args[0].equalsIgnoreCase("invokecode")) {
+				// invoke code
+				File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + args[1] + ".yml");
 				if (!file.exists()) {
-					sender.sendMessage(ChatColor.RED + "File "+file.getParent()+" doesn't exist");
+					sender.sendMessage(ChatColor.RED + "File " + file.getParent() + " doesn't exist");
 					return true;
 				}
 				sender.sendMessage(ChatColor.BLUE + "Invoking code");
 				new CodeInvoker().invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code").toArray(new String[0]));
 				sender.sendMessage(ChatColor.BLUE + "Invoke code finished");
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-				//reload
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("reload")) {
+				// reload
 				config.load();
 				configmsg.loadmsg();
 				MessageLogger.sendMessage(sender, "All configurations reloaded");
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("reloadconfig")) {
-				//reload config
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("reloadconfig")) {
+				// reload config
 				config.load();
-				MessageLogger.sendMessage(sender,"Main configuration reloaded");
+				MessageLogger.sendMessage(sender, "Main configuration reloaded");
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("reloadmsg")) {
-				//reload messages
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("reloadmsg")) {
+				// reload messages
 				configmsg.loadmsg();
 				MessageLogger.sendMessage(sender, "Messages file reloaded");
 				return true;
-			} else if (args.length == 1 && args[0].equalsIgnoreCase("version")) {
-				//version
-				MessageLogger.sendMessage(sender, plugin.getDescription().getName()+ " " + plugin.getDescription().getVersion());
+			} else if ((args.length == 1) && args[0].equalsIgnoreCase("version")) {
+				// version
+				MessageLogger.sendMessage(sender, plugin.getDescription().getName() + " " + plugin.getDescription().getVersion());
 				return true;
-			} else if ((args.length >= 1 && args[0].equalsIgnoreCase("locale"))) {
-				//locale loader
-				if (args.length == 2 && args[1].equalsIgnoreCase("available")) {
-					MessageLogger.sendMessage(sender, "Available locales: "+ localeChanger.getAvailableLocales());
+			} else if (((args.length >= 1) && args[0].equalsIgnoreCase("locale"))) {
+				// locale loader
+				if ((args.length == 2) && args[1].equalsIgnoreCase("available")) {
+					MessageLogger.sendMessage(sender, "Available locales: " + localeChanger.getAvailableLocales());
 					return true;
-				} else if (args.length == 2 && args[1].equalsIgnoreCase("load")) {
-					MessageLogger.sendMessage(sender,"You should specify a locale to load (get available locales using /asw locale available command)");
+				} else if ((args.length == 2) && args[1].equalsIgnoreCase("load")) {
+					MessageLogger.sendMessage(sender, "You should specify a locale to load (get available locales using /asw locale available command)");
 					return true;
-				} else if (args.length == 3 && args[1].equalsIgnoreCase("load")) {
+				} else if ((args.length == 3) && args[1].equalsIgnoreCase("load")) {
 					if (localeChanger.getAvailableLocales().contains(args[2])) {
 						MessageLogger.sendMessage(sender, "Loading locale " + args[2]);
 						localeChanger.loadLocale(args[2]);

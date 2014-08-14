@@ -105,7 +105,7 @@ public class SignatureDSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 		int j = 0;
 		byte[] tmp;
 
-		if (sig[0] == 0 && sig[1] == 0 && sig[2] == 0) {
+		if ((sig[0] == 0) && (sig[1] == 0) && (sig[2] == 0)) {
 			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);
 			i += j;
 			j = ((sig[i++] << 24) & 0xff000000) | ((sig[i++] << 16) & 0x00ff0000) | ((sig[i++] << 8) & 0x0000ff00) | ((sig[i++]) & 0x000000ff);
@@ -136,8 +136,7 @@ public class SignatureDSA implements autosaveworld.zlibs.com.jcraft.jsch.Signatu
 		sig = tmp;
 
 		/*
-		 * tmp=new byte[sig.length+6]; tmp[0]=(byte)0x30; tmp[1]=(byte)0x2c; tmp[2]=(byte)0x02; tmp[3]=(byte)0x14; System.arraycopy(sig, 0, tmp, 4, 20); tmp[24]=(byte)0x02; tmp[25]=(byte)0x14;
-		 * System.arraycopy(sig, 20, tmp, 26, 20); sig=tmp;
+		 * tmp=new byte[sig.length+6]; tmp[0]=(byte)0x30; tmp[1]=(byte)0x2c; tmp[2]=(byte)0x02; tmp[3]=(byte)0x14; System.arraycopy(sig, 0, tmp, 4, 20); tmp[24]=(byte)0x02; tmp[25]=(byte)0x14; System.arraycopy(sig, 20, tmp, 26, 20); sig=tmp;
 		 */
 		return signature.verify(sig);
 	}

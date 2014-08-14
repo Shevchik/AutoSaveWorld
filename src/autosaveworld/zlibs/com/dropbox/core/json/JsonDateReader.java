@@ -42,7 +42,7 @@ public class JsonDateReader {
 
 		// Hopefully this check lets the JVM eliminate array bounds checks for
 		// the rest of the function.
-		if (b.length < i + 31 || i < 0) {
+		if ((b.length < (i + 31)) || (i < 0)) {
 			throw new IllegalArgumentException("range is not within 'b'");
 		}
 
@@ -53,8 +53,7 @@ public class JsonDateReader {
 		// Check for fixed values. Using non-short-circuit OR because it's
 		// faster
 		// for the common case of them all being correct.
-		if (b[i + 3] != ',' | b[i + 4] != ' ' | b[i + 7] != ' ' | b[i + 11] != ' ' | b[i + 16] != ' ' | b[i + 19] != ':' | b[i + 22] != ':' | b[i + 25] != ' ' | b[i + 26] != '+' | b[i + 27] != '0'
-				| b[i + 28] != '0' | b[i + 29] != '0' | b[i + 30] != '0') {
+		if ((b[i + 3] != ',') | (b[i + 4] != ' ') | (b[i + 7] != ' ') | (b[i + 11] != ' ') | (b[i + 16] != ' ') | (b[i + 19] != ':') | (b[i + 22] != ':') | (b[i + 25] != ' ') | (b[i + 26] != '+') | (b[i + 27] != '0') | (b[i + 28] != '0') | (b[i + 29] != '0') | (b[i + 30] != '0')) {
 			if (b[i + 3] != ',') {
 				throw new java.text.ParseException("expecting ','", 3);
 			}
@@ -116,7 +115,7 @@ public class JsonDateReader {
 			throw new java.text.ParseException("invalid day of month", 5);
 		}
 
-		int dayOfMonth = d1 * 10 + d2 - ('0' * 11);
+		int dayOfMonth = ((d1 * 10) + d2) - ('0' * 11);
 
 		// Year
 		char y1 = b[i + 12];
@@ -128,7 +127,7 @@ public class JsonDateReader {
 			throw new java.text.ParseException("invalid year", 12);
 		}
 
-		int year = y1 * 1000 + y2 * 100 + y3 * 10 + y4 - ('0' * 1111);
+		int year = ((y1 * 1000) + (y2 * 100) + (y3 * 10) + y4) - ('0' * 1111);
 
 		// Hour
 		char h1 = b[i + 17];
@@ -138,7 +137,7 @@ public class JsonDateReader {
 			throw new java.text.ParseException("invalid hour", 17);
 		}
 
-		int hour = h1 * 10 + h2 - ('0' * 11);
+		int hour = ((h1 * 10) + h2) - ('0' * 11);
 
 		// Minute
 		char m1 = b[i + 20];
@@ -148,7 +147,7 @@ public class JsonDateReader {
 			throw new java.text.ParseException("invalid minute", 20);
 		}
 
-		int minute = m1 * 10 + m2 - ('0' * 11);
+		int minute = ((m1 * 10) + m2) - ('0' * 11);
 
 		// Second
 		char s1 = b[i + 23];
@@ -158,7 +157,7 @@ public class JsonDateReader {
 			throw new java.text.ParseException("invalid second", 23);
 		}
 
-		int second = s1 * 10 + s2 - ('0' * 11);
+		int second = ((s1 * 10) + s2) - ('0' * 11);
 
 		// TODO: How do we validate that the numbers are in range?
 		GregorianCalendar c = new GregorianCalendar(year, month, dayOfMonth, hour, minute, second);
@@ -169,7 +168,7 @@ public class JsonDateReader {
 	public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
 	private static boolean isDigit(char c) {
-		return c >= '0' && c <= '9';
+		return (c >= '0') && (c <= '9');
 	}
 
 	public static boolean isValidDayOfWeek(char a, char b, char c) {
@@ -177,33 +176,33 @@ public class JsonDateReader {
 		// of the values being correct.
 		switch (a) {
 			case 'S':
-				if (b == 'u' & c == 'n') {
+				if ((b == 'u') & (c == 'n')) {
 					return true;
 				}
-				if (b == 'a' & c == 't') {
+				if ((b == 'a') & (c == 't')) {
 					return true;
 				}
 				return false;
 			case 'M':
-				if (b == 'o' & c == 'n') {
+				if ((b == 'o') & (c == 'n')) {
 					return true;
 				}
 				return false;
 			case 'T':
-				if (b == 'u' & c == 'e') {
+				if ((b == 'u') & (c == 'e')) {
 					return true;
 				}
-				if (b == 'h' & c == 'u') {
+				if ((b == 'h') & (c == 'u')) {
 					return true;
 				}
 				return false;
 			case 'W':
-				if (b == 'e' & c == 'd') {
+				if ((b == 'e') & (c == 'd')) {
 					return true;
 				}
 				return false;
 			case 'F':
-				if (b == 'r' & c == 'i') {
+				if ((b == 'r') & (c == 'i')) {
 					return true;
 				}
 				return false;
@@ -215,7 +214,7 @@ public class JsonDateReader {
 	public static int getMonthIndex(char a, char b, char c) {
 		switch (a) {
 			case 'J':
-				if (b == 'a' & c == 'n') {
+				if ((b == 'a') & (c == 'n')) {
 					return 0;
 				}
 				if (b == 'u') {
@@ -229,7 +228,7 @@ public class JsonDateReader {
 				}
 				return -1;
 			case 'F':
-				if (b == 'e' & c == 'b') {
+				if ((b == 'e') & (c == 'b')) {
 					return 1;
 				}
 				return 0;
@@ -245,30 +244,30 @@ public class JsonDateReader {
 				}
 				return -1;
 			case 'A':
-				if (b == 'p' & c == 'r') {
+				if ((b == 'p') & (c == 'r')) {
 					return 3;
 				}
-				if (b == 'u' & c == 'g') {
+				if ((b == 'u') & (c == 'g')) {
 					return 7;
 				}
 				return -1;
 			case 'S':
-				if (b == 'e' & c == 'p') {
+				if ((b == 'e') & (c == 'p')) {
 					return 8;
 				}
 				return -1;
 			case 'O':
-				if (b == 'c' & c == 't') {
+				if ((b == 'c') & (c == 't')) {
 					return 9;
 				}
 				return -1;
 			case 'N':
-				if (b == 'o' & c == 'v') {
+				if ((b == 'o') & (c == 'v')) {
 					return 10;
 				}
 				return -1;
 			case 'D':
-				if (b == 'e' & c == 'c') {
+				if ((b == 'e') & (c == 'c')) {
 					return 11;
 				}
 				return -1;

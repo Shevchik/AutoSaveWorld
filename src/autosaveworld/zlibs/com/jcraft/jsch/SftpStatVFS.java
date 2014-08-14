@@ -75,9 +75,9 @@ public class SftpStatVFS {
 		statvfs.namemax = buf.getLong();
 
 		statvfs.flag = (flag & 1/* SSH2_FXE_STATVFS_ST_RDONLY */) != 0 ? 1/* ST_RDONLY */
-		: 0;
+				: 0;
 		statvfs.flag |= (flag & 2/* SSH2_FXE_STATVFS_ST_NOSUID */) != 0 ? 2/* ST_NOSUID */
-		: 0;
+				: 0;
 
 		return statvfs;
 	}
@@ -127,23 +127,23 @@ public class SftpStatVFS {
 	}
 
 	public long getSize() {
-		return getFragmentSize() * getBlocks() / 1024;
+		return (getFragmentSize() * getBlocks()) / 1024;
 	}
 
 	public long getUsed() {
-		return getFragmentSize() * (getBlocks() - getFreeBlocks()) / 1024;
+		return (getFragmentSize() * (getBlocks() - getFreeBlocks())) / 1024;
 	}
 
 	public long getAvailForNonRoot() {
-		return getFragmentSize() * getAvailBlocks() / 1024;
+		return (getFragmentSize() * getAvailBlocks()) / 1024;
 	}
 
 	public long getAvail() {
-		return getFragmentSize() * getFreeBlocks() / 1024;
+		return (getFragmentSize() * getFreeBlocks()) / 1024;
 	}
 
 	public int getCapacity() {
-		return (int) (100 * (getBlocks() - getFreeBlocks()) / getBlocks());
+		return (int) ((100 * (getBlocks() - getFreeBlocks())) / getBlocks());
 	}
 
 	// public String toString() { return ""; }

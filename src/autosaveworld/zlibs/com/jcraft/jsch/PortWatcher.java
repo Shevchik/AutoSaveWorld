@@ -84,9 +84,9 @@ class PortWatcher implements Runnable {
 		synchronized (pool) {
 			for (int i = 0; i < pool.size(); i++) {
 				PortWatcher p = (pool.elementAt(i));
-				if (p.session == session && p.lport == lport) {
+				if ((p.session == session) && (p.lport == lport)) {
 					if (/* p.boundaddress.isAnyLocalAddress() || */
-					(anyLocalAddress != null && p.boundaddress.equals(anyLocalAddress)) || p.boundaddress.equals(addr)) {
+							((anyLocalAddress != null) && p.boundaddress.equals(anyLocalAddress)) || p.boundaddress.equals(addr)) {
 						return p;
 					}
 				}
@@ -97,7 +97,7 @@ class PortWatcher implements Runnable {
 
 	private static String normalize(String address) {
 		if (address != null) {
-			if (address.length() == 0 || address.equals("*")) {
+			if ((address.length() == 0) || address.equals("*")) {
 				address = "0.0.0.0";
 			} else if (address.equals("localhost")) {
 				address = "127.0.0.1";

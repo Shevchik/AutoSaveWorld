@@ -31,8 +31,7 @@ public final class Base64Variants {
 	}
 
 	/**
-	 * Slightly non-standard modification of {@link #MIME} which does not use linefeeds (max line length set to infinite). Useful when linefeeds wouldn't work well (possibly in attributes), or for
-	 * minor space savings (save 1 linefeed per 76 data chars, ie. ~1.4% savings).
+	 * Slightly non-standard modification of {@link #MIME} which does not use linefeeds (max line length set to infinite). Useful when linefeeds wouldn't work well (possibly in attributes), or for minor space savings (save 1 linefeed per 76 data chars, ie. ~1.4% savings).
 	 */
 	public final static Base64Variant MIME_NO_LINEFEEDS;
 	static {
@@ -45,10 +44,8 @@ public final class Base64Variants {
 	public final static Base64Variant PEM = new Base64Variant(MIME, "PEM", true, '=', 64);
 
 	/**
-	 * This non-standard variant is usually used when encoded data needs to be passed via URLs (such as part of GET request). It differs from the base {@link #MIME} variant in multiple ways. First, no
-	 * padding is used: this also means that it generally can not be written in multiple separate but adjacent chunks (which would not be the usual use case in any case). Also, no linefeeds are used
-	 * (max line length set to infinite). And finally, two characters (plus and slash) that would need quoting in URLs are replaced with more optimal alternatives (hyphen and underscore,
-	 * respectively).
+	 * This non-standard variant is usually used when encoded data needs to be passed via URLs (such as part of GET request). It differs from the base {@link #MIME} variant in multiple ways. First, no padding is used: this also means that it generally can not be written in multiple separate but adjacent chunks (which would not be the usual use case in any case). Also, no linefeeds are used (max line length set to infinite). And finally, two characters (plus and slash) that would need quoting in
+	 * URLs are replaced with more optimal alternatives (hyphen and underscore, respectively).
 	 */
 	public final static Base64Variant MODIFIED_FOR_URL;
 	static {
@@ -63,8 +60,7 @@ public final class Base64Variants {
 	}
 
 	/**
-	 * Method used to get the default variant ("MIME_NO_LINEFEEDS") for cases where caller does not explicitly specify the variant. We will prefer no-linefeed version because linefeeds in JSON values
-	 * must be escaped, making linefeed-containing variants sub-optimal.
+	 * Method used to get the default variant ("MIME_NO_LINEFEEDS") for cases where caller does not explicitly specify the variant. We will prefer no-linefeed version because linefeeds in JSON values must be escaped, making linefeed-containing variants sub-optimal.
 	 */
 	public static Base64Variant getDefaultVariant() {
 		return MIME_NO_LINEFEEDS;

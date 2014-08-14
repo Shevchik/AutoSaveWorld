@@ -54,7 +54,7 @@ public class Packet {
 		if (pad < bsize) {
 			pad += bsize;
 		}
-		len = len + pad - 4;
+		len = (len + pad) - 4;
 		ba4[0] = (byte) (len >>> 24);
 		ba4[1] = (byte) (len >>> 16);
 		ba4[2] = (byte) (len >>> 8);
@@ -82,8 +82,8 @@ public class Packet {
 		s += 32; // margin for deflater; deflater may inflate data
 
 		/**/
-		if (buffer.buffer.length < s + buffer.index - 5 - 9 - len) {
-			byte[] foo = new byte[s + buffer.index - 5 - 9 - len];
+		if (buffer.buffer.length < ((s + buffer.index) - 5 - 9 - len)) {
+			byte[] foo = new byte[(s + buffer.index) - 5 - 9 - len];
 			System.arraycopy(buffer.buffer, 0, foo, 0, buffer.buffer.length);
 			buffer.buffer = foo;
 		}

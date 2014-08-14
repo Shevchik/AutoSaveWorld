@@ -97,8 +97,8 @@ final public class Adler32 implements Checksum {
 	@Override
 	public Adler32 copy() {
 		Adler32 foo = new Adler32();
-		foo.s1 = this.s1;
-		foo.s2 = this.s2;
+		foo.s1 = s1;
+		foo.s2 = s2;
 		return foo;
 	}
 
@@ -113,8 +113,8 @@ final public class Adler32 implements Checksum {
 		sum1 = adler1 & 0xffffL;
 		sum2 = rem * sum1;
 		sum2 %= BASEL; // MOD(sum2);
-		sum1 += (adler2 & 0xffffL) + BASEL - 1;
-		sum2 += ((adler1 >> 16) & 0xffffL) + ((adler2 >> 16) & 0xffffL) + BASEL - rem;
+		sum1 += ((adler2 & 0xffffL) + BASEL) - 1;
+		sum2 += (((adler1 >> 16) & 0xffffL) + ((adler2 >> 16) & 0xffffL) + BASEL) - rem;
 		if (sum1 >= BASEL) {
 			sum1 -= BASEL;
 		}
@@ -131,8 +131,6 @@ final public class Adler32 implements Checksum {
 	}
 
 	/*
-	 * private java.util.zip.Adler32 adler=new java.util.zip.Adler32(); public void update(byte[] buf, int index, int len){ if(buf==null) {adler.reset();} else{adler.update(buf, index, len);} } public
-	 * void reset(){ adler.reset(); } public void reset(long init){ if(init==1L){ adler.reset(); } else{ System.err.println("unsupported operation"); } } public long getValue(){ return
-	 * adler.getValue(); }
+	 * private java.util.zip.Adler32 adler=new java.util.zip.Adler32(); public void update(byte[] buf, int index, int len){ if(buf==null) {adler.reset();} else{adler.update(buf, index, len);} } public void reset(){ adler.reset(); } public void reset(long init){ if(init==1L){ adler.reset(); } else{ System.err.println("unsupported operation"); } } public long getValue(){ return adler.getValue(); }
 	 */
 }

@@ -3,8 +3,7 @@ package autosaveworld.zlibs.com.fasterxml.jackson.core;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
 
 /**
- * Implementation of <a href="http://tools.ietf.org/html/draft-ietf-appsawg-json-pointer-03">JSON Pointer</a> specification. Pointer instances can be used to locate logical JSON nodes for things like
- * tree traversal (see {@link TreeNode#at}). It may be used in future for filtering of streaming JSON content as well (not implemented yet for 2.3).
+ * Implementation of <a href="http://tools.ietf.org/html/draft-ietf-appsawg-json-pointer-03">JSON Pointer</a> specification. Pointer instances can be used to locate logical JSON nodes for things like tree traversal (see {@link TreeNode#at}). It may be used in future for filtering of streaming JSON content as well (not implemented yet for 2.3).
  * <p>
  * Instances are fully immutable and can be shared, cached.
  *
@@ -69,7 +68,7 @@ public class JsonPointer {
 	 */
 	public static JsonPointer compile(String input) throws IllegalArgumentException {
 		// First quick checks for well-known 'empty' pointer
-		if ((input == null) || input.length() == 0) {
+		if ((input == null) || (input.length() == 0)) {
 			return EMPTY;
 		}
 		// And then quick validity check:
@@ -124,7 +123,7 @@ public class JsonPointer {
 	}
 
 	public JsonPointer matchProperty(String name) {
-		if (_nextSegment == null || !_matchingPropertyName.equals(name)) {
+		if ((_nextSegment == null) || !_matchingPropertyName.equals(name)) {
 			return null;
 		}
 		return _nextSegment;
@@ -180,12 +179,12 @@ public class JsonPointer {
 		final int len = str.length();
 		// [Issue#133]: beware of super long indexes; assume we never
 		// have arrays over 2 billion entries so ints are fine.
-		if (len == 0 || len > 10) {
+		if ((len == 0) || (len > 10)) {
 			return -1;
 		}
 		for (int i = 0; i < len; ++i) {
 			char c = str.charAt(i++);
-			if (c > '9' || c < '0') {
+			if ((c > '9') || (c < '0')) {
 				return -1;
 			}
 		}
@@ -209,7 +208,7 @@ public class JsonPointer {
 			}
 			++i;
 			// quoting is different; offline this case
-			if (c == '~' && i < end) { // possibly, quote
+			if ((c == '~') && (i < end)) { // possibly, quote
 				return _parseQuotedTail(input, i);
 			}
 			// otherwise, loop on
@@ -237,10 +236,10 @@ public class JsonPointer {
 			char c = input.charAt(i);
 			if (c == '/') { // end is nigh!
 				return new JsonPointer(input, sb.toString(), _parseTail(input.substring(i))); // need to push back
-																								// slash
+				// slash
 			}
 			++i;
-			if (c == '~' && i < end) {
+			if ((c == '~') && (i < end)) {
 				_appendEscape(sb, input.charAt(i++));
 				continue;
 			}

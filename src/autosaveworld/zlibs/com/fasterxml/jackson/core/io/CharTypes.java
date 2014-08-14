@@ -60,8 +60,7 @@ public final class CharTypes {
 	}
 
 	/**
-	 * To support non-default (and -standard) unquoted field names mode, need to have alternate checking. Basically this is list of 8-bit ASCII characters that are legal as part of Javascript
-	 * identifier
+	 * To support non-default (and -standard) unquoted field names mode, need to have alternate checking. Basically this is list of 8-bit ASCII characters that are legal as part of Javascript identifier
 	 */
 	final static int[] sInputCodesJsNames;
 	static {
@@ -205,8 +204,7 @@ public final class CharTypes {
 	}
 
 	/**
-	 * Accessor for getting a read-only encoding table for first 128 Unicode code points (single-byte UTF-8 characters). Value of 0 means "no escaping"; other positive values that value is character
-	 * to use after backslash; and negative values that generic (backslash - u) escaping is to be used.
+	 * Accessor for getting a read-only encoding table for first 128 Unicode code points (single-byte UTF-8 characters). Value of 0 means "no escaping"; other positive values that value is character to use after backslash; and negative values that generic (backslash - u) escaping is to be used.
 	 */
 	public static int[] get7BitOutputEscapes() {
 		return sOutputEscapes128;
@@ -221,7 +219,7 @@ public final class CharTypes {
 		int escLen = escCodes.length;
 		for (int i = 0, len = content.length(); i < len; ++i) {
 			char c = content.charAt(i);
-			if (c >= escLen || escCodes[c] == 0) {
+			if ((c >= escLen) || (escCodes[c] == 0)) {
 				sb.append(c);
 				continue;
 			}

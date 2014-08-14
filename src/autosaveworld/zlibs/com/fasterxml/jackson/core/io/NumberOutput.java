@@ -25,7 +25,7 @@ public final class NumberOutput {
 			char l1 = (i1 == 0) ? NC : f1;
 			for (int i2 = 0; i2 < 10; ++i2) {
 				char f2 = (char) ('0' + i2);
-				char l2 = (i1 == 0 && i2 == 0) ? NC : f2;
+				char l2 = ((i1 == 0) && (i2 == 0)) ? NC : f2;
 				for (int i3 = 0; i3 < 10; ++i3) {
 					// Last is never to be empty
 					char f3 = (char) ('0' + i3);
@@ -204,7 +204,7 @@ public final class NumberOutput {
 		while (v > MAX_INT_AS_LONG) { // full triplet
 			ptr -= 3;
 			long newValue = v / THOUSAND_L;
-			int triplet = (int) (v - newValue * THOUSAND_L);
+			int triplet = (int) (v - (newValue * THOUSAND_L));
 			full3(triplet, b, ptr);
 			v = newValue;
 		}
@@ -251,7 +251,7 @@ public final class NumberOutput {
 		while (v > MAX_INT_AS_LONG) { // full triplet
 			ptr -= 3;
 			long newV = v / THOUSAND_L;
-			int t = (int) (v - newV * THOUSAND_L);
+			int t = (int) (v - (newV * THOUSAND_L));
 			full3(t, b, ptr);
 			v = newV;
 		}
@@ -291,7 +291,7 @@ public final class NumberOutput {
 	}
 
 	public static String toString(long v) {
-		if (v <= Integer.MAX_VALUE && v >= Integer.MIN_VALUE) {
+		if ((v <= Integer.MAX_VALUE) && (v >= Integer.MIN_VALUE)) {
 			return toString((int) v);
 		}
 		return Long.toString(v);

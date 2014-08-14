@@ -33,14 +33,15 @@ public class SFTPBackupOperations {
 	private final boolean zip;
 	private final List<String> excludefolders;
 	private ChannelSftp sftp;
+
 	public SFTPBackupOperations(ChannelSftp sftp, boolean zip, List<String> excludeFolders) {
 		this.sftp = sftp;
 		this.zip = zip;
-		this.excludefolders = excludeFolders;
+		excludefolders = excludeFolders;
 	}
 
 	public void backupWorld(World world, boolean disableWorldSaving) {
-		MessageLogger.debug("Backuping world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuping world " + world.getWorldFolder().getName());
 		boolean savestaus = world.isAutoSave();
 		if (disableWorldSaving) {
 			world.setAutoSave(false);
@@ -53,7 +54,7 @@ public class SFTPBackupOperations {
 		} finally {
 			world.setAutoSave(savestaus);
 		}
-		MessageLogger.debug("Backuped world "+world.getWorldFolder().getName());
+		MessageLogger.debug("Backuped world " + world.getWorldFolder().getName());
 	}
 
 	public void backupPlugins() {
@@ -67,21 +68,21 @@ public class SFTPBackupOperations {
 
 	public void backupOtherFolders(List<String> folders) {
 		for (String folder : folders) {
-			MessageLogger.debug("Backuping folder "+ folder);
+			MessageLogger.debug("Backuping folder " + folder);
 			try {
 				File fld = new File(folder).getAbsoluteFile();
 				backupFolder(fld);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			MessageLogger.debug("Backuped folder "+ folder);
+			MessageLogger.debug("Backuped folder " + folder);
 		}
 	}
 
 	private void backupFolder(File folder) throws IOException, SftpException {
 		if (!zip) {
 			SFTPUtils.uploadDirectory(sftp, folder, excludefolders);
-		} else  {
+		} else {
 			SFTPUtils.zipAndUploadDirectory(sftp, folder, excludefolders);
 		}
 	}

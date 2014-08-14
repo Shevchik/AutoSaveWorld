@@ -126,7 +126,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 
 	@Override
 	public JsonParser skipChildren() throws IOException {
-		if (_currToken != JsonToken.START_OBJECT && _currToken != JsonToken.START_ARRAY) {
+		if ((_currToken != JsonToken.START_OBJECT) && (_currToken != JsonToken.START_ARRAY)) {
 			return this;
 		}
 		int open = 1;
@@ -252,7 +252,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 				case ID_NULL:
 					return false;
 				case ID_EMBEDDED_OBJECT:
-					Object value = this.getEmbeddedObject();
+					Object value = getEmbeddedObject();
 					if (value instanceof Boolean) {
 						return (Boolean) value;
 					}
@@ -284,7 +284,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 				case ID_NULL:
 					return 0;
 				case ID_EMBEDDED_OBJECT:
-					Object value = this.getEmbeddedObject();
+					Object value = getEmbeddedObject();
 					if (value instanceof Number) {
 						return ((Number) value).intValue();
 					}
@@ -313,7 +313,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 				case ID_NULL:
 					return 0L;
 				case ID_EMBEDDED_OBJECT:
-					Object value = this.getEmbeddedObject();
+					Object value = getEmbeddedObject();
 					if (value instanceof Number) {
 						return ((Number) value).longValue();
 					}
@@ -342,7 +342,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 				case ID_NULL:
 					return 0.0;
 				case ID_EMBEDDED_OBJECT:
-					Object value = this.getEmbeddedObject();
+					Object value = getEmbeddedObject();
 					if (value instanceof Number) {
 						return ((Number) value).doubleValue();
 					}
@@ -354,7 +354,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	@Override
 	public String getValueAsString(String defaultValue) throws IOException {
 		if (_currToken != JsonToken.VALUE_STRING) {
-			if (_currToken == null || _currToken == JsonToken.VALUE_NULL || !_currToken.isScalarValue()) {
+			if ((_currToken == null) || (_currToken == JsonToken.VALUE_NULL) || !_currToken.isScalarValue()) {
 				return defaultValue;
 			}
 		}
@@ -417,8 +417,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 	 */
 
 	/**
-	 * Helper method used to determine whether we are currently pointing to a String value of "null" (NOT a null token); and, if so, that parser is to recognize and return it similar to if it was real
-	 * null token.
+	 * Helper method used to determine whether we are currently pointing to a String value of "null" (NOT a null token); and, if so, that parser is to recognize and return it similar to if it was real null token.
 	 *
 	 * @since 2.3
 	 */
@@ -464,12 +463,11 @@ public abstract class ParserMinimalBase extends JsonParser {
 	}
 
 	/**
-	 * Method called to report a problem with unquoted control character. Note: starting with version 1.4, it is possible to suppress exception by enabling {@link Feature#ALLOW_UNQUOTED_CONTROL_CHARS}
-	 * .
+	 * Method called to report a problem with unquoted control character. Note: starting with version 1.4, it is possible to suppress exception by enabling {@link Feature#ALLOW_UNQUOTED_CONTROL_CHARS} .
 	 */
 	protected void _throwUnquotedSpace(int i, String ctxtDesc) throws JsonParseException {
 		// JACKSON-208; possible to allow unquoted control chars:
-		if (!isEnabled(Feature.ALLOW_UNQUOTED_CONTROL_CHARS) || i > INT_SPACE) {
+		if (!isEnabled(Feature.ALLOW_UNQUOTED_CONTROL_CHARS) || (i > INT_SPACE)) {
 			char c = (char) i;
 			String msg = "Illegal unquoted character (" + _getCharDesc(c) + "): has to be escaped using backslash to be included in " + ctxtDesc;
 			_reportError(msg);
@@ -482,7 +480,7 @@ public abstract class ParserMinimalBase extends JsonParser {
 			return ch;
 		}
 		// and [JACKSON-548]
-		if (ch == '\'' && isEnabled(Feature.ALLOW_SINGLE_QUOTES)) {
+		if ((ch == '\'') && isEnabled(Feature.ALLOW_SINGLE_QUOTES)) {
 			return ch;
 		}
 		_reportError("Unrecognized character escape " + _getCharDesc(ch));

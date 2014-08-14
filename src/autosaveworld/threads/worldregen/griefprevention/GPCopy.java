@@ -42,8 +42,9 @@ import com.sk89q.worldguard.bukkit.BukkitUtil;
 public class GPCopy {
 
 	private World wtoregen;
+
 	public GPCopy(String worldtoregen) {
-		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
 	public void copyAllToSchematics() {
@@ -53,7 +54,7 @@ public class GPCopy {
 
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
 
-		//get database
+		// get database
 		ClaimArray ca = null;
 		try {
 			Field fld = DataStore.class.getDeclaredField("claims");
@@ -66,35 +67,21 @@ public class GPCopy {
 			return;
 		}
 
-		//save all claims
-		for (int i = 0; i<ca.size(); i++) {
+		// save all claims
+		for (int i = 0; i < ca.size(); i++) {
 			Claim claim = ca.get(i);
-			//get coords
+			// get coords
 			double xmin = claim.getLesserBoundaryCorner().getX();
 			double zmin = claim.getLesserBoundaryCorner().getZ();
 			double xmax = claim.getGreaterBoundaryCorner().getX();
 			double zmax = claim.getGreaterBoundaryCorner().getZ();
-			Vector bvmin = BukkitUtil.toVector(
-				new Location(
-					wtoregen,
-					xmin,
-					0,
-					zmin
-				)
-			);
-			Vector bvmax = BukkitUtil.toVector(
-				new Location(
-					wtoregen,
-					xmax,
-					wtoregen.getMaxHeight(),
-					zmax
-				)
-			);
-			//save
-			MessageLogger.debug("Saving GP Region "+claim.getID()+" to schematic");
-			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getGPTempFolder()+claim.getID().toString(), bvmin, bvmax);
+			Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xmin, 0, zmin));
+			Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, xmax, wtoregen.getMaxHeight(), zmax));
+			// save
+			MessageLogger.debug("Saving GP Region " + claim.getID() + " to schematic");
+			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getGPTempFolder() + claim.getID().toString(), bvmin, bvmax);
 			SchematicOperations.saveToSchematic(wtoregen, new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
-			MessageLogger.debug("GP Region "+claim.getID()+" saved");
+			MessageLogger.debug("GP Region " + claim.getID() + " saved");
 		}
 	}
 

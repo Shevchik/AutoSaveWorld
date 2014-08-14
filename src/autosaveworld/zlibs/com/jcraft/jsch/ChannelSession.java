@@ -79,7 +79,7 @@ class ChannelSession extends Channel {
 	 *            terminal height, pixels
 	 */
 	public void setPtySize(int col, int row, int wp, int hp) {
-		setPtyType(this.ttype, col, row, wp, hp);
+		setPtyType(ttype, col, row, wp, hp);
 		if (!pty || !isConnected()) {
 			return;
 		}
@@ -119,10 +119,10 @@ class ChannelSession extends Channel {
 	 */
 	public void setPtyType(String ttype, int col, int row, int wp, int hp) {
 		this.ttype = ttype;
-		this.tcol = col;
-		this.trow = row;
-		this.twp = wp;
-		this.thp = hp;
+		tcol = col;
+		trow = row;
+		twp = wp;
+		thp = hp;
 	}
 
 	protected void sendRequests() throws Exception {
@@ -146,7 +146,7 @@ class ChannelSession extends Channel {
 		Packet packet = new Packet(buf);
 		int i = -1;
 		try {
-			while (isConnected() && thread != null && io != null && io.in != null) {
+			while (isConnected() && (thread != null) && (io != null) && (io.in != null)) {
 				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14 - Session.buffer_margin);
 				if (i == 0) {
 					continue;

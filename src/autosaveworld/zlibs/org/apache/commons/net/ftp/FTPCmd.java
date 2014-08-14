@@ -57,7 +57,7 @@ public enum FTPCmd {
 	public static final FTPCmd USERNAME = USER;
 
 	public final String getCommand() {
-		return this.name();
+		return name();
 	}
 
 }

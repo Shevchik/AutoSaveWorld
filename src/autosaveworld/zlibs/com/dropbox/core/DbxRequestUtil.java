@@ -55,7 +55,7 @@ public class DbxRequestUtil {
 		}
 
 		if (params != null) {
-			if (params.length % 2 != 0) {
+			if ((params.length % 2) != 0) {
 				throw new IllegalArgumentException("'params.length' is " + params.length + "; expecting a multiple of two");
 			}
 			for (int i = 0; i < params.length;) {
@@ -97,8 +97,7 @@ public class DbxRequestUtil {
 	/**
 	 * Convenience function for making HTTP GET requests.
 	 */
-	public static HttpRequestor.Response startGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers)
-			throws DbxException.NetworkIO {
+	public static HttpRequestor.Response startGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers) throws DbxException.NetworkIO {
 		headers = addUserAgentHeader(headers, requestConfig);
 		headers = addAuthHeader(headers, accessToken);
 
@@ -113,8 +112,7 @@ public class DbxRequestUtil {
 	/**
 	 * Convenience function for making HTTP PUT requests.
 	 */
-	public static HttpRequestor.Uploader startPut(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers)
-			throws DbxException.NetworkIO {
+	public static HttpRequestor.Uploader startPut(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers) throws DbxException.NetworkIO {
 		headers = addUserAgentHeader(headers, requestConfig);
 		headers = addAuthHeader(headers, accessToken);
 
@@ -129,8 +127,7 @@ public class DbxRequestUtil {
 	/**
 	 * Convenience function for making HTTP POST requests.
 	 */
-	public static HttpRequestor.Response startPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers)
-			throws DbxException.NetworkIO {
+	public static HttpRequestor.Response startPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers) throws DbxException.NetworkIO {
 		String uri = buildUri(host, path);
 		byte[] encodedParams = StringUtil.stringToUtf8(encodeUrlParams(requestConfig.userLocale, params));
 
@@ -203,8 +200,7 @@ public class DbxRequestUtil {
 		public abstract T handle(HttpRequestor.Response response) throws DbxException;
 	}
 
-	public static <T> T doGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler)
-			throws DbxException {
+	public static <T> T doGet(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler) throws DbxException {
 		HttpRequestor.Response response = startGet(requestConfig, accessToken, host, path, params, headers);
 		try {
 			return handler.handle(response);
@@ -218,14 +214,12 @@ public class DbxRequestUtil {
 		}
 	}
 
-	public static <T> T doPost(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler)
-			throws DbxException {
+	public static <T> T doPost(DbxRequestConfig requestConfig, String accessToken, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler) throws DbxException {
 		headers = addAuthHeader(headers, accessToken);
 		return doPostNoAuth(requestConfig, host, path, params, headers, handler);
 	}
 
-	public static <T> T doPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler)
-			throws DbxException {
+	public static <T> T doPostNoAuth(DbxRequestConfig requestConfig, String host, String path, String[] params, ArrayList<HttpRequestor.Header> headers, ResponseHandler<T> handler) throws DbxException {
 		HttpRequestor.Response response = startPostNoAuth(requestConfig, host, path, params, headers);
 		return finishResponse(response, handler);
 	}
@@ -268,7 +262,7 @@ public class DbxRequestUtil {
 				return requestMaker.run();
 			} catch (DbxException ex) {
 				// If we can't retry, just let this exception through.
-				if (!isRetriableException(ex) || numTries >= maxTries) {
+				if (!isRetriableException(ex) || (numTries >= maxTries)) {
 					throw ex;
 					// Otherwise, run through the loop again.
 				}
@@ -277,7 +271,7 @@ public class DbxRequestUtil {
 	}
 
 	private static boolean isRetriableException(DbxException ex) {
-		return ex instanceof DbxException.RetryLater || ex instanceof DbxException.ServerError;
+		return (ex instanceof DbxException.RetryLater) || (ex instanceof DbxException.ServerError);
 	}
 
 }

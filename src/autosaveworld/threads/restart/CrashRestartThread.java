@@ -34,51 +34,54 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.SchedulerUtils;
 
-public class CrashRestartThread extends Thread{
+public class CrashRestartThread extends Thread {
 
 	private Thread bukkitMainThread;
 	private AutoSaveWorldConfig config;
 	private RestartJVMshutdownhook jvmsh;
+
 	public CrashRestartThread(Thread thread, AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
-		this.bukkitMainThread = thread;
+		bukkitMainThread = thread;
 		this.config = config;
 		this.jvmsh = jvmsh;
 	}
 
 	public void stopThread() {
-		this.run = false;
+		run = false;
 	}
 
 	private long syncticktime = 0;
 	private boolean run = true;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
 		MessageLogger.debug("CrashRestartThread started");
 		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 
-		MessageLogger.debug("Delaying crashrestart checker start for "+config.crashRestartCheckerStartDelay+" seconds");
-		//wait for configurable delay
-		try {Thread.sleep(config.crashRestartCheckerStartDelay*1000);} catch (InterruptedException e) {}
-		//do not enable self if plugin is disabled
-		if (!run) {return;}
+		MessageLogger.debug("Delaying crashrestart checker start for " + config.crashRestartCheckerStartDelay + " seconds");
+		// wait for configurable delay
+		try {
+			Thread.sleep(config.crashRestartCheckerStartDelay * 1000);
+		} catch (InterruptedException e) {
+		}
+		// do not enable self if plugin is disabled
+		if (!run) {
+			return;
+		}
 
 		MessageLogger.debug("Running crashrestart checker");
-		//schedule sync task in, this will provide us info about when the last server tick occured
-		SchedulerUtils.scheduleSyncRepeatingTask(
-			new Runnable() {
-				@Override
-				public void run() {
-					syncticktime = System.currentTimeMillis();
-				}
-			},
-			0,
-			20
-		);
+		// schedule sync task in, this will provide us info about when the last server tick occured
+		SchedulerUtils.scheduleSyncRepeatingTask(new Runnable() {
+			@Override
+			public void run() {
+				syncticktime = System.currentTimeMillis();
+			}
+		}, 0, 20);
 
 		while (run) {
 			long diff = System.currentTimeMillis() - syncticktime;
-			if (syncticktime !=0 && (diff >= (config.crashRestartTimeout*1000L))) {
+			if ((syncticktime != 0) && (diff >= (config.crashRestartTimeout * 1000L))) {
 				run = false;
 
 				if (config.crashRestartEnabled) {
@@ -96,16 +99,16 @@ public class CrashRestartThread extends Thread{
 						Runtime.getRuntime().addShutdownHook(jvmsh);
 					}
 
-					//freeze main thread
+					// freeze main thread
 					bukkitMainThread.suspend();
-					//make sure that server won't attempt to do next tick
+					// make sure that server won't attempt to do next tick
 					Bukkit.shutdown();
-					//disable spigot async catcher
+					// disable spigot async catcher
 					try {
 						AsyncCatcher.enabled = false;
 					} catch (Throwable t) {
 					}
-					//unload plugins
+					// unload plugins
 					Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 					for (int i = plugins.length - 1; i >= 0; i--) {
 						try {
@@ -114,13 +117,13 @@ public class CrashRestartThread extends Thread{
 							e.printStackTrace();
 						}
 					}
-					//save players
+					// save players
 					try {
 						Bukkit.savePlayers();
 					} catch (Throwable e) {
 						e.printStackTrace();
 					}
-					//save worlds
+					// save worlds
 					for (World w : Bukkit.getWorlds()) {
 						if (w.isAutoSave()) {
 							try {
@@ -130,20 +133,20 @@ public class CrashRestartThread extends Thread{
 							}
 						}
 					}
-					//resume main thread
+					// resume main thread
 					bukkitMainThread.resume();
-					//shutdown JVM
+					// shutdown JVM
 					try {
 						System.exit(0);
 					} catch (Throwable t) {
-						//fuck you forge
+						// fuck you forge
 						try {
 							Class<?> shutdownclass = Class.forName("java.lang.Shutdown", false, ClassLoader.getSystemClassLoader());
 							Method shutdownmethod = shutdownclass.getDeclaredMethod("exit", int.class);
 							shutdownmethod.setAccessible(true);
 							shutdownmethod.invoke(null, 0);
 						} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-							//well, fuck
+							// well, fuck
 						}
 					}
 
@@ -151,30 +154,31 @@ public class CrashRestartThread extends Thread{
 
 			}
 
-			try {Thread.sleep(1000);} catch (InterruptedException e) {}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
 		}
 
 		MessageLogger.debug("Graceful quit of CrashRestartThread");
 
 	}
 
-
 	private void dumpThread(ThreadInfo thread, Logger log) {
-		log.log(Level.SEVERE, "------------------------------" );
-		log.log( Level.SEVERE, "Current Thread: " + thread.getThreadName() );
-		log.log( Level.SEVERE, "\tPID: " + thread.getThreadId()+ " | Suspended: " + thread.isSuspended() + " | Native: " + thread.isInNative() + " | State: " + thread.getThreadState() );
+		log.log(Level.SEVERE, "------------------------------");
+		log.log(Level.SEVERE, "Current Thread: " + thread.getThreadName());
+		log.log(Level.SEVERE, "\tPID: " + thread.getThreadId() + " | Suspended: " + thread.isSuspended() + " | Native: " + thread.isInNative() + " | State: " + thread.getThreadState());
 		if (thread.getLockedMonitors().length != 0) {
 			log.log(Level.SEVERE, "\tThread is waiting on monitor(s):");
 			for (MonitorInfo monitor : thread.getLockedMonitors()) {
 				log.log(Level.SEVERE, "\t\tLocked on:" + monitor.getLockedStackFrame());
 			}
 		}
-		log.log( Level.SEVERE, "\tStack:" );
-		for ( StackTraceElement stack : thread.getStackTrace() ) {
-			log.log( Level.SEVERE, "\t\t" + stack );
+		log.log(Level.SEVERE, "\tStack:");
+		for (StackTraceElement stack : thread.getStackTrace()) {
+			log.log(Level.SEVERE, "\t\t" + stack);
 		}
-		log.log( Level.SEVERE, "------------------------------" );
+		log.log(Level.SEVERE, "------------------------------");
 	}
 
 }
-

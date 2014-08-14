@@ -181,7 +181,7 @@ public class Buffer {
 
 	public byte[] getMPInt() {
 		int i = getInt();
-		if (i < 0 || i > 8 * 1024) {
+		if ((i < 0) || (i > (8 * 1024))) {
 			i = 8 * 1024;
 		}
 		byte[] foo = new byte[i];
@@ -205,7 +205,7 @@ public class Buffer {
 
 	public byte[] getString() {
 		int i = getInt();
-		if (i < 0 || i > 256 * 1024) {
+		if ((i < 0) || (i > (256 * 1024))) {
 			i = 256 * 1024;
 		}
 		byte[] foo = new byte[i];

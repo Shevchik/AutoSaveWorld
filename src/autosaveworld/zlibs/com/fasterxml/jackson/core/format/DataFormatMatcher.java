@@ -102,8 +102,7 @@ public class DataFormatMatcher {
 	}
 
 	/**
-	 * Method to use for accessing input for which format detection has been done. This <b>must</b> be used instead of using stream passed to detector unless given stream itself can do buffering.
-	 * Stream will return all content that was read during matching process, as well as remaining contents of the underlying stream.
+	 * Method to use for accessing input for which format detection has been done. This <b>must</b> be used instead of using stream passed to detector unless given stream itself can do buffering. Stream will return all content that was read during matching process, as well as remaining contents of the underlying stream.
 	 */
 	public InputStream getDataStream() {
 		if (_originalStream == null) {

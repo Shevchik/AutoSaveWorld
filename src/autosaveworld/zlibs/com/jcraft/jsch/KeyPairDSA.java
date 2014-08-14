@@ -319,7 +319,7 @@ public class KeyPairDSA extends KeyPair {
 			SignatureDSA dsa = (SignatureDSA) (c.newInstance());
 			dsa.init();
 
-			if (pub_array == null && P_array == null && getPublicKeyBlob() != null) {
+			if ((pub_array == null) && (P_array == null) && (getPublicKeyBlob() != null)) {
 				Buffer buf = new Buffer(getPublicKeyBlob());
 				buf.getString();
 				P_array = buf.getString();

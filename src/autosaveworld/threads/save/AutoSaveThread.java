@@ -41,7 +41,7 @@ public class AutoSaveThread extends Thread {
 	}
 
 	public void stopThread() {
-		this.run = false;
+		run = false;
 	}
 
 	public void startsave() {
@@ -60,8 +60,13 @@ public class AutoSaveThread extends Thread {
 		while (run) {
 			// sleep
 			for (int i = 0; i < config.saveInterval; i++) {
-				if (!run || command) {break;}
-				try {Thread.sleep(1000);} catch (InterruptedException e) {}
+				if (!run || command) {
+					break;
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+				}
 			}
 
 			// save
@@ -106,14 +111,12 @@ public class AutoSaveThread extends Thread {
 		// Save the players
 		MessageLogger.debug("Saving players");
 		if (run) {
-			SchedulerUtils.callSyncTaskAndWait(
-				new Runnable() {
-					@Override
-					public void run() {
-						Bukkit.savePlayers();
-					}
+			SchedulerUtils.callSyncTaskAndWait(new Runnable() {
+				@Override
+				public void run() {
+					Bukkit.savePlayers();
 				}
-			);
+			});
 		}
 		MessageLogger.debug("Saved Players");
 
@@ -121,14 +124,12 @@ public class AutoSaveThread extends Thread {
 		MessageLogger.debug("Saving worlds");
 		for (final World world : Bukkit.getWorlds()) {
 			if (run) {
-				SchedulerUtils.callSyncTaskAndWait(
-					new Runnable() {
-						@Override
-						public void run() {
-							saveWorld(world);
-						}
+				SchedulerUtils.callSyncTaskAndWait(new Runnable() {
+					@Override
+					public void run() {
+						saveWorld(world);
 					}
-				);
+				});
 			}
 		}
 		MessageLogger.debug("Saved Worlds");
@@ -149,7 +150,7 @@ public class AutoSaveThread extends Thread {
 		if (world.isAutoSave()) {
 			try {
 				Object worldserver = getNMSWorld(world);
-				//invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
+				// invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
 				worldserver.getClass().getMethod("saveLevel").invoke(worldserver);
 			} catch (Exception e) {
 				MessageLogger.warn("Could not dump RegionFileCache");
@@ -191,7 +192,7 @@ public class AutoSaveThread extends Thread {
 			Object worldData = worldDataField.get(worldserver);
 			boolean methodfound = false;
 			for (Method method : dataManager.getClass().getMethods()) {
-				if (method.getName().equals("saveWorldData") && method.getParameterTypes().length == 2) {
+				if (method.getName().equals("saveWorldData") && (method.getParameterTypes().length == 2)) {
 					method.invoke(dataManager, worldData, null);
 					methodfound = true;
 					break;
@@ -206,7 +207,7 @@ public class AutoSaveThread extends Thread {
 			chunkProviderField.setAccessible(true);
 			Object chunkProvider = chunkProviderField.get(worldserver);
 			for (Method method : chunkProvider.getClass().getMethods()) {
-				if (method.getName().equals("saveChunks") && method.getParameterTypes().length == 2) {
+				if (method.getName().equals("saveChunks") && (method.getParameterTypes().length == 2)) {
 					method.invoke(chunkProvider, true, null);
 					methodfound = true;
 					break;

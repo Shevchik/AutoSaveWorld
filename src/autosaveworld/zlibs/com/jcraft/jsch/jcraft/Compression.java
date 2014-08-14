@@ -72,7 +72,7 @@ public class Compression implements autosaveworld.zlibs.com.jcraft.jsch.Compress
 			switch (status) {
 				case JZlib.Z_OK:
 					tmp = BUF_SIZE - stream.avail_out;
-					if (outputbuf.length < outputlen + tmp + buffer_margin) {
+					if (outputbuf.length < (outputlen + tmp + buffer_margin)) {
 						byte[] foo = new byte[(outputlen + tmp + buffer_margin) * 2];
 						System.arraycopy(outputbuf, 0, foo, 0, outputbuf.length);
 						outputbuf = foo;
@@ -104,10 +104,10 @@ public class Compression implements autosaveworld.zlibs.com.jcraft.jsch.Compress
 			int status = stream.inflate(JZlib.Z_PARTIAL_FLUSH);
 			switch (status) {
 				case JZlib.Z_OK:
-					if (inflated_buf.length < inflated_end + BUF_SIZE - stream.avail_out) {
+					if (inflated_buf.length < ((inflated_end + BUF_SIZE) - stream.avail_out)) {
 						int len = inflated_buf.length * 2;
-						if (len < inflated_end + BUF_SIZE - stream.avail_out) {
-							len = inflated_end + BUF_SIZE - stream.avail_out;
+						if (len < ((inflated_end + BUF_SIZE) - stream.avail_out)) {
+							len = (inflated_end + BUF_SIZE) - stream.avail_out;
 						}
 						byte[] foo = new byte[len];
 						System.arraycopy(inflated_buf, 0, foo, 0, inflated_end);
@@ -118,7 +118,7 @@ public class Compression implements autosaveworld.zlibs.com.jcraft.jsch.Compress
 					length[0] = inflated_end;
 					break;
 				case JZlib.Z_BUF_ERROR:
-					if (inflated_end > buffer.length - start) {
+					if (inflated_end > (buffer.length - start)) {
 						byte[] foo = new byte[inflated_end + start];
 						System.arraycopy(buffer, 0, foo, 0, start);
 						System.arraycopy(inflated_buf, 0, foo, start, inflated_end);

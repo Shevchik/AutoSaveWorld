@@ -66,7 +66,7 @@ public class DeflaterOutputStream extends FilterOutputStream {
 
 	public DeflaterOutputStream(OutputStream out, Deflater deflater, int size, boolean close_out) throws IOException {
 		super(out);
-		if (out == null || deflater == null) {
+		if ((out == null) || (deflater == null)) {
 			throw new NullPointerException();
 		} else if (size <= 0) {
 			throw new IllegalArgumentException("buffer size must be greater than 0");
@@ -86,7 +86,7 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	public void write(byte[] b, int off, int len) throws IOException {
 		if (deflater.finished()) {
 			throw new IOException("finished");
-		} else if (off < 0 | len < 0 | off + len > b.length) {
+		} else if ((off < 0) | (len < 0) | ((off + len) > b.length)) {
 			throw new IndexOutOfBoundsException();
 		} else if (len == 0) {
 			return;
@@ -130,7 +130,7 @@ public class DeflaterOutputStream extends FilterOutputStream {
 			case JZlib.Z_STREAM_END:
 				break;
 			case JZlib.Z_BUF_ERROR:
-				if (deflater.avail_in <= 0 && flush != JZlib.Z_FINISH) {
+				if ((deflater.avail_in <= 0) && (flush != JZlib.Z_FINISH)) {
 					// flush() without any data
 					break;
 				}
@@ -173,7 +173,7 @@ public class DeflaterOutputStream extends FilterOutputStream {
 	}
 
 	public boolean getSyncFlush() {
-		return this.syncFlush;
+		return syncFlush;
 	}
 
 	public Deflater getDeflater() {

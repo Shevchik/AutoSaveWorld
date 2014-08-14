@@ -18,8 +18,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.Versioned;
  * <p>
  * Note that this class can be used in two roles: first, as a static utility class for loading purposes, and second, as a singleton loader of per-module version information.
  * <p>
- * Note that method for accessing version information changed between versions 2.1 and 2.2; earlier code used file named "VERSION.txt"; but this has serious performance issues on some platforms
- * (Android), so a replacement system was implemented to use class generation and dynamic class loading.
+ * Note that method for accessing version information changed between versions 2.1 and 2.2; earlier code used file named "VERSION.txt"; but this has serious performance issues on some platforms (Android), so a replacement system was implemented to use class generation and dynamic class loading.
  */
 public class VersionUtil {
 	private final static Pattern V_SEP = Pattern.compile("[-_./;:]");
@@ -38,7 +37,7 @@ public class VersionUtil {
 			 */
 			v = VersionUtil.versionFor(getClass());
 		} catch (Exception e) { // not good to dump to stderr; but that's all we
-								// have at this low level
+			// have at this low level
 			System.err.println("ERROR: Failed to load Version information from " + getClass());
 		}
 		if (v == null) {
@@ -131,8 +130,7 @@ public class VersionUtil {
 	}
 
 	/**
-	 * Will attempt to load the maven version for the given groupId and artifactId. Maven puts a pom.properties file in META-INF/maven/groupId/artifactId, containing the groupId, artifactId and
-	 * version of the library.
+	 * Will attempt to load the maven version for the given groupId and artifactId. Maven puts a pom.properties file in META-INF/maven/groupId/artifactId, containing the groupId, artifactId and version of the library.
 	 *
 	 * @param cl
 	 *            the ClassLoader to load the pom.properties file from
@@ -162,10 +160,9 @@ public class VersionUtil {
 	}
 
 	public static Version parseVersion(String s, String groupId, String artifactId) {
-		if (s != null && (s = s.trim()).length() > 0) {
+		if ((s != null) && ((s = s.trim()).length() > 0)) {
 			String[] parts = V_SEP.split(s);
-			return new Version(parseVersionPart(parts[0]), (parts.length > 1) ? parseVersionPart(parts[1]) : 0, (parts.length > 2) ? parseVersionPart(parts[2]) : 0, (parts.length > 3) ? parts[3]
-					: null, groupId, artifactId);
+			return new Version(parseVersionPart(parts[0]), (parts.length > 1) ? parseVersionPart(parts[1]) : 0, (parts.length > 2) ? parseVersionPart(parts[2]) : 0, (parts.length > 3) ? parts[3] : null, groupId, artifactId);
 		}
 		return null;
 	}
@@ -174,7 +171,7 @@ public class VersionUtil {
 		int number = 0;
 		for (int i = 0, len = s.length(); i < len; ++i) {
 			char c = s.charAt(i);
-			if (c > '9' || c < '0') {
+			if ((c > '9') || (c < '0')) {
 				break;
 			}
 			number = (number * 10) + (c - '0');

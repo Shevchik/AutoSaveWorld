@@ -115,7 +115,7 @@ public class JSch {
 	private ConfigRepository configRepository = null;
 
 	public ConfigRepository getConfigRepository() {
-		return this.configRepository;
+		return configRepository;
 	}
 
 	public void setConfigRepository(ConfigRepository configRepository) {
@@ -135,8 +135,7 @@ public class JSch {
 	static Logger logger = DEVNULL;
 
 	/**
-	 * Instantiates the <code>Session</code> object with <code>host</code>. The user name and port number will be retrieved from ConfigRepository. If user name is not given, the system property
-	 * "user.name" will be referred.
+	 * Instantiates the <code>Session</code> object with <code>host</code>. The user name and port number will be retrieved from ConfigRepository. If user name is not given, the system property "user.name" will be referred.
 	 *
 	 * @param host
 	 *            hostname
@@ -155,8 +154,7 @@ public class JSch {
 	}
 
 	/**
-	 * Instantiates the <code>Session</code> object with <code>username</code> and <code>host</code>. The TCP port 22 will be used in making the connection. Note that the TCP connection must not be
-	 * established until Session#connect().
+	 * Instantiates the <code>Session</code> object with <code>username</code> and <code>host</code>. The TCP port 22 will be used in making the connection. Note that the TCP connection must not be established until Session#connect().
 	 *
 	 * @param username
 	 *            user name
@@ -176,8 +174,7 @@ public class JSch {
 	}
 
 	/**
-	 * Instantiates the <code>Session</code> object with given <code>username</code>, <code>host</code> and <code>port</code>. Note that the TCP connection must not be established until
-	 * Session#connect().
+	 * Instantiates the <code>Session</code> object with given <code>username</code>, <code>host</code> and <code>port</code>. Note that the TCP connection must not be established until Session#connect().
 	 *
 	 * @param username
 	 *            user name

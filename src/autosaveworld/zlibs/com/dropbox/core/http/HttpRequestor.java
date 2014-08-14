@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An interface that the Dropbox client library uses to make HTTP requests. If you're fine with the standard Java {@link java.net.HttpURLConnection} implementation, then just use
- * {@link StandardHttpRequestor#Instance}.
+ * An interface that the Dropbox client library uses to make HTTP requests. If you're fine with the standard Java {@link java.net.HttpURLConnection} implementation, then just use {@link StandardHttpRequestor#Instance}.
  */
 public abstract class HttpRequestor {
 	public abstract Response doGet(String url, Iterable<Header> headers) throws IOException;

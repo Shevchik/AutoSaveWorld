@@ -37,7 +37,7 @@ public class FTPUtils {
 
 	public static void zipAndUploadDirectory(FTPClient ftp, File src, List<String> excludefolders) throws IOException {
 		InputStream is = MemoryZip.startZIP(src, excludefolders);
-		storeFile(ftp, is, src.getName()+".zip");
+		storeFile(ftp, is, src.getName() + ".zip");
 		is.close();
 	}
 
@@ -47,7 +47,10 @@ public class FTPUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {Thread.sleep(0);} catch (InterruptedException e) {}
+		try {
+			Thread.sleep(0);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	public static void deleteDirectory(FTPClient ftp, String directory) throws IOException {

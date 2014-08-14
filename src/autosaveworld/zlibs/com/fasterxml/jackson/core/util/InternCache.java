@@ -4,8 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Singleton class that adds a simple first-level cache in front of regular String.intern() functionality. This is done as a minor performance optimization, to avoid calling native intern() method in
- * cases where same String is being interned multiple times.
+ * Singleton class that adds a simple first-level cache in front of regular String.intern() functionality. This is done as a minor performance optimization, to avoid calling native intern() method in cases where same String is being interned multiple times.
  * <p>
  * Note: that this class extends {@link LinkedHashMap} is an implementation detail -- no code should ever directly call Map methods.
  */
@@ -38,8 +37,7 @@ public final class InternCache extends ConcurrentHashMap<String, String> // sinc
 		}
 
 		/*
-		 * 18-Sep-2013, tatu: We used to use LinkedHashMap, which has simple LRU method. No such functionality exists with CHM; and let's use simplest possible limitation: just clear all contents.
-		 * This because otherwise we are simply likely to keep on clearing same, commonly used entries.
+		 * 18-Sep-2013, tatu: We used to use LinkedHashMap, which has simple LRU method. No such functionality exists with CHM; and let's use simplest possible limitation: just clear all contents. This because otherwise we are simply likely to keep on clearing same, commonly used entries.
 		 */
 		if (size() >= MAX_ENTRIES) {
 			/*

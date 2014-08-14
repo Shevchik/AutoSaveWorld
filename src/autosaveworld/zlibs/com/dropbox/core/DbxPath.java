@@ -6,8 +6,7 @@ import static autosaveworld.zlibs.com.dropbox.core.util.StringUtil.jq;
  * Utility functions for working with Dropbox paths. This SDK uses {@code String}s to represent paths.
  *
  * <p>
- * Dropbox paths always start with with a slash ({@code "/"}). For full-Dropbox apps, the path is relative to the root of the user's Dropbox. For App Folder apps, the path is relative to the App
- * Folder.
+ * Dropbox paths always start with with a slash ({@code "/"}). For full-Dropbox apps, the path is relative to the root of the user's Dropbox. For App Folder apps, the path is relative to the App Folder.
  * </p>
  */
 public class DbxPath {
@@ -68,7 +67,7 @@ public class DbxPath {
 		if (!path.startsWith("/")) {
 			throw new IllegalArgumentException("Not a valid path.  Doesn't start with a \"/\": \"" + path + "\"");
 		}
-		if (path.length() > 1 && path.endsWith("/")) {
+		if ((path.length() > 1) && path.endsWith("/")) {
 			throw new IllegalArgumentException("Not a valid path.  Ends with a \"/\": \"" + path + "\"");
 		}
 
@@ -86,7 +85,7 @@ public class DbxPath {
 		if (!path.startsWith("/")) {
 			throw new IllegalArgumentException("Not a valid path.  Doesn't start with a \"/\": \"" + path + "\"");
 		}
-		if (path.length() > 1 && path.endsWith("/")) {
+		if ((path.length() > 1) && path.endsWith("/")) {
 			throw new IllegalArgumentException("Not a valid path.  Ends with a \"/\": \"" + path + "\"");
 		}
 
@@ -111,7 +110,7 @@ public class DbxPath {
 		if (!path.startsWith("/")) {
 			throw new IllegalArgumentException("Not a valid path.  Doesn't start with a \"/\": \"" + path + "\"");
 		}
-		if (path.length() > 1 && path.endsWith("/")) {
+		if ((path.length() > 1) && path.endsWith("/")) {
 			throw new IllegalArgumentException("Not a valid path.  Ends with a \"/\": \"" + path + "\"");
 		}
 

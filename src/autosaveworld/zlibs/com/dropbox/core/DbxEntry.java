@@ -37,14 +37,12 @@ public abstract class DbxEntry implements Serializable {
 	public final String path;
 
 	/**
-	 * The name of the icon to use for this file. The set of names returned by this call match up with icons in a set of icons provided by Dropbox. Read more about the <em>icon</em> field in <a
-	 * href="https://www.dropbox.com/developers/reference/api#metadata"> Dropbox's documentation for the {@code /metadata} HTTP endpoint</a>.
+	 * The name of the icon to use for this file. The set of names returned by this call match up with icons in a set of icons provided by Dropbox. Read more about the <em>icon</em> field in <a href="https://www.dropbox.com/developers/reference/api#metadata"> Dropbox's documentation for the {@code /metadata} HTTP endpoint</a>.
 	 */
 	public final String iconName;
 
 	/**
-	 * Whether this file or folder might have a thumbnail image you can retrieve via the {@link DbxClient#getThumbnail DbxClient.getThumbnail} call. If this is {@code true}, there might be a thumbnail
-	 * available. If this is {@code false}, there is definitely no thumbnail available.
+	 * Whether this file or folder might have a thumbnail image you can retrieve via the {@link DbxClient#getThumbnail DbxClient.getThumbnail} call. If this is {@code true}, there might be a thumbnail available. If this is {@code false}, there is definitely no thumbnail available.
 	 */
 	public final boolean mightHaveThumbnail;
 
@@ -57,7 +55,7 @@ public abstract class DbxEntry implements Serializable {
 	 *            {@link #mightHaveThumbnail}
 	 */
 	private DbxEntry(String path, String iconName, boolean mightHaveThumbnail) {
-		this.name = DbxPath.getName(path);
+		name = DbxPath.getName(path);
 		this.path = path;
 		this.iconName = iconName;
 		this.mightHaveThumbnail = mightHaveThumbnail;
@@ -101,10 +99,10 @@ public abstract class DbxEntry implements Serializable {
 
 	protected int partialHashCode() {
 		int h = name.hashCode();
-		h = h * 31 + path.hashCode();
-		h = h * 31 + iconName.hashCode();
-		h = h * 31 + path.hashCode();
-		h = h * 31 + (mightHaveThumbnail ? 1 : 0);
+		h = (h * 31) + path.hashCode();
+		h = (h * 31) + iconName.hashCode();
+		h = (h * 31) + path.hashCode();
+		h = (h * 31) + (mightHaveThumbnail ? 1 : 0);
 		return h;
 	}
 
@@ -203,21 +201,18 @@ public abstract class DbxEntry implements Serializable {
 		public final long numBytes;
 
 		/**
-		 * A human-readable string version of the file size (ex: "13 kb"). This string will be localized based on the {@link java.util.Locale Locale} in {@link DbxRequestConfig#userLocale} (passed in
-		 * to the {@link DbxClient} constructor).
+		 * A human-readable string version of the file size (ex: "13 kb"). This string will be localized based on the {@link java.util.Locale Locale} in {@link DbxRequestConfig#userLocale} (passed in to the {@link DbxClient} constructor).
 		 */
 		public final String humanSize;
 
 		/**
-		 * The time the file was added, moved, or last had it's contents changed on the Dropbox server. (This probably won't match the time on the Dropbox user's filesystem. For that the
-		 * {@link #clientMtime} is a better estimate.)
+		 * The time the file was added, moved, or last had it's contents changed on the Dropbox server. (This probably won't match the time on the Dropbox user's filesystem. For that the {@link #clientMtime} is a better estimate.)
 		 *
 		 */
 		public final Date lastModified;
 
 		/**
-		 * The modification time sent up by the Dropbox desktop client when the file was added or modified. This time is based on the system clock of the particular host that the client was running
-		 * on, as opposed to the system clock of the Dropbox servers.
+		 * The modification time sent up by the Dropbox desktop client when the file was added or modified. This time is based on the system clock of the particular host that the client was running on, as opposed to the system clock of the Dropbox servers.
 		 *
 		 * <p>
 		 * This field <em>should not</em> be used to determine if a file has changed, but only as a way to sort files by date (when displaying a list of files to the user).
@@ -226,8 +221,7 @@ public abstract class DbxEntry implements Serializable {
 		public final Date clientMtime;
 
 		/**
-		 * The revision of the file at this path. This can be used with {@link DbxClient#uploadFile} and the {@link DbxWriteMode#update} mode to make sure you're overwriting the revision of the file
-		 * you think you're overwriting.
+		 * The revision of the file at this path. This can be used with {@link DbxClient#uploadFile} and the {@link DbxWriteMode#update} mode to make sure you're overwriting the revision of the file you think you're overwriting.
 		 */
 		public final String rev;
 
@@ -337,10 +331,10 @@ public abstract class DbxEntry implements Serializable {
 			// Not including 'humanSize' since it's mostly derivable from
 			// 'numBytes'
 			int h = partialHashCode();
-			h = h * 31 + (int) numBytes;
-			h = h * 31 + lastModified.hashCode();
-			h = h * 31 + clientMtime.hashCode();
-			h = h * 31 + rev.hashCode();
+			h = (h * 31) + (int) numBytes;
+			h = (h * 31) + lastModified.hashCode();
+			h = (h * 31) + clientMtime.hashCode();
+			h = (h * 31) + rev.hashCode();
 			return h;
 		}
 	}
@@ -374,8 +368,7 @@ public abstract class DbxEntry implements Serializable {
 		public final DbxEntry entry;
 
 		/**
-		 * If {@link #entry} is a folder, this will contain a hash that identifies the folder's contents. This value can be used with {@link DbxClient#getMetadataWithChildrenIfChanged} to void
-		 * downloading the folder contents if they havne't changed.
+		 * If {@link #entry} is a folder, this will contain a hash that identifies the folder's contents. This value can be used with {@link DbxClient#getMetadataWithChildrenIfChanged} to void downloading the folder contents if they havne't changed.
 		 */
 		public final String hash;
 
@@ -434,16 +427,15 @@ public abstract class DbxEntry implements Serializable {
 		@Override
 		public int hashCode() {
 			int result = entry.hashCode();
-			result = 31 * result + (hash != null ? hash.hashCode() : 0);
-			result = 31 * result + (children != null ? children.hashCode() : 0);
+			result = (31 * result) + (hash != null ? hash.hashCode() : 0);
+			result = (31 * result) + (children != null ? children.hashCode() : 0);
 			return result;
 		}
 
 	}
 
 	/**
-	 * The more general case of {@link WithChildren}. It's used in the {@code C} -suffixed variants ({@link DbxClient#getMetadataWithChildrenC} and {@link DbxClient#getMetadataWithChildrenIfChanged}
-	 * to allow you to process the {@link DbxEntry} values as the come in and aggregate them into your own object (instead of the default {@link List}) using a custom {@link Collector}.
+	 * The more general case of {@link WithChildren}. It's used in the {@code C} -suffixed variants ({@link DbxClient#getMetadataWithChildrenC} and {@link DbxClient#getMetadataWithChildrenIfChanged} to allow you to process the {@link DbxEntry} values as the come in and aggregate them into your own object (instead of the default {@link List}) using a custom {@link Collector}.
 	 */
 	public static final class WithChildrenC<C> implements Serializable {
 		public static final long serialVersionUID = 0;
@@ -451,8 +443,7 @@ public abstract class DbxEntry implements Serializable {
 		public final DbxEntry entry;
 
 		/**
-		 * If {@link #entry} is a folder, this will contain a hash that identifies the folder's contents. This value can be used with {@link DbxClient#getMetadataWithChildrenIfChanged} to void
-		 * downloading the folder contents if they havne't changed.
+		 * If {@link #entry} is a folder, this will contain a hash that identifies the folder's contents. This value can be used with {@link DbxClient#getMetadataWithChildrenIfChanged} to void downloading the folder contents if they havne't changed.
 		 */
 		public final String hash;
 
@@ -513,8 +504,8 @@ public abstract class DbxEntry implements Serializable {
 		@Override
 		public int hashCode() {
 			int result = entry.hashCode();
-			result = 31 * result + (hash != null ? hash.hashCode() : 0);
-			result = 31 * result + (children != null ? children.hashCode() : 0);
+			result = (31 * result) + (hash != null ? hash.hashCode() : 0);
+			result = (31 * result) + (children != null ? children.hashCode() : 0);
 			return result;
 		}
 
@@ -617,7 +608,7 @@ public abstract class DbxEntry implements Serializable {
 			thumb_exists = Boolean.FALSE;
 		}
 
-		if (is_dir && (contents != null || hash != null)) {
+		if (is_dir && ((contents != null) || (hash != null))) {
 			if (hash == null) {
 				throw new JsonReadException("missing \"hash\", when we asked for children", top);
 			}

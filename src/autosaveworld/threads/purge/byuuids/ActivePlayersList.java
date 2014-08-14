@@ -30,41 +30,42 @@ import autosaveworld.core.logging.MessageLogger;
 public class ActivePlayersList {
 
 	private AutoSaveWorldConfig config;
+
 	public ActivePlayersList(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
 
 	private HashSet<String> plactiveUUID = new HashSet<String>();
 
-	//TODO: remove name storage as soon as all plugins update to UUID
+	// TODO: remove name storage as soon as all plugins update to UUID
 
-	//storage to support checking by names
+	// storage to support checking by names
 	private HashSet<String> plactiveNamesCS = new HashSet<String>();
 	private HashSet<String> plactiveNamesNCS = new HashSet<String>();
 
 	public void gatherActivePlayersList(long awaytime) {
 		try {
-			//fill list
-			//add online players
+			// fill list
+			// add online players
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				String uuidstring = player.getUniqueId().toString().replace("-", "");
-				MessageLogger.debug("Adding online player "+uuidstring+" to active list");
+				MessageLogger.debug("Adding online player " + uuidstring + " to active list");
 				plactiveUUID.add(uuidstring);
-				//old api storage
+				// old api storage
 				if (config.purgeUseOldAPI) {
 					plactiveNamesCS.add(player.getName());
 					plactiveNamesNCS.add(player.getName().toLowerCase());
 				}
 			}
 			OfflinePlayer[] offplayers = Bukkit.getOfflinePlayers();
-			//add offline players that were away not for that long
+			// add offline players that were away not for that long
 			for (OfflinePlayer offplayer : offplayers) {
 				String uuidstring = offplayer.getUniqueId().toString().replace("-", "");
-				MessageLogger.debug("Checking player "+uuidstring);
-				if (System.currentTimeMillis() - offplayer .getLastPlayed() < awaytime) {
-					MessageLogger.debug("Adding player "+uuidstring+" to active list");
+				MessageLogger.debug("Checking player " + uuidstring);
+				if ((System.currentTimeMillis() - offplayer.getLastPlayed()) < awaytime) {
+					MessageLogger.debug("Adding player " + uuidstring + " to active list");
 					plactiveUUID.add(uuidstring);
-					//old api storage
+					// old api storage
 					if (config.purgeUseOldAPI) {
 						String name = offplayer.getName();
 						if (name != null) {
@@ -74,21 +75,21 @@ public class ActivePlayersList {
 					}
 				}
 			}
-			//add players from ignored list
+			// add players from ignored list
 			for (String name : config.purgeIgnoredNicks) {
 				for (OfflinePlayer offplayer : offplayers) {
-					if (offplayer.getName() != null && offplayer.getName().equalsIgnoreCase(name)) {
+					if ((offplayer.getName() != null) && offplayer.getName().equalsIgnoreCase(name)) {
 						String uuidstring = offplayer.getUniqueId().toString();
-						MessageLogger.debug("Adding ignored player "+uuidstring.replace("-", "")+" to active list");
+						MessageLogger.debug("Adding ignored player " + uuidstring.replace("-", "") + " to active list");
 						config.purgeIgnoredUUIDs.add(uuidstring);
 					}
 				}
 			}
 			config.purgeIgnoredNicks.clear();
 			for (String listuuid : config.purgeIgnoredUUIDs) {
-				MessageLogger.debug("Adding ignored player "+listuuid.replace("-", "")+" to active list");
+				MessageLogger.debug("Adding ignored player " + listuuid.replace("-", "") + " to active list");
 				plactiveUUID.add(listuuid.replace("-", ""));
-				//old api storage
+				// old api storage
 				if (config.purgeUseOldAPI) {
 					OfflinePlayer offplayer = Bukkit.getOfflinePlayer(UUID.fromString(listuuid));
 					String name = offplayer.getName();
@@ -100,7 +101,7 @@ public class ActivePlayersList {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException("Failed to gather active players list. "+e.getMessage());
+			throw new RuntimeException("Failed to gather active players list. " + e.getMessage());
 		}
 	}
 
@@ -113,7 +114,7 @@ public class ActivePlayersList {
 		return plactiveUUID.contains(uuid);
 	}
 
-	//old api
+	// old api
 
 	public boolean isActiveNameCS(String name) {
 		return plactiveNamesCS.contains(name);

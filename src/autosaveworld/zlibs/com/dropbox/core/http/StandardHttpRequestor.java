@@ -81,8 +81,7 @@ public class StandardHttpRequestor extends HttpRequestor {
 	}
 
 	/**
-	 * Can be overridden to configure the underlying {@link HttpsURLConnection} used to make network requests. If you override this method, you should probably call
-	 * {@code super.configureConnection(conn)} in your overridden method.
+	 * Can be overridden to configure the underlying {@link HttpsURLConnection} used to make network requests. If you override this method, you should probably call {@code super.configureConnection(conn)} in your overridden method.
 	 */
 	protected void configureConnection(HttpsURLConnection conn) throws IOException {
 	}
@@ -106,7 +105,7 @@ public class StandardHttpRequestor extends HttpRequestor {
 			if (conn == null) {
 				throw new IllegalStateException("Can't abort().  Uploader already closed.");
 			}
-			this.conn.disconnect();
+			conn.disconnect();
 		}
 
 		@Override
@@ -114,7 +113,7 @@ public class StandardHttpRequestor extends HttpRequestor {
 			if (conn == null) {
 				return;
 			}
-			this.conn.disconnect();
+			conn.disconnect();
 		}
 
 		@Override
@@ -130,7 +129,7 @@ public class StandardHttpRequestor extends HttpRequestor {
 
 	private HttpsURLConnection prepRequest(String url, Iterable<Header> headers) throws IOException {
 		URL urlObject = new URL(url);
-		HttpsURLConnection conn = (HttpsURLConnection) urlObject.openConnection(this.proxy);
+		HttpsURLConnection conn = (HttpsURLConnection) urlObject.openConnection(proxy);
 
 		SSLConfig.apply(conn);
 		conn.setConnectTimeout(DefaultConnectTimeoutMillis);

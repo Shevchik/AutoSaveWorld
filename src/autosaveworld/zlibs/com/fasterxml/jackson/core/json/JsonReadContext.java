@@ -29,8 +29,7 @@ public final class JsonReadContext extends JsonStreamContext {
 	protected String _currentName;
 
 	/*
-	 * /********************************************************** /* Simple instance reuse slots; speeds up things /* a bit (10-15%) for docs with lots of small /* arrays/objects (for which
-	 * allocation was /* visible in profile stack frames) /**********************************************************
+	 * /********************************************************** /* Simple instance reuse slots; speeds up things /* a bit (10-15%) for docs with lots of small /* arrays/objects (for which allocation was /* visible in profile stack frames) /**********************************************************
 	 */
 
 	protected JsonReadContext _child = null;
@@ -142,7 +141,7 @@ public final class JsonReadContext extends JsonStreamContext {
 		 * Assumption here is that we will be getting a value (at least before calling this method again), and so will auto-increment index to avoid having to do another call
 		 */
 		int ix = ++_index; // starts from -1
-		return (_type != TYPE_ROOT && ix > 0);
+		return ((_type != TYPE_ROOT) && (ix > 0));
 	}
 
 	public void setCurrentName(String name) throws JsonProcessingException {

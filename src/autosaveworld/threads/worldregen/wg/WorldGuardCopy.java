@@ -36,8 +36,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 public class WorldGuardCopy {
 
 	private World wtoregen;
+
 	public WorldGuardCopy(String worldtoregen) {
-		this.wtoregen = Bukkit.getWorld(worldtoregen);
+		wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
 	public void copyAllToSchematics() {
@@ -49,13 +50,15 @@ public class WorldGuardCopy {
 
 		final RegionManager m = wg.getRegionManager(wtoregen);
 		for (final ProtectedRegion rg : m.getRegions().values()) {
-			//ignore global region
-			if (rg.getId().equalsIgnoreCase("__global__")) {continue;}
-			//save
-			MessageLogger.debug("Saving WG Region "+rg.getId()+" to schematic");
-			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getWGTempFolder()+rg.getId(), rg.getMinimumPoint(), rg.getMaximumPoint());
+			// ignore global region
+			if (rg.getId().equalsIgnoreCase("__global__")) {
+				continue;
+			}
+			// save
+			MessageLogger.debug("Saving WG Region " + rg.getId() + " to schematic");
+			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getWGTempFolder() + rg.getId(), rg.getMinimumPoint(), rg.getMaximumPoint());
 			SchematicOperations.saveToSchematic(wtoregen, new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
-			MessageLogger.debug("WG Region "+rg.getId()+" saved");
+			MessageLogger.debug("WG Region " + rg.getId() + " saved");
 		}
 	}
 

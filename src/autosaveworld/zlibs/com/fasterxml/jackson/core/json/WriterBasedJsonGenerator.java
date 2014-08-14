@@ -602,7 +602,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	@Override
 	public void writeNumber(double d) throws IOException {
 		if (_cfgNumbersAsStrings ||
-		// [JACKSON-139]
+				// [JACKSON-139]
 				(isEnabled(Feature.QUOTE_NON_NUMERIC_NUMBERS) && ((Double.isNaN(d) || Double.isInfinite(d))))) {
 			writeString(String.valueOf(d));
 			return;
@@ -615,7 +615,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	@Override
 	public void writeNumber(float f) throws IOException {
 		if (_cfgNumbersAsStrings ||
-		// [JACKSON-139]
+				// [JACKSON-139]
 				(isEnabled(Feature.QUOTE_NON_NUMERIC_NUMBERS) && ((Float.isNaN(f) || Float.isInfinite(f))))) {
 			writeString(String.valueOf(f));
 			return;
@@ -783,7 +783,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		 * 05-Dec-2008, tatu: To add [JACKSON-27], need to close open scopes.
 		 */
 		// First: let's see that we still have buffers...
-		if (_outputBuffer != null && isEnabled(Feature.AUTO_CLOSE_JSON_CONTENT)) {
+		if ((_outputBuffer != null) && isEnabled(Feature.AUTO_CLOSE_JSON_CONTENT)) {
 			while (true) {
 				JsonStreamContext ctxt = getOutputContext();
 				if (ctxt.inArray()) {
@@ -798,8 +798,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		_flushBuffer();
 
 		/*
-		 * 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close() on the underlying Reader, unless we "own" it, or auto-closing feature is enabled. One downside: when using UTF8Writer,
-		 * underlying buffer(s) may not be properly recycled if we don't close the writer.
+		 * 25-Nov-2008, tatus: As per [JACKSON-16] we are not to call close() on the underlying Reader, unless we "own" it, or auto-closing feature is enabled. One downside: when using UTF8Writer, underlying buffer(s) may not be properly recycled if we don't close the writer.
 		 */
 		if (_writer != null) {
 			if (_ioContext.isResourceManaged() || isEnabled(Feature.AUTO_CLOSE_TARGET)) {
@@ -828,8 +827,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 
 	private void _writeString(String text) throws IOException {
 		/*
-		 * One check first: if String won't fit in the buffer, let's segment writes. No point in extending buffer to huge sizes (like if someone wants to include multi-megabyte base64 encoded stuff or
-		 * such)
+		 * One check first: if String won't fit in the buffer, let's segment writes. No point in extending buffer to huge sizes (like if someone wants to include multi-megabyte base64 encoded stuff or such)
 		 */
 		final int len = text.length();
 		if (len > _outputEnd) { // Let's reserve space for entity at begin/end
@@ -863,7 +861,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			// Fast loop for chars not needing escaping
 			escape_loop: while (true) {
 				char c = _outputBuffer[_outputTail];
-				if (c < escLen && escCodes[c] != 0) {
+				if ((c < escLen) && (escCodes[c] != 0)) {
 					break escape_loop;
 				}
 				if (++_outputTail >= end) {
@@ -871,19 +869,19 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 				}
 			}
 
-			// Ok, bumped into something that needs escaping.
-			/*
-			 * First things first: need to flush the buffer. Inlined, as we don't want to lose tail pointer
-			 */
-			int flushLen = (_outputTail - _outputHead);
-			if (flushLen > 0) {
-				_writer.write(_outputBuffer, _outputHead, flushLen);
-			}
-			/*
-			 * In any case, tail will be the new start, so hopefully we have room now.
-			 */
-			char c = _outputBuffer[_outputTail++];
-			_prependOrWriteCharacterEscape(c, escCodes[c]);
+		// Ok, bumped into something that needs escaping.
+		/*
+		 * First things first: need to flush the buffer. Inlined, as we don't want to lose tail pointer
+		 */
+		int flushLen = (_outputTail - _outputHead);
+		if (flushLen > 0) {
+			_writer.write(_outputBuffer, _outputHead, flushLen);
+		}
+		/*
+		 * In any case, tail will be the new start, so hopefully we have room now.
+		 */
+		char c = _outputBuffer[_outputTail++];
+		_prependOrWriteCharacterEscape(c, escCodes[c]);
 		}
 	}
 
@@ -929,7 +927,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			char c;
 			while (true) {
 				c = _outputBuffer[ptr];
-				if (c < escLen && escCodes[c] != 0) {
+				if ((c < escLen) && (escCodes[c] != 0)) {
 					break;
 				}
 				if (++ptr >= end) {
@@ -978,7 +976,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 
 			while (true) {
 				char c = text[offset];
-				if (c < escLen && escCodes[c] != 0) {
+				if ((c < escLen) && (escCodes[c] != 0)) {
 					break;
 				}
 				if (++offset >= len) {
@@ -1012,8 +1010,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal methods, low-level writing, text segment /* with additional escaping (ASCII or such)
-	 * /**********************************************************
+	 * /********************************************************** /* Internal methods, low-level writing, text segment /* with additional escaping (ASCII or such) /**********************************************************
 	 */
 
 	/*
@@ -1144,8 +1141,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	}
 
 	/*
-	 * /********************************************************** /* Internal methods, low-level writing, text segment /* with custom escaping (possibly coupling with ASCII limits)
-	 * /**********************************************************
+	 * /********************************************************** /* Internal methods, low-level writing, text segment /* with custom escaping (possibly coupling with ASCII limits) /**********************************************************
 	 */
 
 	/*
@@ -1329,7 +1325,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		int inputLeft = inputEnd - inputPtr; // 0, 1 or 2
 		if (inputLeft > 0) { // yes, but do we have room for output?
 			if (_outputTail > safeOutputEnd) { // don't really need 6 bytes
-												// but...
+				// but...
 				_flushBuffer();
 			}
 			int b24 = (input[inputPtr++]) << 16;
@@ -1350,53 +1346,53 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		int safeOutputEnd = _outputEnd - 6;
 		int chunksBeforeLF = b64variant.getMaxLineLength() >> 2;
 
-		while (bytesLeft > 2) { // main loop for full triplets
-			if (inputPtr > lastFullOffset) {
-				inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, bytesLeft);
-				inputPtr = 0;
-				if (inputEnd < 3) { // required to try to read to have at least
-									// 3 bytes
-					break;
+				while (bytesLeft > 2) { // main loop for full triplets
+					if (inputPtr > lastFullOffset) {
+						inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, bytesLeft);
+						inputPtr = 0;
+						if (inputEnd < 3) { // required to try to read to have at least
+							// 3 bytes
+							break;
+						}
+						lastFullOffset = inputEnd - 3;
+					}
+					if (_outputTail > safeOutputEnd) { // need to flush
+						_flushBuffer();
+					}
+					int b24 = (readBuffer[inputPtr++]) << 8;
+					b24 |= (readBuffer[inputPtr++]) & 0xFF;
+					b24 = (b24 << 8) | ((readBuffer[inputPtr++]) & 0xFF);
+					bytesLeft -= 3;
+					_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer, _outputTail);
+					if (--chunksBeforeLF <= 0) {
+						_outputBuffer[_outputTail++] = '\\';
+						_outputBuffer[_outputTail++] = 'n';
+						chunksBeforeLF = b64variant.getMaxLineLength() >> 2;
+					}
 				}
-				lastFullOffset = inputEnd - 3;
-			}
-			if (_outputTail > safeOutputEnd) { // need to flush
-				_flushBuffer();
-			}
-			int b24 = (readBuffer[inputPtr++]) << 8;
-			b24 |= (readBuffer[inputPtr++]) & 0xFF;
-			b24 = (b24 << 8) | ((readBuffer[inputPtr++]) & 0xFF);
-			bytesLeft -= 3;
-			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer, _outputTail);
-			if (--chunksBeforeLF <= 0) {
-				_outputBuffer[_outputTail++] = '\\';
-				_outputBuffer[_outputTail++] = 'n';
-				chunksBeforeLF = b64variant.getMaxLineLength() >> 2;
-			}
-		}
 
-		// And then we may have 1 or 2 leftover bytes to encode
-		if (bytesLeft > 0) {
-			inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, bytesLeft);
-			inputPtr = 0;
-			if (inputEnd > 0) { // yes, but do we have room for output?
-				if (_outputTail > safeOutputEnd) { // don't really need 6 bytes
-													// but...
-					_flushBuffer();
+				// And then we may have 1 or 2 leftover bytes to encode
+				if (bytesLeft > 0) {
+					inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, bytesLeft);
+					inputPtr = 0;
+					if (inputEnd > 0) { // yes, but do we have room for output?
+						if (_outputTail > safeOutputEnd) { // don't really need 6 bytes
+							// but...
+							_flushBuffer();
+						}
+						int b24 = (readBuffer[inputPtr++]) << 16;
+						int amount;
+						if (inputPtr < inputEnd) {
+							b24 |= ((readBuffer[inputPtr]) & 0xFF) << 8;
+							amount = 2;
+						} else {
+							amount = 1;
+						}
+						_outputTail = b64variant.encodeBase64Partial(b24, amount, _outputBuffer, _outputTail);
+						bytesLeft -= amount;
+					}
 				}
-				int b24 = (readBuffer[inputPtr++]) << 16;
-				int amount;
-				if (inputPtr < inputEnd) {
-					b24 |= ((readBuffer[inputPtr]) & 0xFF) << 8;
-					amount = 2;
-				} else {
-					amount = 1;
-				}
-				_outputTail = b64variant.encodeBase64Partial(b24, amount, _outputBuffer, _outputTail);
-				bytesLeft -= amount;
-			}
-		}
-		return bytesLeft;
+				return bytesLeft;
 	}
 
 	// write method when length is unknown
@@ -1410,49 +1406,49 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		int safeOutputEnd = _outputEnd - 6;
 		int chunksBeforeLF = b64variant.getMaxLineLength() >> 2;
 
-		// Ok, first we loop through all full triplets of data:
-		while (true) {
-			if (inputPtr > lastFullOffset) { // need to load more
-				inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, readBuffer.length);
-				inputPtr = 0;
-				if (inputEnd < 3) { // required to try to read to have at least
-									// 3 bytes
-					break;
-				}
-				lastFullOffset = inputEnd - 3;
-			}
-			if (_outputTail > safeOutputEnd) { // need to flush
-				_flushBuffer();
-			}
-			// First, mash 3 bytes into lsb of 32-bit int
-			int b24 = (readBuffer[inputPtr++]) << 8;
-			b24 |= (readBuffer[inputPtr++]) & 0xFF;
-			b24 = (b24 << 8) | ((readBuffer[inputPtr++]) & 0xFF);
-			bytesDone += 3;
-			_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer, _outputTail);
-			if (--chunksBeforeLF <= 0) {
-				_outputBuffer[_outputTail++] = '\\';
-				_outputBuffer[_outputTail++] = 'n';
-				chunksBeforeLF = b64variant.getMaxLineLength() >> 2;
-			}
-		}
+							// Ok, first we loop through all full triplets of data:
+							while (true) {
+								if (inputPtr > lastFullOffset) { // need to load more
+									inputEnd = _readMore(data, readBuffer, inputPtr, inputEnd, readBuffer.length);
+									inputPtr = 0;
+									if (inputEnd < 3) { // required to try to read to have at least
+										// 3 bytes
+										break;
+									}
+									lastFullOffset = inputEnd - 3;
+								}
+								if (_outputTail > safeOutputEnd) { // need to flush
+									_flushBuffer();
+								}
+								// First, mash 3 bytes into lsb of 32-bit int
+								int b24 = (readBuffer[inputPtr++]) << 8;
+								b24 |= (readBuffer[inputPtr++]) & 0xFF;
+								b24 = (b24 << 8) | ((readBuffer[inputPtr++]) & 0xFF);
+								bytesDone += 3;
+								_outputTail = b64variant.encodeBase64Chunk(b24, _outputBuffer, _outputTail);
+								if (--chunksBeforeLF <= 0) {
+									_outputBuffer[_outputTail++] = '\\';
+									_outputBuffer[_outputTail++] = 'n';
+									chunksBeforeLF = b64variant.getMaxLineLength() >> 2;
+								}
+							}
 
-		// And then we may have 1 or 2 leftover bytes to encode
-		if (inputPtr < inputEnd) { // yes, but do we have room for output?
-			if (_outputTail > safeOutputEnd) { // don't really need 6 bytes
-												// but...
-				_flushBuffer();
-			}
-			int b24 = (readBuffer[inputPtr++]) << 16;
-			int amount = 1;
-			if (inputPtr < inputEnd) {
-				b24 |= ((readBuffer[inputPtr]) & 0xFF) << 8;
-				amount = 2;
-			}
-			bytesDone += amount;
-			_outputTail = b64variant.encodeBase64Partial(b24, amount, _outputBuffer, _outputTail);
-		}
-		return bytesDone;
+							// And then we may have 1 or 2 leftover bytes to encode
+							if (inputPtr < inputEnd) { // yes, but do we have room for output?
+								if (_outputTail > safeOutputEnd) { // don't really need 6 bytes
+									// but...
+									_flushBuffer();
+								}
+								int b24 = (readBuffer[inputPtr++]) << 16;
+								int amount = 1;
+								if (inputPtr < inputEnd) {
+									b24 |= ((readBuffer[inputPtr]) & 0xFF) << 8;
+									amount = 2;
+								}
+								bytesDone += amount;
+								_outputTail = b64variant.encodeBase64Partial(b24, amount, _outputBuffer, _outputTail);
+							}
+							return bytesDone;
 	}
 
 	private int _readMore(InputStream in, byte[] readBuffer, int inputPtr, int inputEnd, int maxRead) throws IOException {
@@ -1559,7 +1555,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 				buf[13] = HEX_CHARS[lo & 0xF];
 				_writer.write(buf, 8, 6);
 			} else { // We know it's a control char, so only the last 2 chars
-						// are non-0
+				// are non-0
 				buf[6] = HEX_CHARS[ch >> 4];
 				buf[7] = HEX_CHARS[ch & 0xF];
 				_writer.write(buf, 2, 6);
@@ -1593,7 +1589,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 	 */
 	private int _prependOrWriteCharacterEscape(char[] buffer, int ptr, int end, char ch, int escCode) throws IOException, JsonGenerationException {
 		if (escCode >= 0) { // \\N (2 char)
-			if (ptr > 1 && ptr < end) { // fits, just prepend
+			if ((ptr > 1) && (ptr < end)) { // fits, just prepend
 				ptr -= 2;
 				buffer[ptr] = '\\';
 				buffer[ptr + 1] = (char) escCode;
@@ -1608,7 +1604,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			return ptr;
 		}
 		if (escCode != CharacterEscapes.ESCAPE_CUSTOM) { // std, \\uXXXX
-			if (ptr > 5 && ptr < end) { // fits, prepend to buffer
+			if ((ptr > 5) && (ptr < end)) { // fits, prepend to buffer
 				ptr -= 6;
 				buffer[ptr++] = '\\';
 				buffer[ptr++] = 'u';
@@ -1642,7 +1638,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 					ent[13] = HEX_CHARS[lo & 0xF];
 					_writer.write(ent, 8, 6);
 				} else { // We know it's a control char, so only the last 2
-							// chars are non-0
+					// chars are non-0
 					ent[6] = HEX_CHARS[ch >> 4];
 					ent[7] = HEX_CHARS[ch & 0xF];
 					_writer.write(ent, 2, 6);
@@ -1658,7 +1654,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 			_currentEscape = null;
 		}
 		int len = escape.length();
-		if (ptr >= len && ptr < end) { // fits in, prepend
+		if ((ptr >= len) && (ptr < end)) { // fits in, prepend
 			ptr -= len;
 			escape.getChars(0, len, buffer, ptr);
 		} else { // won't fit, write separately
@@ -1713,7 +1709,7 @@ public final class WriterBasedJsonGenerator extends JsonGeneratorImpl {
 		if ((_outputTail + len) > _outputEnd) {
 			_flushBuffer();
 			if (len > _outputEnd) { // very very long escape; unlikely but
-									// theoretically possible
+				// theoretically possible
 				_writer.write(escape);
 				return;
 			}

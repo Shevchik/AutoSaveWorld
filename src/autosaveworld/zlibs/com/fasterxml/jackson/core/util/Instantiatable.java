@@ -1,8 +1,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
 /**
- * Add-on interface used to indicate things that may be "blueprint" objects which can not be used as is, but are used for creating usable per-process (serialization, deserialization) instances, using
- * {@link #createInstance} method.
+ * Add-on interface used to indicate things that may be "blueprint" objects which can not be used as is, but are used for creating usable per-process (serialization, deserialization) instances, using {@link #createInstance} method.
  * <p>
  * Note that some implementations may choose to implement {@link #createInstance} by simply returning 'this': this is acceptable if instances are stateless.
  *

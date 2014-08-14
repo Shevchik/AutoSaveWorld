@@ -9,7 +9,7 @@ import autosaveworld.threads.backup.ExcludeManager;
 
 public class LocalFSUtils {
 
-	public static void copyDirectory(File sourceLocation , File targetLocation, List<String> excludefolders) {
+	public static void copyDirectory(File sourceLocation, File targetLocation, List<String> excludefolders) {
 		if (sourceLocation.isDirectory()) {
 			if (!targetLocation.exists()) {
 				targetLocation.mkdirs();
@@ -26,7 +26,10 @@ public class LocalFSUtils {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				try {Thread.sleep(0);} catch (InterruptedException e) {}
+				try {
+					Thread.sleep(0);
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 	}

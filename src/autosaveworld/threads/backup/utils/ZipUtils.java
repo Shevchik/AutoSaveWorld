@@ -87,7 +87,10 @@ public class ZipUtils {
 					zipOutStream.closeEntry();
 				}
 			}
-			try {Thread.sleep(0);} catch (InterruptedException e) {}
+			try {
+				Thread.sleep(0);
+			} catch (InterruptedException e) {
+			}
 		}
 	}
 

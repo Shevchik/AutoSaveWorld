@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Wraps an existing output stream, converting all the underlying stream's {@code IOException}s to our own {@link HiddenException}, which is a subclass of {@code RuntimeException}. This means that the
- * methods don't have {@code IOException} in their {@code throws} clauses.
+ * Wraps an existing output stream, converting all the underlying stream's {@code IOException}s to our own {@link HiddenException}, which is a subclass of {@code RuntimeException}. This means that the methods don't have {@code IOException} in their {@code throws} clauses.
  *
  * <p>
  * NOTE: The name is slightly misleading in that these methods still might throw an {@code IOException} wrapped in a {@code HiddenException}, just not an {@code IOException} directly.

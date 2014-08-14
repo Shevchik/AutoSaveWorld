@@ -181,9 +181,7 @@ public class KeyPairRSA extends KeyPair {
 			}
 
 			/*
-			 * Key must be in the following ASN.1 DER encoding, RSAPrivateKey ::= SEQUENCE { version Version, modulus INTEGER, -- n publicExponent INTEGER, -- e privateExponent INTEGER, -- d prime1
-			 * INTEGER, -- p prime2 INTEGER, -- q exponent1 INTEGER, -- d mod (p-1) exponent2 INTEGER, -- d mod (q-1) coefficient INTEGER, -- (inverse of q) mod p otherPrimeInfos OtherPrimeInfos
-			 * OPTIONAL }
+			 * Key must be in the following ASN.1 DER encoding, RSAPrivateKey ::= SEQUENCE { version Version, modulus INTEGER, -- n publicExponent INTEGER, -- e privateExponent INTEGER, -- d prime1 INTEGER, -- p prime2 INTEGER, -- q exponent1 INTEGER, -- d mod (p-1) exponent2 INTEGER, -- d mod (q-1) coefficient INTEGER, -- (inverse of q) mod p otherPrimeInfos OtherPrimeInfos OPTIONAL }
 			 */
 
 			index++; // SEQUENCE
@@ -385,7 +383,7 @@ public class KeyPairRSA extends KeyPair {
 			SignatureRSA rsa = (SignatureRSA) (c.newInstance());
 			rsa.init();
 
-			if (pub_array == null && n_array == null && getPublicKeyBlob() != null) {
+			if ((pub_array == null) && (n_array == null) && (getPublicKeyBlob() != null)) {
 				Buffer buf = new Buffer(getPublicKeyBlob());
 				buf.getString();
 				pub_array = buf.getString();

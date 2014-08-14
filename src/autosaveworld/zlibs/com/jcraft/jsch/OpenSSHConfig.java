@@ -116,7 +116,7 @@ public class OpenSSHConfig implements ConfigRepository {
 
 		while ((l = br.readLine()) != null) {
 			l = l.trim();
-			if (l.length() == 0 || l.startsWith("#")) {
+			if ((l.length() == 0) || l.startsWith("#")) {
 				continue;
 			}
 
@@ -258,7 +258,7 @@ public class OpenSSHConfig implements ConfigRepository {
 		public String getValue(String key) {
 			if (key.equals("compression.s2c") || key.equals("compression.c2s")) {
 				String foo = find(key);
-				if (foo == null || foo.equals("no")) {
+				if ((foo == null) || foo.equals("no")) {
 					return "none,zlib@openssh.com,zlib";
 				}
 				return "zlib@openssh.com,zlib,none";

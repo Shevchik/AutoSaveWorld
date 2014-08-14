@@ -6,9 +6,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Shared base class for streaming processing contexts used during reading and writing of Json content using Streaming API. This context is also exposed to applications: context object can be used by
- * applications to get an idea of relative position of the parser/generator within json content being processed. This allows for some contextual processing: for example, output within Array context
- * can differ from that of Object context.
+ * Shared base class for streaming processing contexts used during reading and writing of Json content using Streaming API. This context is also exposed to applications: context object can be used by applications to get an idea of relative position of the parser/generator within json content being processed. This allows for some contextual processing: for example, output within Array context can differ from that of Object context.
  */
 public abstract class JsonStreamContext {
 	// // // Type constants used internally
@@ -20,8 +18,7 @@ public abstract class JsonStreamContext {
 	protected int _type;
 
 	/**
-	 * Index of the currently processed entry. Starts with -1 to signal that no entries have been started, and gets advanced each time a new entry is started, either by encountering an expected
-	 * separator, or with new values if no separators are expected (the case for root context).
+	 * Index of the currently processed entry. Starts with -1 to signal that no entries have been started, and gets advanced each time a new entry is started, either by encountering an expected separator, or with new values if no separators are expected (the case for root context).
 	 */
 	protected int _index;
 

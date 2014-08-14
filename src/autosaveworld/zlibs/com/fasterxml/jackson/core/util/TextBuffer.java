@@ -9,8 +9,7 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
 /**
  * TextBuffer is a class similar to {@link StringBuffer}, with following differences:
  * <ul>
- * <li>TextBuffer uses segments character arrays, to avoid having to do additional array copies when array is not big enough. This means that only reallocating that is necessary is done only once: if
- * and when caller wants to access contents in a linear array (char[], String).</li>
+ * <li>TextBuffer uses segments character arrays, to avoid having to do additional array copies when array is not big enough. This means that only reallocating that is necessary is done only once: if and when caller wants to access contents in a linear array (char[], String).</li>
  * <li>TextBuffer can also be initialized in "shared mode", in which it will just act as a wrapper to a single char array managed by another object (like parser that owns it)</li>
  * <li>TextBuffer is not synchronized.</li>
  * </ul>
@@ -98,8 +97,7 @@ public final class TextBuffer {
 	}
 
 	/**
-	 * Method called to indicate that the underlying buffers should now be recycled if they haven't yet been recycled. Although caller can still use this text buffer, it is not advisable to call this
-	 * method if that is likely, since next time a buffer is needed, buffers need to reallocated. Note: calling this method automatically also clears contents of the buffer.
+	 * Method called to indicate that the underlying buffers should now be recycled if they haven't yet been recycled. Although caller can still use this text buffer, it is not advisable to call this method if that is likely, since next time a buffer is needed, buffers need to reallocated. Note: calling this method automatically also clears contents of the buffer.
 	 */
 	public void releaseBuffers() {
 		if (_allocator == null) {
@@ -135,8 +133,7 @@ public final class TextBuffer {
 	}
 
 	/**
-	 * Method called to initialize the buffer with a shared copy of data; this means that buffer will just have pointers to actual data. It also means that if anything is to be appended to the buffer,
-	 * it will first have to unshare it (make a local copy).
+	 * Method called to initialize the buffer with a shared copy of data; this means that buffer will just have pointers to actual data. It also means that if anything is to be appended to the buffer, it will first have to unshare it (make a local copy).
 	 */
 	public void resetWithShared(char[] buf, int start, int len) {
 		// First, let's clear intermediate values, if any:
@@ -243,7 +240,7 @@ public final class TextBuffer {
 	 */
 	public boolean hasTextAsCharacters() {
 		// if we have array in some form, sure
-		if (_inputStart >= 0 || _resultArray != null) {
+		if ((_inputStart >= 0) || (_resultArray != null)) {
 			return true;
 		}
 		// not if we have String as value
@@ -582,7 +579,7 @@ public final class TextBuffer {
 
 		// Is buffer big enough, or do we need to reallocate?
 		int needed = sharedLen + needExtra;
-		if (_currentSegment == null || needed > _currentSegment.length) {
+		if ((_currentSegment == null) || (needed > _currentSegment.length)) {
 			_currentSegment = buf(needed);
 		}
 		if (sharedLen > 0) {

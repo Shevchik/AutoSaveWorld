@@ -7,11 +7,9 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.PrettyPrinter;
 
 /**
- * {@link PrettyPrinter} implementation that adds no indentation, just implements everything necessary for value output to work as expected, and provide simpler extension points to allow for creating
- * simple custom implementations that add specific decoration or overrides. Since behavior then is very similar to using no pretty printer at all, usually sub-classes are used.
+ * {@link PrettyPrinter} implementation that adds no indentation, just implements everything necessary for value output to work as expected, and provide simpler extension points to allow for creating simple custom implementations that add specific decoration or overrides. Since behavior then is very similar to using no pretty printer at all, usually sub-classes are used.
  * <p>
- * Beyond purely minimal implementation, there is limited amount of configurability which may be useful for actual use: for example, it is possible to redefine separator used between root-level values
- * (default is single space; can be changed to line-feed).
+ * Beyond purely minimal implementation, there is limited amount of configurability which may be useful for actual use: for example, it is possible to redefine separator used between root-level values (default is single space; can be changed to line-feed).
  * <p>
  * Note: does NOT implement {@link Instantiatable} since this is a stateless implementation; that is, a single instance can be shared between threads.
  */

@@ -37,8 +37,9 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 public class TownyPaste {
 
 	private World wtopaste;
+
 	public TownyPaste(String worldtopasteto) {
-		this.wtopaste = Bukkit.getWorld(worldtopasteto);
+		wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
 	public void pasteAllFromSchematics() {
@@ -51,18 +52,18 @@ public class TownyPaste {
 			for (Town town : towns) {
 				List<TownBlock> tblocks = town.getTownBlocks();
 				if (tblocks.size() > 0) {
-					MessageLogger.debug("Pasting town claim "+town.getName()+" from schematic");
+					MessageLogger.debug("Pasting town claim " + town.getName() + " from schematic");
 					LinkedList<SchematicToLoad> schematics = new LinkedList<SchematicToLoad>();
 					for (TownBlock tb : tblocks) {
 						if (tb.getWorld().getName().equals(wtopaste.getName())) {
 							final int xcoord = tb.getX();
 							final int zcoord = tb.getZ();
-							SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+town.getName()+File.separator+"X"+xcoord+"Z"+zcoord);
+							SchematicToLoad schematicdata = new SchematicToLoad(schemfolder + town.getName() + File.separator + "X" + xcoord + "Z" + zcoord);
 							schematics.add(schematicdata);
 						}
 					}
 					SchematicOperations.pasteFromSchematic(wtopaste, schematics);
-					MessageLogger.debug("Pasted town claim "+town.getName()+" from schematic");
+					MessageLogger.debug("Pasted town claim " + town.getName() + " from schematic");
 				}
 			}
 		} catch (NotRegisteredException e) {

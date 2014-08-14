@@ -15,8 +15,8 @@ public class DatfilePurge {
 
 		int deleted = 0;
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
-		File playersdatfolder = new File(worldfoldername + File.separator + "playerdata"+ File.separator);
-		File playersstatsfolder = new File(worldfoldername + File.separator + "stats"+ File.separator);
+		File playersdatfolder = new File(worldfoldername + File.separator + "playerdata" + File.separator);
+		File playersstatsfolder = new File(worldfoldername + File.separator + "stats" + File.separator);
 		for (File playerfile : playersdatfolder.listFiles()) {
 			if (playerfile.getName().endsWith(".dat")) {
 				String playeruuid = playerfile.getName().substring(0, playerfile.getName().length() - 4);
@@ -29,7 +29,7 @@ public class DatfilePurge {
 			}
 		}
 
-		MessageLogger.debug("Player .dat purge finished, deleted "+deleted+" player .dat files");
+		MessageLogger.debug("Player .dat purge finished, deleted " + deleted + " player .dat files");
 	}
 
 }

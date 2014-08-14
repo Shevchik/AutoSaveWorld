@@ -16,8 +16,7 @@ public enum JsonToken {
 	 */
 
 	/**
-	 * NOT_AVAILABLE can be returned if {@link JsonParser} implementation can not currently return the requested token (usually next one), or even if any will be available, but that may be able to
-	 * determine this in future. This is the case with non-blocking parsers -- they can not block to wait for more data to parse and must return something.
+	 * NOT_AVAILABLE can be returned if {@link JsonParser} implementation can not currently return the requested token (usually next one), or even if any will be available, but that may be able to determine this in future. This is the case with non-blocking parsers -- they can not block to wait for more data to parse and must return something.
 	 */
 	NOT_AVAILABLE(null, JsonTokenId.ID_NOT_AVAILABLE),
 
@@ -47,8 +46,7 @@ public enum JsonToken {
 	FIELD_NAME(null, JsonTokenId.ID_FIELD_NAME),
 
 	/**
-	 * Placeholder token returned when the input source has a concept of embedded Object that are not accessible as usual structure (of starting with {@link #START_OBJECT}, having values, ending with
-	 * {@link #END_OBJECT}), but as "raw" objects.
+	 * Placeholder token returned when the input source has a concept of embedded Object that are not accessible as usual structure (of starting with {@link #START_OBJECT}, having values, ending with {@link #END_OBJECT}), but as "raw" objects.
 	 * <p>
 	 * Note: this token is never returned by regular JSON readers, but only by readers that expose other kinds of source (like <code>JsonNode</code> -based JSON trees, Maps, Lists and such).
 	 */
@@ -60,14 +58,12 @@ public enum JsonToken {
 	VALUE_STRING(null, JsonTokenId.ID_STRING),
 
 	/**
-	 * VALUE_NUMBER_INT is returned when an integer numeric token is encountered in value context: that is, a number that does not have floating point or exponent marker in it (consists only of an
-	 * optional sign, followed by one or more digits)
+	 * VALUE_NUMBER_INT is returned when an integer numeric token is encountered in value context: that is, a number that does not have floating point or exponent marker in it (consists only of an optional sign, followed by one or more digits)
 	 */
 	VALUE_NUMBER_INT(null, JsonTokenId.ID_NUMBER_INT),
 
 	/**
-	 * VALUE_NUMBER_INT is returned when a numeric token other that is not an integer is encountered: that is, a number that does have floating point or exponent marker in it, in addition to one or
-	 * more digits.
+	 * VALUE_NUMBER_INT is returned when a numeric token other that is not an integer is encountered: that is, a number that does have floating point or exponent marker in it, in addition to one or more digits.
 	 */
 	VALUE_NUMBER_FLOAT(null, JsonTokenId.ID_NUMBER_FLOAT),
 
@@ -123,11 +119,11 @@ public enum JsonToken {
 		}
 		_id = id;
 
-		_isBoolean = (id == JsonTokenId.ID_FALSE || id == JsonTokenId.ID_TRUE);
-		_isNumber = (id == JsonTokenId.ID_NUMBER_INT || id == JsonTokenId.ID_NUMBER_FLOAT);
+		_isBoolean = ((id == JsonTokenId.ID_FALSE) || (id == JsonTokenId.ID_TRUE));
+		_isNumber = ((id == JsonTokenId.ID_NUMBER_INT) || (id == JsonTokenId.ID_NUMBER_FLOAT));
 
-		_isStructStart = (id == JsonTokenId.ID_START_OBJECT || id == JsonTokenId.ID_START_ARRAY);
-		_isStructEnd = (id == JsonTokenId.ID_END_OBJECT || id == JsonTokenId.ID_END_ARRAY);
+		_isStructStart = ((id == JsonTokenId.ID_START_OBJECT) || (id == JsonTokenId.ID_START_ARRAY));
+		_isStructEnd = ((id == JsonTokenId.ID_END_OBJECT) || (id == JsonTokenId.ID_END_ARRAY));
 
 		_isScalar = !_isStructStart && !_isStructEnd && (id != JsonTokenId.ID_FIELD_NAME) && (id != JsonTokenId.ID_NOT_AVAILABLE);
 	}

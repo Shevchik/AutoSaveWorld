@@ -70,7 +70,7 @@ public class MessageLogger {
 	}
 
 	public static void debug(String message) {
-		if (config != null && config.varDebug) {
+		if ((config != null) && config.varDebug) {
 			if (formattingCodesParser != null) {
 				log.info(formattingCodesParser.stripFormattingCodes(message));
 			}

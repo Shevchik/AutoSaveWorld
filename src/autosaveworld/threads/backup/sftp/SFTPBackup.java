@@ -36,15 +36,16 @@ import autosaveworld.zlibs.com.jcraft.jsch.Session;
 public class SFTPBackup {
 
 	private AutoSaveWorldConfig config;
+
 	public SFTPBackup(AutoSaveWorldConfig config) {
 		this.config = config;
 	}
 
 	public void performBackup() {
 		try {
-			//init
+			// init
 			JSch jsch = new JSch();
-			//connect
+			// connect
 			Session session = jsch.getSession(config.backupFTPUsername, config.backupFTPHostname, config.backupFTPPort);
 			session.setTimeout(10000);
 			session.setPassword(config.backupFTPPassworld);
@@ -52,7 +53,7 @@ public class SFTPBackup {
 			Channel channel = session.openChannel(ChannelType.SFTP);
 			channel.connect();
 			ChannelSftp channelSftp = (ChannelSftp) channel;
-			//create dirs
+			// create dirs
 			if (!SFTPUtils.dirExists(channelSftp, config.backupFTPPath)) {
 				channelSftp.mkdir(config.backupFTPPath);
 			}
@@ -61,26 +62,26 @@ public class SFTPBackup {
 				channelSftp.mkdir("backups");
 			}
 			channelSftp.cd("backups");
-			//delete oldest backup
+			// delete oldest backup
 			Vector<LsEntry> names = channelSftp.ls(".");
 			String[] listnames = new String[names.size()];
 			for (int i = 0; i < names.size(); i++) {
 				listnames[i] = names.get(i).getFilename();
 			}
-			if (config.backupFTPMaxNumberOfBackups != 0 && listnames.length >= config.backupFTPMaxNumberOfBackups) {
+			if ((config.backupFTPMaxNumberOfBackups != 0) && (listnames.length >= config.backupFTPMaxNumberOfBackups)) {
 				MessageLogger.debug("Deleting oldest backup");
-				//find oldest backup
+				// find oldest backup
 				String oldestBackup = BackupUtils.findOldestBackupName(listnames);
-				//delete oldest backup
+				// delete oldest backup
 				SFTPUtils.deleteDirectory(channelSftp, oldestBackup);
 			}
-			//create a dir for new backup
+			// create a dir for new backup
 			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
 			channelSftp.mkdir(datedir);
 			channelSftp.cd(datedir);
-			//load BackupOperations class
+			// load BackupOperations class
 			SFTPBackupOperations bo = new SFTPBackupOperations(channelSftp, config.backupFTPZipEnabled, config.backupFTPExcludeFolders);
-			//do worlds backup
+			// do worlds backup
 			if (!config.backupFTPBackupWorldsList.isEmpty()) {
 				MessageLogger.debug("Backuping Worlds");
 				channelSftp.mkdir("worlds");
@@ -93,7 +94,7 @@ public class SFTPBackup {
 				channelSftp.cd("..");
 				MessageLogger.debug("Backuped Worlds");
 			}
-			//do plugins backup
+			// do plugins backup
 			if (config.backupFTPPluginsFolder) {
 				MessageLogger.debug("Backuping plugins");
 				channelSftp.mkdir("plugins");
@@ -102,7 +103,7 @@ public class SFTPBackup {
 				channelSftp.cd("..");
 				MessageLogger.debug("Backuped plugins");
 			}
-			//backup other folders
+			// backup other folders
 			if (!config.backupFTPOtherFolders.isEmpty()) {
 				MessageLogger.debug("Backuping other folders");
 				channelSftp.mkdir("others");
@@ -111,7 +112,7 @@ public class SFTPBackup {
 				channelSftp.cd("..");
 				MessageLogger.debug("Backuped other folders");
 			}
-			//disconnect
+			// disconnect
 			channelSftp.exit();
 			session.disconnect();
 		} catch (Exception e) {

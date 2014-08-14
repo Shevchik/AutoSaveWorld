@@ -45,52 +45,44 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 	public enum Feature {
 		/**
-		 * Feature that determines whether generator will automatically close underlying output target that is NOT owned by the generator. If disabled, calling application has to separately close the
-		 * underlying {@link OutputStream} and {@link Writer} instances used to create the generator. If enabled, generator will handle closing, as long as generator itself gets closed: this happens
-		 * when end-of-input is encountered, or generator is closed by a call to {@link JsonGenerator#close}.
+		 * Feature that determines whether generator will automatically close underlying output target that is NOT owned by the generator. If disabled, calling application has to separately close the underlying {@link OutputStream} and {@link Writer} instances used to create the generator. If enabled, generator will handle closing, as long as generator itself gets closed: this happens when end-of-input is encountered, or generator is closed by a call to {@link JsonGenerator#close}.
 		 * <p>
 		 * Feature is enabled by default.
 		 */
 		AUTO_CLOSE_TARGET(true),
 
 		/**
-		 * Feature that determines what happens when the generator is closed while there are still unmatched {@link JsonToken#START_ARRAY} or {@link JsonToken#START_OBJECT} entries in output content.
-		 * If enabled, such Array(s) and/or Object(s) are automatically closed; if disabled, nothing specific is done.
+		 * Feature that determines what happens when the generator is closed while there are still unmatched {@link JsonToken#START_ARRAY} or {@link JsonToken#START_OBJECT} entries in output content. If enabled, such Array(s) and/or Object(s) are automatically closed; if disabled, nothing specific is done.
 		 * <p>
 		 * Feature is enabled by default.
 		 */
 		AUTO_CLOSE_JSON_CONTENT(true),
 
 		/**
-		 * Feature that determines whether JSON Object field names are quoted using double-quotes, as specified by JSON specification or not. Ability to disable quoting was added to support use cases
-		 * where they are not usually expected, which most commonly occurs when used straight from Javascript.
+		 * Feature that determines whether JSON Object field names are quoted using double-quotes, as specified by JSON specification or not. Ability to disable quoting was added to support use cases where they are not usually expected, which most commonly occurs when used straight from Javascript.
 		 * <p>
 		 * Feature is enabled by default (since it is required by JSON specification).
 		 */
 		QUOTE_FIELD_NAMES(true),
 
 		/**
-		 * Feature that determines whether "exceptional" (not real number) float/double values are output as quoted strings. The values checked are Double.Nan, Double.POSITIVE_INFINITY and
-		 * Double.NEGATIVE_INIFINTY (and associated Float values). If feature is disabled, these numbers are still output using associated literal values, resulting in non-conformant output.
+		 * Feature that determines whether "exceptional" (not real number) float/double values are output as quoted strings. The values checked are Double.Nan, Double.POSITIVE_INFINITY and Double.NEGATIVE_INIFINTY (and associated Float values). If feature is disabled, these numbers are still output using associated literal values, resulting in non-conformant output.
 		 * <p>
 		 * Feature is enabled by default.
 		 */
 		QUOTE_NON_NUMERIC_NUMBERS(true),
 
 		/**
-		 * Feature that forces all Java numbers to be written as JSON strings. Default state is 'false', meaning that Java numbers are to be serialized using basic numeric serialization (as JSON
-		 * numbers, integral or floating point). If enabled, all such numeric values are instead written out as JSON Strings.
+		 * Feature that forces all Java numbers to be written as JSON strings. Default state is 'false', meaning that Java numbers are to be serialized using basic numeric serialization (as JSON numbers, integral or floating point). If enabled, all such numeric values are instead written out as JSON Strings.
 		 * <p>
-		 * One use case is to avoid problems with Javascript limitations: since Javascript standard specifies that all number handling should be done using 64-bit IEEE 754 floating point values,
-		 * result being that some 64-bit integer values can not be accurately represent (as mantissa is only 51 bit wide).
+		 * One use case is to avoid problems with Javascript limitations: since Javascript standard specifies that all number handling should be done using 64-bit IEEE 754 floating point values, result being that some 64-bit integer values can not be accurately represent (as mantissa is only 51 bit wide).
 		 * <p>
 		 * Feature is disabled by default.
 		 */
 		WRITE_NUMBERS_AS_STRINGS(false),
 
 		/**
-		 * Feature that determines whether {@link java.math.BigDecimal} entries are serialized using {@link java.math.BigDecimal#toPlainString()} to prevent values to be written using scientific
-		 * notation.
+		 * Feature that determines whether {@link java.math.BigDecimal} entries are serialized using {@link java.math.BigDecimal#toPlainString()} to prevent values to be written using scientific notation.
 		 * <p>
 		 * Feature is disabled by default, so default output mode is used; this generally depends on how {@link BigDecimal} has been created.
 		 *
@@ -99,26 +91,21 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 		WRITE_BIGDECIMAL_AS_PLAIN(false),
 
 		/**
-		 * Feature that specifies that calls to {@link #flush} will cause matching <code>flush()</code> to underlying {@link OutputStream} or {@link Writer}; if disabled this will not be done. Main
-		 * reason to disable this feature is to prevent flushing at generator level, if it is not possible to prevent method being called by other code (like <code>ObjectMapper</code> or third party
-		 * libraries).
+		 * Feature that specifies that calls to {@link #flush} will cause matching <code>flush()</code> to underlying {@link OutputStream} or {@link Writer}; if disabled this will not be done. Main reason to disable this feature is to prevent flushing at generator level, if it is not possible to prevent method being called by other code (like <code>ObjectMapper</code> or third party libraries).
 		 * <p>
 		 * Feature is enabled by default.
 		 */
 		FLUSH_PASSED_TO_STREAM(true),
 
 		/**
-		 * Feature that specifies that all characters beyond 7-bit ASCII range (i.e. code points of 128 and above) need to be output using format-specific escapes (for JSON, backslash escapes), if
-		 * format uses escaping mechanisms (which is generally true for textual formats but not for binary formats).
+		 * Feature that specifies that all characters beyond 7-bit ASCII range (i.e. code points of 128 and above) need to be output using format-specific escapes (for JSON, backslash escapes), if format uses escaping mechanisms (which is generally true for textual formats but not for binary formats).
 		 * <p>
 		 * Feature is disabled by default.
 		 */
 		ESCAPE_NON_ASCII(false),
 
 		/**
-		 * Feature that determines whether {@link JsonGenerator} will explicitly check that no duplicate JSON Object field names are written. If enabled, generator will check all names within context
-		 * and report duplicates by throwing a {@link JsonGenerationException}; if disabled, no such checking will be done. Assumption in latter case is that caller takes care of not trying to write
-		 * duplicate names.
+		 * Feature that determines whether {@link JsonGenerator} will explicitly check that no duplicate JSON Object field names are written. If enabled, generator will check all names within context and report duplicates by throwing a {@link JsonGenerationException}; if disabled, no such checking will be done. Assumption in latter case is that caller takes care of not trying to write duplicate names.
 		 * <p>
 		 * Note that enabling this feature will incur performance overhead due to having to store and check additional information.
 		 *
@@ -199,9 +186,8 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	public abstract Version version();
 
 	/**
-	 * Method that can be used to get access to object that is used as target for generated output; this is usually either {@link OutputStream} or {@link Writer}, depending on what generator was
-	 * constructed with. Note that returned value may be null in some cases; including case where implementation does not want to exposed raw source to caller. In cases where output has been
-	 * decorated, object returned here is the decorated version; this allows some level of interaction between users of generator and decorator object.
+	 * Method that can be used to get access to object that is used as target for generated output; this is usually either {@link OutputStream} or {@link Writer}, depending on what generator was constructed with. Note that returned value may be null in some cases; including case where implementation does not want to exposed raw source to caller. In cases where output has been decorated, object returned here is the decorated version; this allows some level of interaction between users of
+	 * generator and decorator object.
 	 * <p>
 	 * In general use of this accessor should be considered as "last effort", i.e. only used if no other mechanism is applicable.
 	 */
@@ -269,8 +255,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 
 	/**
-	 * Method to call to make this generator use specified schema. Method must be called before generating any content, right after instance has been created. Note that not all generators support
-	 * schemas; and those that do usually only accept specific types of schemas: ones defined for data format this generator produces.
+	 * Method to call to make this generator use specified schema. Method must be called before generating any content, right after instance has been created. Note that not all generators support schemas; and those that do usually only accept specific types of schemas: ones defined for data format this generator produces.
 	 * <p>
 	 * If generator does not support specified schema, {@link UnsupportedOperationException} is thrown.
 	 *
@@ -326,11 +311,9 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	public abstract JsonGenerator useDefaultPrettyPrinter();
 
 	/**
-	 * Method that can be called to request that generator escapes all character codes above specified code point (if positive value); or, to not escape any characters except for ones that must be
-	 * escaped for the data format (if -1). To force escaping of all non-ASCII characters, for example, this method would be called with value of 127.
+	 * Method that can be called to request that generator escapes all character codes above specified code point (if positive value); or, to not escape any characters except for ones that must be escaped for the data format (if -1). To force escaping of all non-ASCII characters, for example, this method would be called with value of 127.
 	 * <p>
-	 * Note that generators are NOT required to support setting of value higher than 127, because there are other ways to affect quoting (or lack thereof) of character codes between 0 and 127. Not all
-	 * generators support concept of escaping, either; if so, calling this method will have no effect.
+	 * Note that generators are NOT required to support setting of value higher than 127, because there are other ways to affect quoting (or lack thereof) of character codes between 0 and 127. Not all generators support concept of escaping, either; if so, calling this method will have no effect.
 	 * <p>
 	 * Default implementation does nothing; sub-classes need to redefine it according to rules of supported data format.
 	 *
@@ -342,9 +325,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Accessor method for testing what is the highest unescaped character configured for this generator. This may be either positive value (when escaping configuration has been set and is in effect),
-	 * or 0 to indicate that no additional escaping is in effect. Some generators may not support additional escaping: for example, generators for binary formats that do not use escaping should simply
-	 * return 0.
+	 * Accessor method for testing what is the highest unescaped character configured for this generator. This may be either positive value (when escaping configuration has been set and is in effect), or 0 to indicate that no additional escaping is in effect. Some generators may not support additional escaping: for example, generators for binary formats that do not use escaping should simply return 0.
 	 *
 	 * @return Currently active limitation for highest non-escaped character, if defined; or -1 to indicate no additional escaping is performed.
 	 */
@@ -399,11 +380,9 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Introspection method that may be called to see if the underlying data format supports some kind of Object Ids natively (many do not; for example, JSON doesn't). This method <b>must</b> be
-	 * called prior to calling {@link #writeObjectId} or {@link #writeObjectRef}.
+	 * Introspection method that may be called to see if the underlying data format supports some kind of Object Ids natively (many do not; for example, JSON doesn't). This method <b>must</b> be called prior to calling {@link #writeObjectId} or {@link #writeObjectRef}.
 	 * <p>
-	 * Default implementation returns false; overridden by data formats that do support native Object Ids. Caller is expected to either use a non-native notation (explicit property or such), or fail,
-	 * in case it can not use native object ids.
+	 * Default implementation returns false; overridden by data formats that do support native Object Ids. Caller is expected to either use a non-native notation (explicit property or such), or fail, in case it can not use native object ids.
 	 *
 	 * @since 2.3
 	 */
@@ -412,11 +391,9 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Introspection method that may be called to see if the underlying data format supports some kind of Type Ids natively (many do not; for example, JSON doesn't). This method <b>must</b> be called
-	 * prior to calling {@link #writeTypeId}.
+	 * Introspection method that may be called to see if the underlying data format supports some kind of Type Ids natively (many do not; for example, JSON doesn't). This method <b>must</b> be called prior to calling {@link #writeTypeId}.
 	 * <p>
-	 * Default implementation returns false; overridden by data formats that do support native Type Ids. Caller is expected to either use a non-native notation (explicit property or such), or fail, in
-	 * case it can not use native type ids.
+	 * Default implementation returns false; overridden by data formats that do support native Type Ids. Caller is expected to either use a non-native notation (explicit property or such), or fail, in case it can not use native type ids.
 	 *
 	 * @since 2.3
 	 */
@@ -436,8 +413,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Introspection method to call to check whether it is ok to omit writing of Object fields or not. Most formats do allow omission, but certain positional formats (such as CSV) require output of
-	 * placeholders, even if no real values are to be emitted.
+	 * Introspection method to call to check whether it is ok to omit writing of Object fields or not. Most formats do allow omission, but certain positional formats (such as CSV) require output of placeholders, even if no real values are to be emitted.
 	 *
 	 * @since 2.3
 	 */
@@ -457,8 +433,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	public abstract void writeStartArray() throws IOException;
 
 	/**
-	 * Method for writing start marker of an Array value, similar to {@link #writeStartArray()}, but also specifying how many elements will be written for the array before calling
-	 * {@link #writeEndArray()}.
+	 * Method for writing start marker of an Array value, similar to {@link #writeStartArray()}, but also specifying how many elements will be written for the array before calling {@link #writeEndArray()}.
 	 * <p>
 	 * Default implementation simply calls {@link #writeStartArray()}.
 	 *
@@ -498,8 +473,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	public abstract void writeFieldName(String name) throws IOException;
 
 	/**
-	 * Method similar to {@link #writeFieldName(String)}, main difference being that it may perform better as some of processing (such as quoting of certain characters, or encoding into external
-	 * encoding if supported by generator) can be done just once and reused for later calls.
+	 * Method similar to {@link #writeFieldName(String)}, main difference being that it may perform better as some of processing (such as quoting of certain characters, or encoding into external encoding if supported by generator) can be done just once and reused for later calls.
 	 * <p>
 	 * Default implementation simple uses unprocessed name container in serialized String; implementations are strongly encouraged to make use of more efficient methods argument object has.
 	 */
@@ -510,41 +484,34 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 
 	/**
-	 * Method for outputting a String value. Depending on context this means either array element, (object) field value or a stand alone String; but in all cases, String will be surrounded in double
-	 * quotes, and contents will be properly escaped as required by JSON specification.
+	 * Method for outputting a String value. Depending on context this means either array element, (object) field value or a stand alone String; but in all cases, String will be surrounded in double quotes, and contents will be properly escaped as required by JSON specification.
 	 */
 	public abstract void writeString(String text) throws IOException;
 
 	/**
-	 * Method for outputting a String value. Depending on context this means either array element, (object) field value or a stand alone String; but in all cases, String will be surrounded in double
-	 * quotes, and contents will be properly escaped as required by JSON specification.
+	 * Method for outputting a String value. Depending on context this means either array element, (object) field value or a stand alone String; but in all cases, String will be surrounded in double quotes, and contents will be properly escaped as required by JSON specification.
 	 */
 	public abstract void writeString(char[] text, int offset, int len) throws IOException;
 
 	/**
-	 * Method similar to {@link #writeString(String)}, but that takes {@link SerializableString} which can make this potentially more efficient to call as generator may be able to reuse quoted and/or
-	 * encoded representation.
+	 * Method similar to {@link #writeString(String)}, but that takes {@link SerializableString} which can make this potentially more efficient to call as generator may be able to reuse quoted and/or encoded representation.
 	 * <p>
 	 * Default implementation just calls {@link #writeString(String)}; sub-classes should override it with more efficient implementation if possible.
 	 */
 	public abstract void writeString(SerializableString text) throws IOException;
 
 	/**
-	 * Method similar to {@link #writeString(String)} but that takes as its input a UTF-8 encoded String that is to be output as-is, without additional escaping (type of which depends on data format;
-	 * backslashes for JSON). However, quoting that data format requires (like double-quotes for JSON) will be added around the value if and as necessary.
+	 * Method similar to {@link #writeString(String)} but that takes as its input a UTF-8 encoded String that is to be output as-is, without additional escaping (type of which depends on data format; backslashes for JSON). However, quoting that data format requires (like double-quotes for JSON) will be added around the value if and as necessary.
 	 * <p>
-	 * Note that some backends may choose not to support this method: for example, if underlying destination is a {@link java.io.Writer} using this method would require UTF-8 decoding. If so,
-	 * implementation may instead choose to throw a {@link UnsupportedOperationException} due to ineffectiveness of having to decode input.
+	 * Note that some backends may choose not to support this method: for example, if underlying destination is a {@link java.io.Writer} using this method would require UTF-8 decoding. If so, implementation may instead choose to throw a {@link UnsupportedOperationException} due to ineffectiveness of having to decode input.
 	 */
 	public abstract void writeRawUTF8String(byte[] text, int offset, int length) throws IOException;
 
 	/**
-	 * Method similar to {@link #writeString(String)} but that takes as its input a UTF-8 encoded String which has <b>not</b> been escaped using whatever escaping scheme data format requires (for JSON
-	 * that is backslash-escaping for control characters and double-quotes; for other formats something else). This means that textual JSON backends need to check if value needs JSON escaping, but
-	 * otherwise can just be copied as is to output. Also, quoting that data format requires (like double-quotes for JSON) will be added around the value if and as necessary.
+	 * Method similar to {@link #writeString(String)} but that takes as its input a UTF-8 encoded String which has <b>not</b> been escaped using whatever escaping scheme data format requires (for JSON that is backslash-escaping for control characters and double-quotes; for other formats something else). This means that textual JSON backends need to check if value needs JSON escaping, but otherwise can just be copied as is to output. Also, quoting that data format requires (like double-quotes for
+	 * JSON) will be added around the value if and as necessary.
 	 * <p>
-	 * Note that some backends may choose not to support this method: for example, if underlying destination is a {@link java.io.Writer} using this method would require UTF-8 decoding. In this case
-	 * generator implementation may instead choose to throw a {@link UnsupportedOperationException} due to ineffectiveness of having to decode input.
+	 * Note that some backends may choose not to support this method: for example, if underlying destination is a {@link java.io.Writer} using this method would require UTF-8 decoding. In this case generator implementation may instead choose to throw a {@link UnsupportedOperationException} due to ineffectiveness of having to decode input.
 	 */
 	public abstract void writeUTF8String(byte[] text, int offset, int length) throws IOException;
 
@@ -553,45 +520,39 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 
 	/**
-	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would
-	 * otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
+	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
 	 * <p>
 	 * Note that not all generator implementations necessarily support such by-pass methods: those that do not will throw {@link UnsupportedOperationException}.
 	 */
 	public abstract void writeRaw(String text) throws IOException;
 
 	/**
-	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would
-	 * otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
+	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
 	 * <p>
 	 * Note that not all generator implementations necessarily support such by-pass methods: those that do not will throw {@link UnsupportedOperationException}.
 	 */
 	public abstract void writeRaw(String text, int offset, int len) throws IOException;
 
 	/**
-	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would
-	 * otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
+	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
 	 * <p>
 	 * Note that not all generator implementations necessarily support such by-pass methods: those that do not will throw {@link UnsupportedOperationException}.
 	 */
 	public abstract void writeRaw(char[] text, int offset, int len) throws IOException;
 
 	/**
-	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would
-	 * otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
+	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
 	 * <p>
 	 * Note that not all generator implementations necessarily support such by-pass methods: those that do not will throw {@link UnsupportedOperationException}.
 	 */
 	public abstract void writeRaw(char c) throws IOException;
 
 	/**
-	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would
-	 * otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
+	 * Method that will force generator to copy input text verbatim with <b>no</b> modifications (including that no escaping is done and no separators are added even if context [array, object] would otherwise require such). If such separators are desired, use {@link #writeRawValue(String)} instead.
 	 * <p>
 	 * Note that not all generator implementations necessarily support such by-pass methods: those that do not will throw {@link UnsupportedOperationException}.
 	 * <p>
-	 * The default implementation delegates to {@link #writeRaw(String)}; other backends that support raw inclusion of text are encouraged to implement it in more efficient manner (especially if they
-	 * use UTF-8 encoding).
+	 * The default implementation delegates to {@link #writeRaw(String)}; other backends that support raw inclusion of text are encouraged to implement it in more efficient manner (especially if they use UTF-8 encoding).
 	 *
 	 * @since 2.1
 	 */
@@ -600,8 +561,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Method that will force generator to copy input text verbatim without any modifications, but assuming it must constitute a single legal JSON value (number, string, boolean, null, Array or List).
-	 * Assuming this, proper separators are added if and as needed (comma or colon), and generator state updated to reflect this.
+	 * Method that will force generator to copy input text verbatim without any modifications, but assuming it must constitute a single legal JSON value (number, string, boolean, null, Array or List). Assuming this, proper separators are added if and as needed (comma or colon), and generator state updated to reflect this.
 	 */
 	public abstract void writeRawValue(String text) throws IOException;
 
@@ -612,13 +572,11 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method that will output given chunk of binary data as base64 encoded, as a complete String value (surrounded by double quotes). This method defaults
 	 * <p>
-	 * Note: because Json Strings can not contain unescaped linefeeds, if linefeeds are included (as per last argument), they must be escaped. This adds overhead for decoding without improving
-	 * readability. Alternatively if linefeeds are not included, resulting String value may violate the requirement of base64 RFC which mandates line-length of 76 characters and use of linefeeds.
-	 * However, all {@link JsonParser} implementations are required to accept such "long line base64"; as do typical production-level base64 decoders.
+	 * Note: because Json Strings can not contain unescaped linefeeds, if linefeeds are included (as per last argument), they must be escaped. This adds overhead for decoding without improving readability. Alternatively if linefeeds are not included, resulting String value may violate the requirement of base64 RFC which mandates line-length of 76 characters and use of linefeeds. However, all {@link JsonParser} implementations are required to accept such "long line base64"; as do typical
+	 * production-level base64 decoders.
 	 *
 	 * @param bv
-	 *            Base64 variant to use: defines details such as whether padding is used (and if so, using which character); what is the maximum line length before adding linefeed, and also the
-	 *            underlying alphabet to use.
+	 *            Base64 variant to use: defines details such as whether padding is used (and if so, using which character); what is the maximum line length before adding linefeed, and also the underlying alphabet to use.
 	 */
 	public abstract void writeBinary(Base64Variant bv, byte[] data, int offset, int len) throws IOException;
 
@@ -630,8 +588,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Similar to {@link #writeBinary(Base64Variant,byte[],int,int)}, but assumes default to using the Jackson default Base64 variant (which is {@link Base64Variants#MIME_NO_LINEFEEDS}). Also assumes
-	 * that whole byte array is to be output.
+	 * Similar to {@link #writeBinary(Base64Variant,byte[],int,int)}, but assumes default to using the Jackson default Base64 variant (which is {@link Base64Variants#MIME_NO_LINEFEEDS}). Also assumes that whole byte array is to be output.
 	 */
 	public void writeBinary(byte[] data) throws IOException {
 		writeBinary(Base64Variants.getDefaultVariant(), data, 0, data.length);
@@ -643,8 +600,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * @param data
 	 *            InputStream to use for reading binary data to write. Will not be closed after successful write operation
 	 * @param dataLength
-	 *            (optional) number of bytes that will be available; or -1 to be indicate it is not known. Note that implementations need not support cases where length is not known in advance; this
-	 *            depends on underlying data format: JSON output does NOT require length, other formats may
+	 *            (optional) number of bytes that will be available; or -1 to be indicate it is not known. Note that implementations need not support cases where length is not known in advance; this depends on underlying data format: JSON output does NOT require length, other formats may
 	 */
 	public int writeBinary(InputStream data, int dataLength) throws IOException {
 		return writeBinary(Base64Variants.getDefaultVariant(), data, dataLength);
@@ -658,9 +614,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * @param data
 	 *            InputStream to use for reading binary data to write. Will not be closed after successful write operation
 	 * @param dataLength
-	 *            (optional) number of bytes that will be available; or -1 to be indicate it is not known. If a positive length is given, <code>data</code> MUST provide at least that many bytes: if
-	 *            not, an exception will be thrown. Note that implementations need not support cases where length is not known in advance; this depends on underlying data format: JSON output does NOT
-	 *            require length, other formats may.
+	 *            (optional) number of bytes that will be available; or -1 to be indicate it is not known. If a positive length is given, <code>data</code> MUST provide at least that many bytes: if not, an exception will be thrown. Note that implementations need not support cases where length is not known in advance; this depends on underlying data format: JSON output does NOT require length, other formats may.
 	 *
 	 * @return Number of bytes read from <code>data</code> and written as binary payload
 	 *
@@ -673,8 +627,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 
 	/**
-	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added
-	 * around the value if pretty-printing is enabled.
+	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 *
 	 * @since 2.2
 	 */
@@ -683,63 +636,52 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added
-	 * around the value if pretty-printing is enabled.
+	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeNumber(int v) throws IOException;
 
 	/**
-	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added
-	 * around the value if pretty-printing is enabled.
+	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeNumber(long v) throws IOException;
 
 	/**
-	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added
-	 * around the value if pretty-printing is enabled.
+	 * Method for outputting given value as Json number. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeNumber(BigInteger v) throws IOException;
 
 	/**
-	 * Method for outputting indicate Json numeric value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be
-	 * added around the value if pretty-printing is enabled.
+	 * Method for outputting indicate Json numeric value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeNumber(double d) throws IOException;
 
 	/**
-	 * Method for outputting indicate Json numeric value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be
-	 * added around the value if pretty-printing is enabled.
+	 * Method for outputting indicate Json numeric value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeNumber(float f) throws IOException;
 
 	/**
-	 * Method for outputting indicate Json numeric value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be
-	 * added around the value if pretty-printing is enabled.
+	 * Method for outputting indicate Json numeric value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeNumber(BigDecimal dec) throws IOException;
 
 	/**
-	 * Write method that can be used for custom numeric types that can not be (easily?) converted to "standard" Java number types. Because numbers are not surrounded by double quotes, regular
-	 * {@link #writeString} method can not be used; nor {@link #writeRaw} because that does not properly handle value separators needed in Array or Object contexts.
+	 * Write method that can be used for custom numeric types that can not be (easily?) converted to "standard" Java number types. Because numbers are not surrounded by double quotes, regular {@link #writeString} method can not be used; nor {@link #writeRaw} because that does not properly handle value separators needed in Array or Object contexts.
 	 * <p>
-	 * Note: because of lack of type safety, some generator implementations may not be able to implement this method. For example, if a binary json format is used, it may require type information for
-	 * encoding; similarly for generator-wrappers around Java objects or Json nodes. If implementation does not implement this method, it needs to throw {@link UnsupportedOperationException}.
+	 * Note: because of lack of type safety, some generator implementations may not be able to implement this method. For example, if a binary json format is used, it may require type information for encoding; similarly for generator-wrappers around Java objects or Json nodes. If implementation does not implement this method, it needs to throw {@link UnsupportedOperationException}.
 	 *
 	 * @throws UnsupportedOperationException
-	 *             If underlying data format does not support numbers serialized textually AND if generator is not allowed to just output a String instead (Schema-based formats may require actual
-	 *             number, for example)
+	 *             If underlying data format does not support numbers serialized textually AND if generator is not allowed to just output a String instead (Schema-based formats may require actual number, for example)
 	 */
 	public abstract void writeNumber(String encodedValue) throws IOException;
 
 	/**
-	 * Method for outputting literal Json boolean value (one of Strings 'true' and 'false'). Can be called in any context where a value is expected (Array value, Object field value, root-level value).
-	 * Additional white space may be added around the value if pretty-printing is enabled.
+	 * Method for outputting literal Json boolean value (one of Strings 'true' and 'false'). Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeBoolean(boolean state) throws IOException;
 
 	/**
-	 * Method for outputting literal Json null value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added
-	 * around the value if pretty-printing is enabled.
+	 * Method for outputting literal Json null value. Can be called in any context where a value is expected (Array value, Object field value, root-level value). Additional white space may be added around the value if pretty-printing is enabled.
 	 */
 	public abstract void writeNull() throws IOException;
 
@@ -748,9 +690,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 
 	/**
-	 * Method that can be called to output so-called native Object Id. Note that it may only be called after ensuring this is legal (with {@link #canWriteObjectId()}), as not all data formats have
-	 * native type id support; and some may only allow them in certain positions or locations. If output is not allowed by the data format in this position, a {@link JsonGenerationException} will be
-	 * thrown.
+	 * Method that can be called to output so-called native Object Id. Note that it may only be called after ensuring this is legal (with {@link #canWriteObjectId()}), as not all data formats have native type id support; and some may only allow them in certain positions or locations. If output is not allowed by the data format in this position, a {@link JsonGenerationException} will be thrown.
 	 *
 	 * @since 2.3
 	 */
@@ -759,17 +699,14 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	}
 
 	/**
-	 * Method that can be called to output references to native Object Ids. Note that it may only be called after ensuring this is legal (with {@link #canWriteObjectId()}), as not all data formats
-	 * have native type id support; and some may only allow them in certain positions or locations. If output is not allowed by the data format in this position, a {@link JsonGenerationException} will
-	 * be thrown.
+	 * Method that can be called to output references to native Object Ids. Note that it may only be called after ensuring this is legal (with {@link #canWriteObjectId()}), as not all data formats have native type id support; and some may only allow them in certain positions or locations. If output is not allowed by the data format in this position, a {@link JsonGenerationException} will be thrown.
 	 */
 	public void writeObjectRef(Object id) throws IOException {
 		throw new JsonGenerationException("No native support for writing Object Ids");
 	}
 
 	/**
-	 * Method that can be called to output so-called native Type Id. Note that it may only be called after ensuring this is legal (with {@link #canWriteTypeId()}), as not all data formats have native
-	 * type id support; and some may only allow them in certain positions or locations. If output is not allowed by the data format in this position, a {@link JsonGenerationException} will be thrown.
+	 * Method that can be called to output so-called native Type Id. Note that it may only be called after ensuring this is legal (with {@link #canWriteTypeId()}), as not all data formats have native type id support; and some may only allow them in certain positions or locations. If output is not allowed by the data format in this position, a {@link JsonGenerationException} will be thrown.
 	 *
 	 * @since 2.3
 	 */
@@ -782,15 +719,12 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 
 	/**
-	 * Method for writing given Java object (POJO) as Json. Exactly how the object gets written depends on object in question (ad on codec, its configuration); for most beans it will result in Json
-	 * object, but for others Json array, or String or numeric value (and for nulls, Json null literal. <b>NOTE</b>: generator must have its <b>object codec</b> set to non-null value; for generators
-	 * created by a mapping factory this is the case, for others not.
+	 * Method for writing given Java object (POJO) as Json. Exactly how the object gets written depends on object in question (ad on codec, its configuration); for most beans it will result in Json object, but for others Json array, or String or numeric value (and for nulls, Json null literal. <b>NOTE</b>: generator must have its <b>object codec</b> set to non-null value; for generators created by a mapping factory this is the case, for others not.
 	 */
 	public abstract void writeObject(Object pojo) throws IOException;
 
 	/**
-	 * Method for writing given JSON tree (expressed as a tree where given JsonNode is the root) using this generator. This will generally just call {@link #writeObject} with given node, but is added
-	 * for convenience and to make code more explicit in cases where it deals specifically with trees.
+	 * Method for writing given JSON tree (expressed as a tree where given JsonNode is the root) using this generator. This will generally just call {@link #writeObject} with given node, but is added for convenience and to make code more explicit in cases where it deals specifically with trees.
 	 */
 	public abstract void writeTree(TreeNode rootNode) throws IOException;
 
@@ -975,8 +909,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 */
 
 	/**
-	 * Method for copying contents of the current event that the given parser instance points to. Note that the method <b>will not</b> copy any other events, such as events contained within Json Array
-	 * or Object structures.
+	 * Method for copying contents of the current event that the given parser instance points to. Note that the method <b>will not</b> copy any other events, such as events contained within Json Array or Object structures.
 	 * <p>
 	 * Calling this method will not advance the given parser, although it may cause parser to internally process more data (if it lazy loads contents of value events, for example)
 	 */
@@ -1057,12 +990,10 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	 * <ul>
 	 * <li>{@link JsonToken#START_OBJECT}: all events up to and including matching (closing) {@link JsonToken#END_OBJECT} will be copied</li>
 	 * <li>{@link JsonToken#START_ARRAY} all events up to and including matching (closing) {@link JsonToken#END_ARRAY} will be copied</li>
-	 * <li>{@link JsonToken#FIELD_NAME} the logical value (which can consist of a single scalar value; or a sequence of related events for structured types (Json Arrays, Objects)) will be copied along
-	 * with the name itself. So essentially the whole <b>field entry</b> (name and value) will be copied.</li>
+	 * <li>{@link JsonToken#FIELD_NAME} the logical value (which can consist of a single scalar value; or a sequence of related events for structured types (Json Arrays, Objects)) will be copied along with the name itself. So essentially the whole <b>field entry</b> (name and value) will be copied.</li>
 	 * </ul>
 	 * <p>
-	 * After calling this method, parser will point to the <b>last event</b> that was copied. This will either be the event parser already pointed to (if there were no enclosed events), or the last
-	 * enclosed event copied.
+	 * After calling this method, parser will point to the <b>last event</b> that was copied. This will either be the event parser already pointed to (if there were no enclosed events), or the last enclosed event copied.
 	 */
 	public void copyCurrentStructure(JsonParser jp) throws IOException {
 		JsonToken t = jp.getCurrentToken();
@@ -1128,9 +1059,7 @@ public abstract class JsonGenerator implements Closeable, Flushable, Versioned {
 	/**
 	 * Method called to close this generator, so that no more content can be written.
 	 * <p>
-	 * Whether the underlying target (stream, writer) gets closed depends on whether this generator either manages the target (i.e. is the only one with access to the target -- case if caller passes a
-	 * reference to the resource such as File, but not stream); or has feature {@link Feature#AUTO_CLOSE_TARGET} enabled. If either of above is true, the target is also closed. Otherwise (not
-	 * managing, feature not enabled), target is not closed.
+	 * Whether the underlying target (stream, writer) gets closed depends on whether this generator either manages the target (i.e. is the only one with access to the target -- case if caller passes a reference to the resource such as File, but not stream); or has feature {@link Feature#AUTO_CLOSE_TARGET} enabled. If either of above is true, the target is also closed. Otherwise (not managing, feature not enabled), target is not closed.
 	 */
 	@Override
 	public abstract void close() throws IOException;

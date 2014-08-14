@@ -41,7 +41,7 @@ class JSchAuthCancelException extends JSchException {
 
 	JSchAuthCancelException(String s) {
 		super(s);
-		this.method = s;
+		method = s;
 	}
 
 	public String getMethod() {

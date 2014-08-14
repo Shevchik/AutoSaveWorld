@@ -37,10 +37,10 @@ import autosaveworld.threads.worldregen.SchematicOperations;
 public class GPPaste {
 
 	private World wtopaste;
-	public GPPaste(String worldtopasteto) {
-		this.wtopaste = Bukkit.getWorld(worldtopasteto);
-	}
 
+	public GPPaste(String worldtopasteto) {
+		wtopaste = Bukkit.getWorld(worldtopasteto);
+	}
 
 	public void pasteAllFromSchematics() {
 		MessageLogger.debug("Pasting GP regions from schematics");
@@ -48,7 +48,7 @@ public class GPPaste {
 		final String schemfolder = GlobalConstants.getGPTempFolder();
 
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
-		//get database
+		// get database
 		ClaimArray ca = null;
 		try {
 			Field fld = DataStore.class.getDeclaredField("claims");
@@ -61,14 +61,14 @@ public class GPPaste {
 			return;
 		}
 
-		//paste all claims
-		for (int i = 0; i<ca.size(); i++) {
+		// paste all claims
+		for (int i = 0; i < ca.size(); i++) {
 			Claim claim = ca.get(i);
-			//paste
-			MessageLogger.debug("Pasting GP region "+claim.getID()+" from schematics");
-			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder+claim.getID());
+			// paste
+			MessageLogger.debug("Pasting GP region " + claim.getID() + " from schematics");
+			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder + claim.getID());
 			SchematicOperations.pasteFromSchematic(wtopaste, new LinkedList<SchematicToLoad>(Arrays.asList(schematicdata)));
-			MessageLogger.debug("Pasted GP region "+claim.getID()+" from schematics");
+			MessageLogger.debug("Pasted GP region " + claim.getID() + " from schematics");
 		}
 	}
 

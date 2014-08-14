@@ -6,8 +6,7 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
 /**
- * Intermediate base class for all problems encountered when processing (parsing, generating) JSON content that are not pure I/O problems. Regular {@link java.io.IOException}s will be passed through
- * as is. Sub-class of {@link java.io.IOException} for convenience.
+ * Intermediate base class for all problems encountered when processing (parsing, generating) JSON content that are not pure I/O problems. Regular {@link java.io.IOException}s will be passed through as is. Sub-class of {@link java.io.IOException} for convenience.
  */
 public class JsonProcessingException extends java.io.IOException {
 	final static long serialVersionUID = 123; // Stupid eclipse...
@@ -85,7 +84,7 @@ public class JsonProcessingException extends java.io.IOException {
 		JsonLocation loc = getLocation();
 		String suffix = getMessageSuffix();
 		// mild optimization, if nothing extra is needed:
-		if (loc != null || suffix != null) {
+		if ((loc != null) || (suffix != null)) {
 			StringBuilder sb = new StringBuilder(100);
 			sb.append(msg);
 			if (suffix != null) {

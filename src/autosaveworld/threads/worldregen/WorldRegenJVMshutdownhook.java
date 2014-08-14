@@ -35,9 +35,9 @@ public class WorldRegenJVMshutdownhook extends Thread {
 
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
 
-		//Delete region from world folder
-		FileUtils.deleteDirectory(new File(fldtodelete+File.separator+"region"));
-		//Signal that restarthook can restart
+		// Delete region from world folder
+		FileUtils.deleteDirectory(new File(fldtodelete + File.separator + "region"));
+		// Signal that restarthook can restart
 		RestartWaiter.decrementWait();
 	}
 

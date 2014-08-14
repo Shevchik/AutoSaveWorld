@@ -41,6 +41,7 @@ public class WorldRegenPasteThread extends Thread {
 	private AutoSaveWorld plugin = null;
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
+
 	public WorldRegenPasteThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
 		this.plugin = plugin;
 		this.config = config;
@@ -48,6 +49,7 @@ public class WorldRegenPasteThread extends Thread {
 	};
 
 	private boolean paste = false;
+
 	public void checkIfShouldPaste() {
 		File check = new File(GlobalConstants.getWorldnameFile());
 		if (check.exists()) {
@@ -63,8 +65,10 @@ public class WorldRegenPasteThread extends Thread {
 
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");
 
-		//do not do anything if we are not regenerating world
-		if (!paste) {return;}
+		// do not do anything if we are not regenerating world
+		if (!paste) {
+			return;
+		}
 
 		try {
 			doWorldPaste();
@@ -75,14 +79,14 @@ public class WorldRegenPasteThread extends Thread {
 	}
 
 	private void doWorldPaste() throws InterruptedException {
-		//deny players from join
+		// deny players from join
 		ListenerUtils.registerListener(new AntiJoinListener(configmsg));
 
-		//load config
+		// load config
 		FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getWorldnameFile()));
 		String worldtopasteto = cfg.getString("wname");
 
-		//wait for server to load
+		// wait for server to load
 		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
 			public void run() {
@@ -92,40 +96,40 @@ public class WorldRegenPasteThread extends Thread {
 			Thread.sleep(1000);
 		}
 
-		//check for worldedit
+		// check for worldedit
 		if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
-			MessageLogger.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server",true);
+			MessageLogger.broadcast("WorldEdit not found, can't place schematics back, please install WorldEdit and restart server", true);
 			return;
 		}
 
 		MessageLogger.debug("Restoring buildings");
 
 		// paste WG buildings
-		if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null && config.worldRegenSaveWG) {
+		if ((Bukkit.getPluginManager().getPlugin("WorldGuard") != null) && config.worldRegenSaveWG) {
 			new WorldGuardPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
-		//paste Factions buildings
-		if (Bukkit.getPluginManager().getPlugin("Factions") != null && config.worldRegenSaveFactions) {
+		// paste Factions buildings
+		if ((Bukkit.getPluginManager().getPlugin("Factions") != null) && config.worldRegenSaveFactions) {
 			new FactionsPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
-		//paste GriefPrevention claims
-		if (Bukkit.getPluginManager().getPlugin("GriefPrevention") != null && config.worldRegenSaveGP) {
+		// paste GriefPrevention claims
+		if ((Bukkit.getPluginManager().getPlugin("GriefPrevention") != null) && config.worldRegenSaveGP) {
 			new GPPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
-		//paste Towny towns
-		if (Bukkit.getPluginManager().getPlugin("Towny") != null && config.worldregenSaveTowny) {
+		// paste Towny towns
+		if ((Bukkit.getPluginManager().getPlugin("Towny") != null) && config.worldregenSaveTowny) {
 			new TownyPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
-		//paste PStones regions
-		if (Bukkit.getPluginManager().getPlugin("PreciousStones") != null && config.worldregenSavePStones) {
+		// paste PStones regions
+		if ((Bukkit.getPluginManager().getPlugin("PreciousStones") != null) && config.worldregenSavePStones) {
 			new PStonesPaste(worldtopasteto).pasteAllFromSchematics();
 		}
 
-		//clear temp folder
+		// clear temp folder
 		MessageLogger.debug("Cleaning temp folders");
 
 		FileUtils.deleteDirectory(new File(GlobalConstants.getWGTempFolder()));
@@ -138,11 +142,11 @@ public class WorldRegenPasteThread extends Thread {
 
 		MessageLogger.debug("Restore finished");
 
-		//save server, just in case
+		// save server, just in case
 		MessageLogger.debug("Saving server");
 		plugin.saveThread.performSave();
 
-		//restart
+		// restart
 		MessageLogger.debug("Restarting server");
 		plugin.autorestartThread.startrestart(true);
 	}
