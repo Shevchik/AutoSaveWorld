@@ -29,7 +29,7 @@ public class InvokeParser {
 		InvokeInfo info = new InvokeInfo();
 		String[] split = string.split("[,]");
 		info.methodname = split[0];
-		info.returntype = split[1].equals("{IDM}") ? null : (Class<?>) context.getObjects(split[1])[0];
+		info.returntype = split[1].equals("{IDM}") || split[0].isEmpty() ? null : (Class<?>) context.getObjects(split[1])[0];
 		info.object = context.getObjects(split[2])[0];
 		if (split.length == 4) {
 			info.objects = context.getObjects(split[3]);

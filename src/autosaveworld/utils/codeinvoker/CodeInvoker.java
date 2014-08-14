@@ -49,7 +49,7 @@ public class CodeInvoker {
 	// store name - stores last returned object
 	// remove name - removes object from memory
 	// construct classname,params - constructs object
-	// invoke classname,methodname,classobject,object ot classname,params - invokes method (use {IDM} as classobject if return type doesn't matters)
+	// invoke classname,methodname,classobject,object ot classname,params - invokes method (use  or empty string as classobject if return type doesn't matters)
 	// get classname,fieldname,object or classname - gets field value
 	// set classname,fieldname,object or classname,params - sets field value (only first object from params is used);
 	// print params
@@ -67,7 +67,7 @@ public class CodeInvoker {
 	// example script
 	// (print server online mode)
 	// code:
-	// - invoke getOnlineMode,{IDM},CNAME:org.bukkit.Bukkit
+	// - invoke getOnlineMode,,CNAME:org.bukkit.Bukkit
 	// - print Last
 	// (print offline player _Shevchik_ uuid)
 	// code:
@@ -76,22 +76,22 @@ public class CodeInvoker {
 	// - print Last
 	// (change server max players count to 201(works on 1.7.10))
 	// code:
-	// - invoke getServer,ClASS:org.bukkit.Server,CNAME:org.bukkit.Bukkit
+	// - invoke getServer,CLASS:org.bukkit.Server,CNAME:org.bukkit.Bukkit
 	// - get playerList,LAST
 	// - set maxPlayers,LAST,INTEGER:201
-	// (give all online players 5$)
+	// (give all online players 5$(uses vault))
 	// code:
-	// - invoke getServicesManager,{IDM},CNAME:org.bukkit.Bukkit
-	// - invoke getRegistration,{IDM},LAST,CLASS:net.milkbowl.vault.economy.Economy
-	// - invoke getProvider,{IDM},LAST
+	// - invoke getServicesManager,,CNAME:org.bukkit.Bukkit
+	// - invoke getRegistration,,LAST,CLASS:net.milkbowl.vault.economy.Economy
+	// - invoke getProvider,,LAST
 	// - store vault
 	// - invoke getOnlinePlayers,CLASS:java.util.Collection,CNAME:org.bukkit.Bukkit
-	// - invoke iterator,{IDM},LAST
+	// - invoke iterator,,LAST
 	// - store iterator
-	// - invoke hasNext,{IDM},Context:iterator
+	// - invoke hasNext,,Context:iterator
 	// - if 9,12,LAST
-	// - invoke next,{IDM},Context:iterator
-	// - invoke depositPlayer,{IDM},CONTEXT:vault,LAST|DOUBLE:5
+	// - invoke next,,Context:iterator
+	// - invoke depositPlayer,,CONTEXT:vault,LAST|DOUBLE:5
 	// - goto 7
 
 	public Object invokeCode(String filename) {
