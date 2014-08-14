@@ -18,13 +18,14 @@
 package autosaveworld.utils.codeinvoker;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedList;
-
-import org.bukkit.configuration.file.YamlConfiguration;
+import java.util.List;
+import java.util.Scanner;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.utils.codeinvoker.ConstructParser.ConstructInfo;
@@ -66,37 +67,33 @@ public class CodeInvoker {
 
 	// example script
 	// (print server online mode)
-	// code:
-	// - invoke getOnlineMode,,CNAME:org.bukkit.Bukkit
-	// - print Last
+	// invoke getOnlineMode,,CNAME:org.bukkit.Bukkit
+	// print LAST
 	// (print offline player _Shevchik_ uuid)
-	// code:
-	// - invoke getOfflinePlayer,CLASS:org.bukkit.OfflinePlayer,CNAME:org.bukkit.Bukkit,String:_Shevchik_
-	// - invoke getUniqueId,CLASS:java.util.UUID,LAST
-	// - print Last
+	// invoke getOfflinePlayer,CLASS:org.bukkit.OfflinePlayer,CNAME:org.bukkit.Bukkit,String:_Shevchik_
+	// invoke getUniqueId,CLASS:java.util.UUID,LAST
+	// print LAST
 	// (change server max players count to 201(works on 1.7.10))
-	// code:
-	// - invoke getServer,CLASS:org.bukkit.Server,CNAME:org.bukkit.Bukkit
-	// - get playerList,LAST
-	// - set maxPlayers,LAST,INTEGER:201
+	// invoke getServer,CLASS:org.bukkit.Server,CNAME:org.bukkit.Bukkit
+	// get playerList,LAST
+	// set maxPlayers,LAST,INTEGER:201
 	// (give all online players 5$(uses vault))
-	// code:
-	// - invoke getServicesManager,,CNAME:org.bukkit.Bukkit
-	// - invoke getRegistration,,LAST,CLASS:net.milkbowl.vault.economy.Economy
-	// - invoke getProvider,,LAST
-	// - store vault
-	// - invoke getOnlinePlayers,CLASS:java.util.Collection,CNAME:org.bukkit.Bukkit
-	// - invoke iterator,,LAST
-	// - store iterator
-	// - invoke hasNext,,Context:iterator
-	// - if 9,12,LAST
-	// - invoke next,,Context:iterator
-	// - invoke depositPlayer,,CONTEXT:vault,LAST|DOUBLE:5
-	// - goto 7
+	// invoke getServicesManager,,CNAME:org.bukkit.Bukkit
+	// invoke getRegistration,,LAST,CLASS:net.milkbowl.vault.economy.Economy
+	// invoke getProvider,,LAST
+	// store vault
+	// invoke getOnlinePlayers,CLASS:java.util.Collection,CNAME:org.bukkit.Bukkit
+	// invoke iterator,,LAST
+	// store iterator
+	// invoke hasNext,,Context:iterator
+	// if 9,12,LAST
+	// invoke next,,Context:iterator
+	// invoke depositPlayer,,CONTEXT:vault,LAST|DOUBLE:5
+	// goto 7
 
 	public Object invokeCode(String filename) {
 		File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + filename + ".yml");
-		return invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code").toArray(new String[0]));
+		return invokeCode(readCommandsFromFile(file).toArray(new String[0]));
 	}
 
 	public Object invokeCode(String[] commands) {
@@ -288,6 +285,18 @@ public class CodeInvoker {
 
 	private enum CodeCommand {
 		NOP, STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT, RETURN
+	}
+
+	private List<String> readCommandsFromFile(File file) {
+		List<String> commands = new LinkedList<String>();
+		try (Scanner scan = new Scanner(file)) {
+			while (scan.hasNextLine()) {
+				commands.add(scan.nextLine());
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return commands;
 	}
 
 	public static class EmptyReturn {
