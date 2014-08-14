@@ -89,7 +89,7 @@ public class CodeInvoker {
 	//	- if 10,13,LAST
 	//	- invoke next,{IDM},Context:iterator
 	//	- invoke depositPlayer,{IDM},CONTEXT:vault,LAST|DOUBLE:5
-	//	- goto 9
+	//	- goto 8
 
 	public void invokeCode(String[] commands) {
 		try {
