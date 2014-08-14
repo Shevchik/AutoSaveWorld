@@ -42,6 +42,7 @@ public class CodeInvoker {
 
 	//getclass classname - sets working class
 	//store name - stores last returned object
+	//remove name - removes object from memory
 	//construct params - constructs object
 	//invoke methodname,object,params - invokes method
 	//get fieldname,object - gets field value
@@ -87,6 +88,10 @@ public class CodeInvoker {
 					}
 					case STORE: {
 						context.objectsrefs.put(split[1], context.returnedobject);
+						continue;
+					}
+					case REMOVE: {
+						context.objectsrefs.remove(split[1]);
 						continue;
 					}
 					case IF: {
@@ -218,7 +223,7 @@ public class CodeInvoker {
 	}
 
 	private enum CodeCommand {
-		GETCLASS, STORE, IF, CONSTRUCT, INVOKE, GET, SET, PRINT
+		GETCLASS, STORE, REMOVE, IF, CONSTRUCT, INVOKE, GET, SET, PRINT
 	}
 
 }
