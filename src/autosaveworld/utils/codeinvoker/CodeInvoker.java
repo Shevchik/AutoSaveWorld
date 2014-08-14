@@ -38,17 +38,18 @@ public class CodeInvoker {
 	private GetParser gparser = new GetParser(context);
 	private SetParser sparser = new SetParser(context);
 
-	//array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {LINEREPLACER}
+	//array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {LINEREPLACER}
 
-	//getclass classname - sets working class
+	//getclass classname - sets working class (also returns class object)
 	//store name - stores last returned object
 	//remove name - removes object from memory
 	//construct params - constructs object
-	//invoke methodname,object,params - invokes method
+	//invoke methodname,classobject,object,params - invokes method (use {IDM} as classobject if return type doesn't matters)
 	//get fieldname,object - gets field value
 	//set fieldname,object,params - sets field value (only first object from params is used);
 	//print params
 	//if index,index,params - goes to first index code if all the params equals true or to second if not
+	//goto index - goes to line of code
 	//where:
 	//name - codeContext variable name
 	//methodname - methodname
@@ -60,20 +61,35 @@ public class CodeInvoker {
 	//(print server online mode)
 	//code:
 	//	- getclass org.bukkit.Bukkit
-	//	- invoke getOnlineMode,NULL
+	//	- invoke getOnlineMode,{IDM},NULL
 	//	- print Last
 	//(print offline player _Shevchik_ uuid)
 	//code:
 	//	- getclass org.bukkit.Bukkit
-	//	- invoke getOfflinePlayer,NULL,String:_Shevchik_
-	//	- invoke getUniqueId,LAST
+	//	- invoke getOfflinePlayer,CLASS:org.bukkit.OfflinePlayer,NULL,String:_Shevchik_
+	//	- invoke getUniqueId,CLASS:java.util.UUID,LAST
 	//	- print Last
 	//(change server max players count to 201(works on 1.7.10))
 	//code:
 	//	- getclass org.bukkit.Bukkit
-	//	- invoke getServer,NULL
+	//	- invoke getServer,ClASS:org.bukkit.Server,NULL
 	//	- get playerList,LAST
 	//	- set maxPlayers,LAST,INTEGER:201
+	//(give all online players 5$)
+	//code:
+	//	- getclass org.bukkit.Bukkit
+	//	- invoke getServicesManager,{IDM},NULL
+	//	- invoke getRegistration,{IDM},LAST,CLASS:net.milkbowl.vault.economy.Economy
+	//	- invoke getProvider,{IDM},LAST
+	//	- store vault
+	//	- invoke getOnlinePlayers,CLASS:java.util.Collection,NULL
+	//	- invoke iterator,{IDM},LAST
+	//	- store iterator
+	//	- invoke hasNext,{IDM},Context:iterator
+	//	- if 10,13,LAST
+	//	- invoke next,{IDM},Context:iterator
+	//	- invoke depositPlayer,{IDM},CONTEXT:vault,LAST|DOUBLE:5
+	//	- goto 9
 
 	public void invokeCode(String[] commands) {
 		try {
@@ -103,10 +119,14 @@ public class CodeInvoker {
 							}
 						}
 						if (result) {
-							line = ifinfo.getEIndex();
+							line = ifinfo.getEIndex()-1;
 						} else {
-							line = ifinfo.getNEIndex();
+							line = ifinfo.getNEIndex()-1;
 						}
+						continue;
+					}
+					case GOTO: {
+						line = Integer.parseInt(split[1])-1;
 						continue;
 					}
 					case CONSTRUCT : {
@@ -134,7 +154,7 @@ public class CodeInvoker {
 					}
 					case INVOKE: {
 						InvokeInfo iinfo = iparser.getInvokeInfo(split[1]);
-						Method method = findMethod(getAllMethods(iinfo.getObject() == null ? context.usedclass : iinfo.getObject().getClass()), iinfo.getMethodName(), iinfo.getObjects());
+						Method method = findMethod(getAllMethods(iinfo.getObject() == null ? context.usedclass : iinfo.getObject().getClass()), iinfo.getMethodName(), iinfo.getReturnType(), iinfo.getObjects());
 						method.setAccessible(true);
 						Object obj;
 						if (iinfo.getObjects() == null) {
@@ -178,23 +198,55 @@ public class CodeInvoker {
 		context.objectsrefs.clear();
 	}
 
-	private Method findMethod(Method[] allmethods, String methodname, Object[] params) {
+	private Method findMethod(Method[] allmethods, String methodname, Class<?> returntype, Object[] params) {
 		for (Method method : allmethods) {
 			if (!method.getName().equals(methodname)) {
 				continue;
 			}
-			boolean found = true;
-			for (int i = 0; i < method.getParameterTypes().length; i++) {
-				if (method.getParameterTypes()[i] != params[i].getClass()) {
-					found = false;
-				}
+			if (returntype != null && !returntype.isAssignableFrom(method.getReturnType())) {
+				continue;
 			}
-			if (!found) {
+			if (!isSameParams(method.getParameterTypes(), params)) {
 				continue;
 			}
 			return method;
 		}
-		return null;
+		throw new RuntimeException("Can't find method "+methodname);
+	}
+
+	private boolean isSameParams(Class<?>[] methodParams, Object[] params) {
+		if (params == null) {
+			if (methodParams.length == 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		if (methodParams.length != params.length) {
+			return false;
+		}
+		for (int i = 0; i < methodParams.length; i++) {
+			if (methodParams[i].isArray()) {
+				if (params[i].getClass().isArray()) {
+					if (!methodParams[i].getComponentType().isAssignableFrom(params[i].getClass().getComponentType())) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			} else if (methodParams[i].isPrimitive()) {
+				if (methodParams[i] == boolean.class) {
+					if (params[i].getClass() != Boolean.class) {
+						return false;
+					}
+				} else if (!Number.class.isAssignableFrom(params[i].getClass())) {
+					return false;
+				}
+			} else if (!methodParams[i].isAssignableFrom(params[i].getClass())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private Method[] getAllMethods(Class<?> clazz) {
@@ -211,7 +263,7 @@ public class CodeInvoker {
 				return field;
 			}
 		}
-		return null;
+		throw new RuntimeException("Can't find field "+fieldname);
 	}
 
 	private Field[] getAllFields(Class<?> clazz) {
@@ -223,7 +275,7 @@ public class CodeInvoker {
 	}
 
 	private enum CodeCommand {
-		GETCLASS, STORE, REMOVE, IF, CONSTRUCT, INVOKE, GET, SET, PRINT
+		GETCLASS, STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT
 	}
 
 }

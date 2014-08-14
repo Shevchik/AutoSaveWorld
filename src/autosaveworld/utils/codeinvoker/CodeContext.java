@@ -59,6 +59,13 @@ public class CodeContext {
 			case "FLOAT": {
 				return Float.parseFloat(split[1]);
 			}
+			case "CLASS": {
+				try {
+					return Class.forName(split[1]);
+				} catch (Exception e) {
+					throw new RuntimeException("Class "+split[1]+" not found");
+				}
+			}
 			case "CONTEXT": {
 				return objectsrefs.get(split[1]);
 			}
