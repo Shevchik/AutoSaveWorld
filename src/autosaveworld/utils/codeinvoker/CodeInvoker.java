@@ -40,13 +40,12 @@ public class CodeInvoker {
 
 	// array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {VERTBAR}, to use space use {SPACE}
 
-	// getclass classname - sets working class (also returns class object)
 	// store name - stores last returned object
 	// remove name - removes object from memory
-	// construct params - constructs object
-	// invoke methodname,classobject,object,params - invokes method (use {IDM} as classobject if return type doesn't matters)
-	// get fieldname,object - gets field value
-	// set fieldname,object,params - sets field value (only first object from params is used);
+	// construct classname,params - constructs object
+	// invoke classname,methodname,classobject,object ot classname,params - invokes method (use {IDM} as classobject if return type doesn't matters)
+	// get classname,fieldname,object or classname - gets field value
+	// set classname,fieldname,object or classname,params - sets field value (only first object from params is used);
 	// print params
 	// if index,index,params - goes to first index code if all the params equals true or to second if not
 	// goto index - goes to line of code
@@ -54,6 +53,7 @@ public class CodeInvoker {
 	// name - codeContext variable name
 	// methodname - method name
 	// fieldname - field name
+	// classname - classname to apply get/set/invoke on (for use with static methods/fields), to use classname instead of object use CNAME:classname
 	// object - object to apply get/set/invoke on
 	// params - array of objects
 	// classobject - class object
@@ -61,48 +61,41 @@ public class CodeInvoker {
 	// example script
 	// (print server online mode)
 	// code:
-	// - getclass org.bukkit.Bukkit
-	// - invoke getOnlineMode,{IDM},NULL
+	// - invoke getOnlineMode,{IDM},CNAME:org.bukkit.Bukkit
 	// - print Last
 	// (print offline player _Shevchik_ uuid)
 	// code:
-	// - getclass org.bukkit.Bukkit
-	// - invoke getOfflinePlayer,CLASS:org.bukkit.OfflinePlayer,NULL,String:_Shevchik_
+	// - invoke getOfflinePlayer,CLASS:org.bukkit.OfflinePlayer,CNAME:org.bukkit.Bukkit,String:_Shevchik_
 	// - invoke getUniqueId,CLASS:java.util.UUID,LAST
 	// - print Last
 	// (change server max players count to 201(works on 1.7.10))
 	// code:
-	// - getclass org.bukkit.Bukkit
-	// - invoke getServer,ClASS:org.bukkit.Server,NULL
+	// - invoke getServer,ClASS:org.bukkit.Server,CNAME:org.bukkit.Bukkit
 	// - get playerList,LAST
 	// - set maxPlayers,LAST,INTEGER:201
 	// (give all online players 5$)
 	// code:
-	// - getclass org.bukkit.Bukkit
-	// - invoke getServicesManager,{IDM},NULL
+	// - invoke getServicesManager,{IDM},CNAME:org.bukkit.Bukkit
 	// - invoke getRegistration,{IDM},LAST,CLASS:net.milkbowl.vault.economy.Economy
 	// - invoke getProvider,{IDM},LAST
 	// - store vault
-	// - invoke getOnlinePlayers,CLASS:java.util.Collection,NULL
+	// - invoke getOnlinePlayers,CLASS:java.util.Collection,CNAME:org.bukkit.Bukkit
 	// - invoke iterator,{IDM},LAST
 	// - store iterator
 	// - invoke hasNext,{IDM},Context:iterator
-	// - if 10,13,LAST
+	// - if 9,12,LAST
 	// - invoke next,{IDM},Context:iterator
 	// - invoke depositPlayer,{IDM},CONTEXT:vault,LAST|DOUBLE:5
-	// - goto 8
+	// - goto 7
 
 	public void invokeCode(String[] commands) {
+		int line = -1;
 		try {
-			for (int line = 0; line < commands.length; line++) {
+			for (line = 0; line < commands.length; line++) {
 				String command = commands[line];
 				String[] split = command.split("\\s+");
 				CodeCommand codecommand = CodeCommand.valueOf(split[0].toUpperCase());
 				switch (codecommand) {
-					case GETCLASS: {
-						context.usedclass = Class.forName(split[1]);
-						continue;
-					}
 					case STORE: {
 						context.objectsrefs.put(split[1], context.returnedobject);
 						continue;
@@ -194,6 +187,7 @@ public class CodeInvoker {
 				}
 			}
 		} catch (Throwable t) {
+			System.err.println("Error happened while invoking line "+line);
 			t.printStackTrace();
 		}
 		context.objectsrefs.clear();
@@ -276,7 +270,7 @@ public class CodeInvoker {
 	}
 
 	private enum CodeCommand {
-		GETCLASS, STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT
+		STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT
 	}
 
 }

@@ -38,6 +38,14 @@ public class CodeContext {
 	private Object parseObject(String object) {
 		String[] split = object.split("[:]");
 		switch (split[0].toUpperCase()) {
+			case "CNAME": {
+				try {
+					usedclass = Class.forName(split[1]);
+					return null;
+				} catch (Exception e) {
+					throw new RuntimeException("Class " + split[1] + " not found");
+				}
+			}
 			case "STRING": {
 				return new String(split[1].replace("{VERTBAR}", "|").replace("{SPACE}", " "));
 			}
