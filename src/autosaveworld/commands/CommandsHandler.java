@@ -190,7 +190,12 @@ public class CommandsHandler implements CommandExecutor {
 				plugin.worldregencopyThread.startworldregen(args[1]);
 				return true;
 			} else if (args.length == 2 && args[0].equalsIgnoreCase("invokecode")) {
+				//invoke code
 				File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + args[1]+".yml");
+				if (!file.exists()) {
+					sender.sendMessage(ChatColor.RED + "File "+file.getParent()+" doesn't exist");
+					return true;
+				}
 				sender.sendMessage(ChatColor.BLUE + "Invoking code");
 				new CodeInvoker().invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code").toArray(new String[0]));
 				sender.sendMessage(ChatColor.BLUE + "Invoke code finished");
