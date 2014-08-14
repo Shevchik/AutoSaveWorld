@@ -28,16 +28,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.StringUtils;
 import autosaveworld.utils.codeinvoker.CodeInvoker;
+import autosaveworld.utils.codeinvoker.CodeInvoker.EmptyReturn;
 
 public class CommandsHandler implements CommandExecutor {
 
@@ -193,13 +192,11 @@ public class CommandsHandler implements CommandExecutor {
 				return true;
 			} else if ((args.length == 2) && args[0].equalsIgnoreCase("invokecode")) {
 				// invoke code
-				File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + args[1] + ".yml");
-				if (!file.exists()) {
-					sender.sendMessage(ChatColor.RED + "File " + file.getPath() + " doesn't exist");
-					return true;
-				}
 				sender.sendMessage(ChatColor.BLUE + "Invoking code");
-				new CodeInvoker().invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code").toArray(new String[0]));
+				Object returned = new CodeInvoker().invokeCode(args[1]);
+				if (!(returned instanceof EmptyReturn)) {
+					sender.sendMessage(ChatColor.BLUE + "Invoke code result: "+returned);
+				}
 				sender.sendMessage(ChatColor.BLUE + "Invoke code finished");
 				return true;
 			} else if ((args.length == 1) && args[0].equalsIgnoreCase("reload")) {

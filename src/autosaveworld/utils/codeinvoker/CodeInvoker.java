@@ -17,12 +17,16 @@
 
 package autosaveworld.utils.codeinvoker;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.utils.codeinvoker.ConstructParser.ConstructInfo;
 import autosaveworld.utils.codeinvoker.GetParser.GetInfo;
 import autosaveworld.utils.codeinvoker.IfParser.IfInfo;
@@ -40,6 +44,8 @@ public class CodeInvoker {
 
 	// array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {VERTBAR}, to use space use {SPACE}
 
+	// nop - does nothing
+	// return params - quits code invling and returns object(only first object from params is used)
 	// store name - stores last returned object
 	// remove name - removes object from memory
 	// construct classname,params - constructs object
@@ -88,7 +94,12 @@ public class CodeInvoker {
 	// - invoke depositPlayer,{IDM},CONTEXT:vault,LAST|DOUBLE:5
 	// - goto 7
 
-	public void invokeCode(String[] commands) {
+	public Object invokeCode(String filename) {
+		File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + filename + ".yml");
+		return invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code").toArray(new String[0]));
+	}
+
+	public Object invokeCode(String[] commands) {
 		int line = -1;
 		try {
 			for (line = 0; line < commands.length; line++) {
@@ -96,6 +107,12 @@ public class CodeInvoker {
 				String[] split = command.split("\\s+");
 				CodeCommand codecommand = CodeCommand.valueOf(split[0].toUpperCase());
 				switch (codecommand) {
+					case NOP: {
+						continue;
+					}
+					case RETURN: {
+						return context.getObjects(split[1])[0];
+					}
 					case STORE: {
 						context.objectsrefs.put(split[1], context.returnedobject);
 						continue;
@@ -190,7 +207,7 @@ public class CodeInvoker {
 			System.err.println("Error happened while invoking line "+line);
 			t.printStackTrace();
 		}
-		context.objectsrefs.clear();
+		return new EmptyReturn();
 	}
 
 	private Method findMethod(Method[] allmethods, String methodname, Class<?> returntype, Object[] params) {
@@ -270,7 +287,10 @@ public class CodeInvoker {
 	}
 
 	private enum CodeCommand {
-		STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT
+		NOP, STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT, RETURN
+	}
+
+	public static class EmptyReturn {
 	}
 
 }
