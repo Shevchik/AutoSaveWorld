@@ -38,7 +38,7 @@ public class CodeInvoker {
 	private GetParser gparser = new GetParser(context);
 	private SetParser sparser = new SetParser(context);
 
-	//array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {LINEREPLACER}
+	//array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {VERTBAR}, to use space use {SPACE}
 
 	//getclass classname - sets working class (also returns class object)
 	//store name - stores last returned object

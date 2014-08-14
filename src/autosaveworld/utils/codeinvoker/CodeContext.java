@@ -39,7 +39,7 @@ public class CodeContext {
 		String[] split = object.split("[:]");
 		switch (split[0].toUpperCase()) {
 			case "STRING": {
-				return new String(split[1].replace("{LINEREPLACER}", "|"));
+				return new String(split[1].replace("{VERTBAR}", "|").replace("{SPACE}", " "));
 			}
 			case "LONG": {
 				return Long.parseLong(split[1]);
