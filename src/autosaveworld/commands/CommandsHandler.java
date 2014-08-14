@@ -195,7 +195,7 @@ public class CommandsHandler implements CommandExecutor {
 				// invoke code
 				File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + args[1] + ".yml");
 				if (!file.exists()) {
-					sender.sendMessage(ChatColor.RED + "File " + file.getParent() + " doesn't exist");
+					sender.sendMessage(ChatColor.RED + "File " + file.getPath() + " doesn't exist");
 					return true;
 				}
 				sender.sendMessage(ChatColor.BLUE + "Invoking code");
