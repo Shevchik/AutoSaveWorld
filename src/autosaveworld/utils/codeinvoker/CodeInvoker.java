@@ -52,10 +52,11 @@ public class CodeInvoker {
 	//goto index - goes to line of code
 	//where:
 	//name - codeContext variable name
-	//methodname - methodname
-	//fieldname - fieldname
-	//object - object to apply function
+	//methodname - method name
+	//fieldname - field name
+	//object - object to apply get/set/invoke on
 	//params - array of objects
+	//classobject - class object
 
 	//example script
 	//(print server online mode)
