@@ -22,16 +22,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 import autosaveworld.utils.codeinvoker.ConstructParser.ConstructInfo;
 import autosaveworld.utils.codeinvoker.GetParser.GetInfo;
+import autosaveworld.utils.codeinvoker.IfParser.IfInfo;
 import autosaveworld.utils.codeinvoker.InvokeParser.InvokeInfo;
 import autosaveworld.utils.codeinvoker.SetParser.SetInfo;
 
 public class CodeInvoker {
 
 	private CodeContext context = new CodeContext();
+	private IfParser ifparser = new IfParser(context);
 	private InvokeParser iparser = new InvokeParser(context);
 	private ConstructParser cparser = new ConstructParser(context);
 	private GetParser gparser = new GetParser(context);
@@ -46,6 +47,7 @@ public class CodeInvoker {
 	//get fieldname,object - gets field value
 	//set fieldname,object,params - sets field value (only first object from params is used);
 	//print params
+	//if index,index,params - goes to first index code if all the params equals true or to second if not
 	//where:
 	//name - codeContext variable name
 	//methodname - methodname
@@ -72,9 +74,10 @@ public class CodeInvoker {
 	//	- get playerList,LAST
 	//	- set maxPlayers,LAST,INTEGER:201
 
-	public void invokeCode(List<String> commands) {
+	public void invokeCode(String[] commands) {
 		try {
-			for (String command : commands) {
+			for (int line = 0; line < commands.length; line++) {
+				String command = commands[line];
 				String[] split = command.split("\\s+");
 				CodeCommand codecommand = CodeCommand.valueOf(split[0].toUpperCase());
 				switch (codecommand) {
@@ -84,6 +87,22 @@ public class CodeInvoker {
 					}
 					case STORE: {
 						context.objectsrefs.put(split[1], context.returnedobject);
+						continue;
+					}
+					case IF: {
+						IfInfo ifinfo = ifparser.getIfInfo(split[1]);
+						boolean result = true;
+						for (Object obj : ifinfo.getObjects()) {
+							if (!obj.equals(true)) {
+								result = false;
+							}
+						}
+						if (result) {
+							line = ifinfo.getEIndex();
+						} else {
+							line = ifinfo.getNEIndex();
+						}
+						continue;
 					}
 					case CONSTRUCT : {
 						ConstructInfo cinfo = cparser.getConstructInfo(split[1]);
@@ -199,7 +218,7 @@ public class CodeInvoker {
 	}
 
 	private enum CodeCommand {
-		GETCLASS, STORE, CONSTRUCT, INVOKE, GET, SET, PRINT
+		GETCLASS, STORE, IF, CONSTRUCT, INVOKE, GET, SET, PRINT
 	}
 
 }

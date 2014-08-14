@@ -192,7 +192,7 @@ public class CommandsHandler implements CommandExecutor {
 			} else if (args.length == 2 && args[0].equalsIgnoreCase("invokecode")) {
 				File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + args[1]+".yml");
 				sender.sendMessage(ChatColor.BLUE + "Invoking code from file "+file.getPath());
-				new CodeInvoker().invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code"));
+				new CodeInvoker().invokeCode(YamlConfiguration.loadConfiguration(file).getStringList("code").toArray(new String[0]));
 				sender.sendMessage(ChatColor.BLUE + "Invoke code finished");
 				return true;
 			} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
