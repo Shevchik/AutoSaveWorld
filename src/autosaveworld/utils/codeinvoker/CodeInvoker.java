@@ -152,7 +152,7 @@ public class CodeInvoker {
 						for (Constructor<?> constr : context.usedclass.getDeclaredConstructors()) {
 							boolean found = true;
 							for (int i = 0; i < constr.getParameterTypes().length; i++) {
-								if (constr.getParameterTypes()[i].isAssignableFrom(cinfo.getObjects()[i].getClass())) {
+								if (!constr.getParameterTypes()[i].isAssignableFrom(cinfo.getObjects()[i].getClass())) {
 									found = false;
 								}
 							}
