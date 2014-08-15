@@ -57,6 +57,7 @@ public class CodeInvoker {
 	print params
 	runcode scriptname
 	if index,index,params - goes to first index code if all the params equals true or to second if not
+	isnull params - returns true if all the params are null
 	goto index - goes to line of code
 	2)Parameters
 	name - codeContext variable name
@@ -122,18 +123,23 @@ public class CodeInvoker {
 						context.objectsrefs.remove(split[1]);
 						continue;
 					}
-					case IF: {
-						IfInfo ifinfo = ifparser.getIfInfo(split[1]);
-						boolean result = true;
-						for (Object obj : ifinfo.getObjects()) {
-							if (!obj.equals(true)) {
-								result = false;
+					case ISNULL: {
+						context.returnedobject = true;
+						for (Object obj : context.getObjects(split[1])) {
+							if (obj != null) {
+								context.returnedobject = false;
 							}
 						}
-						if (result) {
-							line = ifinfo.getEIndex() - 1;
-						} else {
-							line = ifinfo.getNEIndex() - 1;
+						continue;
+					}
+					case IF: {
+						IfInfo ifinfo = ifparser.getIfInfo(split[1]);
+						line = ifinfo.getEIndex() - 1;
+						for (Object obj : ifinfo.getObjects()) {
+							if (!obj.equals(true)) {
+								line = ifinfo.getNEIndex() - 1;
+								break;
+							}
 						}
 						continue;
 					}
@@ -146,7 +152,7 @@ public class CodeInvoker {
 						for (Constructor<?> constr : context.usedclass.getDeclaredConstructors()) {
 							boolean found = true;
 							for (int i = 0; i < constr.getParameterTypes().length; i++) {
-								if (constr.getParameterTypes()[i] != cinfo.getObjects()[i].getClass()) {
+								if (constr.getParameterTypes()[i].isAssignableFrom(cinfo.getObjects()[i].getClass())) {
 									found = false;
 								}
 							}
@@ -270,7 +276,7 @@ public class CodeInvoker {
 	}
 
 	private enum CodeCommand {
-		NOP, STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT, RETURN, RUNCODE
+		NOP, STORE, REMOVE, IF, ISNULL, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT, RETURN, RUNCODE
 	}
 
 	private List<String> readCommandsFromFile(File file) {
