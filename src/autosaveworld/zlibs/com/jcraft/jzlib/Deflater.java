@@ -164,8 +164,4 @@ final public class Deflater extends ZStream {
 		return finished;
 	}
 
-	public int copy(Deflater src) {
-		finished = src.finished;
-		return Deflate.deflateCopy(this, src);
-	}
 }

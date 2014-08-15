@@ -39,7 +39,7 @@ public class ReflectionUtils {
 	public static Method getMethod(Class<?> clazz, String name, int paramlength) {
 		do {
 			for (Method method : clazz.getDeclaredMethods()) {
-				if (method.getName().equals(name) && method.getParameterTypes().length == paramlength) {
+				if (method.getName().equals(name) && (method.getParameterTypes().length == paramlength)) {
 					return method;
 				}
 			}
