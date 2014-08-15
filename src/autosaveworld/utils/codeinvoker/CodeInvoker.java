@@ -194,6 +194,12 @@ public class CodeInvoker {
 						}
 						continue;
 					}
+					case RUNCODE: {
+						Object obj = invokeCode(split[1]);
+						if (!(obj instanceof EmptyReturn)) {
+							context.returnedobject = obj;
+						}
+					}
 					default: {
 						break;
 					}
