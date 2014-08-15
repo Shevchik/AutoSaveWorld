@@ -23,7 +23,7 @@ public class NMSNames {
 
 	public static String getDataManagerFieldName() {
 		if (isCauldron()) {
-			return "";
+			return "field_73019_z";
 		} else {
 			return "dataManager";
 		}
@@ -31,7 +31,7 @@ public class NMSNames {
 
 	public static String getCheckSessionMethodName() {
 		if (isCauldron()) {
-			return "";
+			return "func_75762_c";
 		} else {
 			return "checkSession";
 		}
@@ -39,7 +39,7 @@ public class NMSNames {
 
 	public static String getWorldDataFieldName() {
 		if (isCauldron()) {
-			return "";
+			return "field_72986_A";
 		} else {
 			return "worldData";
 		}
@@ -47,7 +47,7 @@ public class NMSNames {
 
 	public static String getChunkProviderFieldName() {
 		if (isCauldron()) {
-			return "";
+			return "field_73020_y";
 		} else {
 			return "chunkProvider";
 		}
@@ -55,7 +55,7 @@ public class NMSNames {
 
 	public static String getSaveWorldDataMethodName() {
 		if (isCauldron()) {
-			return "";
+			return "func_75755_a";
 		} else {
 			return "saveWorldData";
 		}
@@ -63,7 +63,7 @@ public class NMSNames {
 
 	public static String getSaveChunksMethodName() {
 		if (isCauldron()) {
-			return "";
+			return "func_73151_a";
 		} else {
 			return "saveChunks";
 		}
@@ -71,7 +71,7 @@ public class NMSNames {
 
 	public static String getSaveLevelMethodName() {
 		if (isCauldron()) {
-			return "";
+			return "func_73041_k";
 		} else {
 			return "saveLevel";
 		}
