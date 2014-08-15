@@ -17,8 +17,6 @@
 
 package autosaveworld.threads.purge.bynames;
 
-import java.util.HashSet;
-
 import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveWorldConfig;
@@ -31,7 +29,6 @@ import autosaveworld.threads.purge.bynames.plugins.MyWarpPurge;
 import autosaveworld.threads.purge.bynames.plugins.ResidencePurge;
 import autosaveworld.threads.purge.bynames.plugins.VaultPurge;
 import autosaveworld.threads.purge.bynames.plugins.WGPurge;
-import autosaveworld.threads.purge.weregen.RegenOptions;
 
 public class PurgeByNames {
 
@@ -49,17 +46,12 @@ public class PurgeByNames {
 		aplist.gatherActivePlayersList(config.purgeAwayTime * 1000);
 		MessageLogger.debug("Found " + aplist.getActivePlayersCount() + " active players");
 
-		HashSet<Integer> safeids = new HashSet<Integer>();
-		if (config.purgeWERemoveUnsafe) {
-			safeids.addAll(RegenOptions.parseListToIDs(config.purgeWERemoveUnsafeSafeIDs));
-		}
-
 		PluginManager pm = plugin.getServer().getPluginManager();
 
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
 			MessageLogger.debug("WG found, purging");
 			try {
-				new WGPurge().doWGPurgeTask(aplist, config.purgeWGRegenRg, config.purgeWGNoregenOverlap, safeids);
+				new WGPurge().doWGPurgeTask(aplist, config.purgeWGRegenRg, config.purgeWGNoregenOverlap);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -86,7 +78,7 @@ public class PurgeByNames {
 		if ((pm.getPlugin("Residence") != null) && config.purgeResidence) {
 			MessageLogger.debug("Residence found, purging");
 			try {
-				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeResidenceRegenArea, safeids);
+				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeResidenceRegenArea);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

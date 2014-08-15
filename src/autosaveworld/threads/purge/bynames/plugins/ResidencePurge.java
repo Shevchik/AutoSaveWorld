@@ -3,14 +3,12 @@ package autosaveworld.threads.purge.bynames.plugins;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.util.Vector;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.bynames.ActivePlayersList;
-import autosaveworld.threads.purge.weregen.RegenOptions;
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration;
 import autosaveworld.utils.SchedulerUtils;
 
@@ -20,7 +18,7 @@ import com.bekvon.bukkit.residence.protection.CuboidArea;
 
 public class ResidencePurge {
 
-	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres, final Set<Integer> safeids) {
+	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres) {
 
 		MessageLogger.debug("Residence purge started");
 
@@ -46,7 +44,7 @@ public class ResidencePurge {
 							@Override
 							public void run() {
 								MessageLogger.debug("Regenerating residence " + res + " cuboid area");
-								WorldEditRegeneration.get().regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint, new RegenOptions(safeids));
+								WorldEditRegeneration.get().regenerateRegion(Bukkit.getWorld(cres.getWorld()), minpoint, maxpoint);
 							}
 						};
 						SchedulerUtils.callSyncTaskAndWait(caregen);

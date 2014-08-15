@@ -33,9 +33,9 @@ public class WorldEditRegeneration {
 	}
 
 	public static interface WorldEditRegenrationInterface {
-		public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options);
+		public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint);
 
-		public void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options);
+		public void regenerateRegion(World world, Vector minpoint, Vector maxpoint);
 	}
 
 }

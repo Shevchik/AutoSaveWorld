@@ -22,7 +22,6 @@ import java.util.LinkedList;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 
 import autosaveworld.threads.purge.weregen.UtilClasses.BlockToPlaceBack;
 import autosaveworld.threads.purge.weregen.UtilClasses.ItemSpawnListener;
@@ -44,15 +43,15 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 	private ItemSpawnListener itemremover = new ItemSpawnListener();
 
 	@Override
-	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint, RegenOptions options) {
+	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint) {
 		Vector minbpoint = BukkitUtil.toVector(minpoint);
 		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
-		regenerateRegion(world, minbpoint, maxbpoint, options);
+		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint, RegenOptions options) {
+	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
 		BukkitWorld bw = new BukkitWorld(world);
 		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
 		es.setFastMode(true);
@@ -78,23 +77,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 			}
 		}
 
-		// remove all unsafe blocks
-		if (options.shouldRemoveUnsafeBlocks()) {
-			for (Vector2D chunk : region.getChunks()) {
-				Vector min = new Vector(chunk.getBlockX() * 16, 0, chunk.getBlockZ() * 16);
-				for (int x = 0; x < 16; ++x) {
-					for (int y = 0; y < maxy; ++y) {
-						for (int z = 0; z < 16; ++z) {
-							Vector pt = min.add(x, y, z);
-							Block block = world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ());
-							if (!options.isBlockSafe(block.getTypeId())) {
-								block.setType(Material.AIR);
-							}
-						}
-					}
-				}
-			}
-		}
+		//TODO: Set blocks that has tileentity to air first
 
 		// regenerate all affected chunks
 		for (Vector2D chunk : region.getChunks()) {

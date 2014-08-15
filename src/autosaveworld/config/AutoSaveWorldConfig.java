@@ -19,13 +19,10 @@ package autosaveworld.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -96,9 +93,6 @@ public class AutoSaveWorldConfig {
 	public List<String> purgeIgnoredNicks;
 	public List<String> purgeIgnoredUUIDs;
 	public boolean purgeBroadcast = true;
-	public boolean purgeWERemoveUnsafe = false;
-	public Set<String> purgeWERemoveUnsafeSafeIDs;
-	public boolean purgeUseOldAPI = false;
 	public boolean purgeWG = true;
 	public boolean purgeWGRegenRg = false;
 	public boolean purgeWGNoregenOverlap = true;
@@ -220,13 +214,7 @@ public class AutoSaveWorldConfig {
 		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
 		purgeIgnoredNicks = config.getStringList("purge.ignorednicks");
 		purgeIgnoredUUIDs = config.getStringList("purge.ignoreduuids");
-		purgeWERemoveUnsafe = config.getBoolean("purge.weregen.removeunsafeids", purgeWERemoveUnsafe);
-		purgeWERemoveUnsafeSafeIDs = new HashSet<String>(config.getStringList("purge.weregen.safeids"));
-		if (purgeWERemoveUnsafeSafeIDs.isEmpty()) {
-			purgeWERemoveUnsafeSafeIDs.add("0-255");
-		}
 		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
-		purgeUseOldAPI = config.getBoolean("purge.useoldpluginsapi", purgeUseOldAPI);
 		purgeWG = config.getBoolean("purge.wg.enabled", purgeWG);
 		purgeWGRegenRg = config.getBoolean("purge.wg.regenpurgedregion", purgeWGRegenRg);
 		purgeWGNoregenOverlap = config.getBoolean("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);
@@ -369,9 +357,6 @@ public class AutoSaveWorldConfig {
 		config.set("purge.ignorednicks", purgeIgnoredNicks);
 		config.set("purge.ignoreduuids", purgeIgnoredUUIDs);
 		config.set("purge.broadcast", purgeBroadcast);
-		config.set("purge.weregen.removeunsafeids", purgeWERemoveUnsafe);
-		config.set("purge.weregen.safeids", new ArrayList<String>(purgeWERemoveUnsafeSafeIDs));
-		config.set("purge.useoldpluginsapi", purgeUseOldAPI);
 		config.set("purge.wg.enabled", purgeWG);
 		config.set("purge.wg.regenpurgedregion", purgeWGRegenRg);
 		config.set("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);

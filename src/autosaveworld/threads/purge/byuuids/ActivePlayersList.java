@@ -52,10 +52,8 @@ public class ActivePlayersList {
 				MessageLogger.debug("Adding online player " + uuidstring + " to active list");
 				plactiveUUID.add(uuidstring);
 				// old api storage
-				if (config.purgeUseOldAPI) {
-					plactiveNamesCS.add(player.getName());
-					plactiveNamesNCS.add(player.getName().toLowerCase());
-				}
+				plactiveNamesCS.add(player.getName());
+				plactiveNamesNCS.add(player.getName().toLowerCase());
 			}
 			OfflinePlayer[] offplayers = Bukkit.getOfflinePlayers();
 			// add offline players that were away not for that long
@@ -66,12 +64,10 @@ public class ActivePlayersList {
 					MessageLogger.debug("Adding player " + uuidstring + " to active list");
 					plactiveUUID.add(uuidstring);
 					// old api storage
-					if (config.purgeUseOldAPI) {
-						String name = offplayer.getName();
-						if (name != null) {
-							plactiveNamesCS.add(name);
-							plactiveNamesNCS.add(name.toLowerCase());
-						}
+					String name = offplayer.getName();
+					if (name != null) {
+						plactiveNamesCS.add(name);
+						plactiveNamesNCS.add(name.toLowerCase());
 					}
 				}
 			}
@@ -90,13 +86,11 @@ public class ActivePlayersList {
 				MessageLogger.debug("Adding ignored player " + listuuid.replace("-", "") + " to active list");
 				plactiveUUID.add(listuuid.replace("-", ""));
 				// old api storage
-				if (config.purgeUseOldAPI) {
-					OfflinePlayer offplayer = Bukkit.getOfflinePlayer(UUID.fromString(listuuid));
-					String name = offplayer.getName();
-					if (name != null) {
-						plactiveNamesCS.add(name);
-						plactiveNamesNCS.add(name.toLowerCase());
-					}
+				OfflinePlayer offplayer = Bukkit.getOfflinePlayer(UUID.fromString(listuuid));
+				String name = offplayer.getName();
+				if (name != null) {
+					plactiveNamesCS.add(name);
+					plactiveNamesNCS.add(name.toLowerCase());
 				}
 			}
 		} catch (Exception e) {
