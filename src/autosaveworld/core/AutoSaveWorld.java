@@ -40,6 +40,7 @@ import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.utils.CommandUtils;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ListenerUtils;
+import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.StringUtils;
 
@@ -82,6 +83,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		// Init other utils
 		SchedulerUtils.init(this);
 		ListenerUtils.init(this);
+		ReflectionUtils.init();
 		CommandUtils.init();
 		FileUtils.init();
 		StringUtils.init();

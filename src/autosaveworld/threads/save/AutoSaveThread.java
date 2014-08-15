@@ -28,6 +28,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.AutoBackupThread;
+import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class AutoSaveThread extends Thread {
@@ -151,7 +152,9 @@ public class AutoSaveThread extends Thread {
 			try {
 				Object worldserver = getNMSWorld(world);
 				// invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
-				worldserver.getClass().getMethod("saveLevel").invoke(worldserver);
+				Method saveLevelMethod = ReflectionUtils.getMethod(worldserver.getClass(), NMSNames.getSaveLevelMethodName(), 0);
+				saveLevelMethod.setAccessible(true);
+				saveLevelMethod.invoke(worldserver);
 			} catch (Exception e) {
 				MessageLogger.warn("Could not dump RegionFileCache");
 				e.printStackTrace();
@@ -163,8 +166,8 @@ public class AutoSaveThread extends Thread {
 		if (!world.isAutoSave()) {
 			return;
 		}
-		// structures are saved only for main world so we use this workaround only for main world
-		if (config.saveDisableStructureSaving && Bukkit.getWorlds().get(0).getName().equalsIgnoreCase(world.getName())) {
+
+		if (config.saveDisableStructureSaving) {
 			saveWorldDoNoSaveStructureInfo(world);
 		} else {
 			saveWorldNormal(world);
@@ -179,43 +182,27 @@ public class AutoSaveThread extends Thread {
 		try {
 			// get worldserver and dataManager
 			Object worldserver = getNMSWorld(world);
-			Field dataManagerField = worldserver.getClass().getSuperclass().getDeclaredField("dataManager");
+			Field dataManagerField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getDataManagerFieldName());
 			dataManagerField.setAccessible(true);
 			Object dataManager = dataManagerField.get(worldserver);
 			// invoke check session
-			Method checkSessionMethod = dataManager.getClass().getSuperclass().getDeclaredMethod("checkSession");
+			Method checkSessionMethod = dataManager.getClass().getSuperclass().getDeclaredMethod(NMSNames.getCheckSessionMethodName());
 			checkSessionMethod.setAccessible(true);
 			checkSessionMethod.invoke(dataManager);
 			// invoke saveWorldData
-			Field worldDataField = worldserver.getClass().getSuperclass().getDeclaredField("worldData");
+			Field worldDataField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getWorldDataFieldName());
 			worldDataField.setAccessible(true);
 			Object worldData = worldDataField.get(worldserver);
-			boolean methodfound = false;
-			for (Method method : dataManager.getClass().getMethods()) {
-				if (method.getName().equals("saveWorldData") && (method.getParameterTypes().length == 2)) {
-					method.invoke(dataManager, worldData, null);
-					methodfound = true;
-					break;
-				}
-			}
-			if (!methodfound) {
-				throw new RuntimeException("Cannot find method saveWorldData");
-			}
+			Method saveWorldDataMethod = ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getSaveWorldDataMethodName(), 2);
+			saveWorldDataMethod.setAccessible(true);
+			saveWorldDataMethod.invoke(dataManager, worldData, null);
 			// invoke saveChunks
-			methodfound = false;
-			Field chunkProviderField = worldserver.getClass().getSuperclass().getDeclaredField("chunkProvider");
+			Field chunkProviderField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getChunkProviderFieldName());
 			chunkProviderField.setAccessible(true);
 			Object chunkProvider = chunkProviderField.get(worldserver);
-			for (Method method : chunkProvider.getClass().getMethods()) {
-				if (method.getName().equals("saveChunks") && (method.getParameterTypes().length == 2)) {
-					method.invoke(chunkProvider, true, null);
-					methodfound = true;
-					break;
-				}
-			}
-			if (!methodfound) {
-				throw new RuntimeException("Cannot find method saveChunks");
-			}
+			Method saveChunksMethod = ReflectionUtils.getMethod(chunkProvider.getClass(), NMSNames.getSaveChunksMethodName(), 2);
+			saveChunksMethod.setAccessible(true);
+			saveChunksMethod.invoke(chunkProvider, true, null);
 		} catch (Exception e) {
 			MessageLogger.warn("failed to workaround stucture saving, saving world using normal methods");
 			e.printStackTrace();
@@ -225,7 +212,7 @@ public class AutoSaveThread extends Thread {
 	}
 
 	private Object getNMSWorld(World world) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Method getHandleMethod = world.getClass().getDeclaredMethod("getHandle");
+		Method getHandleMethod = ReflectionUtils.getMethod(world.getClass(), "getHandle", 0);
 		getHandleMethod.setAccessible(true);
 		Object nmsWorld = getHandleMethod.invoke(world);
 		return nmsWorld;
