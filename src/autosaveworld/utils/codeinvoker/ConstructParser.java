@@ -29,9 +29,7 @@ public class ConstructParser {
 		ConstructInfo info = new ConstructInfo();
 		String[] split = string.split("[,]");
 		context.getObjects(split[0]);
-		if (split.length == 2) {
-			info.objects = context.getObjects(split[1]);
-		}
+		info.objects = context.getObjects(split.length == 2 ? split[1] : null);
 		return info;
 	}
 

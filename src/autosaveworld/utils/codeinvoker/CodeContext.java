@@ -27,6 +27,9 @@ public class CodeContext {
 	protected HashMap<String, Object> objectsrefs = new HashMap<String, Object>();
 
 	protected Object[] getObjects(String objectsstring) {
+		if (objectsstring == null) {
+			return new Object[0];
+		}
 		LinkedList<Object> objects = new LinkedList<Object>();
 		String[] split = objectsstring.split("[|]");
 		for (String obj : split) {
@@ -38,14 +41,6 @@ public class CodeContext {
 	private Object parseObject(String object) {
 		String[] split = object.split("[:]");
 		switch (split[0].toUpperCase()) {
-			case "CNAME": {
-				try {
-					usedclass = Class.forName(split[1]);
-					return null;
-				} catch (Exception e) {
-					throw new RuntimeException("Class " + split[1] + " not found");
-				}
-			}
 			case "STRING": {
 				return new String(split[1].replace("{VERTBAR}", "|").replace("{SPACE}", " "));
 			}
@@ -67,12 +62,15 @@ public class CodeContext {
 			case "FLOAT": {
 				return Float.parseFloat(split[1]);
 			}
+			case "BOOLEAN": {
+				return Boolean.parseBoolean(split[1]);
+			}
+			case "STATIC": {
+				usedclass = getClassInfo(split[1]);
+				return null;
+			}
 			case "CLASS": {
-				try {
-					return Class.forName(split[1]);
-				} catch (Exception e) {
-					throw new RuntimeException("Class " + split[1] + " not found");
-				}
+				return getClassInfo(split[1]);
 			}
 			case "CONTEXT": {
 				return objectsrefs.get(split[1]);
@@ -85,6 +83,39 @@ public class CodeContext {
 			}
 			default: {
 				return new Object();
+			}
+		}
+	}
+
+	protected Class<?> getClassInfo(String classstring) {
+		switch (classstring) {
+			case "long.class": {
+				return Long.TYPE;
+			}
+			case "int.class": {
+				return Integer.TYPE;
+			}
+			case "short.class": {
+				return Short.TYPE;
+			}
+			case "byte.class": {
+				return Byte.TYPE;
+			}
+			case "double.class": {
+				return Double.TYPE;
+			}
+			case "float.class": {
+				return Float.TYPE;
+			}
+			case "boolean.class": {
+				return Boolean.TYPE;
+			}
+			default: {
+				try {
+					return Class.forName(classstring);
+				} catch (Exception e) {
+					throw new RuntimeException("Can't find class "+classstring);
+				}
 			}
 		}
 	}

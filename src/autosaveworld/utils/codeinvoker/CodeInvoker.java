@@ -43,53 +43,57 @@ public class CodeInvoker {
 	private GetParser gparser = new GetParser(context);
 	private SetParser sparser = new SetParser(context);
 
-	// array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {VERTBAR}, to use space use {SPACE}
+	/* array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {VERTBAR}, to use space use {SPACE}
 
-	// nop - does nothing
-	// return params - quits code invling and returns object(only first object from params is used)
-	// store name - stores last returned object
-	// remove name - removes object from memory
-	// construct classname,params - constructs object
-	// invoke classname,methodname,classobject,object ot classname,params - invokes method (use  or empty string as classobject if return type doesn't matters)
-	// get classname,fieldname,object or classname - gets field value
-	// set classname,fieldname,object or classname,params - sets field value (only first object from params is used);
-	// print params
-	// if index,index,params - goes to first index code if all the params equals true or to second if not
-	// goto index - goes to line of code
-	// where:
-	// name - codeContext variable name
-	// methodname - method name
-	// fieldname - field name
-	// classname - classname to apply get/set/invoke on (for use with static methods/fields), to use classname instead of object use CNAME:classname
-	// object - object to apply get/set/invoke on
-	// params - array of objects
-	// classobject - class object
-
-	// example script
-	// (print server online mode)
-	// invoke getOnlineMode,,CNAME:org.bukkit.Bukkit
-	// print LAST
-	// (print offline player _Shevchik_ uuid)
-	// invoke getOfflinePlayer,CLASS:org.bukkit.OfflinePlayer,CNAME:org.bukkit.Bukkit,String:_Shevchik_
-	// invoke getUniqueId,CLASS:java.util.UUID,LAST
-	// print LAST
-	// (change server max players count to 201(works on 1.7.10))
-	// invoke getServer,CLASS:org.bukkit.Server,CNAME:org.bukkit.Bukkit
-	// get playerList,LAST
-	// set maxPlayers,LAST,INTEGER:201
-	// (give all online players 5$(uses vault))
-	// invoke getServicesManager,,CNAME:org.bukkit.Bukkit
-	// invoke getRegistration,,LAST,CLASS:net.milkbowl.vault.economy.Economy
-	// invoke getProvider,,LAST
-	// store vault
-	// invoke getOnlinePlayers,CLASS:java.util.Collection,CNAME:org.bukkit.Bukkit
-	// invoke iterator,,LAST
-	// store iterator
-	// invoke hasNext,,Context:iterator
-	// if 9,12,LAST
-	// invoke next,,Context:iterator
-	// invoke depositPlayer,,CONTEXT:vault,LAST|DOUBLE:5
-	// goto 7
+	1)Operations
+	nop - does nothing
+	return params - quits code invling and returns object(only first object from params is used)
+	store name - stores last returned object
+	remove name - removes object from memory
+	construct classname,params - constructs object
+	invoke methodname,returntype,object or classname,params - invokes method (use  empty string as returntype if return type doesn't matters)
+	get fieldname,object or classname - gets field value
+	set fieldname,object or classname,params - sets field value (only first object from params is used);
+	print params
+	runcode scriptname
+	if index,index,params - goes to first index code if all the params equals true or to second if not
+	goto index - goes to line of code
+	2)Parameters
+	name - codeContext variable name
+	methodname - method name
+	fieldname - field name
+	object - object to apply get/set/invoke on
+	classname - classname to apply get/set/invoke on (for use with static methods/fields), to use classname instead of object use STATIC:classname
+	params - array of objects
+	returntype - class which represents return type of a method
+	scriptname - filename of the script to execute
+	P.S. for primitive types in CLASS: and CNAME: use primitive+".class" ("int.class", "long.class",...)
+	3)Examples
+	1.(print server online mode)
+	invoke getOnlineMode,,CNAME:org.bukkit.Bukkit
+	print LAST
+	2.(print offline player _Shevchik_ uuid)
+	invoke getOfflinePlayer,org.bukkit.OfflinePlayer,STATIC:org.bukkit.Bukkit,String:_Shevchik_
+	invoke getUniqueId,java.util.UUID,LAST
+	print LAST
+	3.(change server max players count to 201(works on 1.7.10))
+	invoke getServer,,STATIC:org.bukkit.Bukkit
+	get playerList,LAST
+	set maxPlayers,LAST,INTEGER:201
+	4.(give all online players 5$(uses vault))
+	invoke getServicesManager,,STATIC:org.bukkit.Bukkit
+	invoke getRegistration,,LAST,CLASS:net.milkbowl.vault.economy.Economy
+	invoke getProvider,,LAST
+	store vault
+	invoke getOnlinePlayers,java.util.Collection,STATIC:org.bukkit.Bukkit
+	invoke iterator,,LAST
+	store iterator
+	invoke hasNext,,Context:iterator
+	if 9,12,LAST
+	invoke next,,Context:iterator
+	invoke depositPlayer,,CONTEXT:vault,LAST|DOUBLE:5
+	goto 7
+	*/
 
 	public Object invokeCode(String filename) {
 		File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + filename + ".yml");
@@ -150,13 +154,7 @@ public class CodeInvoker {
 								continue;
 							}
 							constr.setAccessible(true);
-							Object obj;
-							if (cinfo.getObjects() == null) {
-								obj = constr.newInstance();
-							} else {
-								obj = constr.newInstance(cinfo.getObjects());
-							}
-							context.returnedobject = obj;
+							context.returnedobject = constr.newInstance(cinfo.getObjects());
 						}
 						continue;
 					}
@@ -164,12 +162,7 @@ public class CodeInvoker {
 						InvokeInfo iinfo = iparser.getInvokeInfo(split[1]);
 						Method method = findMethod(getAllMethods(iinfo.getObject() == null ? context.usedclass : iinfo.getObject().getClass()), iinfo.getMethodName(), iinfo.getReturnType(), iinfo.getObjects());
 						method.setAccessible(true);
-						Object obj;
-						if (iinfo.getObjects() == null) {
-							obj = method.invoke(iinfo.getObject());
-						} else {
-							obj = method.invoke(iinfo.getObject(), iinfo.getObjects());
-						}
+						Object obj = method.invoke(iinfo.getObject(), iinfo.getObjects());
 						if (method.getReturnType() != void.class) {
 							context.returnedobject = obj;
 						}
@@ -224,13 +217,6 @@ public class CodeInvoker {
 	}
 
 	private boolean isSameParams(Class<?>[] methodParams, Object[] params) {
-		if (params == null) {
-			if (methodParams.length == 0) {
-				return true;
-			} else {
-				return false;
-			}
-		}
 		if (methodParams.length != params.length) {
 			return false;
 		}
@@ -284,7 +270,7 @@ public class CodeInvoker {
 	}
 
 	private enum CodeCommand {
-		NOP, STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT, RETURN
+		NOP, STORE, REMOVE, IF, GOTO, CONSTRUCT, INVOKE, GET, SET, PRINT, RETURN, RUNCODE
 	}
 
 	private List<String> readCommandsFromFile(File file) {
