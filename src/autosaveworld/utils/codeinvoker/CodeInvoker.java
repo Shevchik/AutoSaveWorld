@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -166,7 +165,7 @@ public class CodeInvoker {
 					}
 					case INVOKE: {
 						InvokeInfo iinfo = iparser.getInvokeInfo(split[1]);
-						Method method = findMethod(getAllMethods(iinfo.getObject() == null ? context.usedclass : iinfo.getObject().getClass()), iinfo.getMethodName(), iinfo.getReturnType(), iinfo.getObjects());
+						Method method = findMethod(iinfo.getObject() == null ? context.usedclass : iinfo.getObject().getClass(), iinfo.getMethodName(), iinfo.getReturnType(), iinfo.getObjects());
 						method.setAccessible(true);
 						Object obj = method.invoke(iinfo.getObject(), iinfo.getObjects());
 						if (method.getReturnType() != void.class) {
@@ -176,14 +175,14 @@ public class CodeInvoker {
 					}
 					case GET: {
 						GetInfo ginfo = gparser.getGetInfo(split[1]);
-						Field field = findField(getAllFields(ginfo.getObject() == null ? context.usedclass : ginfo.getObject().getClass()), ginfo.getFieldName());
+						Field field = findField(ginfo.getObject() == null ? context.usedclass : ginfo.getObject().getClass(), ginfo.getFieldName());
 						field.setAccessible(true);
 						context.returnedobject = field.get(ginfo.getObject());
 						continue;
 					}
 					case SET: {
 						SetInfo sinfo = sparser.getSetInfo(split[1]);
-						Field field = findField(getAllFields(sinfo.getObject() == null ? context.usedclass : sinfo.getObject().getClass()), sinfo.getFieldName());
+						Field field = findField(sinfo.getObject() == null ? context.usedclass : sinfo.getObject().getClass(), sinfo.getFieldName());
 						field.setAccessible(true);
 						field.set(sinfo.getObject(), sinfo.getNew());
 						continue;
@@ -212,19 +211,21 @@ public class CodeInvoker {
 		return new EmptyReturn();
 	}
 
-	private Method findMethod(Method[] allmethods, String methodname, Class<?> returntype, Object[] params) {
-		for (Method method : allmethods) {
-			if (!method.getName().equals(methodname)) {
-				continue;
+	private Method findMethod(Class<?> clazz, String methodname, Class<?> returntype, Object[] params) {
+		do {
+			for (Method method : clazz.getDeclaredMethods()) {
+				if (!method.getName().equals(methodname)) {
+					continue;
+				}
+				if ((returntype != null) && !returntype.isAssignableFrom(method.getReturnType())) {
+					continue;
+				}
+				if (!isSameParams(method.getParameterTypes(), params)) {
+					continue;
+				}
+				return method;
 			}
-			if ((returntype != null) && !returntype.isAssignableFrom(method.getReturnType())) {
-				continue;
-			}
-			if (!isSameParams(method.getParameterTypes(), params)) {
-				continue;
-			}
-			return method;
-		}
+		} while ((clazz = clazz.getSuperclass()) != null);
 		throw new RuntimeException("Can't find method " + methodname);
 	}
 
@@ -256,29 +257,15 @@ public class CodeInvoker {
 		return true;
 	}
 
-	private Method[] getAllMethods(Class<?> clazz) {
-		LinkedList<Method> methods = new LinkedList<Method>();
+	private Field findField(Class<?> clazz, String fieldname) {
 		do {
-			methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
-		} while ((clazz = clazz.getSuperclass()) != null);
-		return methods.toArray(new Method[methods.size()]);
-	}
-
-	private Field findField(Field[] allfields, String fieldname) {
-		for (Field field : allfields) {
-			if (field.getName().equals(fieldname)) {
-				return field;
+			for (Field field : clazz.getDeclaredFields()) {
+				if (field.getName().equals(fieldname)) {
+					return field;
+				}
 			}
-		}
-		throw new RuntimeException("Can't find field " + fieldname);
-	}
-
-	private Field[] getAllFields(Class<?> clazz) {
-		LinkedList<Field> fields = new LinkedList<Field>();
-		do {
-			fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
 		} while ((clazz = clazz.getSuperclass()) != null);
-		return fields.toArray(new Field[fields.size()]);
+		throw new RuntimeException("Can't find field " + fieldname);
 	}
 
 	private enum CodeCommand {
