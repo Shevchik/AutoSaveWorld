@@ -146,7 +146,7 @@ public class CommandsHandler implements CommandExecutor {
 					} else {
 						sender.sendMessage(ChatColor.GOLD + "Cpu usage: " + ChatColor.RED + "not available");
 					}
-				} catch (Exception e) {
+				} catch (Throwable t) {
 				}
 				// memory
 				Runtime runtime = Runtime.getRuntime();
