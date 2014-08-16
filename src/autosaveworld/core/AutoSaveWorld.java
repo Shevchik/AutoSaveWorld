@@ -35,7 +35,6 @@ import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
 import autosaveworld.threads.restart.RestartJVMshutdownhook;
 import autosaveworld.threads.save.AutoSaveThread;
-import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 import autosaveworld.threads.worldregen.WorldRegenPasteThread;
 import autosaveworld.utils.CommandUtils;
 import autosaveworld.utils.FileUtils;
@@ -58,9 +57,6 @@ public class AutoSaveWorld extends JavaPlugin {
 	private RestartJVMshutdownhook JVMsh;
 	// autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread;
-	// worldregen
-	public WorldRegenCopyThread worldregencopyThread;
-	public WorldRegenPasteThread worldregenpasteThread;
 	// plugin manager
 	public PluginManager pluginmanager;
 	// process manager
@@ -110,8 +106,11 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.CRASHRESTART);
 		startThread(ThreadType.AUTORESTART);
 		startThread(ThreadType.CONSOLECOMMAND);
-		startThread(ThreadType.WORLDREGENCOPY);
-		startThread(ThreadType.WORLDREGENPASTE);
+		//start worldregen paste if needed
+		WorldRegenPasteThread pasteThread = new WorldRegenPasteThread(this, config, configmsg);
+		if (pasteThread.shouldPaste()) {
+			pasteThread.start();
+		}
 	}
 
 	@Override
@@ -133,8 +132,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		stopThread(ThreadType.AUTORESTART);
 		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
-		stopThread(ThreadType.WORLDREGENCOPY);
-		stopThread(ThreadType.WORLDREGENPASTE);
 		// stop network watcher
 		watcher.unregister();
 		watcher = null;
@@ -186,21 +183,6 @@ public class AutoSaveWorld extends JavaPlugin {
 				if ((consolecommandThread == null) || !consolecommandThread.isAlive()) {
 					consolecommandThread = new AutoConsoleCommandThread(config);
 					consolecommandThread.start();
-				}
-				return;
-			}
-			case WORLDREGENCOPY: {
-				if ((worldregencopyThread == null) || !worldregencopyThread.isAlive()) {
-					worldregencopyThread = new WorldRegenCopyThread(this, config, configmsg);
-					worldregencopyThread.start();
-				}
-				return;
-			}
-			case WORLDREGENPASTE: {
-				if ((worldregenpasteThread == null) || !worldregenpasteThread.isAlive()) {
-					worldregenpasteThread = new WorldRegenPasteThread(this, config, configmsg);
-					worldregenpasteThread.checkIfShouldPaste();
-					worldregenpasteThread.start();
 				}
 				return;
 			}
@@ -277,30 +259,6 @@ public class AutoSaveWorld extends JavaPlugin {
 						consolecommandThread = null;
 					} catch (InterruptedException e) {
 						MessageLogger.warn("Could not stop ConsoleCommandThread");
-					}
-				}
-				return;
-			}
-			case WORLDREGENCOPY: {
-				if (worldregencopyThread != null) {
-					worldregencopyThread.stopThread();
-					try {
-						worldregencopyThread.join(2000);
-						worldregencopyThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop WorldRegenThread");
-					}
-				}
-				return;
-			}
-			case WORLDREGENPASTE: {
-				if (worldregenpasteThread != null) {
-					worldregenpasteThread.stopThread();
-					try {
-						worldregenpasteThread.join(2000);
-						worldregenpasteThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop WorldRegenThread");
 					}
 				}
 				return;

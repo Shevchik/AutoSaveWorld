@@ -48,27 +48,18 @@ public class WorldRegenPasteThread extends Thread {
 		this.configmsg = configmsg;
 	};
 
-	private boolean paste = false;
-
-	public void checkIfShouldPaste() {
+	public boolean shouldPaste() {
 		File check = new File(GlobalConstants.getWorldnameFile());
 		if (check.exists()) {
-			paste = true;
+			return true;
 		}
-	}
-
-	public void stopThread() {
+		return false;
 	}
 
 	@Override
 	public void run() {
 
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenPaste Thread");
-
-		// do not do anything if we are not regenerating world
-		if (!paste) {
-			return;
-		}
 
 		try {
 			doWorldPaste();

@@ -51,43 +51,23 @@ public class WorldRegenCopyThread extends Thread {
 		this.configmsg = configmsg;
 	}
 
-	// Allows for the thread to naturally exit if value is false
-	public void stopThread() {
-		run = false;
-	}
-
-	public void startworldregen(String worldname) {
-		worldtoregen = worldname;
-		doregen = true;
-	}
-
 	private String worldtoregen = "";
-	private volatile boolean run = true;
-	private boolean doregen = false;
+
+	public void setWorld(String worldname) {
+		worldtoregen = worldname;
+	}
 
 	@Override
 	public void run() {
 		MessageLogger.debug("WorldRegenThread Started");
 		Thread.currentThread().setName("AutoSaveWorld WorldRegenCopyThread");
 
-		while (run) {
-			if (doregen) {
-				try {
-					doWorldRegen();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				doregen = false;
-				run = false;
-			}
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		try {
+			doWorldRegen();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-		MessageLogger.debug("Graceful quit of WorldRegenThread");
 	}
 
 	private void doWorldRegen() throws Exception {

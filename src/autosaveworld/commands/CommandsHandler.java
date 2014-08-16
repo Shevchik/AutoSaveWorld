@@ -34,6 +34,7 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 import autosaveworld.utils.StringUtils;
 import autosaveworld.utils.codeinvoker.CodeInvoker;
 import autosaveworld.utils.codeinvoker.CodeInvoker.EmptyReturn;
@@ -188,7 +189,9 @@ public class CommandsHandler implements CommandExecutor {
 					MessageLogger.sendMessage(sender, "This world doesn't exist");
 					return true;
 				}
-				plugin.worldregencopyThread.startworldregen(args[1]);
+				WorldRegenCopyThread copythread = new WorldRegenCopyThread(plugin, config, configmsg);
+				copythread.setWorld(args[1]);
+				copythread.start();
 				return true;
 			} else if ((args.length == 2) && args[0].equalsIgnoreCase("invokecode")) {
 				// invoke code
