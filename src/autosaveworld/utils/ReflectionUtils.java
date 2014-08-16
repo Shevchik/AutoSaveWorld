@@ -29,6 +29,7 @@ public class ReflectionUtils {
 		do {
 			for (Field field : clazz.getDeclaredFields()) {
 				if (field.getName().equals(name)) {
+					field.setAccessible(true);
 					return field;
 				}
 			}
@@ -40,6 +41,7 @@ public class ReflectionUtils {
 		do {
 			for (Method method : clazz.getDeclaredMethods()) {
 				if (method.getName().equals(name) && (method.getParameterTypes().length == paramlength)) {
+					method.setAccessible(true);
 					return method;
 				}
 			}

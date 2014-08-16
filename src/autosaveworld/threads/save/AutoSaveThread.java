@@ -183,25 +183,19 @@ public class AutoSaveThread extends Thread {
 			// get worldserver and dataManager
 			Object worldserver = getNMSWorld(world);
 			Field dataManagerField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getDataManagerFieldName());
-			dataManagerField.setAccessible(true);
 			Object dataManager = dataManagerField.get(worldserver);
 			// invoke check session
-			Method checkSessionMethod = dataManager.getClass().getSuperclass().getDeclaredMethod(NMSNames.getCheckSessionMethodName());
-			checkSessionMethod.setAccessible(true);
+			Method checkSessionMethod = ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getCheckSessionMethodName(), 0);
 			checkSessionMethod.invoke(dataManager);
 			// invoke saveWorldData
 			Field worldDataField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getWorldDataFieldName());
-			worldDataField.setAccessible(true);
 			Object worldData = worldDataField.get(worldserver);
 			Method saveWorldDataMethod = ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getSaveWorldDataMethodName(), 2);
-			saveWorldDataMethod.setAccessible(true);
 			saveWorldDataMethod.invoke(dataManager, worldData, null);
 			// invoke saveChunks
 			Field chunkProviderField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getChunkProviderFieldName());
-			chunkProviderField.setAccessible(true);
 			Object chunkProvider = chunkProviderField.get(worldserver);
 			Method saveChunksMethod = ReflectionUtils.getMethod(chunkProvider.getClass(), NMSNames.getSaveChunksMethodName(), 2);
-			saveChunksMethod.setAccessible(true);
 			saveChunksMethod.invoke(chunkProvider, true, null);
 		} catch (Exception e) {
 			MessageLogger.warn("failed to workaround stucture saving, saving world using normal methods");
@@ -213,7 +207,6 @@ public class AutoSaveThread extends Thread {
 
 	private Object getNMSWorld(World world) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Method getHandleMethod = ReflectionUtils.getMethod(world.getClass(), "getHandle", 0);
-		getHandleMethod.setAccessible(true);
 		Object nmsWorld = getHandleMethod.invoke(world);
 		return nmsWorld;
 	}
