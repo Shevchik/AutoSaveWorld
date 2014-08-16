@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveWorldConfig;
@@ -57,6 +58,16 @@ public class AutoSaveThread extends Thread {
 
 		MessageLogger.debug("AutoSaveThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
+
+		//disable built-in autosave
+		try {
+			Server server = Bukkit.getServer();
+			Field minecraftserverField = ReflectionUtils.getField(server.getClass(), "console");
+			Object minecraftserver = minecraftserverField.get(server);
+			Field autosavePeriodField = ReflectionUtils.getField(minecraftserver.getClass(), "autosavePeriod");
+			autosavePeriodField.set(minecraftserver, 0);
+		} catch (Throwable t) {
+		}
 
 		while (run) {
 			// sleep
