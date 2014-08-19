@@ -21,6 +21,9 @@ import org.bukkit.Bukkit;
 
 public class NMSNames {
 
+	public static void init() {
+	}
+
 	public static String getDataManagerFieldName() {
 		if (isCauldron()) {
 			return "field_73019_z";

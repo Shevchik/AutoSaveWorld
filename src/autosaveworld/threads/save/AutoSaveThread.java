@@ -65,6 +65,9 @@ public class AutoSaveThread extends Thread {
 		} catch (Throwable t) {
 		}
 
+		//make sure that this class is loaded
+		NMSNames.init();
+
 		while (run) {
 			// sleep
 			for (int i = 0; i < config.saveInterval; i++) {
