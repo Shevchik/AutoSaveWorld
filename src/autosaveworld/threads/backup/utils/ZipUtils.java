@@ -19,7 +19,6 @@ package autosaveworld.threads.backup.utils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import autosaveworld.threads.backup.ExcludeManager;
+import autosaveworld.threads.backup.InputStreamConstruct;
 
 public class ZipUtils {
 
@@ -71,12 +71,12 @@ public class ZipUtils {
 
 	private static void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException {
 		if (!srcFile.getName().endsWith(".lck")) {
-			try (InputStream inStream = new FileInputStream(srcFile)) {
+			try (InputStream inStream = InputStreamConstruct.getFileInputStream(srcFile)) {
 				final ZipEntry zipEntry = new ZipEntry(entry);
 				zipEntry.setTime(srcFile.lastModified());
 				zipOutStream.putNextEntry(zipEntry);
 
-				final byte[] buf = new byte[4096];
+				final byte[] buf = new byte[8192];
 
 				try {
 					int len;
@@ -86,10 +86,6 @@ public class ZipUtils {
 				} finally {
 					zipOutStream.closeEntry();
 				}
-			}
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException e) {
 			}
 		}
 	}

@@ -18,12 +18,12 @@
 package autosaveworld.threads.backup.dropbox;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import autosaveworld.threads.backup.ExcludeManager;
+import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.threads.backup.utils.MemoryZip;
 import autosaveworld.zlibs.com.dropbox.core.DbxClient;
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
@@ -43,7 +43,7 @@ public class DropboxUtils {
 		} else {
 			if (!src.getName().endsWith(".lck")) {
 				try {
-					InputStream is = new FileInputStream(src);
+					InputStream is = InputStreamConstruct.getFileInputStream(src);
 					storeFile(client, is, path, src.getName());
 					is.close();
 				} catch (Exception e) {
@@ -64,10 +64,6 @@ public class DropboxUtils {
 			client.uploadFileChunked(path + "/" + filename, DbxWriteMode.force(), -1, new DbxStreamWriter.InputStreamCopier(is));
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
 		}
 	}
 

@@ -18,13 +18,13 @@
 package autosaveworld.threads.backup.sftp;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Vector;
 
 import autosaveworld.threads.backup.ExcludeManager;
+import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.threads.backup.utils.MemoryZip;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp.LsEntry;
@@ -45,7 +45,7 @@ public class SFTPUtils {
 		} else {
 			if (!src.getName().endsWith(".lck")) {
 				try {
-					InputStream is = new FileInputStream(src);
+					InputStream is = InputStreamConstruct.getFileInputStream(src);
 					storeFile(sftp, is, src.getName() + ".zip");
 					is.close();
 				} catch (Exception e) {
@@ -66,10 +66,6 @@ public class SFTPUtils {
 			sftp.put(is, filename);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
 		}
 	}
 

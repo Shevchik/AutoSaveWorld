@@ -18,12 +18,12 @@
 package autosaveworld.threads.backup.ftp;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import autosaveworld.threads.backup.ExcludeManager;
+import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.threads.backup.utils.MemoryZip;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 
@@ -42,7 +42,7 @@ public class FTPUtils {
 		} else {
 			if (!src.getName().endsWith(".lck")) {
 				try {
-					InputStream is = new FileInputStream(src);
+					InputStream is = InputStreamConstruct.getFileInputStream(src);
 					storeFile(ftp, is, src.getName());
 					is.close();
 				} catch (Exception e) {
@@ -63,10 +63,6 @@ public class FTPUtils {
 			ftp.storeFile(filename, is);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
 		}
 	}
 
