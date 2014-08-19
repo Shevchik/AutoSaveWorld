@@ -26,9 +26,9 @@ import autosaveworld.threads.backup.utils.ratelimitedstreams.RateLimitedInputStr
 
 public class InputStreamConstruct {
 
-	private static int rate = 0;
+	private static long rate = 0;
 
-	protected static void setRateLimit(int rate) {
+	protected static void setRateLimit(long rate) {
 		InputStreamConstruct.rate = rate;
 	}
 

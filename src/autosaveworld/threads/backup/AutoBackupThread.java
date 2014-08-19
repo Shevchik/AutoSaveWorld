@@ -124,7 +124,7 @@ public class AutoBackupThread extends Thread {
 
 		MessageLogger.broadcast(configmsg.messageBackupBroadcastPre, config.backupBroadcast);
 
-		InputStreamConstruct.setRateLimit(-1);
+		InputStreamConstruct.setRateLimit(config.backupRateLimit);
 
 		if (config.backupLFSEnabled) {
 			MessageLogger.debug("Starting LocalFS backup");
