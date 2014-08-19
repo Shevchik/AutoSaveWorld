@@ -149,6 +149,9 @@ public class CodeInvoker {
 					case CONSTRUCT: {
 						ConstructInfo cinfo = cparser.getConstructInfo(split[1]);
 						for (Constructor<?> constr : context.usedclass.getDeclaredConstructors()) {
+							if (constr.getParameterTypes().length != cinfo.getObjects().length) {
+								continue;
+							}
 							boolean found = true;
 							for (int i = 0; i < constr.getParameterTypes().length; i++) {
 								if (!constr.getParameterTypes()[i].isAssignableFrom(cinfo.getObjects()[i].getClass())) {

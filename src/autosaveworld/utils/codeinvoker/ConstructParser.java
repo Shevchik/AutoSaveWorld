@@ -28,7 +28,7 @@ public class ConstructParser {
 	protected ConstructInfo getConstructInfo(String string) {
 		ConstructInfo info = new ConstructInfo();
 		String[] split = string.split("[,]");
-		context.getObjects(split[0]);
+		context.usedclass = context.getClassInfo(split[0]);
 		info.objects = context.getObjects(split.length == 2 ? split[1] : null);
 		return info;
 	}
