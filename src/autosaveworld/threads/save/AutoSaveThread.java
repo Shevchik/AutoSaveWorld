@@ -17,9 +17,7 @@
 
 package autosaveworld.threads.save;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -62,10 +60,8 @@ public class AutoSaveThread extends Thread {
 		//disable built-in autosave
 		try {
 			Server server = Bukkit.getServer();
-			Field minecraftserverField = ReflectionUtils.getField(server.getClass(), "console");
-			Object minecraftserver = minecraftserverField.get(server);
-			Field autosavePeriodField = ReflectionUtils.getField(minecraftserver.getClass(), "autosavePeriod");
-			autosavePeriodField.set(minecraftserver, 0);
+			Object minecraftserver = ReflectionUtils.getField(server.getClass(), "console").get(server);
+			ReflectionUtils.getField(minecraftserver.getClass(), "autosavePeriod").set(minecraftserver, 0);
 		} catch (Throwable t) {
 		}
 
@@ -163,9 +159,7 @@ public class AutoSaveThread extends Thread {
 			try {
 				Object worldserver = getNMSWorld(world);
 				// invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
-				Method saveLevelMethod = ReflectionUtils.getMethod(worldserver.getClass(), NMSNames.getSaveLevelMethodName(), 0);
-				saveLevelMethod.setAccessible(true);
-				saveLevelMethod.invoke(worldserver);
+				ReflectionUtils.getMethod(worldserver.getClass(), NMSNames.getSaveLevelMethodName(), 0).invoke(worldserver);
 			} catch (Exception e) {
 				MessageLogger.warn("Could not dump RegionFileCache");
 				e.printStackTrace();
@@ -191,35 +185,27 @@ public class AutoSaveThread extends Thread {
 
 	private void saveWorldDoNoSaveStructureInfo(World world) {
 		try {
-			// get worldserver and dataManager
+			// get worldserver, dataManager, chunkProvider, worldData
 			Object worldserver = getNMSWorld(world);
-			Field dataManagerField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getDataManagerFieldName());
-			Object dataManager = dataManagerField.get(worldserver);
+			Object dataManager = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getDataManagerFieldName()).get(worldserver);
+			Object chunkProvider = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getChunkProviderFieldName()).get(worldserver);
+			Object worldData = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getWorldDataFieldName()).get(worldserver);
 			// invoke check session
-			Method checkSessionMethod = ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getCheckSessionMethodName(), 0);
-			checkSessionMethod.invoke(dataManager);
+			ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getCheckSessionMethodName(), 0).invoke(dataManager);
 			// invoke saveWorldData
-			Field worldDataField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getWorldDataFieldName());
-			Object worldData = worldDataField.get(worldserver);
-			Method saveWorldDataMethod = ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getSaveWorldDataMethodName(), 2);
-			saveWorldDataMethod.invoke(dataManager, worldData, null);
+			ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getSaveWorldDataMethodName(), 2).invoke(dataManager, worldData, null);
 			// invoke saveChunks
-			Field chunkProviderField = ReflectionUtils.getField(worldserver.getClass(), NMSNames.getChunkProviderFieldName());
-			Object chunkProvider = chunkProviderField.get(worldserver);
-			Method saveChunksMethod = ReflectionUtils.getMethod(chunkProvider.getClass(), NMSNames.getSaveChunksMethodName(), 2);
-			saveChunksMethod.invoke(chunkProvider, true, null);
+			ReflectionUtils.getMethod(chunkProvider.getClass(), NMSNames.getSaveChunksMethodName(), 2).invoke(chunkProvider, true, null);
 		} catch (Exception e) {
 			MessageLogger.warn("failed to workaround stucture saving, saving world using normal methods");
 			e.printStackTrace();
-			// failed to save using reflections, save world normal
+			// failed to save using reflection, save world using normal methods
 			saveWorldNormal(world);
 		}
 	}
 
 	private Object getNMSWorld(World world) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Method getHandleMethod = ReflectionUtils.getMethod(world.getClass(), "getHandle", 0);
-		Object nmsWorld = getHandleMethod.invoke(world);
-		return nmsWorld;
+		return ReflectionUtils.getMethod(world.getClass(), "getHandle", 0).invoke(world);
 	}
 
 }
