@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -84,7 +85,7 @@ public class RunningProcess {
 	public void supplyInput(CommandSender sender, String line) {
 		sender.sendMessage("Sending line to the process");
 		try {
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), StandartCharsets.UTF-8));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8));
 			writer.write(line);
 			writer.newLine();
 			writer.flush();
