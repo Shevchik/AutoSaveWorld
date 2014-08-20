@@ -103,8 +103,9 @@ public class AutoBackupThread extends Thread {
 					performBackup();
 				} catch (Exception e) {
 					e.printStackTrace();
+				} finally {
+					backupRunning = false;
 				}
-				backupRunning = false;
 			}
 
 		}
