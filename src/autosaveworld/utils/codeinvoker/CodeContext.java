@@ -88,26 +88,32 @@ public class CodeContext {
 	}
 
 	protected Class<?> getClassInfo(String classstring) {
+		if (classstring.startsWith("CONTEXT:")) {
+			return objectsrefs.get(classstring.split("[:]")[1]).getClass();
+		}
+		if (classstring.equals("LAST")) {
+			return returnedobject.getClass();
+		}
 		switch (classstring) {
-			case "long.class": {
+			case "long" : case "long.class": {
 				return Long.TYPE;
 			}
-			case "int.class": {
+			case "int" : case "int.class": {
 				return Integer.TYPE;
 			}
-			case "short.class": {
+			case "short" : case "short.class": {
 				return Short.TYPE;
 			}
-			case "byte.class": {
+			case "byte" : case "byte.class": {
 				return Byte.TYPE;
 			}
-			case "double.class": {
+			case "double" : case "double.class": {
 				return Double.TYPE;
 			}
-			case "float.class": {
+			case "float" : case "float.class": {
 				return Float.TYPE;
 			}
-			case "boolean.class": {
+			case "boolean" : case "boolean.class": {
 				return Boolean.TYPE;
 			}
 			default: {

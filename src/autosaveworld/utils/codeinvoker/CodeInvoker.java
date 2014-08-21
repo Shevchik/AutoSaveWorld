@@ -70,7 +70,7 @@ public class CodeInvoker {
 	P.S. for primitive types in CLASS: and CNAME: use primitive+".class" ("int.class", "long.class",...)
 	3)Examples
 	1.(print server online mode)
-	invoke getOnlineMode,,CNAME:org.bukkit.Bukkit
+	invoke getOnlineMode,,STATIC:org.bukkit.Bukkit
 	print LAST
 	2.(print offline player _Shevchik_ uuid)
 	invoke getOfflinePlayer,org.bukkit.OfflinePlayer,STATIC:org.bukkit.Bukkit,String:_Shevchik_
