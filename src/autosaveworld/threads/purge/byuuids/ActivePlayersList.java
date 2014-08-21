@@ -99,8 +99,6 @@ public class ActivePlayersList {
 		return plactiveUUID.contains(uuid);
 	}
 
-	// old api
-
 	public boolean isActiveNameCS(String name) {
 		return plactiveNamesCS.contains(name);
 	}
