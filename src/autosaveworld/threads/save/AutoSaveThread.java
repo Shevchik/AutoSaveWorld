@@ -175,11 +175,15 @@ public class AutoSaveThread extends Thread {
 			return;
 		}
 
-		if (config.saveDisableStructureSaving) {
+		if (config.saveDisableStructureSaving && needSaveWorkAround()) {
 			saveWorldDoNoSaveStructureInfo(world);
 		} else {
 			saveWorldNormal(world);
 		}
+	}
+
+	private boolean needSaveWorkAround() {
+		return true;
 	}
 
 	private void saveWorldNormal(World world) {
