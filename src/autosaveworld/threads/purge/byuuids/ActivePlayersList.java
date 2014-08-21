@@ -36,22 +36,17 @@ public class ActivePlayersList {
 	}
 
 	private HashSet<String> plactiveUUID = new HashSet<String>();
-
-	// TODO: remove name storage as soon as all plugins update to UUID
-
-	// storage to support checking by names
 	private HashSet<String> plactiveNamesCS = new HashSet<String>();
 	private HashSet<String> plactiveNamesNCS = new HashSet<String>();
 
 	public void gatherActivePlayersList(long awaytime) {
 		try {
-			// fill list
+			// fill lists
 			// add online players
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				String uuidstring = player.getUniqueId().toString().replace("-", "");
 				MessageLogger.debug("Adding online player " + uuidstring + " to active list");
 				plactiveUUID.add(uuidstring);
-				// old api storage
 				plactiveNamesCS.add(player.getName());
 				plactiveNamesNCS.add(player.getName().toLowerCase());
 			}
@@ -63,7 +58,6 @@ public class ActivePlayersList {
 				if ((System.currentTimeMillis() - offplayer.getLastPlayed()) < awaytime) {
 					MessageLogger.debug("Adding player " + uuidstring + " to active list");
 					plactiveUUID.add(uuidstring);
-					// old api storage
 					String name = offplayer.getName();
 					if (name != null) {
 						plactiveNamesCS.add(name);
@@ -71,21 +65,18 @@ public class ActivePlayersList {
 					}
 				}
 			}
-			// add players from ignored list
-			for (String name : config.purgeIgnoredNicks) {
-				for (OfflinePlayer offplayer : offplayers) {
-					if ((offplayer.getName() != null) && offplayer.getName().equalsIgnoreCase(name)) {
-						String uuidstring = offplayer.getUniqueId().toString();
-						MessageLogger.debug("Adding ignored player " + uuidstring.replace("-", "") + " to active list");
-						config.purgeIgnoredUUIDs.add(uuidstring);
-					}
+			// add players from ignored lists
+			for (OfflinePlayer offplayer : offplayers) {
+				if (offplayer.getName() != null && config.purgeIgnoredNicks.contains(offplayer.getName())) {
+					String uuidstring = offplayer.getUniqueId().toString();
+					MessageLogger.debug("Adding ignored player " + uuidstring.replace("-", "") + " to active list");
+					config.purgeIgnoredUUIDs.add(uuidstring);
 				}
 			}
 			config.purgeIgnoredNicks.clear();
 			for (String listuuid : config.purgeIgnoredUUIDs) {
 				MessageLogger.debug("Adding ignored player " + listuuid.replace("-", "") + " to active list");
 				plactiveUUID.add(listuuid.replace("-", ""));
-				// old api storage
 				OfflinePlayer offplayer = Bukkit.getOfflinePlayer(UUID.fromString(listuuid));
 				String name = offplayer.getName();
 				if (name != null) {

@@ -24,12 +24,12 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.byuuids.plugins.DatfilePurge;
+import autosaveworld.threads.purge.byuuids.plugins.LWCPurge;
+import autosaveworld.threads.purge.byuuids.plugins.MVInvPurge;
+import autosaveworld.threads.purge.byuuids.plugins.MyWarpPurge;
+import autosaveworld.threads.purge.byuuids.plugins.ResidencePurge;
 import autosaveworld.threads.purge.byuuids.plugins.VaultPurge;
-import autosaveworld.threads.purge.byuuids.plugins.oldapi.LWCPurge;
-import autosaveworld.threads.purge.byuuids.plugins.oldapi.MVInvPurge;
-import autosaveworld.threads.purge.byuuids.plugins.oldapi.MyWarpPurge;
-import autosaveworld.threads.purge.byuuids.plugins.oldapi.ResidencePurge;
-import autosaveworld.threads.purge.byuuids.plugins.oldapi.WGPurge;
+import autosaveworld.threads.purge.byuuids.plugins.WGPurge;
 
 public class PurgeByUUIDs {
 
@@ -47,7 +47,6 @@ public class PurgeByUUIDs {
 
 		PluginManager pm = Bukkit.getPluginManager();
 
-		// old api purges
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
 			MessageLogger.debug("WG found, purging");
 			try {
@@ -92,8 +91,6 @@ public class PurgeByUUIDs {
 				e.printStackTrace();
 			}
 		}
-
-		// uuid purges
 
 		if ((pm.getPlugin("Vault") != null) && config.purgePerms) {
 			MessageLogger.debug("Vault found, purging permissions");
