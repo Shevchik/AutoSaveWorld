@@ -46,13 +46,6 @@ public class AutoConsoleCommandThread extends Thread {
 		MessageLogger.debug("AutoConsoleCommandThread Started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 
-		// wait for server to start
-		SchedulerUtils.callSyncTaskAndWait(new Runnable() {
-			@Override
-			public void run() {
-			}
-		});
-
 		while (run) {
 
 			// handle times mode
