@@ -199,7 +199,7 @@ public class CommandsHandler implements CommandExecutor {
 				sender.sendMessage(ChatColor.BLUE + "Invoking code");
 				CodeInvoker invoker = new CodeInvoker();
 				if (args.length > 2) {
-					HashMap<String, String> map = new HashMap<String, String>(); 
+					HashMap<String, String> map = new HashMap<String, String>();
 					for (String string : Arrays.copyOfRange(args, 2, args.length)) {
 						String[] split = string.split("[,]");
 						if (split.length == 2) {

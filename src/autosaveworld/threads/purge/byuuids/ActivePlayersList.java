@@ -67,7 +67,7 @@ public class ActivePlayersList {
 			}
 			// add players from ignored lists
 			for (OfflinePlayer offplayer : offplayers) {
-				if (offplayer.getName() != null && config.purgeIgnoredNicks.contains(offplayer.getName())) {
+				if ((offplayer.getName() != null) && config.purgeIgnoredNicks.contains(offplayer.getName())) {
 					String uuidstring = offplayer.getUniqueId().toString();
 					MessageLogger.debug("Adding ignored player " + uuidstring.replace("-", "") + " to active list");
 					config.purgeIgnoredUUIDs.add(uuidstring);
