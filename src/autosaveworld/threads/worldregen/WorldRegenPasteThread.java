@@ -35,6 +35,7 @@ import autosaveworld.threads.worldregen.towny.TownyPaste;
 import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ListenerUtils;
+import autosaveworld.utils.SchedulerUtils;
 
 public class WorldRegenPasteThread extends Thread {
 
@@ -77,15 +78,12 @@ public class WorldRegenPasteThread extends Thread {
 		FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getWorldnameFile()));
 		String worldtopasteto = cfg.getString("wname");
 
-		// wait for server to load
-		int ltask = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		// wait for server to start
+		SchedulerUtils.callSyncTaskAndWait(new Runnable() {
 			@Override
 			public void run() {
 			}
 		});
-		while (Bukkit.getScheduler().isCurrentlyRunning(ltask) || Bukkit.getScheduler().isQueued(ltask)) {
-			Thread.sleep(1000);
-		}
 
 		// check for worldedit
 		if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
