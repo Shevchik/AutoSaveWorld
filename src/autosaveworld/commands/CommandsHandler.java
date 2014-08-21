@@ -21,6 +21,7 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -193,10 +194,21 @@ public class CommandsHandler implements CommandExecutor {
 				copythread.setWorld(args[1]);
 				copythread.start();
 				return true;
-			} else if ((args.length == 2) && args[0].equalsIgnoreCase("invokecode")) {
+			} else if ((args.length >= 2) && args[0].equalsIgnoreCase("invokecode")) {
 				// invoke code
 				sender.sendMessage(ChatColor.BLUE + "Invoking code");
-				Object returned = new CodeInvoker().invokeCode(args[1]);
+				CodeInvoker invoker = new CodeInvoker();
+				if (args.length > 2) {
+					HashMap<String, String> map = new HashMap<String, String>(); 
+					for (String string : Arrays.copyOfRange(args, 2, args.length)) {
+						String[] split = string.split("[,]");
+						if (split.length == 2) {
+							map.put(split[0], split[1]);
+						}
+					}
+					invoker.injectContext(map);
+				}
+				Object returned = invoker.invokeCode(args[1]);
 				if (!(returned instanceof EmptyReturn)) {
 					sender.sendMessage(ChatColor.BLUE + "Invoke code result: "+returned);
 				}

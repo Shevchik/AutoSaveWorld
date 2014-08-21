@@ -24,6 +24,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import autosaveworld.core.GlobalConstants;
@@ -43,7 +45,7 @@ public class CodeInvoker {
 	private SetParser sparser = new SetParser(context);
 
 	/*
-	array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {VERTBAR}, to use space use {SPACE}
+	array of objects - (STRING:something - string, INTEGER:something - integer, and so on for primitives, CLASS:classname - class object, CONTEXT:name - codeContext object, LAST - last returned object, NULL - null, anything else - Object), separated by |, to use | character use {VERTBAR}, to use space use {SPACE}, to use , use {COMMA}
 	1)Operations
 	nop - does nothing
 	return params - quits code invling and returns object(only first object from params is used)
@@ -94,6 +96,12 @@ public class CodeInvoker {
 	invoke depositPlayer,,CONTEXT:vault,LAST|DOUBLE:5
 	goto 7
 	 */
+
+	public void injectContext(Map<String, String> addcontext) {
+		for (Entry<String, String> entry : addcontext.entrySet()) {
+			context.objectsrefs.put(entry.getKey(), context.getObjects(entry.getValue())[0]);
+		}
+	}
 
 	public Object invokeCode(String filename) {
 		File file = new File(GlobalConstants.getAutoSaveWorldFolder() + "scripts" + File.separator + filename + ".yml");
