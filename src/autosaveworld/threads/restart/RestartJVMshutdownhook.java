@@ -26,6 +26,10 @@ import org.bukkit.Bukkit;
 
 public class RestartJVMshutdownhook extends Thread {
 
+	public RestartJVMshutdownhook() {
+		RestartWaiter.init();
+	}
+
 	private String crashrestartscriptpath = "";
 
 	public void setPath(String path) {
