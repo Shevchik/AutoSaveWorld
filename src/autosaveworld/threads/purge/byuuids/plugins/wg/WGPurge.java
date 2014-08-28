@@ -78,7 +78,7 @@ public class WGPurge {
 					}
 				}
 				// remove region if all owners and members are inactive
-				if (inactive == rg.getOwners().size() + rg.getMembers().size()) {
+				if (inactive == (rg.getOwners().size() + rg.getMembers().size())) {
 					if (regenrg) {
 						RegionRegenTask regenTask = new RegionRegenTask(rg, noregenoverlap);
 						queue.addTask(regenTask);

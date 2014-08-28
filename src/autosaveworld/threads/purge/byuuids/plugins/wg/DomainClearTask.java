@@ -46,7 +46,7 @@ public class DomainClearTask implements WGPurgeTask {
 	}
 
 	public boolean hasPlayersToClear() {
-		return uuids.size() != 0 || names.size() != 0;
+		return (uuids.size() != 0) || (names.size() != 0);
 	}
 
 	@Override
