@@ -17,6 +17,8 @@
 
 package autosaveworld.threads.purge.bynames.plugins;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -72,7 +74,7 @@ public class WGPurge {
 					MessageLogger.debug("No active owners and members for region " + rg.getId() + ". Purging region");
 					if (regenrg) {
 						// regen and delete region
-						purgeRG(m, w, rg, regenrg, noregenoverlap);
+						purgeRG(m, w, rg, noregenoverlap);
 					} else {
 						// add region to delete batch
 						rgtodel.add(rg.getId());
@@ -93,7 +95,7 @@ public class WGPurge {
 		MessageLogger.debug("WG purge finished, deleted " + deletedrg + " inactive regions");
 	}
 
-	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean regenrg, final boolean noregenoverlap) {
+	private void purgeRG(final RegionManager m, final World w, final ProtectedRegion rg, final boolean noregenoverlap) {
 		Runnable rgregen = new Runnable() {
 			BlockVector minpoint = rg.getMinimumPoint();
 			BlockVector maxpoint = rg.getMaximumPoint();
@@ -101,7 +103,9 @@ public class WGPurge {
 			@Override
 			public void run() {
 				try {
-					if (!(noregenoverlap && (m.getApplicableRegions(rg).size() > 1))) {
+					Object ars = getARS(m, w, rg);
+					boolean overlaps = (int) ars.getClass().getMethod("size").invoke(ars) > 1;
+					if (!(noregenoverlap && overlaps)) {
 						MessageLogger.debug("Regenerating region " + rg.getId());
 						WorldEditRegeneration.get().regenerateRegion(w, minpoint, maxpoint);
 					}
@@ -135,6 +139,12 @@ public class WGPurge {
 			}
 		};
 		SchedulerUtils.callSyncTaskAndWait(deleteregions);
+	}
+
+	private Object getARS(RegionManager rm, World world, ProtectedRegion rg) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method getARSMethod = rm.getClass().getMethod("getApplicableRegions", ProtectedRegion.class);
+		getARSMethod.setAccessible(true);
+		return getARSMethod.invoke(rm, rg);
 	}
 
 }

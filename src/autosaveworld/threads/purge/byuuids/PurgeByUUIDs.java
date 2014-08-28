@@ -29,7 +29,7 @@ import autosaveworld.threads.purge.byuuids.plugins.MVInvPurge;
 import autosaveworld.threads.purge.byuuids.plugins.MyWarpPurge;
 import autosaveworld.threads.purge.byuuids.plugins.ResidencePurge;
 import autosaveworld.threads.purge.byuuids.plugins.VaultPurge;
-import autosaveworld.threads.purge.byuuids.plugins.WGPurge;
+import autosaveworld.threads.purge.byuuids.plugins.wg.WGPurge;
 
 public class PurgeByUUIDs {
 

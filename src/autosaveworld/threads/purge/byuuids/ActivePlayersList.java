@@ -94,6 +94,10 @@ public class ActivePlayersList {
 		return plactiveUUID.size();
 	}
 
+	public boolean isActiveUUID(UUID uuid) {
+		return isActiveUUID(uuid.toString());
+	}
+
 	public boolean isActiveUUID(String uuid) {
 		uuid = uuid.replace("-", "");
 		return plactiveUUID.contains(uuid);
