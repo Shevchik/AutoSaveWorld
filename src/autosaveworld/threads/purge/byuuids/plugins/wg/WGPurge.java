@@ -27,6 +27,7 @@ import org.bukkit.World;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.byuuids.ActivePlayersList;
 
+import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -38,7 +39,7 @@ public class WGPurge {
 
 		MessageLogger.debug("WG purge started");
 
-		WorldGuardPlugin wg = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
+		WorldGuardPlugin wg = WGBukkit.getPlugin();
 
 		int deletedrg = 0;
 

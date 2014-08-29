@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge.byuuids.plugins;
+package autosaveworld.threads.purge.byuuids.plugins.residence;
 
 import java.util.LinkedList;
 
@@ -24,12 +24,9 @@ import net.t00thpick1.residence.api.areas.ResidenceArea;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.util.Vector;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.byuuids.ActivePlayersList;
-import autosaveworld.threads.purge.weregen.WorldEditRegeneration;
-import autosaveworld.utils.SchedulerUtils;
 
 public class ResidencePurge {
 
@@ -45,40 +42,37 @@ public class ResidencePurge {
 			reslist.addAll(ResidenceAPI.getResidenceManager().getResidencesInWorld(world));
 		}
 		boolean wepresent = (Bukkit.getPluginManager().getPlugin("WorldEdit") != null);
-
+		TaskQueue queue = new TaskQueue();
+		
 		// search for residences with inactive players
 		for (final ResidenceArea resarea : reslist) {
 			MessageLogger.debug("Checking residence " + resarea.getName());
-			if (!pacheck.isActiveNameCS(resarea.getOwner()) && !pacheck.isActiveNameCS(resarea.getRenter())) {
-				MessageLogger.debug("Owner and renter of residence " + resarea.getName() + " is inactive. Purging residence");
-
+			ResidenceRenterClearTask renterClearTask = null;
+			if (resarea.isRented() && !pacheck.isActiveNameCS(resarea.getRenter())) {
+				MessageLogger.debug("Renter "+resarea.getRenter()+" is inactive");
+				renterClearTask = new ResidenceRenterClearTask(resarea);
+			}
+			if (!pacheck.isActiveNameCS(resarea.getOwner()) && (renterClearTask != null || !resarea.isRented())) {
+				MessageLogger.debug("Owner "+resarea.getOwner()+" is inactive");
 				// regen residence areas if needed
 				if (regenres && wepresent) {
-					Runnable resarearegen = new Runnable() {
-						Vector minpoint = resarea.getLowLocation().toVector();
-						Vector maxpoint = resarea.getHighLocation().toVector();
-
-						@Override
-						public void run() {
-							MessageLogger.debug("Regenerating residence " + resarea.getName());
-							WorldEditRegeneration.get().regenerateRegion(resarea.getWorld(), minpoint, maxpoint);
-						}
-					};
-					SchedulerUtils.callSyncTaskAndWait(resarearegen);
+					ResidenceRegenTask regenTask = new ResidenceRegenTask(resarea);
+					queue.addTask(regenTask);
 				}
 				// delete residence from db
-				MessageLogger.debug("Deleting residence " + resarea.getName());
-				Runnable delres = new Runnable() {
-					@Override
-					public void run() {
-						ResidenceAPI.getResidenceManager().remove(resarea);
-					}
-				};
-				SchedulerUtils.callSyncTaskAndWait(delres);
+				ResidenceDeleteTask deleteTask = new ResidenceDeleteTask(resarea);
+				queue.addTask(deleteTask);
 
 				deletedres += 1;
+				continue;
+			}
+			// evict residence if needed
+			if (renterClearTask != null) {
+				queue.addTask(renterClearTask);
 			}
 		}
+		// flush the rest of the queue
+		queue.flush();
 
 		MessageLogger.debug("Residence purge finished, deleted " + deletedres + " inactive residences");
 	}

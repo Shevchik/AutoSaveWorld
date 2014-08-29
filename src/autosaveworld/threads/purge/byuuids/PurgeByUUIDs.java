@@ -27,8 +27,8 @@ import autosaveworld.threads.purge.byuuids.plugins.DatfilePurge;
 import autosaveworld.threads.purge.byuuids.plugins.LWCPurge;
 import autosaveworld.threads.purge.byuuids.plugins.MVInvPurge;
 import autosaveworld.threads.purge.byuuids.plugins.MyWarpPurge;
-import autosaveworld.threads.purge.byuuids.plugins.ResidencePurge;
 import autosaveworld.threads.purge.byuuids.plugins.permissions.PermissionsPurge;
+import autosaveworld.threads.purge.byuuids.plugins.residence.ResidencePurge;
 import autosaveworld.threads.purge.byuuids.plugins.wg.WGPurge;
 
 public class PurgeByUUIDs {
