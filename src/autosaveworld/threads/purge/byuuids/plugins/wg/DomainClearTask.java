@@ -58,11 +58,11 @@ public class DomainClearTask implements WGPurgeTask {
 
 	@Override
 	public void perfomTask(World world) {
+		MessageLogger.debug("Cleaning domain for region "+region.getId());
 		ArrayList<DefaultDomain> domains = new ArrayList<DefaultDomain>();
 		domains.add(region.getOwners());
 		domains.add(region.getMembers());
 		for (DefaultDomain domain : domains) {
-			MessageLogger.debug("Cleaning domain for region "+region.getId());
 			for (UUID uuid : uuids) {
 				domain.removePlayer(uuid);
 			}
