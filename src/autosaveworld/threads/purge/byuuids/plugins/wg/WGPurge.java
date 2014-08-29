@@ -71,8 +71,8 @@ public class WGPurge {
 					}
 					for (UUID playerUUID : domain.getUniqueIds()) {
 						if (!pacheck.isActiveUUID(playerUUID)) {
-							domainClearTask.add(playerUUID);
 							MessageLogger.debug(playerUUID + " is inactive");
+							domainClearTask.add(playerUUID);
 							inactive++;
 						}
 					}
