@@ -28,7 +28,7 @@ import autosaveworld.threads.purge.byuuids.plugins.LWCPurge;
 import autosaveworld.threads.purge.byuuids.plugins.MVInvPurge;
 import autosaveworld.threads.purge.byuuids.plugins.MyWarpPurge;
 import autosaveworld.threads.purge.byuuids.plugins.ResidencePurge;
-import autosaveworld.threads.purge.byuuids.plugins.VaultPurge;
+import autosaveworld.threads.purge.byuuids.plugins.permissions.PermissionsPurge;
 import autosaveworld.threads.purge.byuuids.plugins.wg.WGPurge;
 
 public class PurgeByUUIDs {
@@ -92,10 +92,9 @@ public class PurgeByUUIDs {
 			}
 		}
 
-		if ((pm.getPlugin("Vault") != null) && config.purgePerms) {
-			MessageLogger.debug("Vault found, purging permissions");
+		if (config.purgePerms) {
 			try {
-				new VaultPurge().doPermissionsPurgeTask(aplist, config.purgePermsSaveCMD);
+				new PermissionsPurge().doPermissionsPurgeTask(aplist);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
