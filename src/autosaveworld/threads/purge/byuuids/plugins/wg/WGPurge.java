@@ -35,7 +35,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class WGPurge {
 
-	public void doWGPurgeTask(ActivePlayersList pacheck, final boolean regenrg, boolean noregenoverlap) {
+	public void doWGPurgeTask(ActivePlayersList activePlayersStorage, final boolean regenrg, boolean noregenoverlap) {
 
 		MessageLogger.debug("WG purge started");
 
@@ -64,14 +64,14 @@ public class WGPurge {
 				int inactive = 0;
 				for (DefaultDomain domain : domains) {
 					for (String playerName : domain.getPlayers()) {
-						if (!pacheck.isActiveNameNCS(playerName)) {
+						if (!activePlayersStorage.isActiveNameNCS(playerName)) {
 							MessageLogger.debug(playerName + " is inactive");
 							domainClearTask.add(playerName);
 							inactive++;
 						}
 					}
 					for (UUID playerUUID : domain.getUniqueIds()) {
-						if (!pacheck.isActiveUUID(playerUUID)) {
+						if (!activePlayersStorage.isActiveUUID(playerUUID)) {
 							MessageLogger.debug(playerUUID + " is inactive");
 							domainClearTask.add(playerUUID);
 							inactive++;

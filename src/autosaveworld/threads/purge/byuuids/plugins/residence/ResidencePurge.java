@@ -31,7 +31,7 @@ import autosaveworld.threads.purge.byuuids.ActivePlayersList;
 public class ResidencePurge {
 
 	@SuppressWarnings("deprecation")
-	public void doResidencePurgeTask(ActivePlayersList pacheck, final boolean regenres) {
+	public void doResidencePurgeTask(ActivePlayersList activePlayersStorage, final boolean regenres) {
 
 		MessageLogger.debug("Residence purge started");
 
@@ -48,11 +48,11 @@ public class ResidencePurge {
 		for (final ResidenceArea resarea : reslist) {
 			MessageLogger.debug("Checking residence " + resarea.getName());
 			ResidenceRenterClearTask renterClearTask = null;
-			if (resarea.isRented() && !pacheck.isActiveNameCS(resarea.getRenter())) {
+			if (resarea.isRented() && !activePlayersStorage.isActiveNameCS(resarea.getRenter())) {
 				MessageLogger.debug("Renter "+resarea.getRenter()+" is inactive");
 				renterClearTask = new ResidenceRenterClearTask(resarea);
 			}
-			if (!pacheck.isActiveNameCS(resarea.getOwner()) && ((renterClearTask != null) || !resarea.isRented())) {
+			if (!activePlayersStorage.isActiveNameCS(resarea.getOwner()) && ((renterClearTask != null) || !resarea.isRented())) {
 				MessageLogger.debug("Owner "+resarea.getOwner()+" is inactive");
 				// regen residence areas if needed
 				if (regenres && wepresent) {

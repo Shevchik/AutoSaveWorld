@@ -26,7 +26,7 @@ import autosaveworld.threads.purge.byuuids.ActivePlayersList;
 
 public class DatfilePurge {
 
-	public void doDelPlayerDatFileTask(ActivePlayersList pacheck) {
+	public void doDelPlayerDatFileTask(ActivePlayersList activePlayersStorage) {
 
 		MessageLogger.debug("Playre .dat file purge started");
 
@@ -37,7 +37,7 @@ public class DatfilePurge {
 		for (File playerfile : playersdatfolder.listFiles()) {
 			if (playerfile.getName().endsWith(".dat")) {
 				String playeruuid = playerfile.getName().substring(0, playerfile.getName().length() - 4);
-				if (!pacheck.isActiveUUID(playeruuid)) {
+				if (!activePlayersStorage.isActiveUUID(playeruuid)) {
 					MessageLogger.debug(playeruuid + " is inactive. Removing dat file");
 					playerfile.delete();
 					new File(playersstatsfolder, playerfile.getName()).delete();

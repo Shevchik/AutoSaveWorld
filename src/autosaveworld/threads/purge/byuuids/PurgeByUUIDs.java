@@ -26,7 +26,7 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.byuuids.plugins.DatfilePurge;
 import autosaveworld.threads.purge.byuuids.plugins.LWCPurge;
 import autosaveworld.threads.purge.byuuids.plugins.MVInvPurge;
-import autosaveworld.threads.purge.byuuids.plugins.MyWarpPurge;
+import autosaveworld.threads.purge.byuuids.plugins.mywarp.MyWarpPurge;
 import autosaveworld.threads.purge.byuuids.plugins.permissions.PermissionsPurge;
 import autosaveworld.threads.purge.byuuids.plugins.residence.ResidencePurge;
 import autosaveworld.threads.purge.byuuids.plugins.wg.WGPurge;
@@ -41,16 +41,16 @@ public class PurgeByUUIDs {
 
 	public void startPurge() {
 		MessageLogger.debug("Gathering active players list");
-		ActivePlayersList aplist = new ActivePlayersList(config);
-		aplist.gatherActivePlayersList(config.purgeAwayTime * 1000);
-		MessageLogger.debug("Found " + aplist.getActivePlayersCount() + " active players");
+		ActivePlayersList activePlayersStorage = new ActivePlayersList(config);
+		activePlayersStorage.gatherActivePlayersList(config.purgeAwayTime * 1000);
+		MessageLogger.debug("Found " + activePlayersStorage.getActivePlayersCount() + " active players");
 
 		PluginManager pm = Bukkit.getPluginManager();
 
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
 			MessageLogger.debug("WG found, purging");
 			try {
-				new WGPurge().doWGPurgeTask(aplist, config.purgeWGRegenRg, config.purgeWGNoregenOverlap);
+				new WGPurge().doWGPurgeTask(activePlayersStorage, config.purgeWGRegenRg, config.purgeWGNoregenOverlap);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -59,7 +59,7 @@ public class PurgeByUUIDs {
 		if ((pm.getPlugin("LWC") != null) && config.purgeLWC) {
 			MessageLogger.debug("LWC found, purging");
 			try {
-				new LWCPurge().doLWCPurgeTask(aplist, config.purgeLWCDelProtectedBlocks);
+				new LWCPurge().doLWCPurgeTask(activePlayersStorage, config.purgeLWCDelProtectedBlocks);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -68,7 +68,7 @@ public class PurgeByUUIDs {
 		if ((pm.getPlugin("Multiverse-Inventories") != null) && config.purgeMVInv) {
 			MessageLogger.debug("Multiverse-Inventories found, purging");
 			try {
-				new MVInvPurge().doMVInvPurgeTask(aplist);
+				new MVInvPurge().doMVInvPurgeTask(activePlayersStorage);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -77,7 +77,7 @@ public class PurgeByUUIDs {
 		if ((pm.getPlugin("Residence") != null) && config.purgeResidence) {
 			MessageLogger.debug("Residence found, purging");
 			try {
-				new ResidencePurge().doResidencePurgeTask(aplist, config.purgeResidenceRegenArea);
+				new ResidencePurge().doResidencePurgeTask(activePlayersStorage, config.purgeResidenceRegenArea);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -86,7 +86,7 @@ public class PurgeByUUIDs {
 		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
 			MessageLogger.debug("MyWarp found, purging");
 			try {
-				new MyWarpPurge().doMyWarpPurgeTask(aplist);
+				new MyWarpPurge().doMyWarpPurgeTask(activePlayersStorage);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -94,7 +94,7 @@ public class PurgeByUUIDs {
 
 		if (config.purgePerms) {
 			try {
-				new PermissionsPurge().doPermissionsPurgeTask(aplist);
+				new PermissionsPurge().doPermissionsPurgeTask(activePlayersStorage);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -103,7 +103,7 @@ public class PurgeByUUIDs {
 		MessageLogger.debug("Purging player .dat files");
 		if (config.purgeDat) {
 			try {
-				new DatfilePurge().doDelPlayerDatFileTask(aplist);
+				new DatfilePurge().doDelPlayerDatFileTask(activePlayersStorage);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

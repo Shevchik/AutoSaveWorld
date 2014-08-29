@@ -35,7 +35,7 @@ import com.griefcraft.model.Protection;
 
 public class LWCPurge {
 
-	public void doLWCPurgeTask(ActivePlayersList pacheck, boolean delblocks) {
+	public void doLWCPurgeTask(ActivePlayersList activePlayersStorage, boolean delblocks) {
 
 		MessageLogger.debug("LWC purge started");
 
@@ -45,7 +45,7 @@ public class LWCPurge {
 
 		// we will check LWC database and remove protections that belongs to away player
 		for (final Protection pr : lwc.getLWC().getPhysicalDatabase().loadProtections()) {
-			if (!pacheck.isActiveNameCS(pr.getOwner()) && !pacheck.isActiveUUID(pr.getOwner())) {
+			if (!activePlayersStorage.isActiveNameCS(pr.getOwner()) && !activePlayersStorage.isActiveUUID(pr.getOwner())) {
 				// add protected to delete batch
 				prtodel.add(pr);
 				// delete protections if maximum batch size reached

@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge.byuuids.plugins;
+package autosaveworld.threads.purge.byuuids.plugins.mywarp;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -31,7 +31,7 @@ import autosaveworld.utils.SchedulerUtils;
 
 public class MyWarpPurge {
 
-	public void doMyWarpPurgeTask(ActivePlayersList pacheck) {
+	public void doMyWarpPurgeTask(ActivePlayersList activePlayersStorage) {
 
 		MessageLogger.debug("MyWarp purge started");
 
@@ -41,7 +41,7 @@ public class MyWarpPurge {
 
 		TreeSet<Warp> warps = mywarp.getWarpManager().getWarps(null, null);
 		for (Warp warp : warps) {
-			if (!pacheck.isActiveNameCS(warp.getCreator())) {
+			if (!activePlayersStorage.isActiveNameCS(warp.getCreator())) {
 				// add warp to delete batch
 				warptodel.add(warp);
 				// delete warps if maximum batch size reached

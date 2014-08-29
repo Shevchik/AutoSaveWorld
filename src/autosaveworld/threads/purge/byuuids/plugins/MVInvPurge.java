@@ -32,7 +32,7 @@ import com.onarandombox.multiverseinventories.api.profile.WorldGroupProfile;
 public class MVInvPurge {
 
 	@SuppressWarnings("deprecation")
-	public void doMVInvPurgeTask(ActivePlayersList pacheck) {
+	public void doMVInvPurgeTask(ActivePlayersList activePlayersStorage) {
 
 		MessageLogger.debug("MVInv purge started");
 
@@ -45,7 +45,7 @@ public class MVInvPurge {
 			for (String plfile : mcinvpfld.list()) {
 				String plname = plfile.substring(0, plfile.lastIndexOf("."));
 
-				if (!pacheck.isActiveNameCS(plname)) {
+				if (!activePlayersStorage.isActiveNameCS(plname)) {
 					MessageLogger.debug("Removing " + plname + " MVInv files");
 					// remove files from MVInv world folders
 					for (World wname : Bukkit.getWorlds()) {
