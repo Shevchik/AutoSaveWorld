@@ -23,6 +23,8 @@ import java.util.UUID;
 
 import org.bukkit.World;
 
+import autosaveworld.core.logging.MessageLogger;
+
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -60,6 +62,7 @@ public class DomainClearTask implements WGPurgeTask {
 		domains.add(region.getOwners());
 		domains.add(region.getMembers());
 		for (DefaultDomain domain : domains) {
+			MessageLogger.debug("Cleaning domain for region "+region.getId());
 			for (UUID uuid : uuids) {
 				domain.removePlayer(uuid);
 			}
