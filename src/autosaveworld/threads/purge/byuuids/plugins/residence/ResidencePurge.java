@@ -43,7 +43,7 @@ public class ResidencePurge {
 		}
 		boolean wepresent = (Bukkit.getPluginManager().getPlugin("WorldEdit") != null);
 		TaskQueue queue = new TaskQueue();
-		
+
 		// search for residences with inactive players
 		for (final ResidenceArea resarea : reslist) {
 			MessageLogger.debug("Checking residence " + resarea.getName());
@@ -52,7 +52,7 @@ public class ResidencePurge {
 				MessageLogger.debug("Renter "+resarea.getRenter()+" is inactive");
 				renterClearTask = new ResidenceRenterClearTask(resarea);
 			}
-			if (!pacheck.isActiveNameCS(resarea.getOwner()) && (renterClearTask != null || !resarea.isRented())) {
+			if (!pacheck.isActiveNameCS(resarea.getOwner()) && ((renterClearTask != null) || !resarea.isRented())) {
 				MessageLogger.debug("Owner "+resarea.getOwner()+" is inactive");
 				// regen residence areas if needed
 				if (regenres && wepresent) {

@@ -17,11 +17,12 @@
 
 package autosaveworld.threads.purge.byuuids.plugins.residence;
 
+import net.t00thpick1.residence.api.areas.ResidenceArea;
+
 import org.bukkit.util.Vector;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration;
-import net.t00thpick1.residence.api.areas.ResidenceArea;
 
 public class ResidenceRegenTask implements ResidencePurgeTask {
 

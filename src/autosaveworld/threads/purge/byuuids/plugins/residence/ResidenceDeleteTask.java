@@ -17,9 +17,9 @@
 
 package autosaveworld.threads.purge.byuuids.plugins.residence;
 
-import autosaveworld.core.logging.MessageLogger;
 import net.t00thpick1.residence.api.ResidenceAPI;
 import net.t00thpick1.residence.api.areas.ResidenceArea;
+import autosaveworld.core.logging.MessageLogger;
 
 public class ResidenceDeleteTask implements ResidencePurgeTask {
 
