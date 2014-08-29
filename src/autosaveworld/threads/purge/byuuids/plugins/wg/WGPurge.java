@@ -88,7 +88,7 @@ public class WGPurge {
 					deletedrg += 1;
 					continue;
 				}
-				// cleanup region default domain if we have sometihng to cleanup
+				// cleanup region default domain if we have something to cleanup
 				if (domainClearTask.hasPlayersToClear()) {
 					queue.addTask(domainClearTask);
 				}
