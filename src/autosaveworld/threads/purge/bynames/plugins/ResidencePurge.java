@@ -49,19 +49,19 @@ public class ResidencePurge {
 						};
 						SchedulerUtils.callSyncTaskAndWait(caregen);
 					}
-					// delete residence from db
-					MessageLogger.debug("Deleting residence " + res);
-					Runnable delres = new Runnable() {
-						@Override
-						public void run() {
-							cres.remove();
-							Residence.getResidenceManager().save();
-						}
-					};
-					SchedulerUtils.callSyncTaskAndWait(delres);
-
-					deletedres += 1;
 				}
+				// delete residence from db
+				MessageLogger.debug("Deleting residence " + res);
+				Runnable delres = new Runnable() {
+					@Override
+					public void run() {
+						cres.remove();
+						Residence.getResidenceManager().save();
+					}
+				};
+				SchedulerUtils.callSyncTaskAndWait(delres);
+
+				deletedres += 1;
 			}
 		}
 
