@@ -49,8 +49,8 @@ public class MyWarpPurge {
 					}
 				}
 			}
-			//delete warp if owners and members are inactive
-			if (!activePlayersStorage.isActiveNameCS(warp.getCreator()) && invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size()) {
+			// delete warp if owner and members are inactive
+			if (!activePlayersStorage.isActiveNameCS(warp.getCreator()) && (invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size())) {
 				MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
 				// delete warp
 				WarpDeleteTask deleteTask = new WarpDeleteTask(warp);

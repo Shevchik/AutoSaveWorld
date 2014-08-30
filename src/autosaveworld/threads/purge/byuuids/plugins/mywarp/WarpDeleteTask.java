@@ -17,9 +17,9 @@
 
 package autosaveworld.threads.purge.byuuids.plugins.mywarp;
 
-import autosaveworld.core.logging.MessageLogger;
 import me.taylorkelly.mywarp.MyWarp;
 import me.taylorkelly.mywarp.data.Warp;
+import autosaveworld.core.logging.MessageLogger;
 
 public class WarpDeleteTask implements MyWarpPurgeTask {
 

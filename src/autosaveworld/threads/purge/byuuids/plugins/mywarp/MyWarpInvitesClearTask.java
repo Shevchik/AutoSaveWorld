@@ -19,8 +19,8 @@ package autosaveworld.threads.purge.byuuids.plugins.mywarp;
 
 import java.util.LinkedList;
 
-import autosaveworld.core.logging.MessageLogger;
 import me.taylorkelly.mywarp.data.Warp;
+import autosaveworld.core.logging.MessageLogger;
 
 public class MyWarpInvitesClearTask implements MyWarpPurgeTask {
 
