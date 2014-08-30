@@ -23,6 +23,6 @@ public interface WGPurgeTask {
 
 	public boolean isHeavyTask();
 
-	public void perfomTask(World world);
+	public void performTask(World world);
 
 }

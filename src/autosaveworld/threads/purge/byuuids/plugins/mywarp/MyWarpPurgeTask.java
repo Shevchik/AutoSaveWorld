@@ -19,6 +19,6 @@ package autosaveworld.threads.purge.byuuids.plugins.mywarp;
 
 public interface MyWarpPurgeTask {
 
-	public void perfomTask();
+	public void performTask();
 
 }

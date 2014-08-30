@@ -33,7 +33,7 @@ public class TaskQueue {
 				new Runnable() {
 					@Override
 					public void run() {
-						task.perfomTask();
+						task.performTask();
 					}
 				}
 			);
@@ -51,7 +51,7 @@ public class TaskQueue {
 				@Override
 				public void run() {
 					for (ResidencePurgeTask task : tasks) {
-						task.perfomTask();
+						task.performTask();
 					}
 					tasks.clear();
 				}

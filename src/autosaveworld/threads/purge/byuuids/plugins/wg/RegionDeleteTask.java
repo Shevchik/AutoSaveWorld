@@ -39,7 +39,7 @@ public class RegionDeleteTask implements WGPurgeTask {
 	}
 
 	@Override
-	public void perfomTask(World world) {
+	public void performTask(World world) {
 		RegionManager rm = WGBukkit.getRegionManager(world);
 		MessageLogger.debug("Deleting region " + region.getId());
 		rm.removeRegion(region.getId());

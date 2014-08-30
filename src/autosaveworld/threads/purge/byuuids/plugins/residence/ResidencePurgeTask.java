@@ -21,6 +21,6 @@ public interface ResidencePurgeTask {
 
 	public boolean isHeavyTask();
 
-	public void perfomTask();
+	public void performTask();
 
 }

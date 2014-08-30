@@ -42,7 +42,7 @@ public class RegionRegenTask implements WGPurgeTask {
 	}
 
 	@Override
-	public void perfomTask(World world) {
+	public void performTask(World world) {
 		RegionManager rm = WGBukkit.getRegionManager(world);
 		if (!(noregenoverlap && (rm.getApplicableRegions(region).size() > 1))) {
 			MessageLogger.debug("Regenerating region " + region.getId());

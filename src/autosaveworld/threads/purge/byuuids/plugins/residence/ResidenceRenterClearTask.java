@@ -34,7 +34,7 @@ public class ResidenceRenterClearTask implements ResidencePurgeTask {
 	}
 
 	@Override
-	public void perfomTask() {
+	public void performTask() {
 		MessageLogger.debug("Evicting residence "+resarea.getName());
 		resarea.evict();
 	}

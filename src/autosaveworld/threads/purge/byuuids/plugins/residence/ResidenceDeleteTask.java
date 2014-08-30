@@ -35,7 +35,7 @@ public class ResidenceDeleteTask implements ResidencePurgeTask {
 	}
 
 	@Override
-	public void perfomTask() {
+	public void performTask() {
 		MessageLogger.debug("Deleting residence " + resarea.getName());
 		ResidenceAPI.getResidenceManager().remove(resarea);
 	}

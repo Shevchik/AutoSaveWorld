@@ -38,7 +38,7 @@ public class ResidenceRegenTask implements ResidencePurgeTask {
 	}
 
 	@Override
-	public void perfomTask() {
+	public void performTask() {
 		Vector minpoint = resarea.getLowLocation().toVector();
 		Vector maxpoint = resarea.getHighLocation().toVector();
 

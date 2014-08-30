@@ -30,7 +30,7 @@ public class WarpDeleteTask implements MyWarpPurgeTask {
 	}
 
 	@Override
-	public void perfomTask() {
+	public void performTask() {
 		MessageLogger.debug("Deleting warp "+warp.getName());
 		MyWarp.inst().getWarpManager().deleteWarp(warp);
 	}

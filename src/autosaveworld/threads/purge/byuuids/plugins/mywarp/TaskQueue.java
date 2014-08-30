@@ -40,7 +40,7 @@ public class TaskQueue {
 				@Override
 				public void run() {
 					for (MyWarpPurgeTask task : tasks) {
-						task.perfomTask();
+						task.performTask();
 					}
 					tasks.clear();
 				}

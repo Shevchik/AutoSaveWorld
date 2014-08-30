@@ -45,7 +45,7 @@ public class MyWarpInvitesClearTask implements MyWarpPurgeTask {
 	}
 
 	@Override
-	public void perfomTask() {
+	public void performTask() {
 		MessageLogger.debug("Cleaning invites for warp "+warp.getName());
 		for (String name : names) {
 			warp.uninvite(name);

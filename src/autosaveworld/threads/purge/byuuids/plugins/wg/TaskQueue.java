@@ -41,7 +41,7 @@ public class TaskQueue {
 				new Runnable() {
 					@Override
 					public void run() {
-						task.perfomTask(world);
+						task.performTask(world);
 					}
 				}
 			);
@@ -59,7 +59,7 @@ public class TaskQueue {
 				@Override
 				public void run() {
 					for (WGPurgeTask task : tasks) {
-						task.perfomTask(world);
+						task.performTask(world);
 					}
 					tasks.clear();
 				}
