@@ -17,17 +17,15 @@
 
 package autosaveworld.threads.purge.byuuids.plugins.mywarp;
 
-import java.util.ArrayList;
 import java.util.TreeSet;
 
 import me.taylorkelly.mywarp.MyWarp;
 import me.taylorkelly.mywarp.data.Warp;
 
-import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.byuuids.ActivePlayersList;
-import autosaveworld.utils.SchedulerUtils;
 
 public class MyWarpPurge {
 
@@ -35,44 +33,41 @@ public class MyWarpPurge {
 
 		MessageLogger.debug("MyWarp purge started");
 
-		MyWarp mywarp = (MyWarp) Bukkit.getPluginManager().getPlugin("MyWarp");
+		MyWarp mywarp = JavaPlugin.getPlugin(MyWarp.class);
 
 		int deleted = 0;
 
+		TaskQueue queue = new TaskQueue();
 		TreeSet<Warp> warps = mywarp.getWarpManager().getWarps(null, null);
 		for (Warp warp : warps) {
-			if (!activePlayersStorage.isActiveNameCS(warp.getCreator())) {
-				// add warp to delete batch
-				warptodel.add(warp);
-				// delete warps if maximum batch size reached
-				if (warptodel.size() == 80) {
-					flushBatch(mywarp);
+			MyWarpInvitesClearTask invitesClearTask = new MyWarpInvitesClearTask(warp);
+			if (!warp.isPublicAll()) {
+				for (String name : warp.getAllInvitedPlayers()) {
+					if (!activePlayersStorage.isActiveNameCS(name)) {
+						MessageLogger.debug("Warp member "+name+" is inactive");
+						invitesClearTask.add(name);
+					}
 				}
-				// count deleted protections
+			}
+			//delete warp if owners and members are inactive
+			if (!activePlayersStorage.isActiveNameCS(warp.getCreator()) && invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size()) {
+				MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
+				// delete warp
+				WarpDeleteTask deleteTask = new WarpDeleteTask(warp);
+				queue.addTask(deleteTask);
+
 				deleted += 1;
+				continue;
+			}
+			// cleanup invited players if needed
+			if (invitesClearTask.hasPlayersToClear()) {
+				queue.addTask(invitesClearTask);
 			}
 		}
 		// flush the rest of the batch
-		flushBatch(mywarp);
+		queue.flush();
 
 		MessageLogger.debug("MyWarp purge finished, deleted " + deleted + " inactive warps");
-	}
-
-	private ArrayList<Warp> warptodel = new ArrayList<Warp>(100);
-
-	private void flushBatch(final MyWarp mywarp) {
-		Runnable rempr = new Runnable() {
-			@Override
-			public void run() {
-				for (Warp warp : warptodel) {
-					// delete warp
-					MessageLogger.debug("Removing warp for inactive player " + warp.getCreator());
-					mywarp.getWarpManager().deleteWarp(warp);
-				}
-				warptodel.clear();
-			}
-		};
-		SchedulerUtils.callSyncTaskAndWait(rempr);
 	}
 
 }
