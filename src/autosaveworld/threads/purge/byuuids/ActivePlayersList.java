@@ -95,19 +95,31 @@ public class ActivePlayersList {
 	}
 
 	public boolean isActiveUUID(UUID uuid) {
+		if (uuid == null) {
+			return true;
+		}
 		return isActiveUUID(uuid.toString());
 	}
 
 	public boolean isActiveUUID(String uuid) {
+		if (uuid == null) {
+			return true;
+		}
 		uuid = uuid.replace("-", "");
 		return plactiveUUID.contains(uuid);
 	}
 
 	public boolean isActiveNameCS(String name) {
+		if (name == null) {
+			return true;
+		}
 		return plactiveNamesCS.contains(name);
 	}
 
 	public boolean isActiveNameNCS(String name) {
+		if (name == null) {
+			return true;
+		}
 		return plactiveNamesNCS.contains(name.toLowerCase());
 	}
 
