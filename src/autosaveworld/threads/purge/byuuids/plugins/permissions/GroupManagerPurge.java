@@ -38,7 +38,7 @@ public class GroupManagerPurge {
 			Map<String, User> users = holder.getUsers();
 			for (User user : new LinkedList<User>(users.values())) {
 				String userid = user.getUUID();
-				if (!activePlayersStorage.isActiveNameCS(userid) && !activePlayersStorage.isActiveUUID(userid)) {
+				if (!activePlayersStorage.isActiveName(userid) && !activePlayersStorage.isActiveUUID(userid)) {
 					MessageLogger.debug("Player "+userid+" is inactive. Removing permissions");
 					holder.removeUser(userid);
 					deleted++;

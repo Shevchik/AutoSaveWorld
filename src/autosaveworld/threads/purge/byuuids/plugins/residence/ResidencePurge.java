@@ -46,11 +46,11 @@ public class ResidencePurge {
 		for (final ResidenceArea resarea : reslist) {
 			MessageLogger.debug("Checking residence " + resarea.getName());
 			ResidenceRenterClearTask renterClearTask = null;
-			if (resarea.isRented() && !activePlayersStorage.isActiveNameCS(resarea.getRenter())) {
+			if (resarea.isRented() && !activePlayersStorage.isActiveName(resarea.getRenter())) {
 				MessageLogger.debug("Renter "+resarea.getRenter()+" is inactive");
 				renterClearTask = new ResidenceRenterClearTask(resarea);
 			}
-			if (!activePlayersStorage.isActiveNameCS(resarea.getOwner()) && ((renterClearTask != null) || !resarea.isRented())) {
+			if (!activePlayersStorage.isActiveName(resarea.getOwner()) && ((renterClearTask != null) || !resarea.isRented())) {
 				MessageLogger.debug("Owner "+resarea.getOwner()+" is inactive");
 				// regen residence areas if needed
 				if (regenres && wepresent) {

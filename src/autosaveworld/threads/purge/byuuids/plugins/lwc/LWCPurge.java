@@ -41,12 +41,12 @@ public class LWCPurge {
 			LWCMembersClearTask clearTask = new LWCMembersClearTask(pr);
 			if (pr.getType() == Type.PRIVATE) {
 				for (Permission permission : pr.getPermissions()) {
-					if (!activePlayersStorage.isActiveNameCS(permission.getName()) && !activePlayersStorage.isActiveUUID(permission.getName())) {
+					if (!activePlayersStorage.isActiveName(permission.getName()) && !activePlayersStorage.isActiveUUID(permission.getName())) {
 						clearTask.add(permission);
 					}
 				}
 			}
-			if (!activePlayersStorage.isActiveNameCS(pr.getOwner()) && !activePlayersStorage.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
+			if (!activePlayersStorage.isActiveName(pr.getOwner()) && !activePlayersStorage.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
 				MessageLogger.debug("Protection owner "+pr.getOwner()+" is inactive");
 				// regen block if needed
 				if (delblocks) {

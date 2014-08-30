@@ -36,8 +36,7 @@ public class ActivePlayersList {
 	}
 
 	private HashSet<String> plactiveUUID = new HashSet<String>();
-	private HashSet<String> plactiveNamesCS = new HashSet<String>();
-	private HashSet<String> plactiveNamesNCS = new HashSet<String>();
+	private HashSet<String> plactiveNames = new HashSet<String>();
 
 	public void gatherActivePlayersList(long awaytime) {
 		try {
@@ -47,8 +46,7 @@ public class ActivePlayersList {
 				String uuidstring = player.getUniqueId().toString().replace("-", "");
 				MessageLogger.debug("Adding online player " + uuidstring + " to active list");
 				plactiveUUID.add(uuidstring);
-				plactiveNamesCS.add(player.getName());
-				plactiveNamesNCS.add(player.getName().toLowerCase());
+				plactiveNames.add(player.getName().toLowerCase());
 			}
 			OfflinePlayer[] offplayers = Bukkit.getOfflinePlayers();
 			// add offline players that were away not for that long
@@ -60,8 +58,7 @@ public class ActivePlayersList {
 					plactiveUUID.add(uuidstring);
 					String name = offplayer.getName();
 					if (name != null) {
-						plactiveNamesCS.add(name);
-						plactiveNamesNCS.add(name.toLowerCase());
+						plactiveNames.add(name.toLowerCase());
 					}
 				}
 			}
@@ -80,8 +77,7 @@ public class ActivePlayersList {
 				OfflinePlayer offplayer = Bukkit.getOfflinePlayer(UUID.fromString(listuuid));
 				String name = offplayer.getName();
 				if (name != null) {
-					plactiveNamesCS.add(name);
-					plactiveNamesNCS.add(name.toLowerCase());
+					plactiveNames.add(name.toLowerCase());
 				}
 			}
 		} catch (Exception e) {
@@ -109,18 +105,11 @@ public class ActivePlayersList {
 		return plactiveUUID.contains(uuid);
 	}
 
-	public boolean isActiveNameCS(String name) {
+	public boolean isActiveName(String name) {
 		if (name == null) {
 			return true;
 		}
-		return plactiveNamesCS.contains(name);
-	}
-
-	public boolean isActiveNameNCS(String name) {
-		if (name == null) {
-			return true;
-		}
-		return plactiveNamesNCS.contains(name.toLowerCase());
+		return plactiveNames.contains(name.toLowerCase());
 	}
 
 }

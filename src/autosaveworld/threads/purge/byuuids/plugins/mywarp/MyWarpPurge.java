@@ -43,14 +43,14 @@ public class MyWarpPurge {
 			MyWarpInvitesClearTask invitesClearTask = new MyWarpInvitesClearTask(warp);
 			if (!warp.isPublicAll()) {
 				for (String name : warp.getAllInvitedPlayers()) {
-					if (!activePlayersStorage.isActiveNameCS(name)) {
+					if (!activePlayersStorage.isActiveName(name)) {
 						MessageLogger.debug("Warp member "+name+" is inactive");
 						invitesClearTask.add(name);
 					}
 				}
 			}
 			// delete warp if owner and members are inactive
-			if (!activePlayersStorage.isActiveNameCS(warp.getCreator()) && (invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size())) {
+			if (!activePlayersStorage.isActiveName(warp.getCreator()) && (invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size())) {
 				MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
 				// delete warp
 				WarpDeleteTask deleteTask = new WarpDeleteTask(warp);

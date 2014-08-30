@@ -61,7 +61,7 @@ public class WGPurge {
 				domains.add(rg.getMembers());
 				for (DefaultDomain domain : domains) {
 					for (String playerName : domain.getPlayers()) {
-						if (!activePlayersStorage.isActiveNameNCS(playerName)) {
+						if (!activePlayersStorage.isActiveName(playerName)) {
 							MessageLogger.debug(playerName + " is inactive");
 							domainClearTask.add(playerName);
 						}

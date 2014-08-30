@@ -45,7 +45,7 @@ public class MVInvPurge {
 			for (String plfile : mcinvpfld.list()) {
 				String plname = plfile.substring(0, plfile.lastIndexOf("."));
 
-				if (!activePlayersStorage.isActiveNameCS(plname)) {
+				if (!activePlayersStorage.isActiveName(plname)) {
 					MessageLogger.debug("Removing " + plname + " MVInv files");
 					// remove files from MVInv world folders
 					for (World wname : Bukkit.getWorlds()) {
