@@ -18,7 +18,7 @@
 package autosaveworld.threads.purge.byuuids.plugins.wg;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -46,9 +46,7 @@ public class WGPurge {
 		for (final World w : Bukkit.getWorlds()) {
 			MessageLogger.debug("Checking WG protections in world " + w.getName());
 			final RegionManager m = wg.getRegionManager(w);
-
-			// search for inactive players in regions
-			HashSet<ProtectedRegion> regions = new HashSet<ProtectedRegion>(m.getRegions().values());
+			LinkedList<ProtectedRegion> regions = new LinkedList<ProtectedRegion>(m.getRegions().values());
 			TaskQueue queue = new TaskQueue(w);
 			for (final ProtectedRegion rg : regions) {
 				MessageLogger.debug("Checking region " + rg.getId());

@@ -46,7 +46,7 @@ public class LWCPurge {
 					}
 				}
 			}
-			if (!activePlayersStorage.isActiveNameCS(pr.getOwner()) && !activePlayersStorage.isActiveUUID(pr.getOwner()) && clearTask.getPlayerToClearCount() == pr.getPermissions().size()) {
+			if (!activePlayersStorage.isActiveNameCS(pr.getOwner()) && !activePlayersStorage.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
 				MessageLogger.debug("Protection owner "+pr.getOwner()+" is inactive");
 				// regen block if needed
 				if (delblocks) {

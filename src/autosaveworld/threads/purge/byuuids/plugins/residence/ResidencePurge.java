@@ -43,8 +43,6 @@ public class ResidencePurge {
 		}
 		boolean wepresent = (Bukkit.getPluginManager().getPlugin("WorldEdit") != null);
 		TaskQueue queue = new TaskQueue();
-
-		// search for residences with inactive players
 		for (final ResidenceArea resarea : reslist) {
 			MessageLogger.debug("Checking residence " + resarea.getName());
 			ResidenceRenterClearTask renterClearTask = null;
