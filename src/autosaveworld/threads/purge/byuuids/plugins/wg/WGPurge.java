@@ -61,29 +61,28 @@ public class WGPurge {
 				ArrayList<DefaultDomain> domains = new ArrayList<DefaultDomain>();
 				domains.add(rg.getOwners());
 				domains.add(rg.getMembers());
-				int inactive = 0;
 				for (DefaultDomain domain : domains) {
 					for (String playerName : domain.getPlayers()) {
 						if (!activePlayersStorage.isActiveNameNCS(playerName)) {
 							MessageLogger.debug(playerName + " is inactive");
 							domainClearTask.add(playerName);
-							inactive++;
 						}
 					}
 					for (UUID playerUUID : domain.getUniqueIds()) {
 						if (!activePlayersStorage.isActiveUUID(playerUUID)) {
 							MessageLogger.debug(playerUUID + " is inactive");
 							domainClearTask.add(playerUUID);
-							inactive++;
 						}
 					}
 				}
 				// remove region if all owners and members are inactive
-				if (inactive == (rg.getOwners().size() + rg.getMembers().size())) {
+				if (domainClearTask.getPlayersToClearCount() == (rg.getOwners().size() + rg.getMembers().size())) {
+					//regen region if needed
 					if (regenrg) {
 						RegionRegenTask regenTask = new RegionRegenTask(rg, noregenoverlap);
 						queue.addTask(regenTask);
 					}
+					// delete region
 					RegionDeleteTask deleteTask = new RegionDeleteTask(rg);
 					queue.addTask(deleteTask);
 					deletedrg += 1;
