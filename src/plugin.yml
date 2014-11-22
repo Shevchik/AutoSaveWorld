@@ -1,13 +1,8 @@
 name: AutoSaveWorld
 main: autosaveworld.core.AutoSaveWorld
-version: 4.14.dev
+version: 4.14
 author: _Shevchik_
 load: STARTUP
-description: >
-             Provides automatic world saves at defined intervals.  The focus
-             of the plugin is to provide a method to flush changes to disk.
-             Also provides automatic world backups. Can also purge plugins data for players 
-             that are not played on server for too long
 commands:
   autosaveworld:
     description: All AutoSaveWorld commands
