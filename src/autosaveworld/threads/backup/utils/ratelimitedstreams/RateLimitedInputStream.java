@@ -41,7 +41,7 @@ public class RateLimitedInputStream extends InputStream {
 		}
 		long readTime = System.currentTimeMillis() - startTime;
 		if ((bytesRead + bytesToRead) > (readTime * bytesperms)) {
-            try {
+			try {
 				Thread.sleep(((bytesRead + bytesToRead) / bytesperms) - readTime);
 			} catch (InterruptedException e) {
 			}

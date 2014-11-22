@@ -49,7 +49,7 @@ public class CommandsHandler implements CommandExecutor {
 		this.config = config;
 		this.configmsg = configmsg;
 		this.localeChanger = localeChanger;
-	};
+	}
 
 	private PermissionCheck permCheck = new PermissionCheck();
 
