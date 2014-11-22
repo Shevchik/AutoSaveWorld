@@ -21,7 +21,6 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -37,8 +36,6 @@ import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.WorldRegenCopyThread;
 import autosaveworld.utils.StringUtils;
-import autosaveworld.utils.codeinvoker.CodeInvoker;
-import autosaveworld.utils.codeinvoker.CodeInvoker.EmptyReturn;
 
 public class CommandsHandler implements CommandExecutor {
 
@@ -193,26 +190,6 @@ public class CommandsHandler implements CommandExecutor {
 				WorldRegenCopyThread copythread = new WorldRegenCopyThread(plugin, config, configmsg);
 				copythread.setWorld(args[1]);
 				copythread.start();
-				return true;
-			} else if ((args.length >= 2) && args[0].equalsIgnoreCase("invokecode")) {
-				// invoke code
-				sender.sendMessage(ChatColor.BLUE + "Invoking code");
-				CodeInvoker invoker = new CodeInvoker();
-				if (args.length > 2) {
-					HashMap<String, String> map = new HashMap<String, String>();
-					for (String string : Arrays.copyOfRange(args, 2, args.length)) {
-						String[] split = string.split("[,]");
-						if (split.length == 2) {
-							map.put(split[0], split[1]);
-						}
-					}
-					invoker.injectContext(map);
-				}
-				Object returned = invoker.invokeCode(args[1]);
-				if (!(returned instanceof EmptyReturn)) {
-					sender.sendMessage(ChatColor.BLUE + "Invoke code result: "+returned);
-				}
-				sender.sendMessage(ChatColor.BLUE + "Invoke code finished");
 				return true;
 			} else if ((args.length == 1) && args[0].equalsIgnoreCase("reload")) {
 				// reload
