@@ -42,23 +42,15 @@ public class DropboxBackupOperations {
 		this.excludefolders = excludefolders;
 	}
 
-	public void backupWorld(World world, boolean disableWorldSaving) {
+	public void backupWorld(World world) {
 		MessageLogger.debug("Backuping world " + world.getWorldFolder().getName());
-
-		boolean savestatus = world.isAutoSave();
-		if (disableWorldSaving) {
-			world.setAutoSave(false);
-		}
 		try {
 			File fromfolder = world.getWorldFolder().getAbsoluteFile();
 			String destfolder = path + "/worlds/" + world.getWorldFolder().getName();
 			backupFolder(fromfolder, destfolder);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			world.setAutoSave(savestatus);
 		}
-
 		MessageLogger.debug("Backuped world " + world.getWorldFolder().getName());
 	}
 

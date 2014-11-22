@@ -112,8 +112,8 @@ public class AutoSaveThread extends Thread {
 
 	public void performSave() {
 
-		if (!config.backupDisableWorldSaving && AutoBackupThread.backupRunning) {
-			MessageLogger.debug("Backup is running with world saving enabled, skipping autosave");
+		if (AutoBackupThread.backupRunning) {
+			MessageLogger.debug("Backup is running, skipping autosave");
 			return;
 		}
 

@@ -39,19 +39,13 @@ public class FTPBackupOperations {
 		this.ftp = ftp;
 	}
 
-	public void backupWorld(World world, boolean disableWorldSaving) {
+	public void backupWorld(World world) {
 		MessageLogger.debug("Backuping world " + world.getWorldFolder().getName());
-		boolean savestaus = world.isAutoSave();
-		if (disableWorldSaving) {
-			world.setAutoSave(false);
-		}
 		try {
 			File worldfolder = world.getWorldFolder().getAbsoluteFile();
 			backupFolder(worldfolder);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			world.setAutoSave(savestaus);
 		}
 		MessageLogger.debug("Backuped world " + world.getWorldFolder().getName());
 	}

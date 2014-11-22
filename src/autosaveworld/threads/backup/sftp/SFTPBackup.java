@@ -88,7 +88,7 @@ public class SFTPBackup {
 				channelSftp.cd("worlds");
 				for (World w : Bukkit.getWorlds()) {
 					if (config.backupFTPBackupWorldsList.contains("*") || config.backupFTPBackupWorldsList.contains(w.getWorldFolder().getName())) {
-						bo.backupWorld(w, config.backupDisableWorldSaving);
+						bo.backupWorld(w);
 					}
 				}
 				channelSftp.cd("..");

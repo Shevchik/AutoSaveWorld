@@ -113,7 +113,7 @@ public class AutoBackupThread extends Thread {
 
 	}
 
-	public static boolean backupRunning = false;
+	public static volatile boolean backupRunning = false;
 
 	public void performBackup() {
 

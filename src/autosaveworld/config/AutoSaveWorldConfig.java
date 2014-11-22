@@ -47,7 +47,6 @@ public class AutoSaveWorldConfig {
 	public int backupInterval = 60 * 60 * 6;
 	public boolean backupBroadcast = true;
 	public boolean backupsaveBefore = true;
-	public boolean backupDisableWorldSaving = false;
 	public long backupRateLimit = -1;
 	// localfs backup
 	public boolean backupLFSEnabled = true;
@@ -157,7 +156,6 @@ public class AutoSaveWorldConfig {
 		backupInterval = config.getInt("backup.interval", backupInterval);
 		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
 		backupsaveBefore = config.getBoolean("backup.savebefore", backupsaveBefore);
-		backupDisableWorldSaving = config.getBoolean("backup.disableworldsaving", backupDisableWorldSaving);
 		backupRateLimit = config.getLong("backup.rateLimit", backupRateLimit);
 		// localfs
 		backupLFSEnabled = config.getBoolean("backup.localfs.enabled", backupLFSEnabled);
@@ -311,7 +309,6 @@ public class AutoSaveWorldConfig {
 		config.set("backup.enabled", backupEnabled);
 		config.set("backup.interval", backupInterval);
 		config.set("backup.savebefore", backupsaveBefore);
-		config.set("backup.disableworldsaving", backupDisableWorldSaving);
 		config.set("backup.broadcast", backupBroadcast);
 		config.set("backup.rateLimit", backupRateLimit);
 		// localfs
