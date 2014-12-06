@@ -23,13 +23,13 @@ import org.bukkit.plugin.PluginManager;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.byuuids.plugins.DatfilePurge;
-import autosaveworld.threads.purge.byuuids.plugins.MVInvPurge;
-import autosaveworld.threads.purge.byuuids.plugins.lwc.LWCPurge;
-import autosaveworld.threads.purge.byuuids.plugins.mywarp.MyWarpPurge;
-import autosaveworld.threads.purge.byuuids.plugins.permissions.PermissionsPurge;
-import autosaveworld.threads.purge.byuuids.plugins.residence.ResidencePurge;
-import autosaveworld.threads.purge.byuuids.plugins.wg.WGPurge;
+import autosaveworld.threads.purge.plugins.DatfilePurge;
+import autosaveworld.threads.purge.plugins.MVInvPurge;
+import autosaveworld.threads.purge.plugins.lwc.LWCPurge;
+import autosaveworld.threads.purge.plugins.mywarp.MyWarpPurge;
+import autosaveworld.threads.purge.plugins.permissions.PermissionsPurge;
+import autosaveworld.threads.purge.plugins.residence.ResidencePurge;
+import autosaveworld.threads.purge.plugins.wg.WGPurge;
 
 public class PurgeByUUIDs {
 
