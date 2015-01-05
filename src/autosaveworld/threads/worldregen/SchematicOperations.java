@@ -28,13 +28,10 @@ import autosaveworld.utils.SchedulerUtils;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.LocalEntity;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
 @SuppressWarnings("deprecation")
@@ -47,18 +44,12 @@ public class SchematicOperations {
 				for (SchematicToSave schematicdata : schematicdatas) {
 					try {
 						// create clipboard
-						BukkitWorld bw = new BukkitWorld(world);
-						EditSession es = new EditSession(bw, Integer.MAX_VALUE);
+						BukkitWorld weworld = new BukkitWorld(world);
+						EditSession es = new EditSession(weworld, Integer.MAX_VALUE);
 						CuboidClipboard clipboard = new CuboidClipboard(schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)), schematicdata.getMin(), schematicdata.getMin().subtract(schematicdata.getMax()));
-						Region region = new CuboidRegion(bw, schematicdata.getMin(), schematicdata.getMax());
 						es.setFastMode(true);
 						// copy blocks
 						clipboard.copy(es);
-						// copy entities (note: worldedit doesn't save entities to schematic, but i will just leave it here in case worldedit will start doing it some day)
-						LocalEntity[] entities = bw.getEntities(region);
-						for (LocalEntity entity : entities) {
-							clipboard.storeEntity(entity);
-						}
 						// save to schematic
 						SchematicFormat.MCEDIT.save(clipboard, schematicdata.getFile());
 					} catch (IOException | DataException e) {
@@ -128,12 +119,6 @@ public class SchematicOperations {
 					}
 					try {
 						es.flushQueue();
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
-					// paste entities (note: worldedit doesn't paste entities from schematic, but i will just leave it here in case worldedit will start doing it some day)
-					try {
-						clipboard.pasteEntities(origin);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					}

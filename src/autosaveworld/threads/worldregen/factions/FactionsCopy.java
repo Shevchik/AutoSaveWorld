@@ -30,9 +30,9 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
 import autosaveworld.threads.worldregen.SchematicOperations;
 
-import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColls;
+import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.massivecore.ps.PS;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
@@ -50,8 +50,8 @@ public class FactionsCopy {
 
 		new File(GlobalConstants.getFactionsTempFolder()).mkdirs();
 
-		for (final Faction f : FactionColls.get().getForWorld(wtoregen.getName()).getAll()) {
-			Set<PS> chunks = BoardColls.get().getChunks(f);
+		for (final Faction f : FactionColl.get().getAll()) {
+			Set<PS> chunks = BoardColl.get().getChunks(f);
 			// ignore factions with no claimed land
 			if (chunks.size() != 0) {
 				MessageLogger.debug("Saving faction land " + f.getName() + " to schematic");

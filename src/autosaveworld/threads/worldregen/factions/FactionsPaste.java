@@ -29,9 +29,9 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.worldregen.SchematicData.SchematicToLoad;
 import autosaveworld.threads.worldregen.SchematicOperations;
 
-import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColls;
+import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.massivecore.ps.PS;
 
 public class FactionsPaste {
@@ -47,8 +47,8 @@ public class FactionsPaste {
 
 		String schemfolder = GlobalConstants.getFactionsTempFolder();
 
-		for (final Faction f : FactionColls.get().getForWorld(wtopaste.getName()).getAll()) {
-			Set<PS> chunks = BoardColls.get().getChunks(f);
+		for (final Faction f : FactionColl.get().getAll()) {
+			Set<PS> chunks = BoardColl.get().getChunks(f);
 			// ignore factions with no claimed land
 			if (chunks.size() != 0) {
 				MessageLogger.debug("Pasting faction land " + f.getName() + " from schematic");
