@@ -61,4 +61,9 @@ public class RateLimitedInputStream extends InputStream {
 		return inputstream.read(b, off, len);
 	}
 
+	@Override
+	public void close() throws IOException {
+		inputstream.close();
+	}
+
 }

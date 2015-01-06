@@ -18,6 +18,7 @@
 package autosaveworld.threads.backup.localfs;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -38,7 +39,9 @@ public class LocalFSUtils {
 		} else {
 			if (!sourceLocation.getName().endsWith(".lck")) {
 				try {
-					Files.copy(InputStreamConstruct.getFileInputStream(sourceLocation), targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					InputStream is = InputStreamConstruct.getFileInputStream(sourceLocation);
+					Files.copy(is, targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
