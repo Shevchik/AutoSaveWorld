@@ -44,10 +44,8 @@ public class SFTPUtils {
 			sftp.cd("..");
 		} else {
 			if (!src.getName().endsWith(".lck")) {
-				try {
-					InputStream is = InputStreamConstruct.getFileInputStream(src);
+				try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
 					storeFile(sftp, is, src.getName() + ".zip");
-					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

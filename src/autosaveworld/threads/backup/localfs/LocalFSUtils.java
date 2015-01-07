@@ -38,10 +38,8 @@ public class LocalFSUtils {
 			}
 		} else {
 			if (!sourceLocation.getName().endsWith(".lck")) {
-				try {
-					InputStream is = InputStreamConstruct.getFileInputStream(sourceLocation);
+				try (InputStream is = InputStreamConstruct.getFileInputStream(sourceLocation)) {
 					Files.copy(is, targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

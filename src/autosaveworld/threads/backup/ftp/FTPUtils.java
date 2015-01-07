@@ -41,10 +41,8 @@ public class FTPUtils {
 			ftp.changeToParentDirectory();
 		} else {
 			if (!src.getName().endsWith(".lck")) {
-				try {
-					InputStream is = InputStreamConstruct.getFileInputStream(src);
+				try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
 					storeFile(ftp, is, src.getName());
-					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
