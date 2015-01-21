@@ -26,7 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.byuuids.ActivePlayersList;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 public class ResidencePurge {
 

@@ -20,7 +20,7 @@ package autosaveworld.threads.purge.plugins.lwc;
 import java.util.List;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.byuuids.ActivePlayersList;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Permission;

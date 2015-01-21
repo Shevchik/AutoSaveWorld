@@ -20,7 +20,7 @@ package autosaveworld.threads.purge.plugins.permissions;
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.byuuids.ActivePlayersList;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 public class PermissionsPurge {
 

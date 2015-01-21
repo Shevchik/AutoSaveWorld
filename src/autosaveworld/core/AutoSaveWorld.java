@@ -160,7 +160,7 @@ public class AutoSaveWorld extends JavaPlugin {
 			}
 			case PURGE: {
 				if ((purgeThread == null) || !purgeThread.isAlive()) {
-					purgeThread = new AutoPurgeThread(this, config, configmsg);
+					purgeThread = new AutoPurgeThread(config, configmsg);
 					purgeThread.start();
 				}
 				return;

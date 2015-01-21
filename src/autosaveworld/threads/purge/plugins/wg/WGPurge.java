@@ -25,7 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.byuuids.ActivePlayersList;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;

@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge.byuuids;
+package autosaveworld.threads.purge;
 
 import java.util.HashSet;
 import java.util.UUID;

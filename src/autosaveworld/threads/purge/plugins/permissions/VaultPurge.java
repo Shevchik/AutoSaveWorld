@@ -28,7 +28,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.byuuids.ActivePlayersList;
+import autosaveworld.threads.purge.ActivePlayersList;
 import autosaveworld.utils.SchedulerUtils;
 
 public class VaultPurge {

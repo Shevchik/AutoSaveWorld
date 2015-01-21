@@ -26,7 +26,7 @@ import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.purge.byuuids.ActivePlayersList;
+import autosaveworld.threads.purge.ActivePlayersList;
 
 public class GroupManagerPurge {
 
