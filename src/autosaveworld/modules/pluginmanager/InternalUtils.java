@@ -51,7 +51,9 @@ public class InternalUtils {
 			if (thread.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
 				thread.interrupt();
 				thread.join(2000);
-				thread.stop(new Throwable("Force thread kill"));
+				if (thread.isAlive()) {
+					thread.stop();
+				}
 			}
 		}
 		// remove from plugins field
