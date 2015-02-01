@@ -24,7 +24,6 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.plugins.DatfilePurge;
-import autosaveworld.threads.purge.plugins.MVInvPurge;
 import autosaveworld.threads.purge.plugins.lwc.LWCPurge;
 import autosaveworld.threads.purge.plugins.mywarp.MyWarpPurge;
 import autosaveworld.threads.purge.plugins.permissions.PermissionsPurge;
@@ -114,15 +113,6 @@ public class AutoPurgeThread extends Thread {
 			MessageLogger.debug("LWC found, purging");
 			try {
 				new LWCPurge().doLWCPurgeTask(activePlayersStorage, config.purgeLWCDelProtectedBlocks);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-
-		if ((pm.getPlugin("Multiverse-Inventories") != null) && config.purgeMVInv) {
-			MessageLogger.debug("Multiverse-Inventories found, purging");
-			try {
-				new MVInvPurge().doMVInvPurgeTask(activePlayersStorage);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

@@ -98,7 +98,6 @@ public class AutoSaveWorldConfig {
 	public boolean purgeWGNoregenOverlap = true;
 	public boolean purgeLWC = true;
 	public boolean purgeLWCDelProtectedBlocks = false;
-	public boolean purgeMVInv = true;
 	public boolean purgeResidence = true;
 	public boolean purgeResidenceRegenArea = false;
 	public boolean purgePerms = true;
@@ -220,7 +219,6 @@ public class AutoSaveWorldConfig {
 		purgeWGNoregenOverlap = config.getBoolean("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);
 		purgeLWC = config.getBoolean("purge.lwc.enabled", purgeLWC);
 		purgeLWCDelProtectedBlocks = config.getBoolean("purge.lwc.deletepurgedblocks", purgeLWCDelProtectedBlocks);
-		purgeMVInv = config.getBoolean("purge.mvinv.enabled", purgeMVInv);
 		purgeResidence = config.getBoolean("purge.residence.enabled", purgeResidence);
 		purgeResidenceRegenArea = config.getBoolean("purge.residence.regenpurgedresidence", purgeResidenceRegenArea);
 		purgePerms = config.getBoolean("purge.permissions.enabled", purgePerms);
@@ -362,7 +360,6 @@ public class AutoSaveWorldConfig {
 		config.set("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);
 		config.set("purge.lwc.enabled", purgeLWC);
 		config.set("purge.lwc.deletepurgedblocks", purgeLWCDelProtectedBlocks);
-		config.set("purge.mvinv.enabled", purgeMVInv);
 		config.set("purge.residence.enabled", purgeResidence);
 		config.set("purge.residence.regenpurgedresidence", purgeResidenceRegenArea);
 		config.set("purge.permissions.enabled", purgePerms);
