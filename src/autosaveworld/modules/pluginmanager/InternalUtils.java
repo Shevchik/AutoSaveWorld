@@ -40,12 +40,20 @@ import org.bukkit.plugin.UnknownDependencyException;
 
 public class InternalUtils {
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, NoSuchMethodException, InvocationTargetException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
 		// disable plugin
 		pluginmanager.disablePlugin(plugin);
+		// kill threads if any
+		for (Thread thread : Thread.getAllStackTraces().keySet()) {
+			if (thread.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
+				thread.interrupt();
+				thread.join(2000);
+				thread.stop(new Throwable("Force thread kill"));
+			}
+		}
 		// remove from plugins field
 		Field pluginsField = managerclass.getDeclaredField("plugins");
 		pluginsField.setAccessible(true);
