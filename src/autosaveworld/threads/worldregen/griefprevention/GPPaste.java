@@ -17,13 +17,10 @@
 
 package autosaveworld.threads.worldregen.griefprevention;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 
 import org.bukkit.Bukkit;
@@ -42,27 +39,15 @@ public class GPPaste {
 		wtopaste = Bukkit.getWorld(worldtopasteto);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void pasteAllFromSchematics() {
 		MessageLogger.debug("Pasting GP regions from schematics");
 
 		final String schemfolder = GlobalConstants.getGPTempFolder();
 
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
-		// get database
-		ArrayList<Claim> claimArray = null;
-		try {
-			Field fld = DataStore.class.getDeclaredField("claims");
-			fld.setAccessible(true);
-			Object o = fld.get(gp.dataStore);
-			claimArray = (ArrayList<Claim>) o;
-		} catch (Exception e) {
-			throw new RuntimeException("Can't access GriefPrevention database", e);
-		}
 
 		// paste all claims
-		for (int i = 0; i < claimArray.size(); i++) {
-			Claim claim = claimArray.get(i);
+		for (Claim claim : gp.dataStore.getClaims()) {
 			// paste
 			MessageLogger.debug("Pasting GP region " + claim.getID() + " from schematics");
 			SchematicToLoad schematicdata = new SchematicToLoad(schemfolder + claim.getID());

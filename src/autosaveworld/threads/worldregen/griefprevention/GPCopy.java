@@ -18,13 +18,10 @@
 package autosaveworld.threads.worldregen.griefprevention;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 
 import org.bukkit.Bukkit;
@@ -47,7 +44,6 @@ public class GPCopy {
 		wtoregen = Bukkit.getWorld(worldtoregen);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void copyAllToSchematics() {
 		MessageLogger.debug("Saving griefprevention regions to schematics");
 
@@ -55,20 +51,8 @@ public class GPCopy {
 
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
 
-		// get database
-		ArrayList<Claim> claimArray = null;
-		try {
-			Field fld = DataStore.class.getDeclaredField("claims");
-			fld.setAccessible(true);
-			Object o = fld.get(gp.dataStore);
-			claimArray = (ArrayList<Claim>) o;
-		} catch (Throwable e) {
-			throw new RuntimeException("Can't access GriefPrevention database", e);
-		}
-
 		// save all claims
-		for (int i = 0; i < claimArray.size(); i++) {
-			Claim claim = claimArray.get(i);
+		for (Claim claim : gp.dataStore.getClaims()) {
 			// get coords
 			double xmin = claim.getLesserBoundaryCorner().getX();
 			double zmin = claim.getLesserBoundaryCorner().getZ();
