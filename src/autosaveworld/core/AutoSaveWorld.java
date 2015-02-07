@@ -20,6 +20,7 @@ package autosaveworld.core;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
+import autosaveworld.commands.NoTabCompleteCommandsHandler;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
@@ -87,10 +88,18 @@ public class AutoSaveWorld extends JavaPlugin {
 		configmsg = new AutoSaveWorldConfigMSG();
 		configmsg.loadmsg();
 		// Register commands
-		CommandsHandler ch = new CommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
-		ch.initSubCommandHandlers();
-		for (String commandName : getDescription().getCommands().keySet()) {
-			getCommand(commandName).setExecutor(ch);
+		try {
+			CommandsHandler commandshandler = new CommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
+			commandshandler.initSubCommandHandlers();
+			for (String commandName : getDescription().getCommands().keySet()) {
+				getCommand(commandName).setExecutor(commandshandler);
+			}
+		} catch (Throwable t) {
+			NoTabCompleteCommandsHandler commandshandler = new NoTabCompleteCommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
+			commandshandler.initSubCommandHandlers();
+			for (String commandName : getDescription().getCommands().keySet()) {
+				getCommand(commandName).setExecutor(commandshandler);
+			}
 		}
 		// Load plugin manager
 		pluginmanager = new PluginManager();
