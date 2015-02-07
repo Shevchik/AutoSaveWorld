@@ -7,7 +7,7 @@ commands:
   autosaveworld:
     description: All AutoSaveWorld commands
     aliases: asw
-    usage: Use /asw help  to show all commands available in plugin.
+    usage: Use /asw help  to show all commands available in plugin
   autosave:
     description: AutoSaveWorld /asw save command
     aliases: save
@@ -19,4 +19,4 @@ commands:
   autopurge:
     description: AutoSaveWorld /asw purge command
     aliases: purge
-    usage: Use /purge to run /asw purge command
+    usage: Use /purge to run AutoPurge

@@ -19,6 +19,7 @@ package autosaveworld.modules.processmanager;
 
 import org.bukkit.command.CommandSender;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.StringUtils;
 
 public class ProcessManager {
@@ -34,6 +35,8 @@ public class ProcessManager {
 			supplyProcessInput(sender, processname, StringUtils.join(args, " "));
 		} else if (command.equalsIgnoreCase("list")) {
 			listProcesses(sender);
+		} else {
+			MessageLogger.sendMessage(sender, "Invalid process manager command");
 		}
 	}
 

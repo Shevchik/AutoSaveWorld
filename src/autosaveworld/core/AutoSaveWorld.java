@@ -88,6 +88,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		configmsg.loadmsg();
 		// Register commands
 		CommandsHandler ch = new CommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
+		ch.initSubCommandHandlers();
 		for (String commandName : getDescription().getCommands().keySet()) {
 			getCommand(commandName).setExecutor(ch);
 		}

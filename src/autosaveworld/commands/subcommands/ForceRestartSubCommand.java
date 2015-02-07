@@ -15,20 +15,36 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.commands.subcommands;
 
-import autosaveworld.config.AutoSaveWorldConfig;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class DataPurge {
+import org.bukkit.command.CommandSender;
 
-	protected AutoSaveWorldConfig config;
-	protected ActivePlayersList activeplayerslist;
+import autosaveworld.commands.ISubCommand;
+import autosaveworld.core.AutoSaveWorld;
 
-	public DataPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		this.config = config;
-		this.activeplayerslist = activeplayerslist;
+public class ForceRestartSubCommand implements ISubCommand {
+
+	private AutoSaveWorld plugin;
+	public ForceRestartSubCommand(AutoSaveWorld plugin) {
+		this.plugin = plugin;
 	}
 
-	public abstract void doPurge();
+	@Override
+	public void handle(CommandSender sender, String[] args) {
+		plugin.autorestartThread.startrestart(true);
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public int getMinArguments() {
+		return 0;
+	}
 
 }

@@ -18,6 +18,9 @@
 package autosaveworld.modules.pluginmanager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -29,6 +32,7 @@ import org.bukkit.plugin.Plugin;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.StringUtils;
 
 public class PluginManager {
 
@@ -44,6 +48,32 @@ public class PluginManager {
 		} else {
 			MessageLogger.sendMessage(sender, "Invalid plugin manager command");
 		}
+	}
+
+	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "reload"});
+	public List<String> getTabComplete(CommandSender sender, String[] args) {
+		if (args.length == 1) {
+			ArrayList<String> result = new ArrayList<String>();
+			for (String command : cmds) {
+				if (command.startsWith(args[0])) {
+					result.add(command);
+				}
+			}
+			return result;
+		}
+		if (args.length >= 2) {
+			if (args[0].equalsIgnoreCase("unload") || args[0].equalsIgnoreCase("reload")) {
+				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
+				ArrayList<String> result = new ArrayList<String>();
+				for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+					if (plugin.getName().startsWith(input)) {
+						result.add(plugin.getName());
+					}
+				}
+				return result;
+			}
+		}
+		return new ArrayList<String>();
 	}
 
 	private void loadPlugin(CommandSender sender, String pluginname) {

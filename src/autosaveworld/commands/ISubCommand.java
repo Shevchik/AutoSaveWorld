@@ -15,20 +15,18 @@
  *
  */
 
-package autosaveworld.threads.purge;
+package autosaveworld.commands;
 
-import autosaveworld.config.AutoSaveWorldConfig;
+import java.util.List;
 
-public abstract class DataPurge {
+import org.bukkit.command.CommandSender;
 
-	protected AutoSaveWorldConfig config;
-	protected ActivePlayersList activeplayerslist;
+public interface ISubCommand {
 
-	public DataPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		this.config = config;
-		this.activeplayerslist = activeplayerslist;
-	}
+	public void handle(CommandSender sender, String[] args);
 
-	public abstract void doPurge();
+	public List<String> tabComplete(CommandSender sender, String[] args);
+
+	public int getMinArguments();
 
 }
