@@ -19,17 +19,23 @@ package autosaveworld.threads.purge.plugins.lwc;
 
 import java.util.List;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.DataPurge;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Permission;
 import com.griefcraft.model.Protection;
 import com.griefcraft.model.Protection.Type;
 
-public class LWCPurge {
+public class LWCPurge extends DataPurge {
 
-	public void doLWCPurgeTask(ActivePlayersList activePlayersStorage, boolean delblocks) {
+	public LWCPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
+		super(config, activeplayerslist);
+	}
+
+	public void doPurge() {
 
 		MessageLogger.debug("LWC purge started");
 
@@ -41,15 +47,15 @@ public class LWCPurge {
 			LWCMembersClearTask clearTask = new LWCMembersClearTask(pr);
 			if (pr.getType() == Type.PRIVATE) {
 				for (Permission permission : pr.getPermissions()) {
-					if (!activePlayersStorage.isActiveName(permission.getName()) && !activePlayersStorage.isActiveUUID(permission.getName())) {
+					if (!activeplayerslist.isActiveName(permission.getName()) && !activeplayerslist.isActiveUUID(permission.getName())) {
 						clearTask.add(permission);
 					}
 				}
 			}
-			if (!activePlayersStorage.isActiveName(pr.getOwner()) && !activePlayersStorage.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
+			if (!activeplayerslist.isActiveName(pr.getOwner()) && !activeplayerslist.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
 				MessageLogger.debug("Protection owner "+pr.getOwner()+" is inactive");
 				// regen block if needed
-				if (delblocks) {
+				if (config.purgeLWCDelProtectedBlocks) {
 					LWCRegenTask regenTask = new LWCRegenTask(pr);
 					queue.addTask(regenTask);
 				}
@@ -69,6 +75,5 @@ public class LWCPurge {
 
 		MessageLogger.debug("LWC purge finished, deleted " + deleted + " inactive protections");
 	}
-
 
 }

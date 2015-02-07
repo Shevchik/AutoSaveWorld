@@ -38,7 +38,7 @@ public class ActivePlayersList {
 	private HashSet<String> plactiveUUID = new HashSet<String>();
 	private HashSet<String> plactiveNames = new HashSet<String>();
 
-	public void gatherActivePlayersList(long awaytime) {
+	public void calculateActivePlayers(long awaytime) {
 		// fill lists
 		// add online players
 		for (Player player : Bukkit.getOnlinePlayers()) {

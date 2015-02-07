@@ -24,8 +24,10 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.DataPurge;
 
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -33,9 +35,13 @@ import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-public class WGPurge {
+public class WGPurge extends DataPurge {
 
-	public void doWGPurgeTask(ActivePlayersList activePlayersStorage, final boolean regenrg, boolean noregenoverlap) {
+	public WGPurge(AutoSaveWorldConfig config, ActivePlayersList activelist) {
+		super(config, activelist);
+	}
+
+	public void doPurge() {
 
 		MessageLogger.debug("WG purge started");
 
@@ -61,13 +67,13 @@ public class WGPurge {
 				domains.add(rg.getMembers());
 				for (DefaultDomain domain : domains) {
 					for (String playerName : domain.getPlayers()) {
-						if (!activePlayersStorage.isActiveName(playerName)) {
+						if (!activeplayerslist.isActiveName(playerName)) {
 							MessageLogger.debug(playerName + " is inactive");
 							domainClearTask.add(playerName);
 						}
 					}
 					for (UUID playerUUID : domain.getUniqueIds()) {
-						if (!activePlayersStorage.isActiveUUID(playerUUID)) {
+						if (!activeplayerslist.isActiveUUID(playerUUID)) {
 							MessageLogger.debug(playerUUID + " is inactive");
 							domainClearTask.add(playerUUID);
 						}
@@ -76,8 +82,8 @@ public class WGPurge {
 				// remove region if all owners and members are inactive
 				if (domainClearTask.getPlayersToClearCount() == (rg.getOwners().size() + rg.getMembers().size())) {
 					// regen region if needed
-					if (regenrg) {
-						RegionRegenTask regenTask = new RegionRegenTask(rg, noregenoverlap);
+					if (config.purgeWGRegenRg) {
+						RegionRegenTask regenTask = new RegionRegenTask(rg, config.purgeWGNoregenOverlap);
 						queue.addTask(regenTask);
 					}
 					// delete region

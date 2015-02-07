@@ -24,12 +24,18 @@ import me.taylorkelly.mywarp.data.Warp;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.DataPurge;
 
-public class MyWarpPurge {
+public class MyWarpPurge extends DataPurge {
 
-	public void doMyWarpPurgeTask(ActivePlayersList activePlayersStorage) {
+	public MyWarpPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
+		super(config, activeplayerslist);
+	}
+
+	public void doPurge() {
 
 		MessageLogger.debug("MyWarp purge started");
 
@@ -43,14 +49,14 @@ public class MyWarpPurge {
 			MyWarpInvitesClearTask invitesClearTask = new MyWarpInvitesClearTask(warp);
 			if (!warp.isPublicAll()) {
 				for (String name : warp.getAllInvitedPlayers()) {
-					if (!activePlayersStorage.isActiveName(name)) {
+					if (!activeplayerslist.isActiveName(name)) {
 						MessageLogger.debug("Warp member "+name+" is inactive");
 						invitesClearTask.add(name);
 					}
 				}
 			}
 			// delete warp if owner and members are inactive
-			if (!activePlayersStorage.isActiveName(warp.getCreator()) && (invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size())) {
+			if (!activeplayerslist.isActiveName(warp.getCreator()) && (invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size())) {
 				MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
 				// delete warp
 				WarpDeleteTask deleteTask = new WarpDeleteTask(warp);

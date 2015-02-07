@@ -21,12 +21,18 @@ import java.io.File;
 
 import org.bukkit.Bukkit;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.DataPurge;
 
-public class DatfilePurge {
+public class DatfilePurge extends DataPurge {
 
-	public void doDelPlayerDatFileTask(ActivePlayersList activePlayersStorage) {
+	public DatfilePurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
+		super(config, activeplayerslist);
+	}
+
+	public void doPurge() {
 
 		MessageLogger.debug("Playre .dat file purge started");
 
@@ -37,7 +43,7 @@ public class DatfilePurge {
 		for (File playerfile : playersdatfolder.listFiles()) {
 			if (playerfile.getName().endsWith(".dat")) {
 				String playeruuid = playerfile.getName().substring(0, playerfile.getName().length() - 4);
-				if (!activePlayersStorage.isActiveUUID(playeruuid)) {
+				if (!activeplayerslist.isActiveUUID(playeruuid)) {
 					MessageLogger.debug(playeruuid + " is inactive. Removing dat file");
 					playerfile.delete();
 					new File(playersstatsfolder, playerfile.getName()).delete();

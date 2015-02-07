@@ -17,6 +17,8 @@
 
 package autosaveworld.threads.purge;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
@@ -61,10 +63,7 @@ public class AutoPurgeThread extends Thread {
 		while (run) {
 			// Do our Sleep stuff!
 			for (int i = 0; i < config.purgeInterval; i++) {
-				if (!run) {
-					break;
-				}
-				if (command) {
+				if (!run || command) {
 					break;
 				}
 				try {
@@ -93,63 +92,43 @@ public class AutoPurgeThread extends Thread {
 
 		MessageLogger.debug("Purge started");
 
-		MessageLogger.debug("Gathering active players list");
-		ActivePlayersList activePlayersStorage = new ActivePlayersList(config);
-		activePlayersStorage.gatherActivePlayersList(config.purgeAwayTime * 1000);
-		MessageLogger.debug("Found " + activePlayersStorage.getActivePlayersCount() + " active players");
+		MessageLogger.debug("Finiding active players");
+		ActivePlayersList activelist = new ActivePlayersList(config);
+		activelist.calculateActivePlayers(config.purgeAwayTime * 1000);
+		MessageLogger.debug("Found " + activelist.getActivePlayersCount() + " active players");
 
+		ArrayList<DataPurge> purges = new ArrayList<DataPurge>();
 		PluginManager pm = Bukkit.getPluginManager();
-
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
-			MessageLogger.debug("WG found, purging");
-			try {
-				new WGPurge().doWGPurgeTask(activePlayersStorage, config.purgeWGRegenRg, config.purgeWGNoregenOverlap);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			MessageLogger.debug("WG found, adding to purge list");
+			purges.add(new WGPurge(config, activelist));
 		}
-
 		if ((pm.getPlugin("LWC") != null) && config.purgeLWC) {
-			MessageLogger.debug("LWC found, purging");
-			try {
-				new LWCPurge().doLWCPurgeTask(activePlayersStorage, config.purgeLWCDelProtectedBlocks);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			MessageLogger.debug("LWC found, adding to purge list");
+			purges.add(new LWCPurge(config, activelist));
 		}
-
 		if ((pm.getPlugin("Residence") != null) && config.purgeResidence) {
-			MessageLogger.debug("Residence found, purging");
-			try {
-				new ResidencePurge().doResidencePurgeTask(activePlayersStorage, config.purgeResidenceRegenArea);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			MessageLogger.debug("Residence found, adding to purge list");
+			purges.add(new ResidencePurge(config, activelist));
 		}
-
 		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
-			MessageLogger.debug("MyWarp found, purging");
-			try {
-				new MyWarpPurge().doMyWarpPurgeTask(activePlayersStorage);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			MessageLogger.debug("MyWarp found, adding to purge list");
+			purges.add(new MyWarpPurge(config, activelist));
 		}
-
 		if (config.purgePerms) {
-			try {
-				new PermissionsPurge().doPermissionsPurgeTask(activePlayersStorage);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			MessageLogger.debug("Permissions purge is enabled, adding to purge list");
+			purges.add(new PermissionsPurge(config, activelist));
+		}
+		if (config.purgeDat) {
+			MessageLogger.debug("Dat purge is enabled, adding to purge list");
+			purges.add(new DatfilePurge(config, activelist));
 		}
 
-		MessageLogger.debug("Purging player .dat files");
-		if (config.purgeDat) {
+		for (DataPurge datapurge : purges) {
 			try {
-				new DatfilePurge().doDelPlayerDatFileTask(activePlayersStorage);
-			} catch (Throwable e) {
-				e.printStackTrace();
+				datapurge.doPurge();
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 

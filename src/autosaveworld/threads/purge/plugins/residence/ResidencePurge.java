@@ -25,13 +25,19 @@ import net.t00thpick1.residence.api.areas.ResidenceArea;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.threads.purge.DataPurge;
 
-public class ResidencePurge {
+public class ResidencePurge extends DataPurge {
+
+	public ResidencePurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
+		super(config, activeplayerslist);
+	}
 
 	@SuppressWarnings("deprecation")
-	public void doResidencePurgeTask(ActivePlayersList activePlayersStorage, final boolean regenres) {
+	public void doPurge() {
 
 		MessageLogger.debug("Residence purge started");
 
@@ -46,14 +52,14 @@ public class ResidencePurge {
 		for (final ResidenceArea resarea : reslist) {
 			MessageLogger.debug("Checking residence " + resarea.getName());
 			ResidenceRenterClearTask renterClearTask = null;
-			if (resarea.isRented() && !activePlayersStorage.isActiveName(resarea.getRenter()) && !activePlayersStorage.isActiveUUID(resarea.getRenter())) {
+			if (resarea.isRented() && !activeplayerslist.isActiveName(resarea.getRenter()) && !activeplayerslist.isActiveUUID(resarea.getRenter())) {
 				MessageLogger.debug("Renter "+resarea.getRenter()+" is inactive");
 				renterClearTask = new ResidenceRenterClearTask(resarea);
 			}
-			if (!activePlayersStorage.isActiveName(resarea.getOwner()) && !activePlayersStorage.isActiveUUID(resarea.getOwner()) && ((renterClearTask != null) || !resarea.isRented())) {
+			if (!activeplayerslist.isActiveName(resarea.getOwner()) && !activeplayerslist.isActiveUUID(resarea.getOwner()) && ((renterClearTask != null) || !resarea.isRented())) {
 				MessageLogger.debug("Owner "+resarea.getOwner()+" is inactive");
 				// regen residence areas if needed
-				if (regenres && wepresent) {
+				if (config.purgeResidenceRegenArea && wepresent) {
 					ResidenceRegenTask regenTask = new ResidenceRegenTask(resarea);
 					queue.addTask(regenTask);
 				}
