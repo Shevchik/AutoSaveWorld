@@ -34,7 +34,7 @@ public class BackupSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		plugin.backupThread.startbackup();
+		plugin.backupThread.triggerTaskRun();
 	}
 
 	@Override

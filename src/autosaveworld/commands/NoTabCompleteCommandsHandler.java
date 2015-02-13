@@ -98,15 +98,15 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 		// now handle commands
 		if (commandName.equalsIgnoreCase("autosave")) {
 			// "autosave" command handler
-			plugin.saveThread.startsave();
+			plugin.saveThread.triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autobackup")) {
 			// "autobackup" command handler
-			plugin.backupThread.startbackup();
+			plugin.backupThread.triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autopurge")) {
 			// "autopurge" command handler
-			plugin.purgeThread.startpurge();
+			plugin.purgeThread.triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autosaveworld")) {
 			// "autosaveworld" command handler

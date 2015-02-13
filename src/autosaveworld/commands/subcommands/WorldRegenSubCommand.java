@@ -29,7 +29,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.worldregen.WorldRegenCopyThread;
+import autosaveworld.modules.worldregen.WorldRegenCopyThread;
 
 public class WorldRegenSubCommand implements ISubCommand {
 

@@ -42,8 +42,7 @@ public class AutoConsoleCommandThread extends Thread {
 
 	@Override
 	public void run() {
-
-		MessageLogger.debug("AutoConsoleCommandThread Started");
+		MessageLogger.debug("AutoConsoleCommandThread started");
 		Thread.currentThread().setName("AutoSaveWorld AutoConsoleCommandThread");
 
 		while (run) {
@@ -64,15 +63,13 @@ public class AutoConsoleCommandThread extends Thread {
 				}
 			}
 
-			// sleep for a second
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
 		}
 
-		MessageLogger.debug("Graceful quit of AutoConsoleCommandThread");
-
+		MessageLogger.debug("AutoConsoleCommandThread stopped");
 	}
 
 	private void executeCommands(final List<String> commands) {

@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 
@@ -63,9 +63,15 @@ public class MessageLogger {
 		}
 	}
 
+	public static void disallow(AsyncPlayerPreLoginEvent e, String message) {
+		if (formattingCodesParser != null) {
+			e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
+		}
+	}
+
 	public static void disallow(PlayerLoginEvent e, String message) {
 		if (formattingCodesParser != null) {
-			e.disallow(Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
+			e.disallow(PlayerLoginEvent.Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
 		}
 	}
 

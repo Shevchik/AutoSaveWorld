@@ -15,15 +15,16 @@
  *
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.modules.worldregen;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.bukkit.World;
 
-import autosaveworld.threads.worldregen.SchematicData.SchematicToLoad;
-import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToLoad;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToSave;
 import autosaveworld.utils.SchedulerUtils;
 
 import com.sk89q.worldedit.CuboidClipboard;
@@ -37,14 +38,16 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 @SuppressWarnings("deprecation")
 public class SchematicOperations {
 
-	public static void saveToSchematic(final World world, final LinkedList<SchematicToSave> schematicdatas) {
+	public static void saveToSchematic(final World world, final List<SchematicToSave> schematicdatas) {
 		Runnable copypaste = new Runnable() {
 			@Override
 			public void run() {
+				BukkitWorld weworld = new BukkitWorld(world);
 				for (SchematicToSave schematicdata : schematicdatas) {
 					try {
+						// create dirs if needed
+						schematicdata.getFile().getParentFile().mkdirs();
 						// create clipboard
-						BukkitWorld weworld = new BukkitWorld(world);
 						EditSession es = new EditSession(weworld, Integer.MAX_VALUE);
 						CuboidClipboard clipboard = new CuboidClipboard(schematicdata.getMax().subtract(schematicdata.getMin()).add(new Vector(1, 1, 1)), schematicdata.getMin(), schematicdata.getMin().subtract(schematicdata.getMax()));
 						es.setFastMode(true);
@@ -52,7 +55,7 @@ public class SchematicOperations {
 						clipboard.copy(es);
 						// save to schematic
 						SchematicFormat.MCEDIT.save(clipboard, schematicdata.getFile());
-					} catch (IOException | DataException e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -61,7 +64,7 @@ public class SchematicOperations {
 		SchedulerUtils.callSyncTaskAndWait(copypaste);
 	}
 
-	public static void pasteFromSchematic(final World world, final LinkedList<SchematicToLoad> schematicdatas) {
+	public static void pasteFromSchematic(final World world, final List<SchematicToLoad> schematicdatas) {
 		final LinkedList<CuboidClipboard> clipboards = new LinkedList<CuboidClipboard>();
 		// load from schematics to clipboards
 		for (SchematicToLoad schematicdata : schematicdatas) {
@@ -92,8 +95,9 @@ public class SchematicOperations {
 		Runnable paste = new Runnable() {
 			@Override
 			public void run() {
+				BukkitWorld weworld = new BukkitWorld(world);
 				for (CuboidClipboard clipboard : clipboards) {
-					EditSession es = new EditSession(new BukkitWorld(world), Integer.MAX_VALUE);
+					EditSession es = new EditSession(weworld, Integer.MAX_VALUE);
 					es.setFastMode(true);
 					es.enableQueue();
 					final Vector size = clipboard.getSize();

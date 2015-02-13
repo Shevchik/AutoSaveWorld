@@ -15,20 +15,21 @@
  *
  */
 
-package autosaveworld.threads.worldregen.factions;
+package autosaveworld.modules.worldregen.plugins;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
-import autosaveworld.threads.worldregen.SchematicOperations;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToLoad;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToSave;
+import autosaveworld.modules.worldregen.tasks.CopyDataProvider;
+import autosaveworld.modules.worldregen.tasks.PasteDataProvider;
 
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
@@ -37,28 +38,22 @@ import com.massivecraft.massivecore.ps.PS;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
-public class FactionsCopy {
+public class FactionsDataProvider implements CopyDataProvider, PasteDataProvider {
 
 	private World wtoregen;
 
-	public FactionsCopy(String worldtoregen) {
-		wtoregen = Bukkit.getWorld(worldtoregen);
+	public FactionsDataProvider(World wtoregen) {
+		this.wtoregen = wtoregen;
 	}
 
-	public void copyAllToSchematics() {
-		MessageLogger.debug("Saving factions lands to schematics");
-
-		new File(GlobalConstants.getFactionsTempFolder()).mkdirs();
-
+	@Override
+	public List<SchematicToSave> getSchematicsToCopy() {
+		ArrayList<SchematicToSave> schematics = new ArrayList<SchematicToSave>();
 		for (final Faction f : FactionColl.get().getAll()) {
 			Set<PS> chunks = BoardColl.get().getChunks(f);
 			// ignore factions with no claimed land
 			if (chunks.size() != 0) {
-				MessageLogger.debug("Saving faction land " + f.getName() + " to schematic");
-				// create temp folder for faction
-				new File(GlobalConstants.getFactionsTempFolder() + f.getName()).mkdirs();
-				// save all chunks
-				LinkedList<SchematicToSave> schematics = new LinkedList<SchematicToSave>();
+				String name = f.getName();
 				for (PS ps : chunks) {
 					if (ps.getWorld().equalsIgnoreCase(wtoregen.getName())) {
 						// get coords
@@ -67,14 +62,41 @@ public class FactionsCopy {
 						final Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xcoord * 16, 0, zcoord * 16));
 						final Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, (xcoord * 16) + 15, wtoregen.getMaxHeight(), (zcoord * 16) + 15));
 						// add to save list
-						SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getFactionsTempFolder() + f.getName() + File.separator + "X" + xcoord + "Z" + zcoord, bvmin, bvmax);
-						schematics.add(schematicdata);
+						schematics.add(new SchematicToSave(
+							GlobalConstants.getFactionsTempFolder() + name + File.separator + "X" + xcoord + "Z" + zcoord,
+							bvmin, bvmax,
+							"Saving faction land "+name+" chunk to schematic",
+							"Faction land "+name+" chunk saved"
+						));
 					}
 				}
-				SchematicOperations.saveToSchematic(wtoregen, schematics);
-				MessageLogger.debug("Faction land " + f.getName() + " saved");
 			}
 		}
+		return schematics;
+	}
+
+	@Override
+	public List<SchematicToLoad> getSchematicsToPaste() {
+		ArrayList<SchematicToLoad> schematics = new ArrayList<SchematicToLoad>();
+		for (final Faction f : FactionColl.get().getAll()) {
+			Set<PS> chunks = BoardColl.get().getChunks(f);
+			// ignore factions with no claimed land
+			if (chunks.size() != 0) {
+				String name = f.getName();
+				for (PS ps : chunks) {
+					if (ps.getWorld().equalsIgnoreCase(wtoregen.getName())) {
+						final int xcoord = ps.getChunkX();
+						final int zcoord = ps.getChunkZ();
+						schematics.add(new SchematicToLoad(
+							GlobalConstants.getFactionsTempFolder() + name + File.separator + "X" + xcoord + "Z" + zcoord,
+							"Pasting faction land "+name+" chunk from schematic",
+							"Faction land "+name+" chunk pasted"
+						));
+					}
+				}
+			}
+		}
+		return schematics;
 	}
 
 }

@@ -26,73 +26,46 @@ import org.bukkit.World;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.IntervalTaskThread;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 
-public class AutoSaveThread extends Thread {
+public class AutoSaveThread extends IntervalTaskThread {
 
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 
 	public AutoSaveThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
+		super("AutoSaveThread");
 		this.config = config;
 		this.configmsg = configmsg;
 	}
 
-	public void stopThread() {
-		run = false;
-	}
-
-	public void startsave() {
-		command = true;
-	}
-
-	private volatile boolean run = true;
-	private boolean command = false;
-
 	@Override
-	public void run() {
-
-		MessageLogger.debug("AutoSaveThread Started");
-		Thread.currentThread().setName("AutoSaveWorld AutoSaveThread");
-
-		//disable built-in autosave
+	public void onStart() {
+		//disable bukkit built-in autosave
 		try {
 			Server server = Bukkit.getServer();
 			Object minecraftserver = ReflectionUtils.getField(server.getClass(), "console").get(server);
 			ReflectionUtils.getField(minecraftserver.getClass(), "autosavePeriod").set(minecraftserver, 0);
 		} catch (Throwable t) {
 		}
+	}
 
-		//make sure that this class is loaded
-		NMSNames.init();
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
-		while (run) {
-			// sleep
-			for (int i = 0; i < config.saveInterval; i++) {
-				if (!run || command) {
-					break;
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-			}
+	@Override
+	public int getInterval() {
+		return config.saveInterval;
+	}
 
-			// save
-			if (run && (config.saveEnabled || command)) {
-				command = false;
-				try {
-					performSave();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		MessageLogger.debug("Graceful quit of AutoSaveThread");
-
+	@Override
+	public void doTask() {
+		performSave();
 	}
 
 	public void performSaveNow() {
@@ -121,7 +94,7 @@ public class AutoSaveThread extends Thread {
 
 		// Save the players
 		MessageLogger.debug("Saving players");
-		if (run) {
+		if (isRunning()) {
 			SchedulerUtils.callSyncTaskAndWait(new Runnable() {
 				@Override
 				public void run() {
@@ -134,7 +107,7 @@ public class AutoSaveThread extends Thread {
 		// Save the worlds
 		MessageLogger.debug("Saving worlds");
 		for (final World world : Bukkit.getWorlds()) {
-			if (run) {
+			if (isRunning()) {
 				SchedulerUtils.callSyncTaskAndWait(new Runnable() {
 					@Override
 					public void run() {

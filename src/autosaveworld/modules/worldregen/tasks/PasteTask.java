@@ -15,36 +15,24 @@
  *
  */
 
-package autosaveworld.commands.subcommands;
+package autosaveworld.modules.worldregen.tasks;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.World;
 
-import org.bukkit.command.CommandSender;
+import autosaveworld.modules.worldregen.SchematicOperations;
 
-import autosaveworld.commands.ISubCommand;
-import autosaveworld.core.AutoSaveWorld;
+public class PasteTask {
 
-public class SaveSubCommand implements ISubCommand {
+	private World wtoregen;
+	private PasteDataProvider provider;
 
-	private AutoSaveWorld plugin;
-	public SaveSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
+	public PasteTask(World wtoregen, PasteDataProvider provider) {
+		this.wtoregen = wtoregen;
+		this.provider = provider;
 	}
 
-	@Override
-	public void handle(CommandSender sender, String[] args) {
-		plugin.saveThread.triggerTaskRun();
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<String>();
-	}
-
-	@Override
-	public int getMinArguments() {
-		return 0;
+	public void doPaste() throws Exception {
+		SchematicOperations.pasteFromSchematic(wtoregen, provider.getSchematicsToPaste());
 	}
 
 }

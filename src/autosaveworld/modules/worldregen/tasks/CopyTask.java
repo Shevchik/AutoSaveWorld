@@ -15,52 +15,24 @@
  *
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.modules.worldregen.tasks;
 
-import java.io.File;
+import org.bukkit.World;
 
-import com.sk89q.worldedit.Vector;
+import autosaveworld.modules.worldregen.SchematicOperations;
 
-public class SchematicData {
+public class CopyTask {
 
-	public static class SchematicToSave {
+	private World wtoregen;
+	private CopyDataProvider provider;
 
-		private File file;
-		private Vector bvmin;
-		private Vector bvmax;
-
-		public SchematicToSave(String filepath, Vector bvmin, Vector bvmax) {
-			file = new File(filepath);
-			this.bvmin = bvmin;
-			this.bvmax = bvmax;
-		}
-
-		public File getFile() {
-			return file;
-		}
-
-		public Vector getMin() {
-			return bvmin;
-		}
-
-		public Vector getMax() {
-			return bvmax;
-		}
-
+	public CopyTask(World wtoregen, CopyDataProvider provider) {
+		this.wtoregen = wtoregen;
+		this.provider = provider;
 	}
 
-	public static class SchematicToLoad {
-
-		private File file;
-
-		public SchematicToLoad(String filepath) {
-			file = new File(filepath);
-		}
-
-		public File getFile() {
-			return file;
-		}
-
+	public void doCopy() throws Exception {
+		SchematicOperations.saveToSchematic(wtoregen, provider.getSchematicsToCopy());
 	}
 
 }

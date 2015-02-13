@@ -51,7 +51,8 @@ public class CrashRestartThread extends Thread {
 	}
 
 	private volatile boolean run = true;
-	private long syncticktime = 0;
+
+	protected long syncticktime = 0;
 
 	@SuppressWarnings("deprecation")
 	@Override

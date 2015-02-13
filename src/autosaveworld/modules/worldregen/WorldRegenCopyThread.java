@@ -15,9 +15,10 @@
  *
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.modules.worldregen;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -30,18 +31,19 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.modules.worldregen.plugins.FactionsDataProvider;
+import autosaveworld.modules.worldregen.plugins.GriefPreventionDataProvider;
+import autosaveworld.modules.worldregen.plugins.PStonesDataProvider;
+import autosaveworld.modules.worldregen.plugins.TownyDataProvider;
+import autosaveworld.modules.worldregen.plugins.WorldGuardDataProvider;
+import autosaveworld.modules.worldregen.tasks.CopyTask;
 import autosaveworld.threads.restart.RestartWaiter;
-import autosaveworld.threads.worldregen.factions.FactionsCopy;
-import autosaveworld.threads.worldregen.griefprevention.GPCopy;
-import autosaveworld.threads.worldregen.pstones.PStonesCopy;
-import autosaveworld.threads.worldregen.towny.TownyCopy;
-import autosaveworld.threads.worldregen.wg.WorldGuardCopy;
 import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class WorldRegenCopyThread extends Thread {
 
-	private AutoSaveWorld plugin = null;
+	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 
@@ -64,15 +66,13 @@ public class WorldRegenCopyThread extends Thread {
 
 		try {
 			doWorldRegen();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Throwable t) {
+			MessageLogger.warn("Error occured while copying, worldregen stopped");
+			t.printStackTrace();
 		}
-
 	}
 
 	private void doWorldRegen() throws Exception {
-
-		final World wtoregen = Bukkit.getWorld(worldtoregen);
 
 		// kick all player and deny them from join
 		ListenerUtils.registerListener(new AntiJoinListener(configmsg));
@@ -85,33 +85,33 @@ public class WorldRegenCopyThread extends Thread {
 			}
 		});
 
+		final World wtoregen = Bukkit.getWorld(worldtoregen);
+
+		ArrayList<CopyTask> tasks = new ArrayList<CopyTask>();
 		MessageLogger.debug("Saving buildings");
-
-		// save WorldGuard buildings
 		if ((Bukkit.getPluginManager().getPlugin("WorldGuard") != null) && config.worldRegenSaveWG) {
-			new WorldGuardCopy(worldtoregen).copyAllToSchematics();
+			MessageLogger.debug("WG found, adding to copy list");
+			tasks.add(new CopyTask(wtoregen, new WorldGuardDataProvider(wtoregen)));
 		}
-
-		// save Factions homes
 		if ((Bukkit.getPluginManager().getPlugin("Factions") != null) && config.worldRegenSaveFactions) {
-			new FactionsCopy(worldtoregen).copyAllToSchematics();
+			MessageLogger.debug("Factions found, adding to copy list");
+			tasks.add(new CopyTask(wtoregen, new FactionsDataProvider(wtoregen)));
 		}
-
-		// save GriefPrevention claims
 		if ((Bukkit.getPluginManager().getPlugin("GriefPrevention") != null) && config.worldRegenSaveGP) {
-			new GPCopy(worldtoregen).copyAllToSchematics();
+			MessageLogger.debug("GriefPrevention found, adding to copy list");
+			tasks.add(new CopyTask(wtoregen, new GriefPreventionDataProvider(wtoregen)));
 		}
-
-		// save Towny towns
 		if ((Bukkit.getPluginManager().getPlugin("Towny") != null) && config.worldregenSaveTowny) {
-			new TownyCopy(worldtoregen).copyAllToSchematics();
+			MessageLogger.debug("Towny found, adding to copy list");
+			tasks.add(new CopyTask(wtoregen, new TownyDataProvider(wtoregen)));
 		}
-
-		// save PStones regions
 		if ((Bukkit.getPluginManager().getPlugin("PreciousStones") != null) && config.worldregenSavePStones) {
-			new PStonesCopy(worldtoregen).copyAllToSchematics();
+			MessageLogger.debug("PreciousStones found, adding to copy list");
+			tasks.add(new CopyTask(wtoregen, new PStonesDataProvider(wtoregen)));
 		}
-
+		for (CopyTask task : tasks) {
+			task.doCopy();
+		}
 		MessageLogger.debug("Saving finished");
 
 		if (config.worldRegenRemoveSeedData) {
@@ -129,7 +129,7 @@ public class WorldRegenCopyThread extends Thread {
 
 		MessageLogger.debug("Deleting map and restarting server");
 		// Add hook that will delete world folder, signal that restart should wait, and schedule restart restart
-		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getCanonicalPath());
+		WorldRegenJVMshutdownhook wrsh = new WorldRegenJVMshutdownhook(wtoregen.getWorldFolder().getAbsolutePath());
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		RestartWaiter.incrementWait();
 		plugin.autorestartThread.startrestart(true);

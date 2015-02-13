@@ -15,36 +15,30 @@
  *
  */
 
-package autosaveworld.commands.subcommands;
+package autosaveworld.modules.worldregen;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
-import org.bukkit.command.CommandSender;
+import autosaveworld.threads.restart.RestartWaiter;
+import autosaveworld.utils.FileUtils;
 
-import autosaveworld.commands.ISubCommand;
-import autosaveworld.core.AutoSaveWorld;
+public class WorldRegenJVMshutdownhook extends Thread {
 
-public class SaveSubCommand implements ISubCommand {
+	private String fldtodelete;
 
-	private AutoSaveWorld plugin;
-	public SaveSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
+	public WorldRegenJVMshutdownhook(String fldtodelete) {
+		this.fldtodelete = fldtodelete;
 	}
 
 	@Override
-	public void handle(CommandSender sender, String[] args) {
-		plugin.saveThread.triggerTaskRun();
-	}
+	public void run() {
 
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<String>();
-	}
+		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
 
-	@Override
-	public int getMinArguments() {
-		return 0;
+		// Delete region from world folder
+		FileUtils.deleteDirectory(new File(fldtodelete + File.separator + "region"));
+		// Signal that restarthook can restart
+		RestartWaiter.decrementWait();
 	}
 
 }

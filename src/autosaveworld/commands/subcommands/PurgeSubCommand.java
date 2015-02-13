@@ -34,7 +34,7 @@ public class PurgeSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		plugin.purgeThread.startpurge();
+		plugin.purgeThread.triggerTaskRun();
 	}
 
 	@Override

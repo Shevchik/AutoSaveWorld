@@ -25,6 +25,7 @@ import org.bukkit.plugin.PluginManager;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.IntervalTaskThread;
 import autosaveworld.threads.purge.plugins.DatfilePurge;
 import autosaveworld.threads.purge.plugins.lwc.LWCPurge;
 import autosaveworld.threads.purge.plugins.mywarp.MyWarpPurge;
@@ -32,58 +33,30 @@ import autosaveworld.threads.purge.plugins.permissions.PermissionsPurge;
 import autosaveworld.threads.purge.plugins.residence.ResidencePurge;
 import autosaveworld.threads.purge.plugins.wg.WGPurge;
 
-public class AutoPurgeThread extends Thread {
+public class AutoPurgeThread extends IntervalTaskThread {
 
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 
 	public AutoPurgeThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
+		super("AutoPurgeThread");
 		this.config = config;
 		this.configmsg = configmsg;
 	}
 
-	public void stopThread() {
-		run = false;
+	@Override
+	public boolean isEnabled() {
+		return config.purgeEnabled;
 	}
-
-	public void startpurge() {
-		command = true;
-	}
-
-	// The code to run...weee
-	private volatile boolean run = true;
-	private boolean command = false;
 
 	@Override
-	public void run() {
+	public int getInterval() {
+		return config.purgeInterval;
+	}
 
-		MessageLogger.debug("AutoPurgeThread Started");
-		Thread.currentThread().setName("AutoSaveWorld AutoPurgeThread");
-
-		while (run) {
-			// Do our Sleep stuff!
-			for (int i = 0; i < config.purgeInterval; i++) {
-				if (!run || command) {
-					break;
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-			}
-
-			if (run && (config.purgeEnabled || command)) {
-				command = false;
-				try {
-					performPurge();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		MessageLogger.debug("Graceful quit of AutoPurgeThread");
-
+	@Override
+	public void doTask() {
+		performPurge();
 	}
 
 	public void performPurge() {

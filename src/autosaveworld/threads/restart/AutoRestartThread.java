@@ -49,8 +49,8 @@ public class AutoRestartThread extends Thread {
 	}
 
 	private volatile boolean run = true;
-	private boolean command = false;
-	private boolean skipcountdown = false;
+	private volatile boolean command = false;
+	private volatile boolean skipcountdown = false;
 
 	@Override
 	public void run() {
@@ -113,8 +113,7 @@ public class AutoRestartThread extends Thread {
 
 	}
 
-	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
+	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 	private String getCurTime() {
 		String curtime = sdf.format(System.currentTimeMillis());
 		return curtime;

@@ -49,13 +49,6 @@ public class GlobalConstants {
 		return getAutoSaveWorldFolder() + configmsgfile;
 	}
 
-	// counter preserve files
-	private static String backuppreserverfile = "backupintervalpreserve.yml";
-
-	public static String getBackupIntervalPreservePath() {
-		return getAutoSaveWorldFolder() + backuppreserverfile;
-	}
-
 	// worldregen
 	private static String worldregentempfolder = "WorldRegenTemp" + File.separator;
 	private static String worldnamefile = "wname.yml";

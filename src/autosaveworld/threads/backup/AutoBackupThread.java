@@ -17,103 +17,51 @@
 
 package autosaveworld.threads.backup;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
-import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.IntervalTaskThread;
 import autosaveworld.threads.backup.dropbox.DropboxBackup;
 import autosaveworld.threads.backup.ftp.FTPBackup;
 import autosaveworld.threads.backup.localfs.LocalFSBackup;
 import autosaveworld.threads.backup.script.ScriptBackup;
 import autosaveworld.threads.backup.sftp.SFTPBackup;
 
-public class AutoBackupThread extends Thread {
+public class AutoBackupThread extends IntervalTaskThread {
 
-	private AutoSaveWorld plugin = null;
+	private AutoSaveWorld plugin;
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 
 	public AutoBackupThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
+		super("AutoBackupThread");
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
 	}
 
-	public void stopThread() {
-		// save counter on disable
-		if (config.backupEnabled) {
-			FileConfiguration config = new YamlConfiguration();
-			config.set("counter", counter);
-			try {
-				config.save(new File(GlobalConstants.getBackupIntervalPreservePath()));
-			} catch (IOException e) {
-			}
-		}
-		// stop
-		run = false;
-	}
-
-	public void startbackup() {
-		command = true;
-	}
-
-	// The code to run...weee
-	private volatile boolean run = true;
-	private boolean command = false;
-	private int counter = 0;
+	public static volatile boolean backupRunning = false;
 
 	@Override
-	public void run() {
-
-		MessageLogger.debug("AutoBackupThread Started");
-		Thread.currentThread().setName("AutoSaveWorld AutoBackupThread");
-
-		// load counter on enable
-		if (config.backupEnabled) {
-			File preservefile = new File(GlobalConstants.getBackupIntervalPreservePath());
-			FileConfiguration config = YamlConfiguration.loadConfiguration(preservefile);
-			counter = config.getInt("counter", 0);
-			preservefile.delete();
-		}
-
-		while (run) {
-			// Do our Sleep stuff!
-			for (; counter < config.backupInterval; counter++) {
-				if (!run || command) {
-					break;
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-			}
-
-			counter = 0;
-			if (run && (config.backupEnabled || command)) {
-				command = false;
-				try {
-					backupRunning = true;
-					performBackup();
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					backupRunning = false;
-				}
-			}
-
-		}
-		MessageLogger.debug("Graceful quit of AutoBackupThread");
-
+	public boolean isEnabled() {
+		return config.backupEnabled;
 	}
 
-	public static volatile boolean backupRunning = false;
+	@Override
+	public int getInterval() {
+		return config.backupInterval;
+	}
+
+	@Override
+	public void doTask() {
+		backupRunning = true;
+		try {
+			performBackup();
+		} catch (Throwable t) {
+		}
+		backupRunning = false;
+	}
 
 	public void performBackup() {
 

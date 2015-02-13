@@ -15,36 +15,14 @@
  *
  */
 
-package autosaveworld.commands.subcommands;
+package autosaveworld.modules.worldregen.tasks;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.command.CommandSender;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToSave;
 
-import autosaveworld.commands.ISubCommand;
-import autosaveworld.core.AutoSaveWorld;
+public interface CopyDataProvider {
 
-public class SaveSubCommand implements ISubCommand {
-
-	private AutoSaveWorld plugin;
-	public SaveSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
-	@Override
-	public void handle(CommandSender sender, String[] args) {
-		plugin.saveThread.triggerTaskRun();
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<String>();
-	}
-
-	@Override
-	public int getMinArguments() {
-		return 0;
-	}
+	public List<SchematicToSave> getSchematicsToCopy() throws Exception;
 
 }

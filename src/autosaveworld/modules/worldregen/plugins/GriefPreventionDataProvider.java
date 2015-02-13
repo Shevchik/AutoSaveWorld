@@ -15,11 +15,10 @@
  *
  */
 
-package autosaveworld.threads.worldregen.griefprevention;
+package autosaveworld.modules.worldregen.plugins;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -28,30 +27,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import autosaveworld.core.GlobalConstants;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.worldregen.SchematicData.SchematicToSave;
-import autosaveworld.threads.worldregen.SchematicOperations;
-
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
-public class GPCopy {
+import autosaveworld.core.GlobalConstants;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToLoad;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToSave;
+import autosaveworld.modules.worldregen.tasks.CopyDataProvider;
+import autosaveworld.modules.worldregen.tasks.PasteDataProvider;
+
+public class GriefPreventionDataProvider implements CopyDataProvider, PasteDataProvider {
 
 	private World wtoregen;
 
-	public GPCopy(String worldtoregen) {
-		wtoregen = Bukkit.getWorld(worldtoregen);
+	public GriefPreventionDataProvider(World wtoregen) {
+		this.wtoregen = wtoregen;
 	}
 
-	public void copyAllToSchematics() {
-		MessageLogger.debug("Saving griefprevention regions to schematics");
-
-		new File(GlobalConstants.getGPTempFolder()).mkdirs();
-
+	@Override
+	public List<SchematicToSave> getSchematicsToCopy() {
+		ArrayList<SchematicToSave> schematics = new ArrayList<SchematicToSave>();
 		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
-
-		// save all claims
 		for (Claim claim : gp.dataStore.getClaims()) {
 			// get coords
 			double xmin = claim.getLesserBoundaryCorner().getX();
@@ -60,12 +56,31 @@ public class GPCopy {
 			double zmax = claim.getGreaterBoundaryCorner().getZ();
 			Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xmin, 0, zmin));
 			Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, xmax, wtoregen.getMaxHeight(), zmax));
-			// save
-			MessageLogger.debug("Saving GP Region " + claim.getID() + " to schematic");
-			SchematicToSave schematicdata = new SchematicToSave(GlobalConstants.getGPTempFolder() + claim.getID().toString(), bvmin, bvmax);
-			SchematicOperations.saveToSchematic(wtoregen, new LinkedList<SchematicToSave>(Arrays.asList(schematicdata)));
-			MessageLogger.debug("GP Region " + claim.getID() + " saved");
+			// add to save list
+			String name = claim.getID().toString();
+			schematics.add(new SchematicToSave(
+				GlobalConstants.getGPTempFolder() + name,
+				bvmin, bvmax,
+				"Saving GP Region " + name + " to schematic",
+				"GP Region " + name + " saved"
+			));
 		}
+		return schematics;
+	}
+
+	@Override
+	public List<SchematicToLoad> getSchematicsToPaste() {
+		ArrayList<SchematicToLoad> schematics = new ArrayList<SchematicToLoad>();
+		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
+		for (Claim claim : gp.dataStore.getClaims()) {
+			String name = claim.getID().toString();
+			schematics.add(new SchematicToLoad(
+				GlobalConstants.getGPTempFolder() + name,
+				"Pasting GP Region " + name + " from schematic",
+				"GP Region " + name + " pasted"
+			));
+		}
+		return schematics;
 	}
 
 }

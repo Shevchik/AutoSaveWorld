@@ -15,30 +15,14 @@
  *
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.modules.worldregen.tasks;
 
-import java.io.File;
+import java.util.List;
 
-import autosaveworld.threads.restart.RestartWaiter;
-import autosaveworld.utils.FileUtils;
+import autosaveworld.modules.worldregen.SchematicData.SchematicToLoad;
 
-public class WorldRegenJVMshutdownhook extends Thread {
+public interface PasteDataProvider {
 
-	private String fldtodelete;
-
-	public WorldRegenJVMshutdownhook(String fldtodelete) {
-		this.fldtodelete = fldtodelete;
-	}
-
-	@Override
-	public void run() {
-
-		Thread.currentThread().setName("AutoSaveWorld WorldRegenShutdownHook");
-
-		// Delete region from world folder
-		FileUtils.deleteDirectory(new File(fldtodelete + File.separator + "region"));
-		// Signal that restarthook can restart
-		RestartWaiter.decrementWait();
-	}
+	public List<SchematicToLoad> getSchematicsToPaste() throws Exception;
 
 }

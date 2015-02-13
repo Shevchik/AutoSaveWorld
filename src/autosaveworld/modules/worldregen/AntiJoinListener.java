@@ -15,10 +15,11 @@
  *
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.modules.worldregen;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
@@ -33,14 +34,19 @@ public class AntiJoinListener implements Listener {
 		this.configmsg = configmsg;
 	}
 
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		MessageLogger.kickPlayer(e.getPlayer(), configmsg.messageWorldRegenKick);
+	@EventHandler 
+	public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
+		MessageLogger.disallow(e, configmsg.messageWorldRegenKick);
 	}
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent e) {
 		MessageLogger.disallow(e, configmsg.messageWorldRegenKick);
+	}
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		MessageLogger.kickPlayer(e.getPlayer(), configmsg.messageWorldRegenKick);
 	}
 
 }

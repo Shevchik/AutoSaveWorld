@@ -15,11 +15,13 @@
  *
  */
 
-package autosaveworld.threads.worldregen;
+package autosaveworld.modules.worldregen;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -28,11 +30,12 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.worldregen.factions.FactionsPaste;
-import autosaveworld.threads.worldregen.griefprevention.GPPaste;
-import autosaveworld.threads.worldregen.pstones.PStonesPaste;
-import autosaveworld.threads.worldregen.towny.TownyPaste;
-import autosaveworld.threads.worldregen.wg.WorldGuardPaste;
+import autosaveworld.modules.worldregen.plugins.FactionsDataProvider;
+import autosaveworld.modules.worldregen.plugins.GriefPreventionDataProvider;
+import autosaveworld.modules.worldregen.plugins.PStonesDataProvider;
+import autosaveworld.modules.worldregen.plugins.TownyDataProvider;
+import autosaveworld.modules.worldregen.plugins.WorldGuardDataProvider;
+import autosaveworld.modules.worldregen.tasks.PasteTask;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.SchedulerUtils;
@@ -65,12 +68,13 @@ public class WorldRegenPasteThread extends Thread {
 		try {
 			doWorldPaste();
 		} catch (Exception e) {
+			MessageLogger.warn("Error occured while pasting, worldregen stopped, please restart server and if error continues notify the developer");
 			e.printStackTrace();
 		}
 
 	}
 
-	private void doWorldPaste() throws InterruptedException {
+	private void doWorldPaste() throws Exception {
 		// deny players from join
 		ListenerUtils.registerListener(new AntiJoinListener(configmsg));
 
@@ -91,31 +95,33 @@ public class WorldRegenPasteThread extends Thread {
 			return;
 		}
 
+		World wtopaste = Bukkit.getWorld(worldtopasteto);
+
 		MessageLogger.debug("Restoring buildings");
 
-		// paste WG buildings
+		ArrayList<PasteTask> tasks = new ArrayList<PasteTask>();
 		if ((Bukkit.getPluginManager().getPlugin("WorldGuard") != null) && config.worldRegenSaveWG) {
-			new WorldGuardPaste(worldtopasteto).pasteAllFromSchematics();
+			MessageLogger.debug("WG found, adding to paste list");
+			tasks.add(new PasteTask(wtopaste, new WorldGuardDataProvider(wtopaste)));
 		}
-
-		// paste Factions buildings
 		if ((Bukkit.getPluginManager().getPlugin("Factions") != null) && config.worldRegenSaveFactions) {
-			new FactionsPaste(worldtopasteto).pasteAllFromSchematics();
+			MessageLogger.debug("Factions found, adding to paste list");
+			tasks.add(new PasteTask(wtopaste, new FactionsDataProvider(wtopaste)));
 		}
-
-		// paste GriefPrevention claims
 		if ((Bukkit.getPluginManager().getPlugin("GriefPrevention") != null) && config.worldRegenSaveGP) {
-			new GPPaste(worldtopasteto).pasteAllFromSchematics();
+			MessageLogger.debug("GriefPrevention found, adding to paste list");
+			tasks.add(new PasteTask(wtopaste, new GriefPreventionDataProvider(wtopaste)));
 		}
-
-		// paste Towny towns
 		if ((Bukkit.getPluginManager().getPlugin("Towny") != null) && config.worldregenSaveTowny) {
-			new TownyPaste(worldtopasteto).pasteAllFromSchematics();
+			MessageLogger.debug("Towny found, adding to paste list");
+			tasks.add(new PasteTask(wtopaste, new TownyDataProvider(wtopaste)));
 		}
-
-		// paste PStones regions
 		if ((Bukkit.getPluginManager().getPlugin("PreciousStones") != null) && config.worldregenSavePStones) {
-			new PStonesPaste(worldtopasteto).pasteAllFromSchematics();
+			MessageLogger.debug("PreciousStones found, adding to paste list");
+			tasks.add(new PasteTask(wtopaste, new PStonesDataProvider(wtopaste)));
+		}
+		for (PasteTask task : tasks) {
+			task.doPaste();
 		}
 
 		// clear temp folder
