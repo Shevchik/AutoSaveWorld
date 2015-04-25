@@ -18,6 +18,7 @@
 package autosaveworld.config;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,15 +47,14 @@ public class LocaleChanger {
 	// available locales
 	public List<String> getAvailableLocales() {
 		List<String> locales = new LinkedList<String>();
-		try {
-			// add additional locales based on files in the jar.
-			final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
+		// add additional locales based on files in the jar.
+		try (final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());) {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry ze = entries.nextElement();
 				if (!ze.isDirectory() && ze.getName().contains("/")) {
-					String pathname = ze.getName().substring(0, ze.getName().lastIndexOf("/"));
-					String filename = ze.getName().substring(ze.getName().lastIndexOf("/") + 1, ze.getName().length());
+					String pathname = ze.getName().substring(0, ze.getName().lastIndexOf('/'));
+					String filename = ze.getName().substring(ze.getName().lastIndexOf('/') + 1, ze.getName().length());
 					if (pathname.equalsIgnoreCase(LocaleFiles.getPackageName())) {
 						if (filename.endsWith(".yml") && filename.contains("_")) {
 							locales.add(filename.substring(0, filename.length() - 4).split("[_]")[1]);
@@ -63,7 +63,7 @@ public class LocaleChanger {
 				}
 			}
 			zipFile.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			locales.add("Error occured while scanning for available locales");
 		}
 		return locales;
@@ -80,12 +80,10 @@ public class LocaleChanger {
 
 	// load needed locale file
 	private void loadLocaleFile(String locale) {
-		try {
-			InputStream is = LocaleFiles.class.getResourceAsStream("configmsg_" + locale + ".yml");
+		try (InputStream is = LocaleFiles.class.getResourceAsStream("configmsg_" + locale + ".yml")) {
 			Path file = new File(GlobalConstants.getConfigMSGPath()).toPath();
 			Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
 		}
 	}
 

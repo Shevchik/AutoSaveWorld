@@ -33,12 +33,11 @@ public class RunningProcess {
 	private String[] args;
 
 	public RunningProcess(String[] args) {
-		this.args = args;
+		this.args = args.clone();
 	}
 
-	private Process p;
-
-	private Queue<String> output = new LinkedList<String>();
+	protected Process p;
+	protected Queue<String> output = new LinkedList<String>();
 
 	public void start(CommandSender sender) {
 		sender.sendMessage("Starting process");
@@ -55,9 +54,8 @@ public class RunningProcess {
 		new Thread() {
 			@Override
 			public void run() {
-				BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-				String line;
-				try {
+				try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+					String line;
 					while ((p != null) && ((line = br.readLine()) != null)) {
 						output.add(line);
 					}
@@ -77,15 +75,14 @@ public class RunningProcess {
 		try {
 			int exit = p.exitValue();
 			sender.sendMessage("Process finished exit code " + exit);
-		} catch (Exception e) {
+		} catch (IllegalThreadStateException e) {
 		}
 		sender.sendMessage("Process output print finished");
 	}
 
 	public void supplyInput(CommandSender sender, String line) {
 		sender.sendMessage("Sending line to the process");
-		try {
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8));
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8))) {
 			writer.write(line);
 			writer.newLine();
 			writer.flush();

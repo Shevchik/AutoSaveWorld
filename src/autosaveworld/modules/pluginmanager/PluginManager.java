@@ -18,20 +18,23 @@
 package autosaveworld.modules.pluginmanager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.StringUtils;
 
 public class PluginManager {
@@ -66,14 +69,29 @@ public class PluginManager {
 				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
 				ArrayList<String> result = new ArrayList<String>();
 				for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-					if (plugin.getName().startsWith(input)) {
+					if (plugin.getName().startsWith(input) && getOtherDependingPlugins(plugin).isEmpty()) {
 						result.add(plugin.getName());
 					}
 				}
 				return result;
 			}
+			if (args[0].equalsIgnoreCase("load")) {
+				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
+				ArrayList<String> result = new ArrayList<String>();
+				for (File pluginfile : FileUtils.safeListFiles(new File(GlobalConstants.getPluginsFolder()))) {
+					String pluginName = getPluginName(pluginfile);
+					if (
+						(pluginName != null) &&
+						(pluginName.startsWith(input) || pluginName.replace(" ", "_").startsWith(input)) &&
+						Bukkit.getPluginManager().getPlugin(pluginName) == null
+					) {
+						result.add(pluginName);
+					}
+				}
+				return result;
+			}
 		}
-		return new ArrayList<String>();
+		return Collections.emptyList();
 	}
 
 	private void loadPlugin(CommandSender sender, String pluginname) {
@@ -107,6 +125,12 @@ public class PluginManager {
 			MessageLogger.sendMessage(sender, "Plugin with this name not found");
 			return;
 		}
+		// check if plugin has other active depending plugins
+		List<String> depending = getOtherDependingPlugins(pmplugin);
+		if (!depending.isEmpty()) {
+			MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
+			return;
+		}
 		// now unload plugin
 		try {
 			iutils.unloadPlugin(pmplugin);
@@ -123,6 +147,12 @@ public class PluginManager {
 		// ignore if plugin is not loaded
 		if (pmplugin == null) {
 			MessageLogger.sendMessage(sender, "Plugin with this name not found");
+			return;
+		}
+		// check if plugin has other active depending plugins
+		List<String> depending = getOtherDependingPlugins(pmplugin);
+		if (!depending.isEmpty()) {
+			MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
 			return;
 		}
 		// find plugin file
@@ -143,6 +173,7 @@ public class PluginManager {
 		}
 	}
 
+
 	private Plugin findPlugin(String pluginname) {
 		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 			if (plugin.getName().equalsIgnoreCase(pluginname)) {
@@ -153,46 +184,41 @@ public class PluginManager {
 	}
 
 	private File findPluginFile(String pluginname) {
-		File file = checkFolder(new File(GlobalConstants.getPluginsFolder()), pluginname);
-		if (file != null) {
-			return file;
-		}
-		file = checkFolder(Bukkit.getUpdateFolderFile(), pluginname);
-		if (file != null) {
-			return file;
+		for (File pluginfile : FileUtils.safeListFiles(new File(GlobalConstants.getPluginsFolder()))) {
+			String pluginName = getPluginName(pluginfile);
+			if ((pluginName != null) && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
+				return pluginfile;
+			}
 		}
 		return new File(GlobalConstants.getPluginsFolder(), pluginname + ".jar");
 	}
 
-	private File checkFolder(File folder, String pluginname) {
-		if (folder.exists() && folder.isDirectory()) {
-			for (File pluginfile : folder.listFiles()) {
-				String pluginName = getPluginName(pluginfile);
-				if ((pluginName != null) && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
-					return pluginfile;
+	private String getPluginName(File pluginfile) {
+		if (pluginfile.getName().endsWith(".jar")) {
+			try (final JarFile jarFile = new JarFile(pluginfile)) {
+				JarEntry je = jarFile.getJarEntry("plugin.yml");
+				if (je != null) {
+					PluginDescriptionFile plugininfo = new PluginDescriptionFile(jarFile.getInputStream(je));
+					String jarpluginName = plugininfo.getName();
+					jarFile.close();
+					return jarpluginName;
 				}
+				jarFile.close();
+			} catch (IOException | InvalidDescriptionException e) {
 			}
 		}
 		return null;
 	}
 
-	private String getPluginName(File pluginfile) {
-		try {
-			if (pluginfile.getName().endsWith(".jar")) {
-				final JarFile jarFile = new JarFile(pluginfile);
-				JarEntry je = jarFile.getJarEntry("plugin.yml");
-				if (je != null) {
-					@SuppressWarnings("deprecation")
-					FileConfiguration plugininfo = YamlConfiguration.loadConfiguration(jarFile.getInputStream(je));
-					String jarpluginName = plugininfo.getString("name");
-					jarFile.close();
-					return jarpluginName;
-				}
-				jarFile.close();
+
+	private List<String> getOtherDependingPlugins(Plugin plugin) {
+		ArrayList<String> others = new ArrayList<String>();
+		for (Plugin otherplugin : Bukkit.getPluginManager().getPlugins()) {
+			if (otherplugin.getDescription().getDepend().contains(plugin.getName()) || otherplugin.getDescription().getSoftDepend().contains(plugin.getName())) {
+				others.add(otherplugin.getName());
 			}
-		} catch (Exception e) {
 		}
-		return null;
+		return others;
 	}
 
 	private boolean isPluginAlreadyLoaded(String pluginname) {

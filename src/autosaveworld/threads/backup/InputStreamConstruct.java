@@ -32,6 +32,10 @@ public class InputStreamConstruct {
 		InputStreamConstruct.rate = rate;
 	}
 
+	public static boolean isRateLimited() {
+		return rate > 0;
+	}
+
 	public static InputStream getFileInputStream(String path) throws FileNotFoundException {
 		return getFileInputStream(new File(path));
 	}

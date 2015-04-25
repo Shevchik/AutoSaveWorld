@@ -20,13 +20,19 @@ package autosaveworld.threads.purge.plugins.mywarp;
 import me.taylorkelly.mywarp.MyWarp;
 import me.taylorkelly.mywarp.data.Warp;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.purge.taskqueue.Task;
 
-public class WarpDeleteTask implements MyWarpPurgeTask {
+public class WarpDeleteTask implements Task {
 
 	private Warp warp;
 
 	public WarpDeleteTask(Warp warp) {
 		this.warp = warp;
+	}
+
+	@Override
+	public boolean isHeavyTask() {
+		return false;
 	}
 
 	@Override

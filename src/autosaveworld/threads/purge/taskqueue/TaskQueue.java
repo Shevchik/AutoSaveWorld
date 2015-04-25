@@ -15,7 +15,7 @@
  *
  */
 
-package autosaveworld.threads.purge.plugins.residence;
+package autosaveworld.threads.purge.taskqueue;
 
 import java.util.ArrayList;
 
@@ -23,11 +23,15 @@ import autosaveworld.utils.SchedulerUtils;
 
 public class TaskQueue {
 
-	private int tasksLimit = 80;
+	private int tasksLimit;
 
-	private ArrayList<ResidencePurgeTask> tasks = new ArrayList<ResidencePurgeTask>();
+	public TaskQueue(int tasksLimit) {
+		this.tasksLimit = tasksLimit;
+	}
 
-	public void addTask(final ResidencePurgeTask task) {
+	protected ArrayList<Task> tasks = new ArrayList<Task>();
+
+	public void addTask(final Task task) {
 		if (task.isHeavyTask()) {
 			SchedulerUtils.callSyncTaskAndWait(
 				new Runnable() {
@@ -50,7 +54,7 @@ public class TaskQueue {
 			new Runnable() {
 				@Override
 				public void run() {
-					for (ResidencePurgeTask task : tasks) {
+					for (Task task : tasks) {
 						task.performTask();
 					}
 					tasks.clear();

@@ -23,6 +23,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
 import autosaveworld.threads.purge.DataPurge;
+import autosaveworld.threads.purge.taskqueue.TaskQueue;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Permission;
@@ -41,7 +42,7 @@ public class LWCPurge extends DataPurge {
 
 		int deleted = 0;
 
-		TaskQueue queue = new TaskQueue();
+		TaskQueue queue = new TaskQueue(30);
 		List<Protection> protections = LWC.getInstance().getPhysicalDatabase().loadProtections();
 		for (final Protection pr : protections) {
 			LWCMembersClearTask clearTask = new LWCMembersClearTask(pr);

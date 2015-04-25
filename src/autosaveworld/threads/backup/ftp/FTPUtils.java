@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.threads.backup.utils.MemoryZip;
+import autosaveworld.utils.FileUtils;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPUtils {
@@ -33,19 +35,15 @@ public class FTPUtils {
 		if (src.isDirectory()) {
 			ftp.makeDirectory(src.getName());
 			ftp.changeWorkingDirectory(src.getName());
-			for (File file : src.listFiles()) {
+			for (File file : FileUtils.safeListFiles(src)) {
 				if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
 					uploadDirectory(ftp, file, excludefolders);
 				}
 			}
 			ftp.changeToParentDirectory();
 		} else {
-			if (!src.getName().endsWith(".lck")) {
-				try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
-					storeFile(ftp, is, src.getName());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
+				storeFile(ftp, is, src.getName());
 			}
 		}
 	}
@@ -59,8 +57,8 @@ public class FTPUtils {
 	private static void storeFile(FTPClient ftp, InputStream is, String filename) {
 		try {
 			ftp.storeFile(filename, is);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			MessageLogger.warn("Failed to backup file: " + filename);
 		}
 	}
 

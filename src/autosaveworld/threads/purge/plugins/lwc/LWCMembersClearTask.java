@@ -19,10 +19,12 @@ package autosaveworld.threads.purge.plugins.lwc;
 
 import java.util.LinkedList;
 
+import autosaveworld.threads.purge.taskqueue.Task;
+
 import com.griefcraft.model.Permission;
 import com.griefcraft.model.Protection;
 
-public class LWCMembersClearTask implements LWCPurgeTask {
+public class LWCMembersClearTask implements Task {
 
 	private Protection protection;
 
@@ -42,6 +44,11 @@ public class LWCMembersClearTask implements LWCPurgeTask {
 
 	public int getPlayerToClearCount() {
 		return perms.size();
+	}
+
+	@Override
+	public boolean isHeavyTask() {
+		return false;
 	}
 
 	@Override

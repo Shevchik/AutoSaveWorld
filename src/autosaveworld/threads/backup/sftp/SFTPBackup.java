@@ -115,7 +115,7 @@ public class SFTPBackup {
 			// disconnect
 			channelSftp.exit();
 			session.disconnect();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

@@ -48,10 +48,11 @@ public abstract class IntervalTaskThread extends Thread {
 		onStart();
 		while (run) {
 			int interval = getInterval();
-			if (currentTick > interval || runnow) {
+			boolean shouldrun = runnow;
+			if (currentTick > interval || shouldrun) {
 				runnow = false;
 				currentTick = 0;
-				if (isEnabled()) {
+				if (isEnabled() || shouldrun) {
 					try {
 						doTask();
 					} catch (Throwable t) {

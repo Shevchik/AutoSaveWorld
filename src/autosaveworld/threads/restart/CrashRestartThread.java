@@ -41,6 +41,7 @@ public class CrashRestartThread extends Thread {
 	private RestartJVMshutdownhook jvmsh;
 
 	public CrashRestartThread(Thread thread, AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
+		super("AutoSaveWorld CrashRestartThread");
 		bukkitMainThread = thread;
 		this.config = config;
 		this.jvmsh = jvmsh;
@@ -58,12 +59,11 @@ public class CrashRestartThread extends Thread {
 	@Override
 	public void run() {
 		MessageLogger.debug("CrashRestartThread started");
-		Thread.currentThread().setName("AutoSaveWorld CrashRestartThread");
 
 		MessageLogger.debug("Delaying crashrestart checker start for " + config.crashRestartCheckerStartDelay + " seconds");
 		// wait for configurable delay
 		try {
-			Thread.sleep(config.crashRestartCheckerStartDelay * 1000);
+			Thread.sleep(config.crashRestartCheckerStartDelay * 1000L);
 		} catch (InterruptedException e) {
 		}
 		// do not enable self if plugin is disabled

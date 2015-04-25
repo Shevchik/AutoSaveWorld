@@ -17,6 +17,7 @@
 
 package autosaveworld.threads.backup;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class BackupUtils {
@@ -27,7 +28,7 @@ public class BackupUtils {
 		long old = System.currentTimeMillis();
 		for (String timestampString : timestamps) {
 			try {
-				long cur = System.currentTimeMillis();
+				long cur;
 				if (timestampString.endsWith(".zip")) {
 					cur = sdf.parse(timestampString.substring(0, timestampString.indexOf(".zip"))).getTime();
 				} else {
@@ -37,8 +38,7 @@ public class BackupUtils {
 					old = cur;
 					oldestBackupName = timestampString;
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (ParseException e) {
 			}
 		}
 		return oldestBackupName;

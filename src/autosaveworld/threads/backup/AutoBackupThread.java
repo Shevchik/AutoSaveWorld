@@ -59,6 +59,7 @@ public class AutoBackupThread extends IntervalTaskThread {
 		try {
 			performBackup();
 		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 		backupRunning = false;
 	}

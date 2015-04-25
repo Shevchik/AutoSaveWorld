@@ -29,13 +29,23 @@ public class FileUtils {
 			return;
 		}
 		if (file.isDirectory()) {
-			for (File f : file.listFiles()) {
+			for (File f : safeListFiles(file)) {
 				deleteDirectory(f);
 			}
 			file.delete();
 		} else {
 			file.delete();
 		}
+	}
+
+	public static File[] safeListFiles(File file) {
+		File[] files = file.listFiles();
+		return files != null ? files : new File[0];
+	}
+
+	public static String[] safeList(File file) {
+		String[] files = file.list();
+		return files != null ? files : new String[0];
 	}
 
 }

@@ -22,53 +22,53 @@ import org.bukkit.ChatColor;
 public class FormattingCodesParser {
 
 	public String parseFormattingCodes(String message) {
-		message = message.replaceAll("&0", ChatColor.BLACK + "");
-		message = message.replaceAll("&1", ChatColor.DARK_BLUE + "");
-		message = message.replaceAll("&2", ChatColor.DARK_GREEN + "");
-		message = message.replaceAll("&3", ChatColor.DARK_AQUA + "");
-		message = message.replaceAll("&4", ChatColor.DARK_RED + "");
-		message = message.replaceAll("&5", ChatColor.DARK_PURPLE + "");
-		message = message.replaceAll("&6", ChatColor.GOLD + "");
-		message = message.replaceAll("&7", ChatColor.GRAY + "");
-		message = message.replaceAll("&8", ChatColor.DARK_GRAY + "");
-		message = message.replaceAll("&9", ChatColor.BLUE + "");
-		message = message.replaceAll("(?i)&a", ChatColor.GREEN + "");
-		message = message.replaceAll("(?i)&b", ChatColor.AQUA + "");
-		message = message.replaceAll("(?i)&c", ChatColor.RED + "");
-		message = message.replaceAll("(?i)&d", ChatColor.LIGHT_PURPLE + "");
-		message = message.replaceAll("(?i)&e", ChatColor.YELLOW + "");
-		message = message.replaceAll("(?i)&f", ChatColor.WHITE + "");
-		message = message.replaceAll("(?i)&l", ChatColor.BOLD + "");
-		message = message.replaceAll("(?i)&o", ChatColor.ITALIC + "");
-		message = message.replaceAll("(?i)&m", ChatColor.STRIKETHROUGH + "");
-		message = message.replaceAll("(?i)&n", ChatColor.UNDERLINE + "");
-		message = message.replaceAll("(?i)&k", ChatColor.MAGIC + "");
-		return message;
+		return message
+			.replace("&0", ChatColor.BLACK.toString())
+			.replace("&1", ChatColor.DARK_BLUE.toString())
+			.replace("&2", ChatColor.DARK_GREEN.toString())
+			.replace("&3", ChatColor.DARK_AQUA.toString())
+			.replace("&4", ChatColor.DARK_RED.toString())
+			.replace("&5", ChatColor.DARK_PURPLE.toString())
+			.replace("&6", ChatColor.GOLD.toString())
+			.replace("&7", ChatColor.GRAY.toString())
+			.replace("&8", ChatColor.DARK_GRAY.toString())
+			.replace("&9", ChatColor.BLUE.toString())
+			.replaceAll("(?i)&a", ChatColor.GREEN.toString())
+			.replaceAll("(?i)&b", ChatColor.AQUA.toString())
+			.replaceAll("(?i)&c", ChatColor.RED.toString())
+			.replaceAll("(?i)&d", ChatColor.LIGHT_PURPLE.toString())
+			.replaceAll("(?i)&e", ChatColor.YELLOW.toString())
+			.replaceAll("(?i)&f", ChatColor.WHITE.toString())
+			.replaceAll("(?i)&l", ChatColor.BOLD.toString())
+			.replaceAll("(?i)&o", ChatColor.ITALIC.toString())
+			.replaceAll("(?i)&m", ChatColor.STRIKETHROUGH.toString())
+			.replaceAll("(?i)&n", ChatColor.UNDERLINE.toString())
+			.replaceAll("(?i)&k", ChatColor.MAGIC.toString());
 	}
 
 	public String stripFormattingCodes(String message) {
-		message = message.replaceAll("&0", "");
-		message = message.replaceAll("&1", "");
-		message = message.replaceAll("&2", "");
-		message = message.replaceAll("&3", "");
-		message = message.replaceAll("&4", "");
-		message = message.replaceAll("&5", "");
-		message = message.replaceAll("&6", "");
-		message = message.replaceAll("&7", "");
-		message = message.replaceAll("&8", "");
-		message = message.replaceAll("&9", "");
-		message = message.replaceAll("(?i)&a", "");
-		message = message.replaceAll("(?i)&b", "");
-		message = message.replaceAll("(?i)&c", "");
-		message = message.replaceAll("(?i)&d", "");
-		message = message.replaceAll("(?i)&e", "");
-		message = message.replaceAll("(?i)&f", "");
-		message = message.replaceAll("(?i)&l", "");
-		message = message.replaceAll("(?i)&o", "");
-		message = message.replaceAll("(?i)&m", "");
-		message = message.replaceAll("(?i)&n", "");
-		message = message.replaceAll("(?i)&k", "");
-		return message;
+		return message
+			.replace("&0", "")
+			.replace("&1", "")
+			.replace("&2", "")
+			.replace("&3", "")
+			.replace("&4", "")
+			.replace("&5", "")
+			.replace("&6", "")
+			.replace("&7", "")
+			.replace("&8", "")
+			.replace("&9", "")
+			.replaceAll("(?i)&a", "")
+			.replaceAll("(?i)&b", "")
+			.replaceAll("(?i)&c", "")
+			.replaceAll("(?i)&d", "")
+			.replaceAll("(?i)&e", "")
+			.replaceAll("(?i)&f", "")
+			.replaceAll("(?i)&l", "")
+			.replaceAll("(?i)&o", "")
+			.replaceAll("(?i)&m", "")
+			.replaceAll("(?i)&n", "")
+			.replaceAll("(?i)&k", "");
 	}
 
 }

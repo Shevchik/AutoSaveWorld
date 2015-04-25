@@ -15,37 +15,12 @@
  *
  */
 
-package autosaveworld.threads.purge.plugins.mywarp;
+package autosaveworld.threads.purge.taskqueue;
 
-import java.util.ArrayList;
+public interface Task {
 
-import autosaveworld.utils.SchedulerUtils;
+	public boolean isHeavyTask();
 
-public class TaskQueue {
-
-	private int tasksLimit = 30;
-
-	private ArrayList<MyWarpPurgeTask> tasks = new ArrayList<MyWarpPurgeTask>();
-
-	public void addTask(final MyWarpPurgeTask task) {
-		tasks.add(task);
-		if (tasks.size() >= tasksLimit) {
-			flush();
-		}
-	}
-
-	public void flush() {
-		SchedulerUtils.callSyncTaskAndWait(
-			new Runnable() {
-				@Override
-				public void run() {
-					for (MyWarpPurgeTask task : tasks) {
-						task.performTask();
-					}
-					tasks.clear();
-				}
-			}
-		);
-	}
+	public void performTask();
 
 }

@@ -22,9 +22,10 @@ import net.t00thpick1.residence.api.areas.ResidenceArea;
 import org.bukkit.util.Vector;
 
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.purge.taskqueue.Task;
 import autosaveworld.threads.purge.weregen.WorldEditRegeneration;
 
-public class ResidenceRegenTask implements ResidencePurgeTask {
+public class ResidenceRegenTask implements Task {
 
 	private ResidenceArea resarea;
 

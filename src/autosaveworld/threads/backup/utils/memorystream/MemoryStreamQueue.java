@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+//most of the code is taken from LinkedBlockingQueue
 public class MemoryStreamQueue {
 
 	private static class Node {
@@ -136,7 +137,9 @@ public class MemoryStreamQueue {
 		if (x == -1) {
 			eof = true;
 		}
-		head = head.next;
+		Node headRef = head;
+		head = headRef.next;
+		headRef.next = headRef;
 		c = count.decrementAndGet();
 		if (c > 0) {
 			notEmpty.signal();
@@ -162,7 +165,9 @@ public class MemoryStreamQueue {
 		int i = 0;
 		while (i < n) {
 			int item = head.next.item;
-			head = head.next;
+			Node headRef = head;
+			head = headRef.next;
+			headRef.next = headRef;
 			i++;
 			if (item == -1) {
 				eof = true;

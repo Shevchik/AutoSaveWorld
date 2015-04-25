@@ -17,7 +17,7 @@
 
 package autosaveworld.commands.subcommands;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
@@ -41,7 +41,7 @@ public class ReloadConfigMSGSubCommand implements ISubCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<String>();
+		return Collections.emptyList();
 	}
 
 	@Override

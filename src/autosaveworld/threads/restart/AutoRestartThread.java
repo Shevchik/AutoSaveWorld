@@ -115,8 +115,7 @@ public class AutoRestartThread extends Thread {
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 	private String getCurTime() {
-		String curtime = sdf.format(System.currentTimeMillis());
-		return curtime;
+		return sdf.format(System.currentTimeMillis());
 	}
 
 }

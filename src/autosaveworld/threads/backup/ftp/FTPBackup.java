@@ -110,7 +110,7 @@ public class FTPBackup {
 			}
 			// disconnect
 			ftpclient.disconnect();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

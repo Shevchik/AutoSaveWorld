@@ -29,6 +29,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
 import autosaveworld.threads.purge.DataPurge;
+import autosaveworld.threads.purge.taskqueue.TaskQueue;
 
 public class ResidencePurge extends DataPurge {
 
@@ -48,7 +49,7 @@ public class ResidencePurge extends DataPurge {
 			reslist.addAll(ResidenceAPI.getResidenceManager().getResidencesInWorld(world));
 		}
 		boolean wepresent = (Bukkit.getPluginManager().getPlugin("WorldEdit") != null);
-		TaskQueue queue = new TaskQueue();
+		TaskQueue queue = new TaskQueue(80);
 		for (final ResidenceArea resarea : reslist) {
 			MessageLogger.debug("Checking residence " + resarea.getName());
 			ResidenceRenterClearTask renterClearTask = null;

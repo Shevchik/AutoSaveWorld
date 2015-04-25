@@ -46,7 +46,7 @@ public class SchedulerUtils {
 			@Override
 			public void run() {
 				run.run();
-				lock.offer(true);
+				lock.offer(Boolean.TRUE);
 			}
 		});
 		try {

@@ -20,8 +20,9 @@ package autosaveworld.threads.purge.plugins.residence;
 import net.t00thpick1.residence.api.ResidenceAPI;
 import net.t00thpick1.residence.api.areas.ResidenceArea;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.purge.taskqueue.Task;
 
-public class ResidenceDeleteTask implements ResidencePurgeTask {
+public class ResidenceDeleteTask implements Task {
 
 	private ResidenceArea resarea;
 

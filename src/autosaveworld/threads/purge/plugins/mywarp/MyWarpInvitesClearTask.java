@@ -21,8 +21,9 @@ import java.util.LinkedList;
 
 import me.taylorkelly.mywarp.data.Warp;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.purge.taskqueue.Task;
 
-public class MyWarpInvitesClearTask implements MyWarpPurgeTask {
+public class MyWarpInvitesClearTask implements Task {
 
 	private Warp warp;
 
@@ -42,6 +43,11 @@ public class MyWarpInvitesClearTask implements MyWarpPurgeTask {
 
 	public int getPlayerToClearCount() {
 		return names.size();
+	}
+
+	@Override
+	public boolean isHeavyTask() {
+		return false;
 	}
 
 	@Override

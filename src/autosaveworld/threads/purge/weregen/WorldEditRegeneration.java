@@ -23,7 +23,7 @@ import com.sk89q.worldedit.Vector;
 
 public class WorldEditRegeneration {
 
-	private static WorldEditRegenrationInterface instance;
+	private static volatile WorldEditRegenrationInterface instance;
 
 	public static WorldEditRegenrationInterface get() {
 		if (instance == null) {

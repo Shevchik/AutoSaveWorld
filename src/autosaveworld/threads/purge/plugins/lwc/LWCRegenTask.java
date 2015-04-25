@@ -19,14 +19,21 @@ package autosaveworld.threads.purge.plugins.lwc;
 
 import org.bukkit.Material;
 
+import autosaveworld.threads.purge.taskqueue.Task;
+
 import com.griefcraft.model.Protection;
 
-public class LWCRegenTask implements LWCPurgeTask {
+public class LWCRegenTask implements Task {
 
 	private Protection protection;
 
 	public LWCRegenTask(Protection protection) {
 		this.protection = protection;
+	}
+
+	@Override
+	public boolean isHeavyTask() {
+		return false;
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
 import autosaveworld.threads.purge.DataPurge;
+import autosaveworld.utils.FileUtils;
 
 public class DatfilePurge extends DataPurge {
 
@@ -40,7 +41,7 @@ public class DatfilePurge extends DataPurge {
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername + File.separator + "playerdata" + File.separator);
 		File playersstatsfolder = new File(worldfoldername + File.separator + "stats" + File.separator);
-		for (File playerfile : playersdatfolder.listFiles()) {
+		for (File playerfile : FileUtils.safeListFiles(playersdatfolder)) {
 			if (playerfile.getName().endsWith(".dat")) {
 				String playeruuid = playerfile.getName().substring(0, playerfile.getName().length() - 4);
 				if (!activeplayerslist.isActiveUUID(playeruuid)) {

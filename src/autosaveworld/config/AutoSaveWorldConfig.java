@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -264,8 +265,8 @@ public class AutoSaveWorldConfig {
 		if (ccintervalscs != null) {
 			for (String interval : ccintervalscs.getKeys(false)) {
 				try {
-					ccintervallmap.put(Integer.valueOf(interval), ccintervalscs.getStringList(interval));
-				} catch (Exception e) {
+					ccintervallmap.put(Integer.parseInt(interval), ccintervalscs.getStringList(interval));
+				} catch (NumberFormatException e) {
 				}
 			}
 		}
@@ -386,15 +387,15 @@ public class AutoSaveWorldConfig {
 		if (ccTimesModeCommands.isEmpty()) {
 			config.createSection("consolecommand.timemode.times");
 		}
-		for (String cctime : ccTimesModeCommands.keySet()) {
-			config.set("consolecommand.timemode.times." + cctime, ccTimesModeCommands.get(cctime));
+		for (Entry<String, List<String>> entry : ccTimesModeCommands.entrySet()) {
+			config.set("consolecommand.timemode.times." + entry.getKey(), entry.getValue());
 		}
 		config.set("consolecommand.intervalmode.enabled", ccIntervalsModeEnabled);
 		if (ccIntervalsModeCommands.isEmpty()) {
 			config.createSection("consolecommand.intervalmode.intervals");
 		}
-		for (int inttime : ccIntervalsModeCommands.keySet()) {
-			config.set("consolecommand.intervalmode.intervals." + inttime, ccIntervalsModeCommands.get(inttime));
+		for (Entry<Integer, List<String>> entry : ccIntervalsModeCommands.entrySet()) {
+			config.set("consolecommand.intervalmode.intervals." + entry.getKey(), entry.getValue());
 		}
 
 		// worldregen variables

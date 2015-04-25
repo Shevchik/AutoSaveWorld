@@ -20,14 +20,13 @@ package autosaveworld.threads.purge.plugins.wg;
 import java.util.LinkedList;
 import java.util.UUID;
 
-import org.bukkit.World;
-
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.threads.purge.taskqueue.Task;
 
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-public class DomainClearTask implements WGPurgeTask {
+public class DomainClearTask implements Task {
 
 	private ProtectedRegion region;
 
@@ -60,7 +59,7 @@ public class DomainClearTask implements WGPurgeTask {
 	}
 
 	@Override
-	public void performTask(World world) {
+	public void performTask() {
 		MessageLogger.debug("Cleaning domain for region "+region.getId());
 		DefaultDomain owners = region.getOwners();
 		for (UUID uuid : uuids) {

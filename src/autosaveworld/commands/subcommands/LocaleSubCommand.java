@@ -19,6 +19,7 @@ package autosaveworld.commands.subcommands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
@@ -77,7 +78,7 @@ public class LocaleSubCommand implements ISubCommand {
 			}
 			return result;
 		}
-		return new ArrayList<String>();
+		return Collections.emptyList();
 	}
 
 	@Override

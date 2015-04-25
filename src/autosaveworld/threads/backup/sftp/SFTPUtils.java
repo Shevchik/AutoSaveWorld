@@ -23,9 +23,11 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Vector;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.threads.backup.utils.MemoryZip;
+import autosaveworld.utils.FileUtils;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp.LsEntry;
 import autosaveworld.zlibs.com.jcraft.jsch.SftpException;
@@ -36,19 +38,16 @@ public class SFTPUtils {
 		if (src.isDirectory()) {
 			sftp.mkdir(src.getName());
 			sftp.cd(src.getName());
-			for (File file : src.listFiles()) {
+			for (File file : FileUtils.safeListFiles(src)) {
 				if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
 					uploadDirectory(sftp, file, excludefolders);
 				}
 			}
 			sftp.cd("..");
 		} else {
-			if (!src.getName().endsWith(".lck")) {
-				try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
-					storeFile(sftp, is, src.getName() + ".zip");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
+				storeFile(sftp, is, src.getName() + ".zip");
+			} catch (IOException e) {
 			}
 		}
 	}
@@ -62,8 +61,8 @@ public class SFTPUtils {
 	private static void storeFile(ChannelSftp sftp, InputStream is, String filename) {
 		try {
 			sftp.put(is, filename);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (SftpException e) {
+			MessageLogger.warn("Failed to backup file: " + filename);
 		}
 	}
 

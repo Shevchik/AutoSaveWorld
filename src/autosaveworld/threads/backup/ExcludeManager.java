@@ -20,9 +20,6 @@ package autosaveworld.threads.backup;
 import java.io.File;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-
 public class ExcludeManager {
 
 	public static boolean isFolderExcluded(List<String> excludelist, String folderPath) {
@@ -36,24 +33,13 @@ public class ExcludeManager {
 				if (folder.getAbsoluteFile().getParentFile().equals(new File(excludedFolderPath).getAbsoluteFile().getParentFile())) {
 					// check name equality
 					String excludeFolderName = new File(excludedFolderPath).getName();
-					if (folder.getName().contains(excludeFolderName.substring(0, excludeFolderName.indexOf("*")))) {
+					if (folder.getName().contains(excludeFolderName.substring(0, excludeFolderName.indexOf('*')))) {
 						return true;
 					}
 				}
 			} else {
 				// plain folders equality check
 				if (folder.getAbsoluteFile().equals(new File(excludedFolderPath).getAbsoluteFile())) {
-					return true;
-				}
-			}
-		}
-
-		// ignore others worlds folders inside main world folder (for mcpc+)
-		// check if we trying to backup folder inside main world folder
-		if (Bukkit.getWorlds().get(0).getWorldFolder().getAbsoluteFile().equals(folder.getParentFile())) {
-			// if this folder name is equal to one of the world names we should ignore it
-			for (World w : Bukkit.getWorlds()) {
-				if (folder.getName().equals(w.getWorldFolder().getName())) {
 					return true;
 				}
 			}

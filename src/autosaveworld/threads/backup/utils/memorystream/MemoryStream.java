@@ -23,13 +23,13 @@ import java.io.OutputStream;
 
 public class MemoryStream {
 
-	private MemoryOutputStream os = new MemoryOutputStream();
+	private final MemoryOutputStream os = new MemoryOutputStream();
 
 	public MemoryOutputStream getOutputStream() {
 		return os;
 	}
 
-	private MemoryInputStream is = new MemoryInputStream();
+	private final MemoryInputStream is = new MemoryInputStream();
 
 	public MemoryInputStream getInputStream() {
 		return is;
@@ -39,7 +39,7 @@ public class MemoryStream {
 		stream.putEndOfStreamSignal();
 	}
 
-	private MemoryStreamQueue stream = new MemoryStreamQueue(10 * 1024 * 1024);
+	protected final MemoryStreamQueue stream = new MemoryStreamQueue(10 * 1024 * 1024);
 
 	public class MemoryInputStream extends InputStream {
 

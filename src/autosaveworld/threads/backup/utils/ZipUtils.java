@@ -29,6 +29,7 @@ import java.util.zip.ZipOutputStream;
 
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
+import autosaveworld.utils.FileUtils;
 
 public class ZipUtils {
 
@@ -56,7 +57,7 @@ public class ZipUtils {
 	private static void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException {
 		final File zipDir = new File(srcDir, currentDir);
 
-		for (final String child : zipDir.list()) {
+		for (final String child : FileUtils.safeList(zipDir)) {
 			final File srcFile = new File(zipDir, child);
 
 			if (srcFile.isDirectory()) {

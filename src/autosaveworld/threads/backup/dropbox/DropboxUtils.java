@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.threads.backup.utils.MemoryZip;
+import autosaveworld.utils.FileUtils;
 import autosaveworld.zlibs.com.dropbox.core.DbxClient;
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
 import autosaveworld.zlibs.com.dropbox.core.DbxStreamWriter;
@@ -35,20 +37,14 @@ public class DropboxUtils {
 	public static void uploadDirectory(DbxClient client, File src, String path, List<String> excludefolders) throws IOException, DbxException {
 		if (src.isDirectory()) {
 			client.createFolder(path + "/" + src.getName());
-			for (File file : src.listFiles()) {
+			for (File file : FileUtils.safeListFiles(src)) {
 				if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
 					uploadDirectory(client, file, path + "/" + src.getName(), excludefolders);
 				}
 			}
 		} else {
-			if (!src.getName().endsWith(".lck")) {
-				try {
-					InputStream is = InputStreamConstruct.getFileInputStream(src);
-					storeFile(client, is, path, src.getName());
-					is.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
+				storeFile(client, is, path, src.getName());
 			}
 		}
 	}
@@ -62,8 +58,8 @@ public class DropboxUtils {
 	private static void storeFile(DbxClient client, InputStream is, String path, String filename) {
 		try {
 			client.uploadFileChunked(path + "/" + filename, DbxWriteMode.force(), -1, new DbxStreamWriter.InputStreamCopier(is));
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (DbxException | IOException e) {
+			MessageLogger.warn("Failed to backup file: " + path + "/" + filename);
 		}
 	}
 

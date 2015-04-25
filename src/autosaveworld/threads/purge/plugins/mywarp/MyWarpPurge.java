@@ -28,6 +28,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
 import autosaveworld.threads.purge.DataPurge;
+import autosaveworld.threads.purge.taskqueue.TaskQueue;
 
 public class MyWarpPurge extends DataPurge {
 
@@ -43,7 +44,7 @@ public class MyWarpPurge extends DataPurge {
 
 		int deleted = 0;
 
-		TaskQueue queue = new TaskQueue();
+		TaskQueue queue = new TaskQueue(80);
 		TreeSet<Warp> warps = mywarp.getWarpManager().getWarps(null, null);
 		for (Warp warp : warps) {
 			MyWarpInvitesClearTask invitesClearTask = new MyWarpInvitesClearTask(warp);

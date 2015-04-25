@@ -18,30 +18,41 @@
 package autosaveworld.threads.backup.localfs;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
+import autosaveworld.utils.FileUtils;
 
 public class LocalFSUtils {
 
 	public static void copyDirectory(File sourceLocation, File targetLocation, List<String> excludefolders) {
 		if (sourceLocation.isDirectory()) {
 			targetLocation.mkdirs();
-			for (String filename : sourceLocation.list()) {
+			for (String filename : FileUtils.safeList(sourceLocation)) {
 				if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) {
 					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders);
 				}
 			}
 		} else {
 			if (!sourceLocation.getName().endsWith(".lck")) {
-				try (InputStream is = InputStreamConstruct.getFileInputStream(sourceLocation)) {
-					Files.copy(is, targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
-				} catch (Exception e) {
-					e.printStackTrace();
+				if (!InputStreamConstruct.isRateLimited()) {
+					try {
+						Files.copy(sourceLocation.toPath(), targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try (InputStream is = InputStreamConstruct.getFileInputStream(sourceLocation)) {
+						Files.copy(is, targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e) {
+						MessageLogger.warn("Failed to backup file: " + sourceLocation);
+					}
 				}
 			}
 		}

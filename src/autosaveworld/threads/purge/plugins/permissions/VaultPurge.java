@@ -29,6 +29,7 @@ import org.bukkit.World;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.purge.ActivePlayersList;
+import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class VaultPurge {
@@ -42,9 +43,10 @@ public class VaultPurge {
 
 		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
 		File playersdatfolder = new File(worldfoldername + File.separator + "playerdata" + File.separator);
-		for (String playerfile : playersdatfolder.list()) {
-			if (playerfile.endsWith(".dat")) {
-				String playerUUID = playerfile.substring(0, playerfile.length() - 4);
+		for (File playerfile : FileUtils.safeListFiles(playersdatfolder)) {
+			String playerfilename = playerfile.getName();
+			if (playerfilename.endsWith(".dat")) {
+				String playerUUID = playerfilename.substring(0, playerfilename.length() - 4);
 				if (!activePlayersStorage.isActiveUUID(playerUUID)) {
 					//delete player permissions
 					queue.add(playerUUID);
@@ -58,15 +60,15 @@ public class VaultPurge {
 		MessageLogger.debug("Player permissions purge finished, deleted " + deleted + " players permissions");
 	}
 
-	private class TaskQueue {
+	private static class TaskQueue {
 
-		private Permission permission;
+		protected Permission permission;
 
 		public TaskQueue(Permission permission) {
 			this.permission = permission;
 		}
 
-		private ArrayList<String> playerstopurge = new ArrayList<String>(70);
+		protected ArrayList<String> playerstopurge = new ArrayList<String>(70);
 
 		public void add(String player) {
 			playerstopurge.add(player);

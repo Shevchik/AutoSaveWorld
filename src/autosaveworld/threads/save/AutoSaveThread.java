@@ -65,6 +65,11 @@ public class AutoSaveThread extends IntervalTaskThread {
 
 	@Override
 	public void doTask() {
+		if (AutoBackupThread.backupRunning) {
+			MessageLogger.debug("Backup is running, skipping autosave");
+			return;
+		}
+
 		performSave();
 	}
 
@@ -84,11 +89,6 @@ public class AutoSaveThread extends IntervalTaskThread {
 	}
 
 	public void performSave() {
-
-		if (AutoBackupThread.backupRunning) {
-			MessageLogger.debug("Backup is running, skipping autosave");
-			return;
-		}
 
 		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
 
@@ -176,7 +176,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 			ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getSaveWorldDataMethodName(), 2).invoke(dataManager, worldData, null);
 			// invoke saveChunks
 			ReflectionUtils.getMethod(chunkProvider.getClass(), NMSNames.getSaveChunksMethodName(), 2).invoke(chunkProvider, true, null);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			MessageLogger.warn("failed to workaround stucture saving, saving world using normal methods");
 			e.printStackTrace();
 			// failed to save using reflection, save world using normal methods
@@ -184,7 +184,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 		}
 	}
 
-	private Object getNMSWorld(World world) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private Object getNMSWorld(World world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return ReflectionUtils.getMethod(world.getClass(), "getHandle", 0).invoke(world);
 	}
 
