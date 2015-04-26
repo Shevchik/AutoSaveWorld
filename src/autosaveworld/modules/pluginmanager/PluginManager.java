@@ -41,19 +41,21 @@ public class PluginManager {
 
 	private InternalUtils iutils = new InternalUtils();
 
-	public void handlePluginManagerCommand(CommandSender sender, String command, String pluginname) {
+	public void handlePluginManagerCommand(CommandSender sender, String command, String arg) {
 		if (command.equalsIgnoreCase("load")) {
-			loadPlugin(sender, pluginname);
+			loadPlugin(sender, arg);
 		} else if (command.equalsIgnoreCase("unload")) {
-			unloadPlugin(sender, pluginname);
+			unloadPlugin(sender, arg);
 		} else if (command.equalsIgnoreCase("reload")) {
-			reloadPlugin(sender, pluginname);
+			reloadPlugin(sender, arg);
+		} else if (command.equalsIgnoreCase("removeperm")) {
+			removePermissions(sender, arg.split("[ ]"));
 		} else {
 			MessageLogger.sendMessage(sender, "Invalid plugin manager command");
 		}
 	}
 
-	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "reload"});
+	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "reload", "removeperm"});
 	public List<String> getTabComplete(CommandSender sender, String[] args) {
 		if (args.length == 1) {
 			ArrayList<String> result = new ArrayList<String>();
@@ -92,6 +94,13 @@ public class PluginManager {
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	private void removePermissions(CommandSender sender, String... permissions) {
+		for (String permission : permissions) {
+			Bukkit.getPluginManager().removePermission(permission);
+		}
+		MessageLogger.sendMessage(sender, "Permission ungregistered");
 	}
 
 	private void loadPlugin(CommandSender sender, String pluginname) {

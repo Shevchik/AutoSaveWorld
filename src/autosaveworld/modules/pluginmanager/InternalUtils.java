@@ -38,6 +38,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
 
+import autosaveworld.utils.ReflectionUtils;
+
 public class InternalUtils {
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
@@ -57,21 +59,17 @@ public class InternalUtils {
 			}
 		}
 		// remove from plugins field
-		Field pluginsField = managerclass.getDeclaredField("plugins");
-		pluginsField.setAccessible(true);
+		Field pluginsField = ReflectionUtils.getField(managerclass, "plugins");
 		List<Plugin> plugins = (List<Plugin>) pluginsField.get(pluginmanager);
 		plugins.remove(plugin);
 		// remove from lookupnames field
-		Field lookupNamesField = managerclass.getDeclaredField("lookupNames");
-		lookupNamesField.setAccessible(true);
+		Field lookupNamesField = ReflectionUtils.getField(managerclass, "lookupNames");
 		Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
 		lookupNames.values().remove(plugin);
 		// remove from commands field
-		Field commandMapField = managerclass.getDeclaredField("commandMap");
-		commandMapField.setAccessible(true);
+		Field commandMapField = ReflectionUtils.getField(managerclass, "commandMap");
 		CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
-		Method getCommandsMethod = commandMap.getClass().getMethod("getCommands");
-		getCommandsMethod.setAccessible(true);
+		Method getCommandsMethod = ReflectionUtils.getMethod(commandMap.getClass(), "getCommands", 2);
 		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
 		for (Command cmd : new LinkedList<Command>(commands)) {
 			if (cmd instanceof PluginIdentifiableCommand) {
