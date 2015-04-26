@@ -69,7 +69,7 @@ public class InternalUtils {
 		// remove from commands field
 		Field commandMapField = ReflectionUtils.getField(managerclass, "commandMap");
 		CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
-		Method getCommandsMethod = ReflectionUtils.getMethod(commandMap.getClass(), "getCommands", 2);
+		Method getCommandsMethod = ReflectionUtils.getMethod(commandMap.getClass(), "getCommands", 0);
 		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
 		for (Command cmd : new LinkedList<Command>(commands)) {
 			if (cmd instanceof PluginIdentifiableCommand) {
