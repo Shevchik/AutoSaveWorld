@@ -5,7 +5,7 @@ public class RestartWaiter {
 	public static void init() {
 	}
 
-	private static int waittorestart = 0;
+	private static volatile int waittorestart = 0;
 
 	public static boolean shouldWait() {
 		return waittorestart != 0;

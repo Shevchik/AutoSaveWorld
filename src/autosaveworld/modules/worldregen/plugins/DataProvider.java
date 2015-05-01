@@ -17,21 +17,39 @@
 
 package autosaveworld.modules.worldregen.plugins;
 
-import net.sacredlabyrinth.Phaed.PreciousStones.PreciousStones;
-import net.sacredlabyrinth.Phaed.PreciousStones.vectors.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.bukkit.World;
 
-public class PStonesDataProvider extends DataProvider {
+import autosaveworld.modules.worldregen.storage.Coord;
 
-	public PStonesDataProvider(World world) throws Throwable {
-		super(world);
+public abstract class DataProvider {
+
+	private final LinkedList<Coord> chunks = new LinkedList<Coord>();
+
+	protected World world;
+
+	public DataProvider(World world) throws Throwable {
+		this.world = world;
+		init();
 	}
 
-	@Override
-	protected void init() throws Throwable {
-		for (Field field : PreciousStones.getInstance().getForceFieldManager().getFields("*", world)) {
-			addChunksInBounds(field.getMinx(), field.getMinz(), field.getMaxx(), field.getMaxz());
+	public final List<Coord> getChunks() {
+		return chunks;
+	}
+
+	protected abstract void init() throws Throwable;
+
+	protected final void addChunkAtCoord(int chunkX, int chunkZ) {
+		chunks.add(new Coord(chunkX, chunkZ));
+	}
+
+	protected final void addChunksInBounds(int worldXMin, int worldZMin, int worldXMax, int worldZMax) {
+		for (int x = (worldXMin >> 4); x <= (worldXMax >> 4); x++) {
+			for (int z = (worldZMin >> 4); z <= (worldZMax >> 4); z++) {
+				chunks.add(new Coord(x, z));
+			}
 		}
 	}
 

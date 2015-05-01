@@ -29,7 +29,7 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.modules.worldregen.WorldRegenCopyThread;
+import autosaveworld.modules.worldregen.WorldRegenThread;
 
 public class WorldRegenSubCommand implements ISubCommand {
 
@@ -52,9 +52,7 @@ public class WorldRegenSubCommand implements ISubCommand {
 			MessageLogger.sendMessage(sender, "This world doesn't exist");
 			return;
 		}
-		WorldRegenCopyThread copythread = new WorldRegenCopyThread(plugin, config, configmsg);
-		copythread.setWorld(args[0]);
-		copythread.start();
+		new WorldRegenThread(plugin, config, configmsg, args[0]).start();
 	}
 
 	@Override

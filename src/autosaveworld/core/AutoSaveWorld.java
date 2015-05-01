@@ -28,7 +28,6 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.modules.networkwatcher.NetworkWatcher;
 import autosaveworld.modules.pluginmanager.PluginManager;
 import autosaveworld.modules.processmanager.ProcessManager;
-import autosaveworld.modules.worldregen.WorldRegenPasteThread;
 import autosaveworld.threads.ThreadType;
 import autosaveworld.threads.backup.AutoBackupThread;
 import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
@@ -116,11 +115,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.CRASHRESTART);
 		startThread(ThreadType.AUTORESTART);
 		startThread(ThreadType.CONSOLECOMMAND);
-		//start worldregen paste if needed
-		WorldRegenPasteThread pasteThread = new WorldRegenPasteThread(this, config, configmsg);
-		if (pasteThread.shouldPaste()) {
-			pasteThread.start();
-		}
 	}
 
 	@Override

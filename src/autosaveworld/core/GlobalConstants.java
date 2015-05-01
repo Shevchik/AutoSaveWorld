@@ -49,41 +49,4 @@ public class GlobalConstants {
 		return getAutoSaveWorldFolder() + configmsgfile;
 	}
 
-	// worldregen
-	private static String worldregentempfolder = "WorldRegenTemp" + File.separator;
-	private static String worldnamefile = "wname.yml";
-	private static String wgtempfolder = "WG" + File.separator;
-	private static String factionstempfolder = "Factions" + File.separator;
-	private static String griefpreventiontempfolder = "GP" + File.separator;
-	private static String townytempfolder = "Towny" + File.separator;
-	private static String pstonestempfolder = "PStones" + File.separator;
-
-	public static String getWorldRegenTempFolder() {
-		return getAutoSaveWorldFolder() + worldregentempfolder;
-	}
-
-	public static String getWorldnameFile() {
-		return getWorldRegenTempFolder() + worldnamefile;
-	}
-
-	public static String getWGTempFolder() {
-		return getWorldRegenTempFolder() + wgtempfolder;
-	}
-
-	public static String getFactionsTempFolder() {
-		return getWorldRegenTempFolder() + factionstempfolder;
-	}
-
-	public static String getGPTempFolder() {
-		return getWorldRegenTempFolder() + griefpreventiontempfolder;
-	}
-
-	public static String getTownyTempFolder() {
-		return getWorldRegenTempFolder() + townytempfolder;
-	}
-
-	public static String getPStonesTempFolder() {
-		return getWorldRegenTempFolder() + pstonestempfolder;
-	}
-
 }

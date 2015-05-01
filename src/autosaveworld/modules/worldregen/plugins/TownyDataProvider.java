@@ -17,87 +17,28 @@
 
 package autosaveworld.modules.worldregen.plugins;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.bukkit.BukkitUtil;
 
-import autosaveworld.core.GlobalConstants;
-import autosaveworld.modules.worldregen.SchematicData.SchematicToLoad;
-import autosaveworld.modules.worldregen.SchematicData.SchematicToSave;
-import autosaveworld.modules.worldregen.tasks.CopyDataProvider;
-import autosaveworld.modules.worldregen.tasks.PasteDataProvider;
+public class TownyDataProvider extends DataProvider {
 
-public class TownyDataProvider implements CopyDataProvider, PasteDataProvider {
-
-	private World wtoregen;
-
-	public TownyDataProvider(World wtoregen) {
-		this.wtoregen = wtoregen;
+	public TownyDataProvider(World world) throws Throwable {
+		super(world);
 	}
 
 	@Override
-	public List<SchematicToSave> getSchematicsToCopy() throws NotRegisteredException {
-		ArrayList<SchematicToSave> schematics = new ArrayList<SchematicToSave>();
-		List<Town> towns = TownyUniverse.getDataSource().getWorld(wtoregen.getName()).getTowns();
-		for (Town town : towns) {
-			List<TownBlock> tblocks = town.getTownBlocks();
-			if (tblocks.size() > 0) {
-				String name = town.getName();
-				for (TownBlock tb : tblocks) {
-					if (tb.getWorld().getName().equalsIgnoreCase(wtoregen.getName())) {
-						// get coords
-						final int xcoord = tb.getX();
-						final int zcoord = tb.getZ();
-						final Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xcoord * 16, 0, zcoord * 16));
-						final Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, (xcoord * 16) + 15, wtoregen.getMaxHeight(), (zcoord * 16) + 15));
-						// add to save list
-						schematics.add(new SchematicToSave(
-							GlobalConstants.getTownyTempFolder() + town.getName() + File.separator + "X" + xcoord + "Z" + zcoord,
-							bvmin, bvmax,
-							"Saving towny town "+name+" chunk to schematic",
-							"Towny town "+name+" chunk saved"
-						));
-					}
+	protected void init() throws NotRegisteredException {
+		for (Town town : TownyUniverse.getDataSource().getWorld(world.getName()).getTowns()) {
+			for (TownBlock tb : town.getTownBlocks()) {
+				if (tb.getWorld().getName().equalsIgnoreCase(world.getName())) {
+					addChunkAtCoord(tb.getX(), tb.getZ());
 				}
 			}
 		}
-		return schematics;
-	}
-
-	@Override
-	public List<SchematicToLoad> getSchematicsToPaste() throws NotRegisteredException {
-		ArrayList<SchematicToLoad> schematics = new ArrayList<SchematicToLoad>();
-		List<Town> towns = TownyUniverse.getDataSource().getWorld(wtoregen.getName()).getTowns();
-		for (Town town : towns) {
-			List<TownBlock> tblocks = town.getTownBlocks();
-			if (tblocks.size() > 0) {
-				String name = town.getName();
-				for (TownBlock tb : tblocks) {
-					if (tb.getWorld().getName().equalsIgnoreCase(wtoregen.getName())) {
-						// get coords
-						final int xcoord = tb.getX();
-						final int zcoord = tb.getZ();
-						// add to save list
-						schematics.add(new SchematicToLoad(
-							GlobalConstants.getTownyTempFolder() + town.getName() + File.separator + "X" + xcoord + "Z" + zcoord,
-							"Pasting towny town "+name+" chunk from schematic",
-							"Towny town "+name+" chunk pasted"
-						));
-					}
-				}
-			}
-		}
-		return schematics;
 	}
 
 }

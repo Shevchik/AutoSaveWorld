@@ -17,70 +17,28 @@
 
 package autosaveworld.modules.worldregen.plugins;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.bukkit.BukkitUtil;
+public class GriefPreventionDataProvider extends DataProvider {
 
-import autosaveworld.core.GlobalConstants;
-import autosaveworld.modules.worldregen.SchematicData.SchematicToLoad;
-import autosaveworld.modules.worldregen.SchematicData.SchematicToSave;
-import autosaveworld.modules.worldregen.tasks.CopyDataProvider;
-import autosaveworld.modules.worldregen.tasks.PasteDataProvider;
-
-public class GriefPreventionDataProvider implements CopyDataProvider, PasteDataProvider {
-
-	private World wtoregen;
-
-	public GriefPreventionDataProvider(World wtoregen) {
-		this.wtoregen = wtoregen;
+	public GriefPreventionDataProvider(World world) throws Throwable {
+		super(world);
 	}
 
 	@Override
-	public List<SchematicToSave> getSchematicsToCopy() {
-		ArrayList<SchematicToSave> schematics = new ArrayList<SchematicToSave>();
-		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
-		for (Claim claim : gp.dataStore.getClaims()) {
-			// get coords
-			double xmin = claim.getLesserBoundaryCorner().getX();
-			double zmin = claim.getLesserBoundaryCorner().getZ();
-			double xmax = claim.getGreaterBoundaryCorner().getX();
-			double zmax = claim.getGreaterBoundaryCorner().getZ();
-			Vector bvmin = BukkitUtil.toVector(new Location(wtoregen, xmin, 0, zmin));
-			Vector bvmax = BukkitUtil.toVector(new Location(wtoregen, xmax, wtoregen.getMaxHeight(), zmax));
-			// add to save list
-			String name = claim.getID().toString();
-			schematics.add(new SchematicToSave(
-				GlobalConstants.getGPTempFolder() + name,
-				bvmin, bvmax,
-				"Saving GP Region " + name + " to schematic",
-				"GP Region " + name + " saved"
-			));
+	protected void init() throws Throwable {
+		for (Claim claim : ((GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention")).dataStore.getClaims()) {
+			addChunksInBounds(
+				claim.getLesserBoundaryCorner().getBlockX(),
+				claim.getLesserBoundaryCorner().getBlockZ(),
+				claim.getGreaterBoundaryCorner().getBlockX(),
+				claim.getGreaterBoundaryCorner().getBlockZ()
+			);
 		}
-		return schematics;
-	}
-
-	@Override
-	public List<SchematicToLoad> getSchematicsToPaste() {
-		ArrayList<SchematicToLoad> schematics = new ArrayList<SchematicToLoad>();
-		GriefPrevention gp = (GriefPrevention) Bukkit.getPluginManager().getPlugin("GriefPrevention");
-		for (Claim claim : gp.dataStore.getClaims()) {
-			String name = claim.getID().toString();
-			schematics.add(new SchematicToLoad(
-				GlobalConstants.getGPTempFolder() + name,
-				"Pasting GP Region " + name + " from schematic",
-				"GP Region " + name + " pasted"
-			));
-		}
-		return schematics;
 	}
 
 }

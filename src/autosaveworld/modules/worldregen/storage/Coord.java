@@ -15,24 +15,43 @@
  *
  */
 
-package autosaveworld.modules.worldregen.tasks;
+package autosaveworld.modules.worldregen.storage;
 
-import org.bukkit.World;
+public class Coord {
 
-import autosaveworld.modules.worldregen.SchematicOperations;
+	private int x;
+	private int z;
 
-public class CopyTask {
-
-	private World wtoregen;
-	private CopyDataProvider provider;
-
-	public CopyTask(World wtoregen, CopyDataProvider provider) {
-		this.wtoregen = wtoregen;
-		this.provider = provider;
+	public Coord(int x, int z) {
+		this.x = x;
+		this.z = z;
 	}
 
-	public void doCopy() throws Exception {
-		SchematicOperations.saveToSchematic(wtoregen, provider.getSchematicsToCopy());
+	public int getX() {
+		return x;
+	}
+
+	public int getZ() {
+		return z;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Coord)) {
+			return false;
+		}
+		Coord othercoord = (Coord) other;
+		return x == othercoord.x && z == othercoord.z;
+	}
+
+	@Override
+	public int hashCode() {
+		return x * 31 + z;
+	}
+
+	@Override
+	public String toString() {
+		return getX()+"."+getZ();
 	}
 
 }
