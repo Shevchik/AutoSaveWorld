@@ -19,15 +19,21 @@ package autosaveworld.modules.pluginmanager;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -35,6 +41,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.FileUtils;
+import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.StringUtils;
 
 public class PluginManager {
@@ -42,20 +49,35 @@ public class PluginManager {
 	private InternalUtils iutils = new InternalUtils();
 
 	public void handlePluginManagerCommand(CommandSender sender, String command, String arg) {
-		if (command.equalsIgnoreCase("load")) {
-			loadPlugin(sender, arg);
-		} else if (command.equalsIgnoreCase("unload")) {
-			unloadPlugin(sender, arg);
-		} else if (command.equalsIgnoreCase("reload")) {
-			reloadPlugin(sender, arg);
-		} else if (command.equalsIgnoreCase("removeperm")) {
-			removePermissions(sender, arg.split("[ ]"));
-		} else {
-			MessageLogger.sendMessage(sender, "Invalid plugin manager command");
+		switch (command.toLowerCase()) {
+			case "load": {
+				loadPlugin(sender, arg);
+				break;
+			}
+			case "unload": {
+				unloadPlugin(sender, arg);
+				break;
+			}
+			case "reload": {
+				reloadPlugin(sender, arg);
+				break;
+			}
+			case "removeperm": {
+				removePermissions(sender, arg.split("[ ]"));
+				break;
+			}
+			case "findcommand": {
+				findCommand(sender, arg);
+				break;
+			}
+			default: {
+				MessageLogger.sendMessage(sender, "Invalid plugin manager command");
+				break;
+			}
 		}
 	}
 
-	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "reload", "removeperm"});
+	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "reload", "removeperm", "findcommand"});
 	public List<String> getTabComplete(CommandSender sender, String[] args) {
 		if (args.length == 1) {
 			ArrayList<String> result = new ArrayList<String>();
@@ -94,6 +116,41 @@ public class PluginManager {
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void findCommand(CommandSender sender, String command) {
+		try {
+			Field commandMapField = ReflectionUtils.getField(Bukkit.getPluginManager().getClass(), "commandMap");
+			CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getPluginManager());
+			Method getCommandsMethod = ReflectionUtils.getMethod(commandMap.getClass(), "getCommands", 0);
+			Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
+			for (Command cmd : commands) {
+				if (cmd.getName().equals(command) || cmd.getAliases().contains(command)) {
+					Plugin owner = null;
+					if (cmd instanceof PluginIdentifiableCommand) {
+						owner = ((PluginIdentifiableCommand) cmd).getPlugin();
+					} else {
+						ClassLoader loader = cmd.getClass().getClassLoader();
+						for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+							if (plugin.getClass().getClassLoader() == loader) {
+								owner = plugin;
+							}
+						}
+					}
+					if (owner != null) {
+						MessageLogger.sendMessage(sender, "Plugin owning this command: "+ owner.getName());
+					} else {
+						MessageLogger.sendMessage(sender, "Command found, but no owner found, command class is: "+cmd.getClass());
+					}
+					return;
+				}
+			}
+			MessageLogger.sendMessage(sender, "Command not found");
+		} catch (Exception e) {
+			e.printStackTrace();
+			MessageLogger.sendMessage(sender, "Error occured while finding command owner");
+		}
 	}
 
 	private void removePermissions(CommandSender sender, String... permissions) {
