@@ -21,12 +21,15 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URLClassLoader;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -35,6 +38,7 @@ import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
 
@@ -59,18 +63,12 @@ public class InternalUtils {
 			}
 		}
 		// remove from plugins field
-		Field pluginsField = ReflectionUtils.getField(managerclass, "plugins");
-		List<Plugin> plugins = (List<Plugin>) pluginsField.get(pluginmanager);
-		plugins.remove(plugin);
+		((List<Plugin>) ReflectionUtils.getField(managerclass, "plugins").get(pluginmanager)).remove(plugin);
 		// remove from lookupnames field
-		Field lookupNamesField = ReflectionUtils.getField(managerclass, "lookupNames");
-		Map<String, Plugin> lookupNames = (Map<String, Plugin>) lookupNamesField.get(pluginmanager);
-		lookupNames.values().remove(plugin);
+		((Map<String, Plugin>) ReflectionUtils.getField(managerclass, "lookupNames").get(pluginmanager)).values().remove(plugin);
 		// remove from commands field
-		Field commandMapField = ReflectionUtils.getField(managerclass, "commandMap");
-		CommandMap commandMap = (CommandMap) commandMapField.get(pluginmanager);
-		Method getCommandsMethod = ReflectionUtils.getMethod(commandMap.getClass(), "getCommands", 0);
-		Collection<Command> commands = (Collection<Command>) getCommandsMethod.invoke(commandMap);
+		CommandMap commandMap = (CommandMap) ReflectionUtils.getField(managerclass, "commandMap").get(pluginmanager);
+		Collection<Command> commands = (Collection<Command>) ReflectionUtils.getMethod(commandMap.getClass(), "getCommands", 0).invoke(commandMap);
 		for (Command cmd : new LinkedList<Command>(commands)) {
 			if (cmd instanceof PluginIdentifiableCommand) {
 				PluginIdentifiableCommand plugincommand = (PluginIdentifiableCommand) cmd;
@@ -102,8 +100,27 @@ public class InternalUtils {
 		}
 	}
 
-	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException {
+	@SuppressWarnings("unchecked")
+	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException, IllegalArgumentException, IllegalAccessException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
+		// cleanup loaders in case some shit happened
+		try {
+			HashSet<String> pluginNames = new HashSet<String>();
+			for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+				pluginNames.add(plugin.getName());
+			}
+			for (PluginLoader loader : ((Map<Pattern, PluginLoader>) ReflectionUtils.getField(pluginmanager.getClass(), "fileAssociations").get(pluginmanager)).values()) {
+				Map<String, ClassLoader> classloaders = (Map<String, ClassLoader>) ReflectionUtils.getField(loader.getClass(), "loaders").get(loader);
+				Iterator<Entry<String, ClassLoader>> iterator = classloaders.entrySet().iterator();
+				while (iterator.hasNext()) {
+					Entry<String, ClassLoader> entry = iterator.next();
+					if (!pluginNames.contains(entry.getKey())) {
+						iterator.remove();
+					}
+				}
+			}
+		} catch (Throwable t) {
+		}
 		// load plugin
 		Plugin plugin = pluginmanager.loadPlugin(pluginfile);
 		// enable plugin
