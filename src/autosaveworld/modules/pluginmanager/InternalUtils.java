@@ -120,6 +120,7 @@ public class InternalUtils {
 				}
 			}
 		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 		// load plugin
 		Plugin plugin = pluginmanager.loadPlugin(pluginfile);
