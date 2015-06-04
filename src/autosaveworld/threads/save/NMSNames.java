@@ -81,7 +81,7 @@ public class NMSNames {
 	}
 
 	private static boolean isCauldron() {
-		String version = Bukkit.getName();
+		String version = Bukkit.getName().toLowerCase();
 		return (version.contains("mcpc") || version.contains("cauldron"));
 	}
 
