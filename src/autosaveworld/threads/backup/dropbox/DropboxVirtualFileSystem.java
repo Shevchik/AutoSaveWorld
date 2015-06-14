@@ -32,14 +32,14 @@ import autosaveworld.zlibs.com.dropbox.core.DbxWriteMode;
 public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
 	private DbxClient dbxclient;
-	private String currentpath = "/";
+	private String currentpath = "";
 	public DropboxVirtualFileSystem(DbxClient dbxclient) {
 		this.dbxclient = dbxclient;
 	}
 
 	@Override
 	public void changeDirectory(String dirname) throws IOException {
-		currentpath += dirname + "/";
+		currentpath += "/" + dirname;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
 	@Override
 	public void changeToParentDirectiry() throws IOException {
-        if (currentpath.length() == 1) {
+        if (currentpath.isEmpty()) {
         	throw new IOException("Can't get parent directory of a root dir");
         }
         currentpath = currentpath.substring(0, currentpath.lastIndexOf('/'));
@@ -115,7 +115,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	private String getPath(String name) {
-		return currentpath + name;
+		return currentpath + "/" + name;
 	}
 
 
