@@ -67,7 +67,7 @@ public class AutoSaveWorldConfig {
 	public String backupFTPUsername = "user";
 	public String backupFTPPassworld = "password";
 	public String backupFTPPath = "asw";
-	public List<String> backupFTPBackupWorldsList;
+	public List<String> backupFTPWorldsList;
 	public boolean backupFTPPluginsFolder = false;
 	public List<String> backupFTPOtherFolders;
 	public List<String> backupFTPExcludeFolders;
@@ -180,9 +180,9 @@ public class AutoSaveWorldConfig {
 		backupFTPUsername = config.getString("backup.ftp.login", backupFTPUsername);
 		backupFTPPassworld = config.getString("backup.ftp.password", backupFTPPassworld);
 		backupFTPPath = config.getString("backup.ftp.path", backupFTPPath);
-		backupFTPBackupWorldsList = config.getStringList("backup.ftp.worlds");
-		if (backupFTPBackupWorldsList.isEmpty()) {
-			backupFTPBackupWorldsList.add("*");
+		backupFTPWorldsList = config.getStringList("backup.ftp.worlds");
+		if (backupFTPWorldsList.isEmpty()) {
+			backupFTPWorldsList.add("*");
 		}
 		backupFTPPluginsFolder = config.getBoolean("backup.ftp.pluginsfolder", backupFTPPluginsFolder);
 		backupFTPOtherFolders = config.getStringList("backup.ftp.otherfolders");
@@ -327,7 +327,7 @@ public class AutoSaveWorldConfig {
 		config.set("backup.ftp.password", backupFTPPassworld);
 		config.set("backup.ftp.path", backupFTPPath);
 		config.set("backup.ftp.zip", backupFTPZipEnabled);
-		config.set("backup.ftp.worlds", backupFTPBackupWorldsList);
+		config.set("backup.ftp.worlds", backupFTPWorldsList);
 		config.set("backup.ftp.pluginsfolder", backupFTPPluginsFolder);
 		config.set("backup.ftp.otherfolders", backupFTPOtherFolders);
 		config.set("backup.ftp.excludefolders", backupFTPExcludeFolders);

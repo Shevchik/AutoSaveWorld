@@ -17,18 +17,11 @@
 
 package autosaveworld.threads.backup.dropbox;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.threads.backup.BackupUtils;
+import autosaveworld.threads.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.com.dropbox.core.DbxClient;
-import autosaveworld.zlibs.com.dropbox.core.DbxEntry;
 import autosaveworld.zlibs.com.dropbox.core.DbxRequestConfig;
 
 public class DropboxBackup {
@@ -43,53 +36,18 @@ public class DropboxBackup {
 
 	public void performBackup() {
 		try {
-			// init
 			DbxClient client = new DbxClient(dconfig, config.backupDropboxAPPTOKEN);
-			// create dirs
-			client.createFolder("/" + config.backupDropboxPath);
-			client.createFolder("/" + config.backupDropboxPath + "/backups");
-			// delete oldest backup
-			List<DbxEntry> entries = client.getMetadataWithChildren("/" + config.backupDropboxPath + "/backups").children;
-			String[] listnames = new String[entries.size()];
-			for (int i = 0; i < entries.size(); i++) {
-				listnames[i] = entries.get(i).name;
-			}
-			if ((config.backupDropboxMaxNumberOfBackups != 0) && (listnames.length >= config.backupDropboxMaxNumberOfBackups)) {
-				MessageLogger.debug("Deleting oldest backup");
-				// find oldest backup
-				String oldestBackup = BackupUtils.findOldestBackupName(listnames);
-				// delete oldest backup
-				if (oldestBackup != null) {
-					DropboxUtils.deleteDirectory(client, "/" + config.backupDropboxPath + "/backups/" + oldestBackup);
-				}
-			}
-			// create a dir for new backup
-			String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-			client.createFolder("/" + config.backupDropboxPath + "/backups/" + datedir);
-			// load BackupOperations class
-			DropboxBackupOperations bo = new DropboxBackupOperations(client, "/" + config.backupDropboxPath + "/backups/" + datedir, config.backupDropboxZipEnabled, config.backupDropboxExcludeFolders);
-			// do worlds backup
-			if (!config.backupDropboxWorldsList.isEmpty()) {
-				MessageLogger.debug("Backuping Worlds");
-				for (World w : Bukkit.getWorlds()) {
-					if (config.backupDropboxWorldsList.contains("*") || config.backupDropboxWorldsList.contains(w.getWorldFolder().getName())) {
-						bo.backupWorld(w);
-					}
-				}
-				MessageLogger.debug("Backuped Worlds");
-			}
-			// do plugins backup
-			if (config.backupDropboxPluginsFolder) {
-				MessageLogger.debug("Backuping plugins");
-				bo.backupPlugins();
-				MessageLogger.debug("Backuped plugins");
-			}
-			// backup other folders
-			if (!config.backupDropboxOtherFolders.isEmpty()) {
-				MessageLogger.debug("Backuping other folders");
-				bo.backupOtherFolders(config.backupDropboxOtherFolders);
-				MessageLogger.debug("Backuped other folders");
-			}
+
+			VirtualBackupManager.builder()
+			.setBackupPath(config.backupDropboxPath)
+			.setWorldList(config.backupDropboxWorldsList)
+			.setBackupPlugins(config.backupDropboxPluginsFolder)
+			.setOtherFolders(config.backupDropboxOtherFolders)
+			.setExcludedFolders(config.backupDropboxExcludeFolders)
+			.setMaxBackupNumber(config.backupDropboxMaxNumberOfBackups)
+			.setZip(config.backupDropboxZipEnabled)
+			.setVFS(new DropboxVirtualFileSystem(client))
+			.create().backup();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

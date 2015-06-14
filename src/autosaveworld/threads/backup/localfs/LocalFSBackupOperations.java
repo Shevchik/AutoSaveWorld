@@ -77,11 +77,9 @@ public class LocalFSBackupOperations {
 	}
 
 	private void backupFolder(File fromfolder, String destfolder, int maxBackupsCount, String latestbackuptimestamp) {
-		// check oldest backup count
-		if ((maxBackupsCount != 0) && new File(destfolder).exists() && (new File(destfolder).list().length >= maxBackupsCount)) {
-			// find oldest backup
-			String oldestBackupName = BackupUtils.findOldestBackupName(new File(destfolder).list());
-			// delete oldest backup
+		String[] folders = FileUtils.safeList(new File(destfolder));
+		if ((maxBackupsCount != 0) && new File(destfolder).exists() && (folders.length >= maxBackupsCount)) {
+			String oldestBackupName = BackupUtils.findOldestBackupName(folders);
 			if (oldestBackupName != null) {
 				File oldestBakup = new File(destfolder, oldestBackupName);
 				FileUtils.deleteDirectory(oldestBakup);

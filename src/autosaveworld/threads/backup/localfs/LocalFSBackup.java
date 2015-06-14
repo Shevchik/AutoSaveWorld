@@ -35,27 +35,20 @@ public class LocalFSBackup {
 
 	public void performBackup() {
 		for (String extpath : config.backupLFSExtFolders) {
-			// init backup operations class
 			LocalFSBackupOperations bo = new LocalFSBackupOperations(config.backupLFSZipEnabled, extpath, config.backupLFSExcludeFolders);
-			// create timestamp
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-			// backup worlds
 			for (World world : Bukkit.getWorlds()) {
-				// check if we need to backup this world
 				if ((config.backupLFSBackupWorldsList).contains("*") || config.backupLFSBackupWorldsList.contains(world.getName())) {
-					// backup world
 					MessageLogger.debug("Backuping Worlds");
 					bo.backupWorld(world, config.backupLFSMaxNumberOfWorldsBackups, backuptimestamp);
 					MessageLogger.debug("Backuped Worlds");
 				}
 			}
-			// backups plugins
 			if (config.backupLFSPluginsFolder) {
 				MessageLogger.debug("Backuping plugins");
 				bo.backupPlugins(config.backupLFSMaxNumberOfPluginsBackups, backuptimestamp);
 				MessageLogger.debug("Backuped plugins");
 			}
-			// backup other folders
 			if (!config.backupLFSOtherFolders.isEmpty()) {
 				MessageLogger.debug("Backuping other folders");
 				bo.backupOtherFolders(config.backupLFSOtherFolders, config.backupLFSMaxNumberOfOtherBackups, backuptimestamp);

@@ -19,14 +19,20 @@ package autosaveworld.threads.backup;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.List;
 
 public class BackupUtils {
 
-	public static String findOldestBackupName(String[] timestamps) {
+	public static String findOldestBackupName(String[] backups) {
+		return findOldestBackupName(Arrays.asList(backups));
+	}
+
+	public static String findOldestBackupName(List<String> backups) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		String oldestBackupName = null;
 		long old = System.currentTimeMillis();
-		for (String timestampString : timestamps) {
+		for (String timestampString : backups) {
 			try {
 				long cur;
 				if (timestampString.endsWith(".zip")) {

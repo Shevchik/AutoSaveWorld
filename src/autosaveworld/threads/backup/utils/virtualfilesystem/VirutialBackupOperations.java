@@ -15,29 +15,32 @@
  *
  */
 
-package autosaveworld.threads.backup.sftp;
+package autosaveworld.threads.backup.utils.virtualfilesystem;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.bukkit.World;
 
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
-import autosaveworld.zlibs.com.jcraft.jsch.SftpException;
+import autosaveworld.threads.backup.ExcludeManager;
+import autosaveworld.threads.backup.InputStreamConstruct;
+import autosaveworld.threads.backup.utils.MemoryZip;
+import autosaveworld.utils.FileUtils;
 
-public class SFTPBackupOperations {
+public class VirutialBackupOperations {
 
-	private final boolean zip;
-	private final List<String> excludefolders;
-	private ChannelSftp sftp;
+	private VirtualFileSystem vfs;
+	private boolean zip;
+	private List<String> excludefolders;
 
-	public SFTPBackupOperations(ChannelSftp sftp, boolean zip, List<String> excludeFolders) {
-		this.sftp = sftp;
+	public VirutialBackupOperations(VirtualFileSystem vfs, boolean zip, List<String> excludefolders) {
+		this.vfs = vfs;
 		this.zip = zip;
-		excludefolders = excludeFolders;
+		this.excludefolders = excludefolders;
 	}
 
 	public void backupWorld(World world) {
@@ -73,11 +76,46 @@ public class SFTPBackupOperations {
 		}
 	}
 
-	private void backupFolder(File folder) throws IOException, SftpException {
+	private void backupFolder(File folder) throws IOException {
 		if (!zip) {
-			SFTPUtils.uploadDirectory(sftp, folder, excludefolders);
+			uploadDirectory(folder);
 		} else {
-			SFTPUtils.zipAndUploadDirectory(sftp, folder, excludefolders);
+			zipAndUploadDirectory(folder);
+		}
+	}
+
+
+	private void uploadDirectory(File src)  throws IOException {
+		if (src.isDirectory()) {
+			vfs.createAndChangeDirectory(src.getName());
+			for (File file : FileUtils.safeListFiles(src)) {
+				if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
+					uploadDirectory(file);
+				}
+			}
+			vfs.changeToParentDirectiry();
+		} else {
+			try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
+				storeFile(is, src.getName());
+			}
+		}
+	}
+
+	private void zipAndUploadDirectory(File src) throws IOException {
+		try (InputStream is = MemoryZip.startZIP(src, excludefolders)) {
+			storeFile(is, src.getName() + ".zip");
+		}
+	}
+
+	private void storeFile(InputStream is, String filename) {
+		try {
+			vfs.createFile(filename, is);
+		} catch (IOException e) {
+			MessageLogger.warn("Failed to backup file: " + filename);
+			try {
+				vfs.deleteFile(filename);
+			} catch (IOException ex) {
+			}
 		}
 	}
 

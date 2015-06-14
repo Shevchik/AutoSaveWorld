@@ -45,13 +45,15 @@ public class LocalFSUtils {
 					try {
 						Files.copy(sourceLocation.toPath(), targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					} catch (IOException e) {
-						e.printStackTrace();
+						MessageLogger.warn("Failed to backup file: " + sourceLocation);
+						targetLocation.delete();
 					}
 				} else {
 					try (InputStream is = InputStreamConstruct.getFileInputStream(sourceLocation)) {
 						Files.copy(is, targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
 					} catch (IOException e) {
 						MessageLogger.warn("Failed to backup file: " + sourceLocation);
+						targetLocation.delete();
 					}
 				}
 			}
