@@ -55,11 +55,19 @@ public class PluginManager {
 				break;
 			}
 			case "unload": {
-				unloadPlugin(sender, arg);
+				unloadPlugin(sender, arg, false);
+				break;
+			}
+			case "funload": {
+				unloadPlugin(sender, arg, true);
 				break;
 			}
 			case "reload": {
-				reloadPlugin(sender, arg);
+				reloadPlugin(sender, arg, false);
+				break;
+			}
+			case "freload:": {
+				reloadPlugin(sender, arg, true);
 				break;
 			}
 			case "removeperm": {
@@ -77,7 +85,7 @@ public class PluginManager {
 		}
 	}
 
-	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "reload", "removeperm", "findcommand"});
+	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "funload", "reload", "freload", "removeperm", "findcommand"});
 	public List<String> getTabComplete(CommandSender sender, String[] args) {
 		if (args.length == 1) {
 			ArrayList<String> result = new ArrayList<String>();
@@ -94,6 +102,16 @@ public class PluginManager {
 				ArrayList<String> result = new ArrayList<String>();
 				for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 					if (plugin.getName().startsWith(input) && getOtherDependingPlugins(plugin).isEmpty()) {
+						result.add(plugin.getName());
+					}
+				}
+				return result;
+			}
+			if (args[0].equalsIgnoreCase("funload") || args[0].equalsIgnoreCase("freload")) {
+				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
+				ArrayList<String> result = new ArrayList<String>();
+				for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+					if (plugin.getName().startsWith(input)) {
 						result.add(plugin.getName());
 					}
 				}
@@ -183,7 +201,7 @@ public class PluginManager {
 		}
 	}
 
-	private void unloadPlugin(CommandSender sender, String pluginname) {
+	private void unloadPlugin(CommandSender sender, String pluginname, boolean force) {
 		// find plugin
 		Plugin pmplugin = findPlugin(pluginname);
 		// ignore if plugin is not loaded
@@ -192,10 +210,12 @@ public class PluginManager {
 			return;
 		}
 		// check if plugin has other active depending plugins
-		List<String> depending = getOtherDependingPlugins(pmplugin);
-		if (!depending.isEmpty()) {
-			MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
-			return;
+		if (!force) {
+			List<String> depending = getOtherDependingPlugins(pmplugin);
+			if (!depending.isEmpty()) {
+				MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
+				return;
+			}
 		}
 		// now unload plugin
 		try {
@@ -207,7 +227,7 @@ public class PluginManager {
 		}
 	}
 
-	private void reloadPlugin(CommandSender sender, String pluginname) {
+	private void reloadPlugin(CommandSender sender, String pluginname, boolean force) {
 		// find plugin
 		Plugin pmplugin = findPlugin(pluginname);
 		// ignore if plugin is not loaded
@@ -216,10 +236,12 @@ public class PluginManager {
 			return;
 		}
 		// check if plugin has other active depending plugins
-		List<String> depending = getOtherDependingPlugins(pmplugin);
-		if (!depending.isEmpty()) {
-			MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
-			return;
+		if (!force) {
+			List<String> depending = getOtherDependingPlugins(pmplugin);
+			if (!depending.isEmpty()) {
+				MessageLogger.sendMessage(sender, "Found other plugins that depend on this one, disable them first: "+StringUtils.join(depending.toArray(new String[depending.size()]), ", "));
+				return;
+			}
 		}
 		// find plugin file
 		File pmpluginfile = findPluginFile(pluginname);
@@ -280,7 +302,11 @@ public class PluginManager {
 	private List<String> getOtherDependingPlugins(Plugin plugin) {
 		ArrayList<String> others = new ArrayList<String>();
 		for (Plugin otherplugin : Bukkit.getPluginManager().getPlugins()) {
-			if (otherplugin.getDescription().getDepend().contains(plugin.getName()) || otherplugin.getDescription().getSoftDepend().contains(plugin.getName())) {
+			PluginDescriptionFile descfile = otherplugin.getDescription();
+			if (
+				(descfile.getDepend() != null) && (descfile.getDepend().contains(plugin.getName())) ||
+				(descfile.getSoftDepend() != null) && (descfile.getSoftDepend().contains(plugin.getName()))
+			) {
 				others.add(otherplugin.getName());
 			}
 		}
