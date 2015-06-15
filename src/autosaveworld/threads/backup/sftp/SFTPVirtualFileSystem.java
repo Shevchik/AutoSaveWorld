@@ -93,7 +93,7 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public List<String> getFiles() throws IOException {
+	protected List<String> getFiles0() throws IOException {
 		try {
 			ArrayList<String> files = new ArrayList<String>();
 			Vector<LsEntry> names = sftpclient.ls(".");

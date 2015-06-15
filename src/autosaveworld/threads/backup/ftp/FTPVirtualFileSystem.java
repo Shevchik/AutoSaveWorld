@@ -68,7 +68,7 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public List<String> getFiles() throws IOException {
+	protected List<String> getFiles0() throws IOException {
 		return new ArrayList<String>(Arrays.asList(ftpclient.listNames()));
 	}
 

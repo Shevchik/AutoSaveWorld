@@ -20,7 +20,6 @@ package autosaveworld.threads.backup.utils.virtualfilesystem;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -60,13 +59,6 @@ public class VirtualBackupManager {
 		vfs.createAndChangeDirectory("backups");
 		//delete oldest backup
 		List<String> backups = vfs.getFiles();
-		Iterator<String> iterator = backups.iterator();
-		while (iterator.hasNext()) {
-			String name = iterator.next();
-			if (name.equalsIgnoreCase(".") || name.equalsIgnoreCase("..")) {
-				iterator.remove();
-			}
-		}
 		if ((maxbackups != 0) && (backups.size() >= maxbackups)) {
 			MessageLogger.debug("Deleting oldest backup");
 			String oldestBackup = BackupUtils.findOldestBackupName(backups);

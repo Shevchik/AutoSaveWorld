@@ -84,7 +84,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public List<String> getFiles() throws IOException {
+	protected List<String> getFiles0() throws IOException {
 		try {
 			ArrayList<String> files = new ArrayList<String>();
 			for (DbxEntry entry : dbxclient.getMetadataWithChildren(currentpath).children) {

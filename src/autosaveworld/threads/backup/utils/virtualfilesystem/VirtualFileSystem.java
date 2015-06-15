@@ -19,6 +19,7 @@ package autosaveworld.threads.backup.utils.virtualfilesystem;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class VirtualFileSystem {
@@ -36,6 +37,7 @@ public abstract class VirtualFileSystem {
 
 	public void deleteDirectoryRecursive(String dirname) throws IOException {
 		if (isDirectory(dirname)) {
+			changeDirectory(dirname);
 			for (String file : getFiles()) {
 				deleteDirectoryRecursive(file);
 			}
@@ -52,7 +54,19 @@ public abstract class VirtualFileSystem {
 
 	public abstract void deleteFile(String name) throws IOException;
 
-	public abstract List<String> getFiles() throws IOException;
+	public List<String> getFiles() throws IOException {
+		List<String> files = getFiles0();
+		Iterator<String> iterator = files.iterator();
+		while (iterator.hasNext()) {
+			String name = iterator.next();
+			if (name.equals(".") || name.equals("..")) {
+				iterator.remove();
+			}
+		}
+		return files;
+	}
+
+	protected abstract List<String> getFiles0() throws IOException;
 
 	public abstract void createFile(String name, InputStream inputsteam) throws IOException;
 

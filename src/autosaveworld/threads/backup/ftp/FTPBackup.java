@@ -60,6 +60,8 @@ public class FTPBackup {
 			.setZip(config.backupFTPZipEnabled)
 			.setVFS(new FTPVirtualFileSystem(ftpclient))
 			.create().backup();
+
+			ftpclient.logout();
 		} catch (Throwable e) {
 			MessageLogger.warn("Error occured while performing a backup");
 			e.printStackTrace();
