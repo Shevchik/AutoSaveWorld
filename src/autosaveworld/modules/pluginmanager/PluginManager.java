@@ -66,7 +66,7 @@ public class PluginManager {
 				reloadPlugin(sender, arg, false);
 				break;
 			}
-			case "freload:": {
+			case "freload": {
 				reloadPlugin(sender, arg, true);
 				break;
 			}
