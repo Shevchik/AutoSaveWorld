@@ -21,10 +21,10 @@ import org.bukkit.Bukkit;
 
 public class NMSNames {
 
-	public static void init() {
+	protected static void init() {
 	}
 
-	public static String getDataManagerFieldName() {
+	protected static String getDataManagerFieldName() {
 		if (isCauldron()) {
 			return "field_73019_z";
 		} else {
@@ -32,7 +32,7 @@ public class NMSNames {
 		}
 	}
 
-	public static String getCheckSessionMethodName() {
+	protected static String getCheckSessionMethodName() {
 		if (isCauldron()) {
 			return "func_75762_c";
 		} else {
@@ -40,7 +40,7 @@ public class NMSNames {
 		}
 	}
 
-	public static String getWorldDataFieldName() {
+	protected static String getWorldDataFieldName() {
 		if (isCauldron()) {
 			return "field_72986_A";
 		} else {
@@ -48,7 +48,7 @@ public class NMSNames {
 		}
 	}
 
-	public static String getChunkProviderFieldName() {
+	protected static String getChunkProviderFieldName() {
 		if (isCauldron()) {
 			return "field_73020_y";
 		} else {
@@ -56,7 +56,7 @@ public class NMSNames {
 		}
 	}
 
-	public static String getSaveWorldDataMethodName() {
+	protected static String getSaveWorldDataMethodName() {
 		if (isCauldron()) {
 			return "func_75755_a";
 		} else {
@@ -64,7 +64,7 @@ public class NMSNames {
 		}
 	}
 
-	public static String getSaveChunksMethodName() {
+	protected static String getSaveChunksMethodName() {
 		if (isCauldron()) {
 			return "func_73151_a";
 		} else {
@@ -72,7 +72,7 @@ public class NMSNames {
 		}
 	}
 
-	public static String getSaveLevelMethodName() {
+	protected static String getSaveLevelMethodName() {
 		if (isCauldron()) {
 			return "func_73041_k";
 		} else {
@@ -80,7 +80,7 @@ public class NMSNames {
 		}
 	}
 
-	private static boolean isCauldron() {
+	protected static boolean isCauldron() {
 		String version = Bukkit.getName().toLowerCase();
 		return (version.contains("mcpc") || version.contains("cauldron"));
 	}

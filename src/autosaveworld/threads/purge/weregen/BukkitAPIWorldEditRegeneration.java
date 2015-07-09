@@ -38,6 +38,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 
+//TODO: Migrate to new WorldEdit API
 public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInterface {
 
 	private ItemSpawnListener itemremover = new ItemSpawnListener();

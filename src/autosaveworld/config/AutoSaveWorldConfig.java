@@ -241,7 +241,7 @@ public class AutoSaveWorldConfig {
 		autoRestartPreStopCommmands = config.getStringList("autorestart.commands");
 		autoRestartScriptPath = config.getString("autorestart.scriptpath", autoRestartScriptPath);
 		autoRestartJustStop = config.getBoolean("autorestart.juststop", autoRestartJustStop);
-		if (autoRestartCountdownSeconds.size() == 0) {
+		if (autoRestartCountdownSeconds.isEmpty()) {
 			autoRestartCountdownSeconds.add(60);
 			autoRestartCountdownSeconds.add(30);
 			for (int i = 1; i <= 10; i++) {

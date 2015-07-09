@@ -21,6 +21,7 @@ import org.bukkit.World;
 
 import com.sk89q.worldedit.Vector;
 
+//TODO: write my own regen that pastes blocks directly to ChunkSections
 public class WorldEditRegeneration {
 
 	private static volatile WorldEditRegenrationInterface instance;
