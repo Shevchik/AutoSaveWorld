@@ -161,7 +161,7 @@ public class AutoSaveWorldConfig {
 		backupLFSMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", backupLFSMaxNumberOfPluginsBackups);
 		backupLFSExtFolders = config.getStringList("backup.localfs.destinationfolders");
 		if (backupLFSExtFolders.isEmpty()) {
-			backupLFSExtFolders.add(new File(".").getAbsolutePath());
+			backupLFSExtFolders.add(new File(".").getAbsoluteFile().getParent());
 		}
 		backupLFSPluginsFolder = config.getBoolean("backup.localfs.pluginsfolder", backupLFSPluginsFolder);
 		backupLFSExcludeFolders = config.getStringList("backup.localfs.excludefolders");
