@@ -19,399 +19,222 @@ package autosaveworld.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import autosaveworld.config.loader.Config;
+import autosaveworld.config.loader.ConfigOption;
+import autosaveworld.config.loader.postload.AstListAppend;
+import autosaveworld.config.loader.postload.DefaultCountdown;
+import autosaveworld.config.loader.postload.DefaultDestFolder;
+import autosaveworld.config.loader.transform.ConfSectIntHashMap;
+import autosaveworld.config.loader.transform.ConfSectStringHashMap;
 import autosaveworld.core.GlobalConstants;
 
-public class AutoSaveWorldConfig {
+public class AutoSaveWorldConfig implements Config {
 
 	// some global variables
+	@ConfigOption(path = "var.debug")
 	public boolean varDebug = false;
+	@ConfigOption(path = "var.commandsonlyfromconsole")
 	public boolean commandOnlyFromConsole = false;
 	// save
+	@ConfigOption(path = "save.interval")
 	public int saveInterval = 900;
+	@ConfigOption(path = "save.broadcast")
 	public boolean saveBroadcast = true;
+	@ConfigOption(path = "save.disablestructuresaving")
 	public boolean saveDisableStructureSaving = false;
+	@ConfigOption(path = "save.forceregioncachedump")
 	public boolean saveDumpRegionCache = true;
+	@ConfigOption(path = "save.onplugindisable")
 	public boolean saveOnASWDisable = true;
 	// backup
+	@ConfigOption(path = "backup.enabled")
 	public boolean backupEnabled = false;
+	@ConfigOption(path = "backup.interval")
 	public int backupInterval = 60 * 60 * 6;
+	@ConfigOption(path = "backup.broadcast")
 	public boolean backupBroadcast = true;
+	@ConfigOption(path = "backup.savebefore")
 	public boolean backupsaveBefore = true;
+	@ConfigOption(path = "backup.rateLimit")
 	public long backupRateLimit = -1;
 	// localfs backup
+	@ConfigOption(path = "backup.localfs.enabled")
 	public boolean backupLFSEnabled = true;
-	public List<String> backupLFSExtFolders;
-	public List<String> backupLFSBackupWorldsList;
+	@ConfigOption(path = "backupLFSExtFolders", postload = DefaultDestFolder.class)
+	public List<String> backupLFSExtFolders = new ArrayList<String>();
+	@ConfigOption(path = "backup.localfs.destinationfolders", postload = AstListAppend.class)
+	public List<String> backupLFSBackupWorldsList = new ArrayList<String>();
+	@ConfigOption(path = "backup.localfs.MaxNumberOfWorldsBackups")
 	public int backupLFSMaxNumberOfWorldsBackups = 15;
+	@ConfigOption(path = "backup.localfs.pluginsfolder")
 	public boolean backupLFSPluginsFolder = false;
+	@ConfigOption(path = "backup.localfs.MaxNumberOfPluginsBackups")
 	public int backupLFSMaxNumberOfPluginsBackups = 15;
-	public List<String> backupLFSOtherFolders;
+	@ConfigOption(path = "backup.localfs.otherfolders")
+	public List<String> backupLFSOtherFolders = new ArrayList<String>();
+	@ConfigOption(path = "backup.localfs.MaxNumberOfOtherFoldersBackups")
 	public int backupLFSMaxNumberOfOtherBackups = 15;
-	public List<String> backupLFSExcludeFolders;
+	@ConfigOption(path = "backup.localfs.excludefolders")
+	public List<String> backupLFSExcludeFolders = new ArrayList<String>();
+	@ConfigOption(path = "backup.localfs.zip")
 	public boolean backupLFSZipEnabled = false;
 	// ftp backup
+	@ConfigOption(path = "backup.ftp.enabled")
 	public boolean backupFTPEnabled = false;
+	@ConfigOption(path = "backup.ftp.sftp")
 	public boolean backupFTPSFTP = false;
+	@ConfigOption(path = "backup.ftp.hostname")
 	public String backupFTPHostname = "127.0.0.1";
+	@ConfigOption(path = "backup.ftp.port")
 	public int backupFTPPort = 21;
+	@ConfigOption(path = "backup.ftp.login")
 	public String backupFTPUsername = "user";
+	@ConfigOption(path = "backup.ftp.password")
 	public String backupFTPPassworld = "password";
+	@ConfigOption(path = "backup.ftp.path")
 	public String backupFTPPath = "asw";
-	public List<String> backupFTPWorldsList;
+	@ConfigOption(path = "backup.ftp.worlds", postload = AstListAppend.class)
+	public List<String> backupFTPWorldsList = new ArrayList<String>();
+	@ConfigOption(path = "backup.ftp.pluginsfolder")
 	public boolean backupFTPPluginsFolder = false;
-	public List<String> backupFTPOtherFolders;
-	public List<String> backupFTPExcludeFolders;
+	@ConfigOption(path = "backup.ftp.otherfolders")
+	public List<String> backupFTPOtherFolders = new ArrayList<String>();
+	@ConfigOption(path = "backup.ftp.excludefolders")
+	public List<String> backupFTPExcludeFolders = new ArrayList<String>();
+	@ConfigOption(path = "backup.ftp.maxNumberOfBackups")
 	public int backupFTPMaxNumberOfBackups = 4;
+	@ConfigOption(path = "backup.ftp.zip")
 	public boolean backupFTPZipEnabled = false;
 	// script
+	@ConfigOption(path = "backup.script.enabled")
 	public boolean backupScriptEnabled = false;
-	public List<String> backupScriptPaths;
+	@ConfigOption(path = "backup.script.scriptpaths")
+	public List<String> backupScriptPaths = new ArrayList<String>();
 	// dropbox backup
+	@ConfigOption(path = "backup.dropbox.enabled")
 	public boolean backupDropboxEnabled = false;
+	@ConfigOption(path = "backup.dropbox.token")
 	public String backupDropboxAPPTOKEN = "";
+	@ConfigOption(path = "backup.dropbox.path")
 	public String backupDropboxPath = "asw";
-	public List<String> backupDropboxWorldsList;
+	@ConfigOption(path = "backup.dropbox.worlds", postload = AstListAppend.class)
+	public List<String> backupDropboxWorldsList = new ArrayList<String>();
+	@ConfigOption(path = "backup.dropbox.pluginsfolder")
 	public boolean backupDropboxPluginsFolder = false;
-	public List<String> backupDropboxOtherFolders;
-	public List<String> backupDropboxExcludeFolders;
+	@ConfigOption(path = "backup.dropbox.otherfolders")
+	public List<String> backupDropboxOtherFolders = new ArrayList<String>();
+	@ConfigOption(path = "backup.dropbox.excludefolders")
+	public List<String> backupDropboxExcludeFolders = new ArrayList<String>();
+	@ConfigOption(path = "backup.dropbox.maxNumberOfBackups")
 	public int backupDropboxMaxNumberOfBackups = 4;
+	@ConfigOption(path = "backup.dropbox.zip")
 	public boolean backupDropboxZipEnabled = false;
 	// purge
+	@ConfigOption(path = "purge.enabled")
 	public boolean purgeEnabled = false;
+	@ConfigOption(path = "purge.interval")
 	public int purgeInterval = 60 * 60 * 24;
+	@ConfigOption(path = "purge.awaytime")
 	public long purgeAwayTime = 60 * 60 * 24 * 30;
-	public List<String> purgeIgnoredNicks;
-	public List<String> purgeIgnoredUUIDs;
+	@ConfigOption(path = "purge.ignorednicks")
+	public List<String> purgeIgnoredNicks = new ArrayList<String>();
+	@ConfigOption(path = "purge.ignoreduuids")
+	public List<String> purgeIgnoredUUIDs = new ArrayList<String>();
+	@ConfigOption(path = "purge.broadcast")
 	public boolean purgeBroadcast = true;
+	@ConfigOption(path = "purge.wg.enabled")
 	public boolean purgeWG = true;
+	@ConfigOption(path = "purge.wg.regenpurgedregion")
 	public boolean purgeWGRegenRg = false;
+	@ConfigOption(path = "purge.wg.noregenoverlapregion")
 	public boolean purgeWGNoregenOverlap = true;
+	@ConfigOption(path = "purge.lwc.enabled")
 	public boolean purgeLWC = true;
+	@ConfigOption(path = "purge.lwc.deletepurgedblocks")
 	public boolean purgeLWCDelProtectedBlocks = false;
+	@ConfigOption(path = "purge.residence.enabled")
 	public boolean purgeResidence = true;
+	@ConfigOption(path = "purge.residence.regenpurgedresidence")
 	public boolean purgeResidenceRegenArea = false;
+	@ConfigOption(path = "purge.permissions.enabled")
 	public boolean purgePerms = true;
-	public String purgePermsSaveCMD = "mansave";
+	@ConfigOption(path = "purge.permissions.savecmd")
+	public String purgePermsSaveCMD = "mansave force";
+	@ConfigOption(path = "purge.mywarp.enabled")
 	public boolean purgeMyWarp = true;
+	@ConfigOption(path = "purge.dat.enabled")
 	public boolean purgeDat = true;
 	// crashrestart
+	@ConfigOption(path = "crashrestart.enabled")
 	public boolean crashRestartEnabled = false;
+	@ConfigOption(path = "crashrestart.scriptpath")
 	public String crashRestartScriptPath = "";
+	@ConfigOption(path = "crashrestart.juststop")
 	public boolean crashRestartJustStop = false;
+	@ConfigOption(path = "crashrestart.timeout")
 	public long crashRestartTimeout = 60;
+	@ConfigOption(path = "crashrestart.startdelay")
 	public int crashRestartCheckerStartDelay = 20;
 	// autorestart
+	@ConfigOption(path = "autorestart.enabled")
 	public boolean autoRestart = false;
+	@ConfigOption(path = "autorestart.broadcast")
 	public boolean autoRestartBroadcast = true;
+	@ConfigOption(path = "autorestart.scriptpath")
 	public String autoRestartScriptPath = "";
-	public List<String> autoRestartTimes;
+	@ConfigOption(path = "autorestart.time")
+	public List<String> autoRestartTimes = new ArrayList<String>();
+	@ConfigOption(path = "autorestart.countdown.enabled")
 	public boolean autoRestartCountdown = true;
-	public List<Integer> autoRestartCountdownSeconds;
-	public List<String> autoRestartPreStopCommmands;
+	@ConfigOption(path = "autorestart.countdown.broadcastonsecond", postload = DefaultCountdown.class)
+	public List<Integer> autoRestartCountdownSeconds = new ArrayList<Integer>();
+	@ConfigOption(path = "autorestart.commands")
+	public List<String> autoRestartPreStopCommmands = new ArrayList<String>();
+	@ConfigOption(path = "autorestart.juststop")
 	public boolean autoRestartJustStop = false;
 	// consolecmmand
+	@ConfigOption(path = "consolecommand.timemode.enabled")
 	public boolean ccTimesModeEnabled = false;
-	public Map<String, List<String>> ccTimesModeCommands;
+	@ConfigOption(path = "consolecommand.timemode.times", transform = ConfSectStringHashMap.class)
+	public Map<String, List<String>> ccTimesModeCommands = new HashMap<String, List<String>>();
+	@ConfigOption(path = "consolecommand.intervalmode.enabled")
 	public boolean ccIntervalsModeEnabled = false;
-	public Map<Integer, List<String>> ccIntervalsModeCommands;
+	@ConfigOption(path = "consolecommand.intervalmode.intervals", transform = ConfSectIntHashMap.class)
+	public Map<Integer, List<String>> ccIntervalsModeCommands = new HashMap<Integer, List<String>>();
 	// worldregen
+	@ConfigOption(path = "worldregen.newseed")
 	public boolean worldRegenRemoveSeedData = false;
+	@ConfigOption(path = "worldregen.savewg")
 	public boolean worldRegenSaveWG = true;
+	@ConfigOption(path = "worldregen.savefactions")
 	public boolean worldRegenSaveFactions = true;
+	@ConfigOption(path = "worldregen.savegp")
 	public boolean worldRegenSaveGP = true;
+	@ConfigOption(path = "worldregen.savetowny")
 	public boolean worldregenSaveTowny = true;
+	@ConfigOption(path = "worldregen.savepstones")
 	public boolean worldregenSavePStones = true;
 	// network watcher
+	@ConfigOption(path = "networkwatcher.warnmainthreadnetwrokaccess")
 	public boolean networkWatcher = true;
 
-	public void load() {
-
-		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
-
-		// variables
-		varDebug = config.getBoolean("var.debug", varDebug);
-		commandOnlyFromConsole = config.getBoolean("var.commandsonlyfromconsole", commandOnlyFromConsole);
-
-		// save variables
-		saveDisableStructureSaving = config.getBoolean("save.disablestructuresaving", saveDisableStructureSaving);
-		saveDumpRegionCache = config.getBoolean("save.forceregioncachedump", saveDumpRegionCache);
-		saveBroadcast = config.getBoolean("save.broadcast", saveBroadcast);
-		saveInterval = config.getInt("save.interval", saveInterval);
-		saveOnASWDisable = config.getBoolean("save.onplugindisable", saveOnASWDisable);
-
-		// backup variables
-		backupEnabled = config.getBoolean("backup.enabled", backupEnabled);
-		backupInterval = config.getInt("backup.interval", backupInterval);
-		backupBroadcast = config.getBoolean("backup.broadcast", backupBroadcast);
-		backupsaveBefore = config.getBoolean("backup.savebefore", backupsaveBefore);
-		backupRateLimit = config.getLong("backup.rateLimit", backupRateLimit);
-		// localfs
-		backupLFSEnabled = config.getBoolean("backup.localfs.enabled", backupLFSEnabled);
-		backupLFSMaxNumberOfWorldsBackups = config.getInt("backup.localfs.MaxNumberOfWorldsBackups", backupLFSMaxNumberOfWorldsBackups);
-		backupLFSMaxNumberOfPluginsBackups = config.getInt("backup.localfs.MaxNumberOfPluginsBackups", backupLFSMaxNumberOfPluginsBackups);
-		backupLFSExtFolders = config.getStringList("backup.localfs.destinationfolders");
-		if (backupLFSExtFolders.isEmpty()) {
-			backupLFSExtFolders.add(new File(".").getAbsoluteFile().getParent());
-		}
-		backupLFSPluginsFolder = config.getBoolean("backup.localfs.pluginsfolder", backupLFSPluginsFolder);
-		backupLFSExcludeFolders = config.getStringList("backup.localfs.excludefolders");
-		backupLFSZipEnabled = config.getBoolean("backup.localfs.zip", backupLFSZipEnabled);
-		backupLFSBackupWorldsList = config.getStringList("backup.localfs.worlds");
-		if (backupLFSBackupWorldsList.isEmpty()) {
-			backupLFSBackupWorldsList.add("*");
-		}
-		backupLFSOtherFolders = config.getStringList("backup.localfs.otherfolders");
-		backupLFSMaxNumberOfOtherBackups = config.getInt("backup.localfs.MaxNumberOfOtherFoldersBackups", backupLFSMaxNumberOfOtherBackups);
-		// ftp
-		backupFTPEnabled = config.getBoolean("backup.ftp.enabled", backupFTPEnabled);
-		backupFTPSFTP = config.getBoolean("backup.ftp.sftp", backupFTPSFTP);
-		backupFTPHostname = config.getString("backup.ftp.hostname", backupFTPHostname);
-		backupFTPPort = config.getInt("backup.ftp.port", backupFTPPort);
-		backupFTPUsername = config.getString("backup.ftp.login", backupFTPUsername);
-		backupFTPPassworld = config.getString("backup.ftp.password", backupFTPPassworld);
-		backupFTPPath = config.getString("backup.ftp.path", backupFTPPath);
-		backupFTPWorldsList = config.getStringList("backup.ftp.worlds");
-		if (backupFTPWorldsList.isEmpty()) {
-			backupFTPWorldsList.add("*");
-		}
-		backupFTPPluginsFolder = config.getBoolean("backup.ftp.pluginsfolder", backupFTPPluginsFolder);
-		backupFTPOtherFolders = config.getStringList("backup.ftp.otherfolders");
-		backupFTPExcludeFolders = config.getStringList("backup.ftp.excludefolders");
-		backupFTPMaxNumberOfBackups = config.getInt("backup.ftp.maxNumberOfBackups", backupFTPMaxNumberOfBackups);
-		backupFTPZipEnabled = config.getBoolean("backup.ftp.zip", backupFTPZipEnabled);
-		// script
-		backupScriptEnabled = config.getBoolean("backup.script.enabled", backupScriptEnabled);
-		backupScriptPaths = config.getStringList("backup.script.scriptpaths");
-		// dropbox
-		backupDropboxEnabled = config.getBoolean("backup.dropbox.enabled", backupDropboxEnabled);
-		backupDropboxAPPTOKEN = config.getString("backup.dropbox.token", backupDropboxAPPTOKEN);
-		backupDropboxPath = config.getString("backup.dropbox.path", backupDropboxPath);
-		backupDropboxWorldsList = config.getStringList("backup.dropbox.worlds");
-		if (backupDropboxWorldsList.isEmpty()) {
-			backupDropboxWorldsList.add("*");
-		}
-		backupDropboxPluginsFolder = config.getBoolean("backup.dropbox.pluginsfolder", backupDropboxPluginsFolder);
-		backupDropboxOtherFolders = config.getStringList("backup.dropbox.otherfolders");
-		backupDropboxExcludeFolders = config.getStringList("backup.dropbox.excludefolders");
-		backupDropboxMaxNumberOfBackups = config.getInt("backup.dropbox.maxNumberOfBackups", backupDropboxMaxNumberOfBackups);
-		backupDropboxZipEnabled = config.getBoolean("backup.dropbox.zip", backupDropboxZipEnabled);
-
-		// purge variables
-		purgeInterval = config.getInt("purge.interval", purgeInterval);
-		purgeAwayTime = config.getLong("purge.awaytime", purgeAwayTime);
-		purgeEnabled = config.getBoolean("purge.enabled", purgeEnabled);
-		purgeIgnoredNicks = config.getStringList("purge.ignorednicks");
-		purgeIgnoredUUIDs = config.getStringList("purge.ignoreduuids");
-		purgeBroadcast = config.getBoolean("purge.broadcast", purgeBroadcast);
-		purgeWG = config.getBoolean("purge.wg.enabled", purgeWG);
-		purgeWGRegenRg = config.getBoolean("purge.wg.regenpurgedregion", purgeWGRegenRg);
-		purgeWGNoregenOverlap = config.getBoolean("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);
-		purgeLWC = config.getBoolean("purge.lwc.enabled", purgeLWC);
-		purgeLWCDelProtectedBlocks = config.getBoolean("purge.lwc.deletepurgedblocks", purgeLWCDelProtectedBlocks);
-		purgeResidence = config.getBoolean("purge.residence.enabled", purgeResidence);
-		purgeResidenceRegenArea = config.getBoolean("purge.residence.regenpurgedresidence", purgeResidenceRegenArea);
-		purgePerms = config.getBoolean("purge.permissions.enabled", purgePerms);
-		purgePermsSaveCMD = config.getString("purge.permissions.savecmd", purgePermsSaveCMD);
-		purgeMyWarp = config.getBoolean("purge.mywarp.enabled", purgeMyWarp);
-		purgeDat = config.getBoolean("purge.dat.enabled", purgeDat);
-
-		// crashrestart variables
-		crashRestartEnabled = config.getBoolean("crashrestart.enabled", crashRestartEnabled);
-		crashRestartCheckerStartDelay = config.getInt("crashrestart.startdelay", crashRestartCheckerStartDelay);
-		crashRestartScriptPath = config.getString("crashrestart.scriptpath", crashRestartScriptPath);
-		crashRestartTimeout = config.getLong("crashrestart.timeout", crashRestartTimeout);
-		crashRestartJustStop = config.getBoolean("crashrestart.juststop", crashRestartJustStop);
-
-		// autorestart variables
-		autoRestart = config.getBoolean("autorestart.enabled", autoRestart);
-		autoRestartBroadcast = config.getBoolean("autorestart.broadcast", autoRestartBroadcast);
-		autoRestartTimes = config.getStringList("autorestart.time");
-		autoRestartCountdown = config.getBoolean("autorestart.countdown.enabled", autoRestartCountdown);
-		autoRestartCountdownSeconds = config.getIntegerList("autorestart.countdown.broadcastonsecond");
-		autoRestartPreStopCommmands = config.getStringList("autorestart.commands");
-		autoRestartScriptPath = config.getString("autorestart.scriptpath", autoRestartScriptPath);
-		autoRestartJustStop = config.getBoolean("autorestart.juststop", autoRestartJustStop);
-		if (autoRestartCountdownSeconds.isEmpty()) {
-			autoRestartCountdownSeconds.add(60);
-			autoRestartCountdownSeconds.add(30);
-			for (int i = 1; i <= 10; i++) {
-				autoRestartCountdownSeconds.add(i);
-			}
-		}
-		Collections.sort(autoRestartCountdownSeconds, Collections.reverseOrder());
-		// autoconsolecommand variables
-		ccTimesModeEnabled = config.getBoolean("consolecommand.timemode.enabled", ccTimesModeEnabled);
-		HashMap<String, List<String>> cctimelmap = new HashMap<String, List<String>>();
-		ConfigurationSection cctimescs = config.getConfigurationSection("consolecommand.timemode.times");
-		if (cctimescs != null) {
-			for (String time : cctimescs.getKeys(false)) {
-				cctimelmap.put(time, cctimescs.getStringList(time));
-			}
-		}
-		ccTimesModeCommands = cctimelmap;
-		ccIntervalsModeEnabled = config.getBoolean("consolecommand.intervalmode.enabled", ccIntervalsModeEnabled);
-		HashMap<Integer, List<String>> ccintervallmap = new HashMap<Integer, List<String>>();
-		ConfigurationSection ccintervalscs = config.getConfigurationSection("consolecommand.intervalmode.intervals");
-		if (ccintervalscs != null) {
-			for (String interval : ccintervalscs.getKeys(false)) {
-				try {
-					ccintervallmap.put(Integer.parseInt(interval), ccintervalscs.getStringList(interval));
-				} catch (NumberFormatException e) {
-				}
-			}
-		}
-		ccIntervalsModeCommands = ccintervallmap;
-
-		// worldregen variables
-		worldRegenRemoveSeedData = config.getBoolean("worldregen.newseed", worldRegenRemoveSeedData);
-		worldRegenSaveWG = config.getBoolean("worldregen.savewg", worldRegenSaveWG);
-		worldRegenSaveFactions = config.getBoolean("worldregen.savefactions", worldRegenSaveFactions);
-		worldRegenSaveGP = config.getBoolean("worldregen.savegp", worldRegenSaveGP);
-		worldregenSaveTowny = config.getBoolean("worldregen.savetowny", worldregenSaveTowny);
-		worldregenSavePStones = config.getBoolean("worldregen.savepstones", worldregenSavePStones);
-
-		// network watcher variables
-		networkWatcher = config.getBoolean("networkwatcher.warnmainthreadnetwrokaccess", networkWatcher);
-
-		save();
+	@Override
+	public YamlConfiguration loadConfig() {
+		return YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
 	}
 
-	public void save() {
-
-		FileConfiguration config = new YamlConfiguration();
-
-		// Variables
-		config.set("var.debug", varDebug);
-		config.set("var.commandsonlyfromconsole", commandOnlyFromConsole);
-
-		// save variables
-		config.set("save.disablestructuresaving", saveDisableStructureSaving);
-		config.set("save.forceregioncachedump", saveDumpRegionCache);
-		config.set("save.interval", saveInterval);
-		config.set("save.broadcast", saveBroadcast);
-		config.set("save.onplugindisable", saveOnASWDisable);
-
-		// backup variables
-		config.set("backup.enabled", backupEnabled);
-		config.set("backup.interval", backupInterval);
-		config.set("backup.savebefore", backupsaveBefore);
-		config.set("backup.broadcast", backupBroadcast);
-		config.set("backup.rateLimit", backupRateLimit);
-		// localfs
-		config.set("backup.localfs.enabled", backupLFSEnabled);
-		config.set("backup.localfs.destinationfolders", backupLFSExtFolders);
-		config.set("backup.localfs.zip", backupLFSZipEnabled);
-		config.set("backup.localfs.worlds", backupLFSBackupWorldsList);
-		config.set("backup.localfs.MaxNumberOfWorldsBackups", backupLFSMaxNumberOfWorldsBackups);
-		config.set("backup.localfs.pluginsfolder", backupLFSPluginsFolder);
-		config.set("backup.localfs.MaxNumberOfPluginsBackups", backupLFSMaxNumberOfPluginsBackups);
-		config.set("backup.localfs.otherfolders", backupLFSOtherFolders);
-		config.set("backup.localfs.MaxNumberOfOtherFoldersBackups", backupLFSMaxNumberOfOtherBackups);
-		config.set("backup.localfs.excludefolders", backupLFSExcludeFolders);
-		// ftp
-		config.set("backup.ftp.enabled", backupFTPEnabled);
-		config.set("backup.ftp.sftp", backupFTPSFTP);
-		config.set("backup.ftp.hostname", backupFTPHostname);
-		config.set("backup.ftp.port", backupFTPPort);
-		config.set("backup.ftp.login", backupFTPUsername);
-		config.set("backup.ftp.password", backupFTPPassworld);
-		config.set("backup.ftp.path", backupFTPPath);
-		config.set("backup.ftp.zip", backupFTPZipEnabled);
-		config.set("backup.ftp.worlds", backupFTPWorldsList);
-		config.set("backup.ftp.pluginsfolder", backupFTPPluginsFolder);
-		config.set("backup.ftp.otherfolders", backupFTPOtherFolders);
-		config.set("backup.ftp.excludefolders", backupFTPExcludeFolders);
-		config.set("backup.ftp.maxNumberOfBackups", backupFTPMaxNumberOfBackups);
-		// script
-		config.set("backup.script.enabled", backupScriptEnabled);
-		config.set("backup.script.scriptpaths", backupScriptPaths);
-		// dropbox
-		config.set("backup.dropbox.enabled", backupDropboxEnabled);
-		config.set("backup.dropbox.token", backupDropboxAPPTOKEN);
-		config.set("backup.dropbox.path", backupDropboxPath);
-		config.set("backup.dropbox.worlds", backupDropboxWorldsList);
-		config.set("backup.dropbox.pluginsfolder", backupDropboxPluginsFolder);
-		config.set("backup.dropbox.otherfolders", backupDropboxOtherFolders);
-		config.set("backup.dropbox.excludefolders", backupDropboxExcludeFolders);
-		config.set("backup.dropbox.maxNumberOfBackups", backupDropboxMaxNumberOfBackups);
-		config.set("backup.dropbox.zip", backupDropboxZipEnabled);
-
-		// purge variables
-		config.set("purge.enabled", purgeEnabled);
-		config.set("purge.interval", purgeInterval);
-		config.set("purge.awaytime", purgeAwayTime);
-		config.set("purge.ignorednicks", purgeIgnoredNicks);
-		config.set("purge.ignoreduuids", purgeIgnoredUUIDs);
-		config.set("purge.broadcast", purgeBroadcast);
-		config.set("purge.wg.enabled", purgeWG);
-		config.set("purge.wg.regenpurgedregion", purgeWGRegenRg);
-		config.set("purge.wg.noregenoverlapregion", purgeWGNoregenOverlap);
-		config.set("purge.lwc.enabled", purgeLWC);
-		config.set("purge.lwc.deletepurgedblocks", purgeLWCDelProtectedBlocks);
-		config.set("purge.residence.enabled", purgeResidence);
-		config.set("purge.residence.regenpurgedresidence", purgeResidenceRegenArea);
-		config.set("purge.permissions.enabled", purgePerms);
-		config.set("purge.permissions.savecmd", purgePermsSaveCMD);
-		config.set("purge.mywarp.enabled", purgeMyWarp);
-		config.set("purge.dat.enabled", purgeDat);
-
-		// crashrestart variables
-		config.set("crashrestart.enabled", crashRestartEnabled);
-		config.set("crashrestart.startdelay", crashRestartCheckerStartDelay);
-		config.set("crashrestart.scriptpath", crashRestartScriptPath);
-		config.set("crashrestart.timeout", crashRestartTimeout);
-		config.set("crashrestart.juststop", crashRestartJustStop);
-
-		// autorestart variables
-		config.set("autorestart.enabled", autoRestart);
-		config.set("autorestart.broadcast", autoRestartBroadcast);
-		config.set("autorestart.time", autoRestartTimes);
-		config.set("autorestart.countdown.enabled", autoRestartCountdown);
-		config.set("autorestart.countdown.broadcastonsecond", autoRestartCountdownSeconds);
-		config.set("autorestart.commands", autoRestartPreStopCommmands);
-		config.set("autorestart.scriptpath", autoRestartScriptPath);
-		config.set("autorestart.juststop", autoRestartJustStop);
-
-		// autoconsolecommand variables
-		config.set("consolecommand.timemode.enabled", ccTimesModeEnabled);
-		if (ccTimesModeCommands.isEmpty()) {
-			config.createSection("consolecommand.timemode.times");
-		}
-		for (Entry<String, List<String>> entry : ccTimesModeCommands.entrySet()) {
-			config.set("consolecommand.timemode.times." + entry.getKey(), entry.getValue());
-		}
-		config.set("consolecommand.intervalmode.enabled", ccIntervalsModeEnabled);
-		if (ccIntervalsModeCommands.isEmpty()) {
-			config.createSection("consolecommand.intervalmode.intervals");
-		}
-		for (Entry<Integer, List<String>> entry : ccIntervalsModeCommands.entrySet()) {
-			config.set("consolecommand.intervalmode.intervals." + entry.getKey(), entry.getValue());
-		}
-
-		// worldregen variables
-		config.set("worldregen.newseed", worldRegenRemoveSeedData);
-		config.set("worldregen.savewg", worldRegenSaveWG);
-		config.set("worldregen.savefactions", worldRegenSaveFactions);
-		config.set("worldregen.savegp", worldRegenSaveGP);
-		config.set("worldregen.savetowny", worldregenSaveTowny);
-		config.set("worldregen.savepstones", worldregenSavePStones);
-
-		// network watcher variables
-		config.set("networkwatcher.warnmainthreadnetwrokaccess", networkWatcher);
-
+	@Override
+	public void saveConfig(YamlConfiguration config) {
 		try {
 			config.save(new File(GlobalConstants.getConfigPath()));
-		} catch (IOException ex) {
+		} catch (IOException e) {
 		}
 	}
 

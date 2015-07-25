@@ -20,54 +20,44 @@ package autosaveworld.config;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import autosaveworld.config.loader.Config;
+import autosaveworld.config.loader.ConfigOption;
 import autosaveworld.core.GlobalConstants;
 
-public class AutoSaveWorldConfigMSG {
+public class AutoSaveWorldConfigMSG implements Config {
 
-	// Messages
+	@ConfigOption(path = "broadcast.pre")
 	public String messageSaveBroadcastPre = "&9AutoSaving";
+	@ConfigOption(path = "broadcast.post")
 	public String messageSaveBroadcastPost = "&9AutoSave Complete";
+	@ConfigOption(path = "broadcastbackup.pre")
 	public String messageBackupBroadcastPre = "&9AutoBackuping";
+	@ConfigOption(path = "broadcastbackup.post")
 	public String messageBackupBroadcastPost = "&9AutoBackup Complete";
+	@ConfigOption(path = "broadcastpurge.pre")
 	public String messagePurgeBroadcastPre = "&9AutoPurging";
+	@ConfigOption(path = "broadcastpurge.post")
 	public String messagePurgeBroadcastPost = "&9AutoPurge Complete";
+	@ConfigOption(path = "autorestart.restarting")
 	public String messageAutoRestart = "&9Server is restarting";
+	@ConfigOption(path = "autorestart.countdown")
 	public String messageAutoRestartCountdown = "&9Server will restart in {SECONDS} seconds";
+	@ConfigOption(path = "worldregen.kickmessage")
 	public String messageWorldRegenKick = "&9Server is regenerating map, please come back later";
+	@ConfigOption(path = "insufficentpermissions")
 	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
 
-	public void loadmsg() {
-		FileConfiguration configfile = YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigMSGPath()));
-		messageSaveBroadcastPre = configfile.getString("broadcast.pre", messageSaveBroadcastPre);
-		messageSaveBroadcastPost = configfile.getString("broadcast.post", messageSaveBroadcastPost);
-		messageBackupBroadcastPre = configfile.getString("broadcastbackup.pre", messageBackupBroadcastPre);
-		messageBackupBroadcastPost = configfile.getString("broadcastbackup.post", messageBackupBroadcastPost);
-		messagePurgeBroadcastPre = configfile.getString("broadcastpurge.pre", messagePurgeBroadcastPre);
-		messagePurgeBroadcastPost = configfile.getString("broadcastpurge.post", messagePurgeBroadcastPost);
-		messageInsufficientPermissions = configfile.getString("insufficentpermissions", messageInsufficientPermissions);
-		messageAutoRestart = configfile.getString("autorestart.restarting", messageAutoRestart);
-		messageAutoRestartCountdown = configfile.getString("autorestart.countdown", messageAutoRestartCountdown);
-		messageWorldRegenKick = configfile.getString("worldregen.kickmessage", messageWorldRegenKick);
-		savemsg();
+	@Override
+	public YamlConfiguration loadConfig() {
+		return YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigMSGPath()));
 	}
 
-	private void savemsg() {
-		FileConfiguration configfile = new YamlConfiguration();
-		configfile.set("broadcast.pre", messageSaveBroadcastPre);
-		configfile.set("broadcast.post", messageSaveBroadcastPost);
-		configfile.set("broadcastbackup.pre", messageBackupBroadcastPre);
-		configfile.set("broadcastbackup.post", messageBackupBroadcastPost);
-		configfile.set("broadcastpurge.pre", messagePurgeBroadcastPre);
-		configfile.set("broadcastpurge.post", messagePurgeBroadcastPost);
-		configfile.set("insufficentpermissions", messageInsufficientPermissions);
-		configfile.set("autorestart.restarting", messageAutoRestart);
-		configfile.set("autorestart.countdown", messageAutoRestartCountdown);
-		configfile.set("worldregen.kickmessage", messageWorldRegenKick);
+	@Override
+	public void saveConfig(YamlConfiguration config) {
 		try {
-			configfile.save(new File(GlobalConstants.getConfigMSGPath()));
+			config.save(new File(GlobalConstants.getConfigMSGPath()));
 		} catch (IOException e) {
 		}
 	}

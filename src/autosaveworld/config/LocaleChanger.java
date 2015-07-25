@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import autosaveworld.config.loader.ConfigLoader;
 import autosaveworld.config.localefiles.LocaleFiles;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.GlobalConstants;
@@ -75,7 +76,7 @@ public class LocaleChanger {
 		loadLocaleFile(locale);
 		// now load it
 		MessageLogger.debug("loading configs");
-		configmsg.loadmsg();
+		ConfigLoader.loadAndSave(configmsg);
 	}
 
 	// load needed locale file

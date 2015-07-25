@@ -24,6 +24,7 @@ import autosaveworld.commands.NoTabCompleteCommandsHandler;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
+import autosaveworld.config.loader.ConfigLoader;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.modules.networkwatcher.NetworkWatcher;
 import autosaveworld.modules.pluginmanager.PluginManager;
@@ -73,7 +74,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		GlobalConstants.init(this);
 		// Load main config
 		config = new AutoSaveWorldConfig();
-		config.load();
+		ConfigLoader.loadAndSave(config);
 		// Init logger and message utils
 		MessageLogger.init(getLogger(), config);
 		// Init other utils
@@ -85,7 +86,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		StringUtils.init();
 		// Load messages
 		configmsg = new AutoSaveWorldConfigMSG();
-		configmsg.loadmsg();
+		ConfigLoader.loadAndSave(configmsg);
 		// Register commands
 		try {
 			CommandsHandler commandshandler = new CommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
@@ -126,7 +127,8 @@ public class AutoSaveWorld extends JavaPlugin {
 		}
 		// Save config
 		MessageLogger.debug("Saving config");
-		config.save();
+		ConfigLoader.save(config);
+		ConfigLoader.save(configmsg);
 		// Stop threads
 		MessageLogger.debug("Stopping Threads");
 		stopThread(ThreadType.SAVE);

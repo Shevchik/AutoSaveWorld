@@ -25,6 +25,7 @@ import org.bukkit.command.CommandSender;
 import autosaveworld.commands.ISubCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
+import autosaveworld.config.loader.ConfigLoader;
 import autosaveworld.core.logging.MessageLogger;
 
 public class ReloadAllSubCommand implements ISubCommand {
@@ -38,8 +39,8 @@ public class ReloadAllSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		config.load();
-		configmsg.loadmsg();
+		ConfigLoader.loadAndSave(config);
+		ConfigLoader.loadAndSave(configmsg);
 		MessageLogger.sendMessage(sender, "All configurations reloaded");
 	}
 
