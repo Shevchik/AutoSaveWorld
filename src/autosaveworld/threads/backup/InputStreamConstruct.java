@@ -18,9 +18,10 @@
 package autosaveworld.threads.backup;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.Channels;
 
 import autosaveworld.threads.backup.utils.ratelimitedstreams.RateLimitedInputStream;
 
@@ -36,12 +37,9 @@ public class InputStreamConstruct {
 		return rate > 0;
 	}
 
-	public static InputStream getFileInputStream(String path) throws FileNotFoundException {
-		return getFileInputStream(new File(path));
-	}
-
+	@SuppressWarnings("resource")
 	public static InputStream getFileInputStream(File file) throws FileNotFoundException {
-		InputStream stream = new FileInputStream(file);
+		InputStream stream = Channels.newInputStream(new RandomAccessFile(file, "r").getChannel());
 		if (rate > 0) {
 			stream = new RateLimitedInputStream(stream, rate);
 		}

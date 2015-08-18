@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.utils.FileUtils;
@@ -57,8 +58,8 @@ public class ZipUtils {
 	private static void zipDir(List<String> excludefolders, ZipOutputStream zipOutStream, final File srcDir, String currentDir) throws IOException {
 		final File zipDir = new File(srcDir, currentDir);
 
-		for (final String child : FileUtils.safeList(zipDir)) {
-			final File srcFile = new File(zipDir, child);
+		for (String child : FileUtils.safeList(zipDir)) {
+			File srcFile = new File(zipDir, child);
 
 			if (srcFile.isDirectory()) {
 				if (!ExcludeManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) {
@@ -71,22 +72,25 @@ public class ZipUtils {
 	}
 
 	private static void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException {
-		if (!srcFile.getName().endsWith(".lck")) {
-			try (InputStream inStream = InputStreamConstruct.getFileInputStream(srcFile)) {
-				final ZipEntry zipEntry = new ZipEntry(entry);
-				zipEntry.setTime(srcFile.lastModified());
-				zipOutStream.putNextEntry(zipEntry);
+		InputStream inStream = null;
+		try {
+			inStream = InputStreamConstruct.getFileInputStream(srcFile);
+		} catch (IOException e) {
+			MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath());
+		}
+		if (inStream != null) {
+			ZipEntry zipEntry = new ZipEntry(entry);
+			zipEntry.setTime(srcFile.lastModified());
+			zipOutStream.putNextEntry(zipEntry);
+			final byte[] buf = new byte[8192];
 
-				final byte[] buf = new byte[8192];
-
-				try {
-					int len;
-					while ((len = inStream.read(buf)) != -1) {
-						zipOutStream.write(buf, 0, len);
-					}
-				} finally {
-					zipOutStream.closeEntry();
-				}
+			int len;
+			while ((len = inStream.read(buf)) != -1) {
+				zipOutStream.write(buf, 0, len);
+			}
+			try {
+				inStream.close();
+			} catch (IOException e) {
 			}
 		}
 	}
