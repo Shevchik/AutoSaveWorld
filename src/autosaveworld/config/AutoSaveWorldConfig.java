@@ -67,9 +67,9 @@ public class AutoSaveWorldConfig implements Config {
 	// localfs backup
 	@ConfigOption(path = "backup.localfs.enabled")
 	public boolean backupLFSEnabled = true;
-	@ConfigOption(path = "backupLFSExtFolders", postload = DefaultDestFolder.class)
+	@ConfigOption(path = "backup.localfs.destinationfolders", postload = DefaultDestFolder.class)
 	public List<String> backupLFSExtFolders = new ArrayList<String>();
-	@ConfigOption(path = "backup.localfs.destinationfolders", postload = AstListAppend.class)
+	@ConfigOption(path = "backup.localfs.worlds", postload = AstListAppend.class)
 	public List<String> backupLFSBackupWorldsList = new ArrayList<String>();
 	@ConfigOption(path = "backup.localfs.MaxNumberOfWorldsBackups")
 	public int backupLFSMaxNumberOfWorldsBackups = 15;
