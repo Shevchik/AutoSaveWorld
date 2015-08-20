@@ -72,22 +72,52 @@ public class ZipUtils {
 	}
 
 	private static void zipFile(ZipOutputStream zipOutStream, final File srcFile, final String entry) throws IOException {
+		//any io exception happening after putting zip entry kills the archive, so we do some checks before actually writing it
+		//check can read
+		if (!srcFile.canRead()) {
+			MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath() + ", reason: canRead() returned false");
+			return;
+		}
 		InputStream inStream = null;
 		try {
+			//first attempt to construct the input stream, it uses RandomAccessFile which should throw ioexception on open attempt in case file is locked
+			if (srcFile.canRead())
 			inStream = InputStreamConstruct.getFileInputStream(srcFile);
 		} catch (IOException e) {
-			MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath());
+			MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath() + ", reason: exception when opening reading channel: "+e.getMessage());
+			return;
 		}
 		if (inStream != null) {
+			int firstByte = -1;
+			//check if we can read from input stream
+			try {
+				firstByte = inStream.read();
+			} catch (IOException e) {
+				MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath() + ", reason: exception when reading first byte: "+e.getMessage());
+				return;
+			}
+			//empty file, put entry anyway
+			if (firstByte == -1) {
+				ZipEntry zipEntry = new ZipEntry(entry);
+				zipEntry.setTime(srcFile.lastModified());
+				zipOutStream.putNextEntry(zipEntry);
+				zipOutStream.closeEntry();
+				return;
+			}
+			//finally copy file
 			ZipEntry zipEntry = new ZipEntry(entry);
 			zipEntry.setTime(srcFile.lastModified());
 			zipOutStream.putNextEntry(zipEntry);
+			zipOutStream.write(firstByte);
 			final byte[] buf = new byte[8192];
 
 			int len;
 			while ((len = inStream.read(buf)) != -1) {
 				zipOutStream.write(buf, 0, len);
 			}
+
+			zipOutStream.closeEntry();
+
 			try {
 				inStream.close();
 			} catch (IOException e) {

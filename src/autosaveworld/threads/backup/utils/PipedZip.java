@@ -18,23 +18,33 @@
 package autosaveworld.threads.backup.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.List;
 
-import autosaveworld.threads.backup.utils.memorystream.MemoryStream;
-import autosaveworld.threads.backup.utils.memorystream.MemoryStream.MemoryInputStream;
+public class PipedZip {
 
-public class MemoryZip {
-
-	public static MemoryInputStream startZIP(final File inputDir, final List<String> excludefolders) {
-		final MemoryStream mz = new MemoryStream();
-		new Thread("MemoryStream files copy thread") {
+	public static InputStream startZIP(final File inputDir, final List<String> excludefolders) {
+		PipedInputStream pipedin = new PipedInputStream(10 * 1024 * 1024);
+		final PipedOutputStream pipedout = new PipedOutputStream();
+		try {
+			pipedout.connect(pipedin);
+		} catch (IOException e) {
+		}
+		new Thread("PipedZip files copy thread") {
 			@Override
 			public void run() {
-				ZipUtils.zipFolder(inputDir, mz.getOutputStream(), excludefolders);
-				mz.putStreamEndSignal();
+				ZipUtils.zipFolder(inputDir, pipedout, excludefolders);
+				try {
+					pipedout.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}.start();
-		return mz.getInputStream();
+		return pipedin;
 	}
 
 }

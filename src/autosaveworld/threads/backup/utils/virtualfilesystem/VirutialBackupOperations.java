@@ -28,7 +28,7 @@ import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
-import autosaveworld.threads.backup.utils.MemoryZip;
+import autosaveworld.threads.backup.utils.PipedZip;
 import autosaveworld.utils.FileUtils;
 
 public class VirutialBackupOperations {
@@ -102,7 +102,7 @@ public class VirutialBackupOperations {
 	}
 
 	private void zipAndUploadDirectory(File src) throws IOException {
-		try (InputStream is = MemoryZip.startZIP(src, excludefolders)) {
+		try (InputStream is = PipedZip.startZIP(src, excludefolders)) {
 			storeFile(is, src.getName() + ".zip");
 		}
 	}
