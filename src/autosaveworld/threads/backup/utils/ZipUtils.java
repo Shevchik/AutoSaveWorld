@@ -80,7 +80,7 @@ public class ZipUtils {
 		}
 		InputStream inStream = null;
 		try {
-			//first attempt to construct the input stream, it uses RandomAccessFile which should throw ioexception on open attempt in case file is locked
+			//first attempt to construct the input stream, may throw exception if file gone missing or some other thing happened
 			inStream = InputStreamConstruct.getFileInputStream(srcFile);
 		} catch (IOException e) {
 			MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath() + ", reason: exception when opening reading channel: "+e.getMessage());
