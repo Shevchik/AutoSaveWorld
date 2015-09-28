@@ -17,8 +17,9 @@
 
 package autosaveworld.config.loader.transform;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,7 +31,7 @@ public class ConfSectIntHashMap implements YamlTransform {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object toYaml(Object obj) {
-		HashMap<Integer, List<String>> map = (HashMap<Integer, List<String>>) obj;
+		Map<Integer, List<String>> map = (Map<Integer, List<String>>) obj;
 		MemorySection section = new YamlConfiguration();
 		for (Entry<Integer, List<String>> entry : map.entrySet()) {
 			section.set(entry.getKey().toString(), entry.getValue());
@@ -41,7 +42,7 @@ public class ConfSectIntHashMap implements YamlTransform {
 	@Override
 	public Object fromYaml(Object obj) {
 		ConfigurationSection sect = (ConfigurationSection) obj;
-		HashMap<Integer, List<String>> map = new HashMap<Integer, List<String>>();
+		Map<Integer, List<String>> map = new LinkedHashMap<Integer, List<String>>();
 		for (String key : sect.getKeys(false)) {
 			try {
 				map.put(Integer.parseInt(key), sect.getStringList(key));
