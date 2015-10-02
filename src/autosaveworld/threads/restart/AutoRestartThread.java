@@ -19,8 +19,7 @@ package autosaveworld.threads.restart;
 
 import java.text.SimpleDateFormat;
 
-import org.bukkit.Bukkit;
-
+import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
@@ -31,9 +30,9 @@ public class AutoRestartThread extends Thread {
 
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
-	private RestartJVMshutdownhook jvmsh;
+	private RestartShutdownHook jvmsh;
 
-	public AutoRestartThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, RestartJVMshutdownhook jvmsh) {
+	public AutoRestartThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, RestartShutdownHook jvmsh) {
 		this.config = config;
 		this.configmsg = configmsg;
 		this.jvmsh = jvmsh;
@@ -100,7 +99,7 @@ public class AutoRestartThread extends Thread {
 					}
 				}, 10);
 
-				Bukkit.shutdown();
+				StopCommand.stop();
 
 			}
 			try {

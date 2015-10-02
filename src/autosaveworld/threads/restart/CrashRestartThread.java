@@ -35,6 +35,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.spigotmc.AsyncCatcher;
 
+import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.SchedulerUtils;
@@ -43,9 +44,9 @@ public class CrashRestartThread extends Thread {
 
 	private Thread bukkitMainThread;
 	private AutoSaveWorldConfig config;
-	private RestartJVMshutdownhook jvmsh;
+	private RestartShutdownHook jvmsh;
 
-	public CrashRestartThread(Thread thread, AutoSaveWorldConfig config, RestartJVMshutdownhook jvmsh) {
+	public CrashRestartThread(Thread thread, AutoSaveWorldConfig config, RestartShutdownHook jvmsh) {
 		super("AutoSaveWorld CrashRestartThread");
 		bukkitMainThread = thread;
 		this.config = config;
@@ -116,7 +117,7 @@ public class CrashRestartThread extends Thread {
 					// freeze main thread
 					bukkitMainThread.suspend();
 					// make sure that server won't attempt to do next tick
-					Bukkit.shutdown();
+					StopCommand.stop();
 					// disable spigot async catcher
 					try {
 						AsyncCatcher.enabled = false;

@@ -169,6 +169,8 @@ public class AutoSaveWorldConfig implements Config {
 	public String purgePermsSaveCMD = "mansave force";
 	@ConfigOption(path = "purge.mywarp.enabled")
 	public boolean purgeMyWarp = true;
+	@ConfigOption(path = "purge.essentials.enabled")
+	public boolean purgeEssentials = true;
 	@ConfigOption(path = "purge.dat.enabled")
 	public boolean purgeDat = true;
 	// crashrestart
@@ -182,6 +184,8 @@ public class AutoSaveWorldConfig implements Config {
 	public long crashRestartTimeout = 60;
 	@ConfigOption(path = "crashrestart.startdelay")
 	public int crashRestartCheckerStartDelay = 20;
+	@ConfigOption(path = "crashrestart.runonnonpluginstop")
+	public boolean restartOnNonAswStop = false;
 	// autorestart
 	@ConfigOption(path = "autorestart.enabled")
 	public boolean autoRestart = false;
@@ -222,8 +226,10 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "worldregen.savepstones")
 	public boolean worldregenSavePStones = true;
 	// network watcher
-	@ConfigOption(path = "networkwatcher.warnmainthreadnetwrokaccess")
-	public boolean networkWatcher = true;
+	@ConfigOption(path = "networkwatcher.mainthreadnetaccess.warn")
+	public boolean networkWatcherWarnMainThreadAcc = true;
+	@ConfigOption(path = "networkwatcher.mainthreadnetaccess.interrupt")
+	public boolean networkWatcherInterruptMainThreadNetAcc = false;
 
 	@Override
 	public YamlConfiguration loadConfig() {

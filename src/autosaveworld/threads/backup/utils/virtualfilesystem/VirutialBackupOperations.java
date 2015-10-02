@@ -20,6 +20,11 @@ package autosaveworld.threads.backup.utils.virtualfilesystem;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 import org.bukkit.World;
@@ -29,7 +34,6 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.backup.ExcludeManager;
 import autosaveworld.threads.backup.InputStreamConstruct;
 import autosaveworld.threads.backup.utils.PipedZip;
-import autosaveworld.utils.FileUtils;
 
 public class VirutialBackupOperations {
 
@@ -86,19 +90,35 @@ public class VirutialBackupOperations {
 
 
 	private void uploadDirectory(File src)  throws IOException {
-		if (src.isDirectory()) {
-			vfs.createAndChangeDirectory(src.getName());
-			for (File file : FileUtils.safeListFiles(src)) {
-				if (!ExcludeManager.isFolderExcluded(excludefolders, file.getPath())) {
-					uploadDirectory(file);
+		Files.walkFileTree(src.toPath(), new FileVisitor<Path>() {
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+				if (ExcludeManager.isFolderExcluded(excludefolders, dir.toString())) {
+					return FileVisitResult.SKIP_SUBTREE;
 				}
+				vfs.createAndChangeDirectory(dir.getFileName().toString());
+				return FileVisitResult.CONTINUE;
 			}
-			vfs.changeToParentDirectiry();
-		} else {
-			try (InputStream is = InputStreamConstruct.getFileInputStream(src)) {
-				storeFile(is, src.getName());
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				try (InputStream is = InputStreamConstruct.getFileInputStream(file.toFile())) {
+					storeFile(is, file.getFileName().toString());
+				}
+				return FileVisitResult.CONTINUE;
 			}
-		}
+
+			@Override
+			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				vfs.changeToParentDirectiry();
+				return FileVisitResult.CONTINUE;
+			}
+		});
 	}
 
 	private void zipAndUploadDirectory(File src) throws IOException {

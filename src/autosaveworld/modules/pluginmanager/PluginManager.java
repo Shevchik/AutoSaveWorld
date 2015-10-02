@@ -46,7 +46,7 @@ import autosaveworld.utils.StringUtils;
 
 public class PluginManager {
 
-	private InternalUtils iutils = new InternalUtils();
+	private final InternalUtils iutils = new InternalUtils();
 
 	public void handlePluginManagerCommand(CommandSender sender, String command, String arg) {
 		switch (command.toLowerCase()) {
@@ -85,7 +85,7 @@ public class PluginManager {
 		}
 	}
 
-	private List<String> cmds = Arrays.asList(new String[] {"load", "unload", "funload", "reload", "freload", "removeperm", "findcommand"});
+	private final List<String> cmds = Arrays.asList(new String[] {"load", "unload", "funload", "reload", "freload", "removeperm", "findcommand"});
 	public List<String> getTabComplete(CommandSender sender, String[] args) {
 		if (args.length == 1) {
 			ArrayList<String> result = new ArrayList<String>();

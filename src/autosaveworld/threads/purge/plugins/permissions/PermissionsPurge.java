@@ -30,6 +30,7 @@ public class PermissionsPurge extends DataPurge {
 		super(config, activeplayerslist);
 	}
 
+	@Override
 	public void doPurge() {
 		if (Bukkit.getPluginManager().getPlugin("GroupManager") != null) {
 			MessageLogger.debug("GroupManager found, purging");

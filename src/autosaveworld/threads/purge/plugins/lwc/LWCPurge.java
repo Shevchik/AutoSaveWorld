@@ -36,6 +36,7 @@ public class LWCPurge extends DataPurge {
 		super(config, activeplayerslist);
 	}
 
+	@Override
 	public void doPurge() {
 
 		MessageLogger.debug("LWC purge started");

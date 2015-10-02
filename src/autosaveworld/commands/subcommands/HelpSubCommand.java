@@ -47,6 +47,7 @@ public class HelpSubCommand implements ISubCommand {
 		MessageLogger.sendMessage(sender, "&f/asw process input {processname} {input}&7 - &3Sends a line to process input stream");
 		MessageLogger.sendMessage(sender, "&f/asw process list&7 - &3Shows registered processes");
 		MessageLogger.sendMessage(sender, "&f/asw serverstatus&7 - &3Shows cpu, memory, HDD usage");
+		MessageLogger.sendMessage(sender, "&f/asw stop&7 - &3Stops the server");
 		MessageLogger.sendMessage(sender, "&f/asw forcegc&7 - &3Forces garbage collection");
 		MessageLogger.sendMessage(sender, "&f/asw reload&7 - &3Reload all configs)");
 		MessageLogger.sendMessage(sender, "&f/asw reloadconfig&7 - &3Reload plugin config (config.yml)");

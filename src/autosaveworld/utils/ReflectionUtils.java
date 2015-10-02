@@ -49,4 +49,13 @@ public class ReflectionUtils {
 		throw new RuntimeException("Can't find method "+name+" with params length "+paramlength);
 	}
 
+	public static void throwException(Throwable exception) {
+		ReflectionUtils.<RuntimeException>throwException0(exception);
+	} 
+
+	@SuppressWarnings("unchecked")
+	private static <T extends Throwable> void throwException0(Throwable exception) throws T {
+		throw (T) exception;
+	}
+
 }

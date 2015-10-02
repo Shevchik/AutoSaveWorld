@@ -36,6 +36,7 @@ public class MyWarpPurge extends DataPurge {
 		super(config, activeplayerslist);
 	}
 
+	@Override
 	public void doPurge() {
 
 		MessageLogger.debug("MyWarp purge started");

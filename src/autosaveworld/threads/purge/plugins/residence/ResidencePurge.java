@@ -38,6 +38,7 @@ public class ResidencePurge extends DataPurge {
 	}
 
 	@SuppressWarnings("deprecation")
+	@Override
 	public void doPurge() {
 
 		MessageLogger.debug("Residence purge started");

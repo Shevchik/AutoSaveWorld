@@ -30,6 +30,7 @@ import org.bukkit.plugin.Plugin;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.ReflectionUtils;
 
 public class NetworkWatcherProxySelector extends ProxySelector {
 
@@ -47,14 +48,18 @@ public class NetworkWatcherProxySelector extends ProxySelector {
 
 	@Override
 	public List<Proxy> select(URI uri) {
-		if (config.networkWatcher) {
+		if (config.networkWatcherWarnMainThreadAcc) {
 			if (Bukkit.isPrimaryThread()) {
-				Plugin plugin = getRequestingPlugin();
-				if (plugin != null) {
-					MessageLogger.warn("Plugin " + plugin.getName() + " attempted to establish connection " + uri + " in main server thread");
+				if (config.networkWatcherInterruptMainThreadNetAcc) {
+					ReflectionUtils.throwException(new IOException("Network access from main thread is not allowed"));
 				} else {
-					MessageLogger.warn("Something attempted to access " + uri + " in main server thread, printing stack trace");
-					Thread.dumpStack();
+					Plugin plugin = getRequestingPlugin();
+					if (plugin != null) {
+						MessageLogger.warn("Plugin " + plugin.getName() + " attempted to establish connection " + uri + " in main server thread");
+					} else {
+						MessageLogger.warn("Something attempted to access " + uri + " in main server thread, printing stack trace");
+						Thread.dumpStack();
+					}
 				}
 			}
 		}

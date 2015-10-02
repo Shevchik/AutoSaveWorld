@@ -18,24 +18,46 @@
 package autosaveworld.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileUtils {
 
 	public static void init() {
 	}
 
-	public static void deleteDirectory(File file) {
+	public static void deleteDirectory(File file) throws IOException {
 		if (!file.exists()) {
 			return;
 		}
-		if (file.isDirectory()) {
-			for (File f : safeListFiles(file)) {
-				deleteDirectory(f);
+		Files.walkFileTree(file.toPath(), new FileVisitor<Path>() {
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+				return FileVisitResult.CONTINUE;
 			}
-			file.delete();
-		} else {
-			file.delete();
-		}
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+		});
+		file.delete();
 	}
 
 	public static File[] safeListFiles(File file) {

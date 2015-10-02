@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
 import autosaveworld.commands.NoTabCompleteCommandsHandler;
+import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
@@ -35,7 +36,7 @@ import autosaveworld.threads.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.threads.purge.AutoPurgeThread;
 import autosaveworld.threads.restart.AutoRestartThread;
 import autosaveworld.threads.restart.CrashRestartThread;
-import autosaveworld.threads.restart.RestartJVMshutdownhook;
+import autosaveworld.threads.restart.RestartShutdownHook;
 import autosaveworld.threads.save.AutoSaveThread;
 import autosaveworld.utils.CommandUtils;
 import autosaveworld.utils.FileUtils;
@@ -55,7 +56,7 @@ public class AutoSaveWorld extends JavaPlugin {
 	// restart
 	public CrashRestartThread crashrestartThread;
 	public AutoRestartThread autorestartThread;
-	private RestartJVMshutdownhook JVMsh;
+	private RestartShutdownHook JVMsh;
 	// autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread;
 	// plugin manager
@@ -112,7 +113,7 @@ public class AutoSaveWorld extends JavaPlugin {
 		startThread(ThreadType.SAVE);
 		startThread(ThreadType.BACKUP);
 		startThread(ThreadType.PURGE);
-		JVMsh = new RestartJVMshutdownhook();
+		JVMsh = new RestartShutdownHook();
 		startThread(ThreadType.CRASHRESTART);
 		startThread(ThreadType.AUTORESTART);
 		startThread(ThreadType.CONSOLECOMMAND);
@@ -120,6 +121,11 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		if (config.restartOnNonAswStop && !StopCommand.isStoppedByAsw()) {
+			MessageLogger.debug("Restarting due to server stopped not by asw command");
+			JVMsh.setPath(config.crashRestartScriptPath);
+			Runtime.getRuntime().addShutdownHook(JVMsh);
+		}
 		if (config.saveOnASWDisable) {
 			// Perform a Save NOW!
 			MessageLogger.debug("Saving");

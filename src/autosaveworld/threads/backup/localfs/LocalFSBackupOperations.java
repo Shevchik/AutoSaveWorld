@@ -18,6 +18,7 @@
 package autosaveworld.threads.backup.localfs;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.World;
@@ -76,7 +77,7 @@ public class LocalFSBackupOperations {
 		}
 	}
 
-	private void backupFolder(File fromfolder, String destfolder, int maxBackupsCount, String latestbackuptimestamp) {
+	private void backupFolder(File fromfolder, String destfolder, int maxBackupsCount, String latestbackuptimestamp) throws IOException {
 		String[] folders = FileUtils.safeList(new File(destfolder));
 		if ((maxBackupsCount != 0) && new File(destfolder).exists() && (folders.length >= maxBackupsCount)) {
 			String oldestBackupName = BackupUtils.findOldestBackupName(folders);

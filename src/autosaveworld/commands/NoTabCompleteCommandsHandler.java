@@ -38,6 +38,7 @@ import autosaveworld.commands.subcommands.ReloadConfigSubCommand;
 import autosaveworld.commands.subcommands.RestartSubCommand;
 import autosaveworld.commands.subcommands.SaveSubCommand;
 import autosaveworld.commands.subcommands.ServerStatusSubCommand;
+import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.commands.subcommands.VersionSubCommand;
 import autosaveworld.commands.subcommands.WorldRegenSubCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
@@ -80,6 +81,7 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 		subcommandhandlers.put("restart", new RestartSubCommand(plugin));
 		subcommandhandlers.put("forcerestart", new ForceRestartSubCommand(plugin));
 		subcommandhandlers.put("regenworld", new WorldRegenSubCommand(plugin, config, configmsg));
+		subcommandhandlers.put("stop", new StopCommand());
 	}
 
 	protected PermissionCheck permCheck = new PermissionCheck();

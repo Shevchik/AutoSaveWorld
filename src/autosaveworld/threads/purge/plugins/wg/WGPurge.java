@@ -41,6 +41,7 @@ public class WGPurge extends DataPurge {
 		super(config, activelist);
 	}
 
+	@Override
 	public void doPurge() {
 
 		MessageLogger.debug("WG purge started");

@@ -27,6 +27,7 @@ import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.IntervalTaskThread;
 import autosaveworld.threads.purge.plugins.DatfilePurge;
+import autosaveworld.threads.purge.plugins.essentials.EssentialsPurge;
 import autosaveworld.threads.purge.plugins.lwc.LWCPurge;
 import autosaveworld.threads.purge.plugins.mywarp.MyWarpPurge;
 import autosaveworld.threads.purge.plugins.permissions.PermissionsPurge;
@@ -87,6 +88,10 @@ public class AutoPurgeThread extends IntervalTaskThread {
 		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
 			MessageLogger.debug("MyWarp found, adding to purge list");
 			purges.add(new MyWarpPurge(config, activelist));
+		}
+		if ((pm.getPlugin("Essentials") != null && config.purgeEssentials)) {
+			MessageLogger.debug("Essentials found, adding to purge list");
+			purges.add(new EssentialsPurge(config, activelist));
 		}
 		if (config.purgePerms) {
 			MessageLogger.debug("Permissions purge is enabled, adding to purge list");

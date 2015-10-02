@@ -24,9 +24,9 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 
-public class RestartJVMshutdownhook extends Thread {
+public class RestartShutdownHook extends Thread {
 
-	public RestartJVMshutdownhook() {
+	public RestartShutdownHook() {
 		RestartWaiter.init();
 	}
 
