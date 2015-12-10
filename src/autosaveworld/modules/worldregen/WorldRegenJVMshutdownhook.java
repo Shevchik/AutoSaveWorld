@@ -19,6 +19,7 @@ package autosaveworld.modules.worldregen;
 
 import java.util.List;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.threads.restart.RestartWaiter;
 
 public class WorldRegenJVMshutdownhook extends Thread {
@@ -40,8 +41,8 @@ public class WorldRegenJVMshutdownhook extends Thread {
 				task.run();
 			}
 		} catch (Throwable t) {
-			System.err.println("WorldRegen failed");
 			t.printStackTrace();
+			MessageLogger.printOutDebug("WorldRegen failed");
 		}
 
 		// Signal that restarthook can restart

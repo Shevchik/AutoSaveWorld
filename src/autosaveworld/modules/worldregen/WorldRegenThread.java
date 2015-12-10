@@ -108,17 +108,19 @@ public class WorldRegenThread extends Thread {
 			return;
 		}
 
+		final HashSet<Coord> preservechunks = new HashSet<Coord>(1500);
+		for (DataProvider provider : providers) {
+			preservechunks.addAll(provider.getChunks());
+		}
+
 		ArrayList<WorldRegenTask> tasks = new ArrayList<WorldRegenTask>();
 
 		WorldRegenTask clearchunks = new WorldRegenTask() {
 			@Override
 			public void run() throws Throwable {
-				HashSet<Coord> preservechunks = new HashSet<Coord>(1500);
-				for (DataProvider provider : providers) {
-					preservechunks.addAll(provider.getChunks());
-				}
 				File regionfolder = new File(wtoregen.getWorldFolder(), "region");
 				for (File regionfile : FileUtils.safeListFiles(regionfolder)) {
+					MessageLogger.printOutDebug("Processing regionfile "+regionfile.getName());
 					try {
 						AnvilRegion column = new AnvilRegion(regionfolder, regionfile.getName());
 						for (Coord columnchunk : column.getChunks()) {
@@ -127,8 +129,7 @@ public class WorldRegenThread extends Thread {
 							}
 						}
 						column.saveToDisk();
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
+					} catch (Throwable e) {
 					}
 				}
 			}

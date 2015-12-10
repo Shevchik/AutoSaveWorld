@@ -17,6 +17,9 @@
 
 package autosaveworld.core.logging;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -29,9 +32,10 @@ import autosaveworld.config.AutoSaveWorldConfig;
 
 public class MessageLogger {
 
+	private static final FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
+
 	private static AutoSaveWorldConfig config;
 	private static Logger log;
-	private static FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
 
 	public static void init(Logger log, AutoSaveWorldConfig config) {
 		MessageLogger.log = log;
@@ -40,54 +44,48 @@ public class MessageLogger {
 
 	public static void sendMessage(CommandSender sender, String message) {
 		if (!message.equals("")) {
-			if (formattingCodesParser != null) {
-				sender.sendMessage(formattingCodesParser.parseFormattingCodes(message));
-			}
+			sender.sendMessage(formattingCodesParser.parseFormattingCodes(message));
 		}
 	}
 
 	public static void broadcast(String message, boolean broadcast) {
 		if (!message.equals("") && broadcast) {
-			if (formattingCodesParser != null) {
-				try {
-					Bukkit.broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
-				} catch (Throwable t) {
-				}
+			try {
+				Bukkit.broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
+			} catch (Throwable t) {
 			}
 		}
 	}
 
 	public static void kickPlayer(Player player, String message) {
-		if (formattingCodesParser != null) {
-			player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
-		}
+		player.kickPlayer(formattingCodesParser.parseFormattingCodes(message));
 	}
 
 	public static void disallow(AsyncPlayerPreLoginEvent e, String message) {
-		if (formattingCodesParser != null) {
-			e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
-		}
+		e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
 	}
 
 	public static void disallow(PlayerLoginEvent e, String message) {
-		if (formattingCodesParser != null) {
-			e.disallow(PlayerLoginEvent.Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
-		}
+		e.disallow(PlayerLoginEvent.Result.KICK_OTHER, formattingCodesParser.parseFormattingCodes(message));
 	}
 
 	public static void debug(String message) {
-		if ((config != null) && config.varDebug) {
-			if (formattingCodesParser != null) {
-				log.info(formattingCodesParser.stripFormattingCodes(message));
-			}
+		if (config != null && config.varDebug && log != null) {
+			log.info(formattingCodesParser.stripFormattingCodes(message));
 		}
 	}
 
 	public static void warn(String message) {
 		if (log != null) {
-			if (formattingCodesParser != null) {
-				log.warning(formattingCodesParser.stripFormattingCodes(message));
-			}
+			log.warning(formattingCodesParser.stripFormattingCodes(message));
+		}
+	}
+
+	private static final PrintStream outstream = new PrintStream(new FileOutputStream(FileDescriptor.out));
+	public static void printOutDebug(String message) {
+		if (config != null && config.varDebug) {
+			outstream.println("[AutoSaveWorld] "+message);
+			outstream.flush();
 		}
 	}
 

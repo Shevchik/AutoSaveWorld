@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 
+import autosaveworld.core.logging.MessageLogger;
+
 public class RestartShutdownHook extends Thread {
 
 	public RestartShutdownHook() {
@@ -52,13 +54,11 @@ public class RestartShutdownHook extends Thread {
 			ProcessBuilder pb = new ProcessBuilder();
 			File restartscript = new File(crashrestartscriptpath);
 			if (!crashrestartscriptpath.isEmpty() && restartscript.exists() && restartscript.isFile()) {
-				System.out.println("[AutoSaveWorld] Startup script found. Restarting");
-				System.out.flush();
+				MessageLogger.printOutDebug("Startup script found. Restarting");
 				restartscript.setExecutable(true);
 				pb.command(restartscript.getAbsolutePath());
 			} else {
-				System.out.println("[AutoSaveWorld] Startup script not found. Restarting without it. This may work strange or not work at all");
-				System.out.flush();
+				MessageLogger.printOutDebug("Startup script not found. Restarting without it. This may work strange or not work at all");
 				String jarfilename = Bukkit.class.getResource("").getFile();
 				jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
 				jarfilename = new File(jarfilename).getName() + ".jar";
@@ -72,9 +72,8 @@ public class RestartShutdownHook extends Thread {
 			}
 			pb.inheritIO();
 			pb.start();
-		} catch (Exception e) {
-			System.out.println("[AutoSaveWorld] Restart failed");
-			System.out.flush();
+		} catch (Throwable e) {
+			MessageLogger.printOutDebug("Restart failed");
 			e.printStackTrace();
 		}
 	}
