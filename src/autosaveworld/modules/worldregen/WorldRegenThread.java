@@ -19,7 +19,7 @@ package autosaveworld.modules.worldregen;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -37,6 +37,7 @@ import autosaveworld.modules.worldregen.plugins.TownyDataProvider;
 import autosaveworld.modules.worldregen.plugins.WorldGuardDataProvider;
 import autosaveworld.modules.worldregen.storage.AnvilRegion;
 import autosaveworld.modules.worldregen.storage.Coord;
+import autosaveworld.modules.worldregen.storage.WorldMap;
 import autosaveworld.threads.restart.RestartWaiter;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ListenerUtils;
@@ -108,9 +109,11 @@ public class WorldRegenThread extends Thread {
 			return;
 		}
 
-		final HashSet<Coord> preservechunks = new HashSet<Coord>(1500);
+		final WorldMap preservechunks = new WorldMap();
 		for (DataProvider provider : providers) {
-			preservechunks.addAll(provider.getChunks());
+			for (Coord chunkCoord : provider.getChunks()) {
+				preservechunks.addChunk(chunkCoord);
+			}
 		}
 
 		ArrayList<WorldRegenTask> tasks = new ArrayList<WorldRegenTask>();
@@ -122,14 +125,21 @@ public class WorldRegenThread extends Thread {
 				for (File regionfile : FileUtils.safeListFiles(regionfolder)) {
 					MessageLogger.printOutDebug("Processing regionfile "+regionfile.getName());
 					try {
-						AnvilRegion column = new AnvilRegion(regionfolder, regionfile.getName());
-						for (Coord columnchunk : column.getChunks()) {
-							if (!preservechunks.contains(columnchunk)) {
-								column.removeChunk(columnchunk);
+						AnvilRegion region = new AnvilRegion(regionfolder, regionfile.getName());
+						if (preservechunks.hasChunks(region.getX(), region.getZ())) {
+							region.loadFromDisk();
+							Set<Coord> localChunks = preservechunks.getChunks(region.getX(), region.getZ());
+							for (Coord columnchunk : region.getChunks()) {
+								if (!localChunks.contains(columnchunk)) {
+									region.removeChunk(columnchunk);
+								}
 							}
+							region.saveToDisk();
+						} else {
+							region.delete();
 						}
-						column.saveToDisk();
 					} catch (Throwable e) {
+						MessageLogger.printOutDebug("Failed to process regionfile "+regionfile.getName());
 					}
 				}
 			}

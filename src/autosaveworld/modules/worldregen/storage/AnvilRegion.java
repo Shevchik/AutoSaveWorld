@@ -27,10 +27,9 @@ import java.util.Map.Entry;
 
 public class AnvilRegion {
 
-	private File regionfolder;
-	private int columnX;
-	private int columnZ;
-
+	private final File regionfolder;
+	private final int columnX;
+	private final int columnZ;
 	public AnvilRegion(File regionfolder, String filename) throws Throwable {
 		this.regionfolder = regionfolder;
 		String[] split = filename.split("[.]");
@@ -39,25 +38,28 @@ public class AnvilRegion {
 		}
 		this.columnX = Integer.parseInt(split[1]);
 		this.columnZ = Integer.parseInt(split[2]);
-		loadFromDisk();
 	}
 
-	private int[] timestamps = new int[1024];
-	private HashMap<Coord, ChunkInfo> chunks = new HashMap<Coord, ChunkInfo>();
+	private final int[] timestamps = new int[1024];
+	private final HashMap<Coord, ChunkInfo> chunks = new HashMap<Coord, ChunkInfo>();
+
+	public int getX() {
+		return columnX;
+	}
+
+	public int getZ() {
+		return columnZ;
+	}
 
 	public List<Coord> getChunks() {
-		ArrayList<Coord> chunkcoords = new ArrayList<Coord>(chunks.size() * 2);
-		for (Coord localcoord : chunks.keySet()) {
-			chunkcoords.add(new Coord((columnX << 5) + localcoord.getX(), (columnZ << 5) + localcoord.getZ()));
-		}
-		return chunkcoords;
+		return new ArrayList<Coord>(chunks.keySet());
 	}
 
 	public void removeChunk(Coord chunkcoord) {
-		chunks.remove(new Coord(chunkcoord.getX() & 31, chunkcoord.getZ() & 31));
+		chunks.remove(chunkcoord);
 	}
 
-	private void loadFromDisk() throws IOException {
+	public void loadFromDisk() throws IOException {
 		File regionfile = new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
 		if (!regionfile.exists()) {
 			return;
@@ -94,7 +96,7 @@ public class AnvilRegion {
 	public void saveToDisk() throws IOException {
 		File regionfile = new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
 		if (chunks.isEmpty()) {
-			regionfile.delete();
+			delete();
 			return;
 		}
 		if (!regionfile.exists()) {
@@ -124,6 +126,11 @@ public class AnvilRegion {
 			raf.write(empty);
 		}
 		raf.close();
+	}
+
+	public void delete() {
+		File regionfile = new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
+		regionfile.delete();	
 	}
 
 	private int getBlocks(int chunkdatasize) {

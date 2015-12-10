@@ -19,9 +19,8 @@ package autosaveworld.modules.worldregen.storage;
 
 public class Coord {
 
-	private int x;
-	private int z;
-
+	private final int x;
+	private final int z;
 	public Coord(int x, int z) {
 		this.x = x;
 		this.z = z;
@@ -52,6 +51,14 @@ public class Coord {
 	@Override
 	public String toString() {
 		return getX()+"."+getZ();
+	}
+
+	public static int getRegionCoord(int worldCoord) {
+		return worldCoord >> 5;
+	}
+
+	public static int getLocalCoord(int worldCoord) {
+		return worldCoord & 31;
 	}
 
 }
