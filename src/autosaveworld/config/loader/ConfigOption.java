@@ -33,6 +33,8 @@ public @interface ConfigOption {
 
 	public String path();
 
+	public String[] legacypath() default {};
+
 	public Class<? extends YamlTransform> transform() default NoTrasform.class;
 
 	public Class<? extends PostLoad> postload() default NoPostLoad.class;

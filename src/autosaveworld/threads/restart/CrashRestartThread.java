@@ -66,10 +66,10 @@ public class CrashRestartThread extends Thread {
 	public void run() {
 		MessageLogger.debug("CrashRestartThread started");
 
-		MessageLogger.debug("Delaying crashrestart checker start for " + config.crashRestartCheckerStartDelay + " seconds");
+		MessageLogger.debug("Delaying crashrestart checker start for " + config.restartOnCrashCheckerStartDelay + " seconds");
 		// wait for configurable delay
 		try {
-			Thread.sleep(config.crashRestartCheckerStartDelay * 1000L);
+			Thread.sleep(config.restartOnCrashCheckerStartDelay * 1000L);
 		} catch (InterruptedException e) {
 		}
 		// do not enable self if plugin is disabled
@@ -88,10 +88,10 @@ public class CrashRestartThread extends Thread {
 
 		while (run) {
 			long diff = System.currentTimeMillis() - syncticktime;
-			if ((syncticktime != 0) && (diff >= (config.crashRestartTimeout * 1000L))) {
+			if ((syncticktime != 0) && (diff >= (config.restartOnCrashTimeout * 1000L))) {
 				run = false;
 
-				if (config.crashRestartEnabled) {
+				if (config.restartOncrashEnabled) {
 					Logger log = Bukkit.getLogger();
 					log.log(Level.SEVERE, "Server has stopped responding");
 					log.log(Level.SEVERE, "Dumping threads info");
@@ -109,8 +109,9 @@ public class CrashRestartThread extends Thread {
 					}
 					log.log(Level.SEVERE, "Restarting Server");
 
-					if (!config.crashRestartJustStop) {
-						jvmsh.setPath(config.crashRestartScriptPath);
+					if (!config.restartJustStop) {
+						jvmsh.setPath(config.restartOnCrashScriptPath);
+						jvmsh.setUseAdvancedRestart(config.restartAdvancedMode);
 						Runtime.getRuntime().addShutdownHook(jvmsh);
 					}
 

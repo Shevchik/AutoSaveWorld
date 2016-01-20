@@ -33,11 +33,17 @@ public class ConfigLoader {
 				field.setAccessible(true);
 				ConfigOption option = field.getAnnotation(ConfigOption.class);
 				if (option != null) {
-					String path = option.path();
 					YamlTransform transform = option.transform().newInstance();
+					String path = option.path();
 					Object newvalue = field.get(config);
 					if (yconfig.contains(path)) {
 						newvalue = transform.fromYaml(yconfig.get(path));
+					}
+					for (String legacyPath : option.legacypath()) {
+						newvalue = field.get(config);
+						if (yconfig.contains(legacyPath)) {
+							newvalue = transform.fromYaml(yconfig.get(legacyPath));
+						}
 					}
 					option.postload().newInstance().postLoad(newvalue);
 					field.set(config, newvalue);

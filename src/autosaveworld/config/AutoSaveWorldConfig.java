@@ -173,36 +173,35 @@ public class AutoSaveWorldConfig implements Config {
 	public boolean purgeEssentials = true;
 	@ConfigOption(path = "purge.dat.enabled")
 	public boolean purgeDat = true;
-	// crashrestart
-	@ConfigOption(path = "crashrestart.enabled")
-	public boolean crashRestartEnabled = false;
-	@ConfigOption(path = "crashrestart.scriptpath")
-	public String crashRestartScriptPath = "";
-	@ConfigOption(path = "crashrestart.juststop")
-	public boolean crashRestartJustStop = false;
-	@ConfigOption(path = "crashrestart.timeout")
-	public long crashRestartTimeout = 60;
-	@ConfigOption(path = "crashrestart.startdelay")
-	public int crashRestartCheckerStartDelay = 20;
-	@ConfigOption(path = "crashrestart.runonnonpluginstop")
-	public boolean restartOnNonAswStop = false;
-	// autorestart
-	@ConfigOption(path = "autorestart.enabled")
+	// restart
+	@ConfigOption(path = "restart.juststop")
+	public boolean restartJustStop = false;
+	@ConfigOption(path = "restart.advancedmode")
+	public boolean restartAdvancedMode = false;
+	@ConfigOption(path = "restart.oncrash.enabled", legacypath = "crashrestart.enabled")
+	public boolean restartOncrashEnabled = false;
+	@ConfigOption(path = "restart.oncrash.scriptpath", legacypath = "crashrestart.scriptpath")
+	public String restartOnCrashScriptPath = "";
+	@ConfigOption(path = "restart.oncrash.timeout", legacypath = "crashrestart.timeout")
+	public long restartOnCrashTimeout = 60;
+	@ConfigOption(path = "restart.oncrash.checkerstartdelay", legacypath = "crashrestart.startdelay")
+	public int restartOnCrashCheckerStartDelay = 20;
+	@ConfigOption(path = "restart.oncrash.runonnonpluginstop", legacypath = "crashrestart.runonnonpluginstop")
+	public boolean restartOnCrashOnNonAswStop = false;
+	@ConfigOption(path = "restart.auto.enabled", legacypath = "autorestart.enabled")
 	public boolean autoRestart = false;
-	@ConfigOption(path = "autorestart.broadcast")
+	@ConfigOption(path = "restart.auto.broadcast", legacypath = "autorestart.broadcast")
 	public boolean autoRestartBroadcast = true;
-	@ConfigOption(path = "autorestart.scriptpath")
+	@ConfigOption(path = "restart.auto.scriptpath", legacypath = "autorestart.scriptpath")
 	public String autoRestartScriptPath = "";
-	@ConfigOption(path = "autorestart.time")
+	@ConfigOption(path = "restart.auto.time", legacypath = "autorestart.time")
 	public List<String> autoRestartTimes = new ArrayList<String>();
-	@ConfigOption(path = "autorestart.countdown.enabled")
+	@ConfigOption(path = "restart.auto.countdown.enabled", legacypath = "autorestart.countdown.enabled")
 	public boolean autoRestartCountdown = true;
-	@ConfigOption(path = "autorestart.countdown.broadcastonsecond", postload = DefaultCountdown.class)
+	@ConfigOption(path = "restart.auto.countdown.broadcastonsecond", legacypath = "autorestart.countdown.broadcastonsecond", postload = DefaultCountdown.class)
 	public List<Integer> autoRestartCountdownSeconds = new ArrayList<Integer>();
-	@ConfigOption(path = "autorestart.commands")
+	@ConfigOption(path = "restart.auto.commands", legacypath = "autorestart.commands")
 	public List<String> autoRestartPreStopCommmands = new ArrayList<String>();
-	@ConfigOption(path = "autorestart.juststop")
-	public boolean autoRestartJustStop = false;
 	// consolecmmand
 	@ConfigOption(path = "consolecommand.timemode.enabled")
 	public boolean ccTimesModeEnabled = false;

@@ -85,8 +85,9 @@ public class AutoRestartThread extends Thread {
 
 				MessageLogger.debug("AutoRestarting server");
 
-				if (!config.autoRestartJustStop) {
+				if (!config.restartJustStop) {
 					jvmsh.setPath(config.autoRestartScriptPath);
+					jvmsh.setUseAdvancedRestart(config.restartAdvancedMode);
 					Runtime.getRuntime().addShutdownHook(jvmsh);
 				}
 

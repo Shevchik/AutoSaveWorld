@@ -20,11 +20,13 @@ package autosaveworld.threads.restart;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.StringUtils;
 
 public class RestartShutdownHook extends Thread {
 
@@ -32,50 +34,63 @@ public class RestartShutdownHook extends Thread {
 		RestartWaiter.init();
 	}
 
-	private String crashrestartscriptpath = "";
+	private boolean useAdvancedRestart = false;
+	private File restartscript = null;
 
 	public void setPath(String path) {
-		crashrestartscriptpath = path;
+		restartscript = new File(path);
+	}
+
+	public void setUseAdvancedRestart(boolean b) {
+		this.useAdvancedRestart = b;
 	}
 
 	public void restart() {
-		// Wait if need
 		while (RestartWaiter.shouldWait()) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
 		}
-		// Force gc (attempt to ensure that the new instance of server will have enough mem)
-		System.gc();
-		System.gc();
-		// Start process
 		try {
-			ProcessBuilder pb = new ProcessBuilder();
-			File restartscript = new File(crashrestartscriptpath);
-			if (!crashrestartscriptpath.isEmpty() && restartscript.exists() && restartscript.isFile()) {
-				MessageLogger.printOutDebug("Startup script found. Restarting");
-				restartscript.setExecutable(true);
-				pb.command(restartscript.getAbsolutePath());
-			} else {
-				MessageLogger.printOutDebug("Startup script not found. Restarting without it. This may work strange or not work at all");
-				String jarfilename = Bukkit.class.getResource("").getFile();
-				jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
-				jarfilename = new File(jarfilename).getName() + ".jar";
-				List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-				List<String> execsequence = new ArrayList<String>();
-				execsequence.add("java");
-				execsequence.addAll(arguments);
-				execsequence.add("-jar");
-				execsequence.add(jarfilename);
-				pb.command(execsequence);
-			}
-			pb.inheritIO();
-			pb.start();
+			new ProcessBuilder()
+			.command(useAdvancedRestart ? getAdvancedRestartCommand() : getBasicRestartCommand())
+			.inheritIO()
+			.start();
 		} catch (Throwable e) {
 			MessageLogger.printOutDebug("Restart failed");
 			e.printStackTrace();
 		}
+	}
+
+	private List<String> getAdvancedRestartCommand() {
+		try {
+			return Collections.singletonList(AdvancedRestartScript.createScript(
+				restartScriptExists() ? restartscript.getAbsolutePath() : StringUtils.join(getJavaLaunchCommand().toArray(new String[0]), " ")
+			).getAbsolutePath());
+		} catch (Exception e) {
+			return getBasicRestartCommand();
+		}
+	}
+
+	private List<String> getBasicRestartCommand() {
+		return restartScriptExists() ? Collections.singletonList(restartscript.getAbsolutePath()) : getJavaLaunchCommand();
+	}
+
+	private List<String> getJavaLaunchCommand() {
+		String jarfilename = Bukkit.class.getResource("").getFile();
+		jarfilename = jarfilename.substring(0, jarfilename.indexOf(".jar"));
+		jarfilename = new File(jarfilename).getName() + ".jar";
+		List<String> command = new ArrayList<String>();
+		command.add("java");
+		command.addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
+		command.add("-jar");
+		command.add(jarfilename);
+		return command;
+	}
+
+	private boolean restartScriptExists() {
+		return restartscript != null && restartscript.exists() && restartscript.isFile();
 	}
 
 	@Override
