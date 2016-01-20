@@ -45,12 +45,7 @@ public class RestartShutdownHook extends Thread {
 	}
 
 	public void restart() {
-		while (RestartWaiter.shouldWait()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		}
+		RestartWaiter.await();
 		try {
 			new ProcessBuilder()
 			.command(useAdvancedRestart ? getAdvancedRestartCommand() : getBasicRestartCommand())
