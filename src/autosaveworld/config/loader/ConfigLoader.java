@@ -40,7 +40,6 @@ public class ConfigLoader {
 						newvalue = transform.fromYaml(yconfig.get(path));
 					}
 					for (String legacyPath : option.legacypath()) {
-						newvalue = field.get(config);
 						if (yconfig.contains(legacyPath)) {
 							newvalue = transform.fromYaml(yconfig.get(legacyPath));
 						}
