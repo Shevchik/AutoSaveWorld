@@ -10,7 +10,7 @@ import java.util.List;
 
 import autosaveworld.utils.StringUtils;
 
-public class AdvancedRestartScript {
+public class RestartScript {
 
 	public static File createScript(List<String> command) throws IOException {
 		command = new ArrayList<String>(command);

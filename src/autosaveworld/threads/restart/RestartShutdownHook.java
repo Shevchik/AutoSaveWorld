@@ -18,6 +18,7 @@
 package autosaveworld.threads.restart;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,42 +34,37 @@ public class RestartShutdownHook extends Thread {
 		RestartWaiter.init();
 	}
 
-	private boolean useAdvancedRestart = false;
 	private File restartscript = null;
 
 	public void setPath(String path) {
 		restartscript = new File(path);
 	}
 
-	public void setUseAdvancedRestart(boolean b) {
-		this.useAdvancedRestart = b;
-	}
-
 	public void restart() {
 		RestartWaiter.await();
 		try {
 			new ProcessBuilder()
-			.command(useAdvancedRestart ? getAdvancedRestartCommand() : getBasicRestartCommand())
+			.command(getRestartCommand())
 			.inheritIO()
 			.start();
 		} catch (Throwable e) {
-			MessageLogger.printOutDebug("Restart failed");
-			e.printStackTrace();
+			MessageLogger.printOut("Restart failed");
+			MessageLogger.printOutException(e);
 		}
 	}
 
-	private List<String> getAdvancedRestartCommand() {
+	private List<String> getRestartCommand() throws IOException {
 		try {
-			return Collections.singletonList(AdvancedRestartScript.createScript(
+			return Collections.singletonList(RestartScript.createScript(
 				restartScriptExists() ? Collections.singletonList(restartscript.getAbsolutePath()) : getJavaLaunchCommand()
 			).getAbsolutePath());
-		} catch (Exception e) {
-			return getBasicRestartCommand();
+		} catch (IOException e) {
+			if (restartScriptExists()) {
+				return Collections.singletonList(restartscript.getAbsolutePath());
+			} else {
+				throw new RuntimeException("Unable to create temporal restart script and server start script doesn't exist", e);
+			}
 		}
-	}
-
-	private List<String> getBasicRestartCommand() {
-		return restartScriptExists() ? Collections.singletonList(restartscript.getAbsolutePath()) : getJavaLaunchCommand();
 	}
 
 	private List<String> getJavaLaunchCommand() {

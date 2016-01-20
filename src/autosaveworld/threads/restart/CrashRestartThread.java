@@ -111,7 +111,6 @@ public class CrashRestartThread extends Thread {
 
 					if (!config.restartJustStop) {
 						jvmsh.setPath(config.restartOnCrashScriptPath);
-						jvmsh.setUseAdvancedRestart(config.restartAdvancedMode);
 						Runtime.getRuntime().addShutdownHook(jvmsh);
 					}
 

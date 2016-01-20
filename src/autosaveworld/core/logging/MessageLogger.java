@@ -20,6 +20,7 @@ package autosaveworld.core.logging;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.SyncFailedException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -81,11 +82,29 @@ public class MessageLogger {
 		}
 	}
 
-	private static final PrintStream outstream = new PrintStream(new FileOutputStream(FileDescriptor.out));
+	private static final PrintStream outstream = new PrintStream(new FileOutputStream(FileDescriptor.err), true);
+
+	public static void printOutException(Throwable t) {
+		t.printStackTrace(outstream);
+		try {
+			FileDescriptor.err.sync();
+		} catch (SyncFailedException e) {
+		}
+	}
+
 	public static void printOutDebug(String message) {
 		if (config != null && config.varDebug) {
+			printOut(message);
+		}
+	}
+
+	public static void printOut(String message) {
+		if (config != null && config.varDebug) {
 			outstream.println("[AutoSaveWorld] "+message);
-			outstream.flush();
+			try {
+				FileDescriptor.err.sync();
+			} catch (SyncFailedException e) {
+			}
 		}
 	}
 

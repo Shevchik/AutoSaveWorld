@@ -176,8 +176,6 @@ public class AutoSaveWorldConfig implements Config {
 	// restart
 	@ConfigOption(path = "restart.juststop")
 	public boolean restartJustStop = false;
-	@ConfigOption(path = "restart.advancedmode")
-	public boolean restartAdvancedMode = false;
 	@ConfigOption(path = "restart.oncrash.enabled", legacypath = "crashrestart.enabled")
 	public boolean restartOncrashEnabled = false;
 	@ConfigOption(path = "restart.oncrash.scriptpath", legacypath = "crashrestart.scriptpath")
