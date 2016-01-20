@@ -5,10 +5,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.List;
+
+import autosaveworld.utils.StringUtils;
 
 public class AdvancedRestartScript {
 
-	public static File createScript(String command) throws IOException {
+	public static File createScript(List<String> command) throws IOException {
+		command = new ArrayList<String>(command);
+		command.set(0, escape(command.get(0)));
 		File file = new File("aswrestartscript");
 		file.createNewFile();
 		try (PrintStream stream = new PrintStream(new FileOutputStream(file))) {
@@ -19,7 +25,7 @@ public class AdvancedRestartScript {
 				stream.println("sleep 1");
 				stream.println("done");
 				stream.println("rm "+"\""+file.getAbsolutePath()+"\"");
-				stream.println("\""+command+"\"");
+				stream.println(StringUtils.join(command, " "));
 			} else if (isWindows()) {
 				stream.println(":loop");
 				stream.println("tasklist | find \" " + getPID() + " \" >nul");
@@ -28,13 +34,17 @@ public class AdvancedRestartScript {
 				stream.println("goto :loop");
 				stream.println(")");
 				stream.println("del "+"\""+file.getAbsolutePath()+"\"");
-				stream.println("\""+command+"\"");
+				stream.println(StringUtils.join(command, " "));
 			} else {
 				throw new PlatformNotSupportedException();
 			}
 		}
 		file.setExecutable(true);
 		return file;
+	}
+
+	private static String escape(String string) {
+		return "\""+string+"\"";
 	}
 
 	private static boolean isUnix() {

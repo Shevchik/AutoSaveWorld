@@ -26,7 +26,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.utils.StringUtils;
 
 public class RestartShutdownHook extends Thread {
 
@@ -66,7 +65,7 @@ public class RestartShutdownHook extends Thread {
 	private List<String> getAdvancedRestartCommand() {
 		try {
 			return Collections.singletonList(AdvancedRestartScript.createScript(
-				restartScriptExists() ? restartscript.getAbsolutePath() : StringUtils.join(getJavaLaunchCommand().toArray(new String[0]), " ")
+				restartScriptExists() ? Collections.singletonList(restartscript.getAbsolutePath()) : getJavaLaunchCommand()
 			).getAbsolutePath());
 		} catch (Exception e) {
 			return getBasicRestartCommand();

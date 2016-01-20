@@ -17,9 +17,15 @@
 
 package autosaveworld.utils;
 
+import java.util.Collection;
+
 public class StringUtils {
 
 	public static void init() {
+	}
+
+	public static String join(Collection<String> args, String join) {
+		return join(args.toArray(new String[0]), join);
 	}
 
 	public static String join(String[] args, String join) {
