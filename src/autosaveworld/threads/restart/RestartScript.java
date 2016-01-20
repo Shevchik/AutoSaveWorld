@@ -64,7 +64,7 @@ public class RestartScript {
 			stream.println(":loop");
 			stream.println("tasklist | find \" " + getPID() + " \" >nul");
 			stream.println("if not errorlevel 1 (");
-			stream.println("imeout /t 1 >nul");
+			stream.println("timeout /t 1 >nul");
 			stream.println("goto :loop");
 			stream.println(")");
 			stream.println("del "+"\""+file.getAbsolutePath()+"\"");
