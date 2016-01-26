@@ -96,13 +96,12 @@ public class CrashRestartThread extends Thread {
 					log.log(Level.SEVERE, "Dumping threads info");
 					log.log(Level.SEVERE, "Main thread");
 					ArrayList<ThreadInfo> threads = new ArrayList<ThreadInfo>(Arrays.asList(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)));
-					ThreadInfo mainthread = getMainThread(threads);
+					ThreadInfo mainthread = extractMainThread(threads);
 					dumpThread(mainthread, log);
 					log.log(Level.SEVERE, "Other threads");
 					for (ThreadInfo thread : threads) {
 						dumpThread(thread, log);
 					}
-					log.log(Level.SEVERE, "Restarting Server");
 
 					if (!config.restartJustStop) {
 						jvmsh.setPath(config.restartOnCrashScriptPath);
@@ -118,6 +117,7 @@ public class CrashRestartThread extends Thread {
 						AsyncCatcher.enabled = false;
 					} catch (Throwable t) {
 					}
+					log.log(Level.SEVERE, "Disabling plugins");
 					// unload plugins
 					Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 					for (int i = plugins.length - 1; i >= 0; i--) {
@@ -127,12 +127,14 @@ public class CrashRestartThread extends Thread {
 							e.printStackTrace();
 						}
 					}
+					log.log(Level.SEVERE, "Saving players");
 					// save players
 					try {
 						Bukkit.savePlayers();
 					} catch (Throwable e) {
 						e.printStackTrace();
 					}
+					log.log(Level.SEVERE, "Saving worlds");
 					// save worlds
 					for (World w : Bukkit.getWorlds()) {
 						if (w.isAutoSave()) {
@@ -145,6 +147,7 @@ public class CrashRestartThread extends Thread {
 					}
 					// resume main thread
 					bukkitMainThread.resume();
+					log.log(Level.SEVERE, "Restarting server");
 					// shutdown JVM
 					try {
 						System.exit(0);
@@ -171,10 +174,9 @@ public class CrashRestartThread extends Thread {
 		}
 
 		MessageLogger.debug("Graceful quit of CrashRestartThread");
-
 	}
 
-	private ThreadInfo getMainThread(List<ThreadInfo> data) {
+	private ThreadInfo extractMainThread(List<ThreadInfo> data) {
 		Iterator<ThreadInfo> it = data.iterator();
 		while (it.hasNext()) {
 			ThreadInfo info = it.next();
