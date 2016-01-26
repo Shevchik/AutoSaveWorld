@@ -17,7 +17,7 @@
 
 package autosaveworld.utils;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -41,19 +41,19 @@ public class SchedulerUtils {
 	}
 
 	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
-		final LinkedBlockingQueue<Boolean> lock = new LinkedBlockingQueue<Boolean>(1);
+		final CountDownLatch latch = new CountDownLatch(1);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
 			public void run() {
 				run.run();
-				lock.offer(Boolean.TRUE);
+				latch.countDown();
 			}
 		});
 		try {
 			if (timeout == 0) {
-				lock.take();
+				latch.await();
 			} else {
-				lock.poll(timeout, TimeUnit.SECONDS);
+				latch.await(timeout, TimeUnit.SECONDS);
 			}
 		} catch (InterruptedException e) {
 		}
