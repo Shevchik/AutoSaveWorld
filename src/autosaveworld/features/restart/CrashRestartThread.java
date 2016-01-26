@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -99,10 +98,6 @@ public class CrashRestartThread extends Thread {
 					ArrayList<ThreadInfo> threads = new ArrayList<ThreadInfo>(Arrays.asList(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)));
 					ThreadInfo mainthread = getMainThread(threads);
 					dumpThread(mainthread, log);
-					Plugin freezecause = find(mainthread);
-					if (freezecause != null) {
-						log.log(Level.SEVERE, "Freeze/crash is probably caused by plugin: "+freezecause.getName());
-					}
 					log.log(Level.SEVERE, "Other threads");
 					for (ThreadInfo thread : threads) {
 						dumpThread(thread, log);
@@ -177,23 +172,6 @@ public class CrashRestartThread extends Thread {
 
 		MessageLogger.debug("Graceful quit of CrashRestartThread");
 
-	}
-
-	private Plugin find(ThreadInfo thread) {
-		HashMap<ClassLoader, Plugin> map = new HashMap<ClassLoader, Plugin>();
-		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-			map.put(plugin.getClass().getClassLoader(), plugin);
-		}
-		for (StackTraceElement elem : thread.getStackTrace()) {
-			try {
-				ClassLoader loader = Class.forName(elem.getClassName()).getClassLoader();
-				if (map.containsKey(loader)) {
-					return map.get(loader);
-				}
-			} catch (ClassNotFoundException e) {
-			}
-		}
-		return null;
 	}
 
 	private ThreadInfo getMainThread(List<ThreadInfo> data) {
