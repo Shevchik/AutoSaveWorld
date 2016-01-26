@@ -17,18 +17,23 @@
 
 package autosaveworld.features.purge.plugins.mywarp;
 
-import java.util.TreeSet;
+import java.util.List;
 
 import me.taylorkelly.mywarp.MyWarp;
-import me.taylorkelly.mywarp.data.Warp;
+import me.taylorkelly.mywarp.bukkit.MyWarpPlugin;
+import me.taylorkelly.mywarp.util.profile.Profile;
+import me.taylorkelly.mywarp.warp.Warp;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.google.common.base.Predicate;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
-import autosaveworld.features.purge.taskqueue.TaskQueue;
+import autosaveworld.features.purge.taskqueue.TaskExecutor;
+import autosaveworld.utils.ReflectionUtils;
 
 public class MyWarpPurge extends DataPurge {
 
@@ -38,44 +43,50 @@ public class MyWarpPurge extends DataPurge {
 
 	@Override
 	public void doPurge() {
-
 		MessageLogger.debug("MyWarp purge started");
 
-		MyWarp mywarp = JavaPlugin.getPlugin(MyWarp.class);
+		MyWarpPlugin mywarpplugin = JavaPlugin.getPlugin(MyWarpPlugin.class);
+		MyWarp mywarp;
+		try {
+			mywarp = (MyWarp) ReflectionUtils.getField(mywarpplugin.getClass(), "myWarp").get(mywarpplugin);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+			return;
+		}
 
-		int deleted = 0;
-
-		TaskQueue queue = new TaskQueue(80);
-		TreeSet<Warp> warps = mywarp.getWarpManager().getWarps(null, null);
-		for (Warp warp : warps) {
-			MyWarpInvitesClearTask invitesClearTask = new MyWarpInvitesClearTask(warp);
-			if (!warp.isPublicAll()) {
-				for (String name : warp.getAllInvitedPlayers()) {
-					if (!activeplayerslist.isActiveName(name)) {
-						MessageLogger.debug("Warp member "+name+" is inactive");
-						invitesClearTask.add(name);
+		try (TaskExecutor queue = new TaskExecutor(80)) {
+			List<Warp> warps = mywarp.getWarpManager().getMatchingWarps("*", new Predicate<Warp>() {
+				@Override
+				public boolean apply(Warp warp) {
+					return true;
+				}
+			}).getMatches();
+			for (Warp warp : warps) {
+				MyWarpInvitesClearTask invitesClearTask = new MyWarpInvitesClearTask(warp);
+				for (Profile profile : warp.getInvitedPlayers()) {
+					if (!activeplayerslist.isActiveUUID(profile.getUniqueId())) {
+						MessageLogger.debug("Warp member "+profile.getUniqueId()+" is inactive");
+						invitesClearTask.add(profile);
 					}
 				}
-			}
-			// delete warp if owner and members are inactive
-			if (!activeplayerslist.isActiveName(warp.getCreator()) && (invitesClearTask.getPlayerToClearCount() == warp.getAllInvitedPlayers().size())) {
-				MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
-				// delete warp
-				WarpDeleteTask deleteTask = new WarpDeleteTask(warp);
-				queue.addTask(deleteTask);
-
-				deleted += 1;
-				continue;
-			}
-			// cleanup invited players if needed
-			if (invitesClearTask.hasPlayersToClear()) {
-				queue.addTask(invitesClearTask);
+				// delete warp if owner and members are inactive
+				if (!activeplayerslist.isActiveUUID(warp.getCreator().getUniqueId()) && (invitesClearTask.getPlayerToClearCount() == warp.getInvitedPlayers().size())) {
+					MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
+					// delete warp
+					WarpDeleteTask deleteTask = new WarpDeleteTask(mywarp.getWarpManager(), warp);
+					queue.execute(deleteTask);
+					incDeleted();
+					continue;
+				}
+				// cleanup invited players if needed
+				if (invitesClearTask.hasPlayersToClear()) {
+					queue.execute(invitesClearTask);
+					incCleaned();
+				}
 			}
 		}
-		// flush the rest of the batch
-		queue.flush();
 
-		MessageLogger.debug("MyWarp purge finished, deleted " + deleted + " inactive warps");
+		MessageLogger.debug("MyWarp purge finished, deleted " + getDeleted() + " warps, cleaned " + getCleaned() + " warps");
 	}
 
 }

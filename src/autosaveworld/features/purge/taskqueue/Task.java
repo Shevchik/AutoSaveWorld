@@ -19,7 +19,7 @@ package autosaveworld.features.purge.taskqueue;
 
 public interface Task {
 
-	public boolean isHeavyTask();
+	public boolean doNotQueue();
 
 	public void performTask();
 

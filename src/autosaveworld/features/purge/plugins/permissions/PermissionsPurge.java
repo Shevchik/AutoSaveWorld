@@ -20,7 +20,6 @@ package autosaveworld.features.purge.plugins.permissions;
 import org.bukkit.Bukkit;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 
@@ -33,13 +32,11 @@ public class PermissionsPurge extends DataPurge {
 	@Override
 	public void doPurge() {
 		if (Bukkit.getPluginManager().getPlugin("GroupManager") != null) {
-			MessageLogger.debug("GroupManager found, purging");
-			new GroupManagerPurge().doPurge(activeplayerslist);
+			new GroupManagerPurge(config, activeplayerslist).doPurge();
 			return;
 		}
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-			MessageLogger.debug("Vault found, purging permissions");
-			new VaultPurge().doPurge(activeplayerslist);
+			new VaultPurge(config, activeplayerslist).doPurge();
 		}
 	}
 

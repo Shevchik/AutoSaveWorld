@@ -54,7 +54,7 @@ public class DomainClearTask implements Task {
 	}
 
 	@Override
-	public boolean isHeavyTask() {
+	public boolean doNotQueue() {
 		return false;
 	}
 
@@ -69,7 +69,7 @@ public class DomainClearTask implements Task {
 			owners.removePlayer(name);
 		}
 		region.setOwners(owners);
-		DefaultDomain members = region.getOwners();
+		DefaultDomain members = region.getMembers();
 		for (UUID uuid : uuids) {
 			members.removePlayer(uuid);
 		}

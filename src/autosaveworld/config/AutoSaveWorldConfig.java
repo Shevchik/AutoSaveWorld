@@ -159,8 +159,6 @@ public class AutoSaveWorldConfig implements Config {
 	public boolean purgeLWC = true;
 	@ConfigOption(path = "purge.lwc.deletepurgedblocks")
 	public boolean purgeLWCDelProtectedBlocks = false;
-	@ConfigOption(path = "purge.residence.enabled")
-	public boolean purgeResidence = true;
 	@ConfigOption(path = "purge.residence.regenpurgedresidence")
 	public boolean purgeResidenceRegenArea = false;
 	@ConfigOption(path = "purge.permissions.enabled")

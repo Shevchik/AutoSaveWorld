@@ -19,9 +19,10 @@ package autosaveworld.features.purge.plugins.mywarp;
 
 import java.util.LinkedList;
 
-import me.taylorkelly.mywarp.data.Warp;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.taskqueue.Task;
+import me.taylorkelly.mywarp.util.profile.Profile;
+import me.taylorkelly.mywarp.warp.Warp;
 
 public class MyWarpInvitesClearTask implements Task {
 
@@ -31,30 +32,30 @@ public class MyWarpInvitesClearTask implements Task {
 		this.warp = warp;
 	}
 
-	private LinkedList<String> names = new LinkedList<String>();
+	private LinkedList<Profile> profiles = new LinkedList<Profile>();
 
-	public void add(String name) {
-		names.add(name);
+	public void add(Profile profile) {
+		profiles.add(profile);
 	}
 
 	public boolean hasPlayersToClear() {
-		return !names.isEmpty();
+		return !profiles.isEmpty();
 	}
 
 	public int getPlayerToClearCount() {
-		return names.size();
+		return profiles.size();
 	}
 
 	@Override
-	public boolean isHeavyTask() {
+	public boolean doNotQueue() {
 		return false;
 	}
 
 	@Override
 	public void performTask() {
 		MessageLogger.debug("Cleaning invites for warp "+warp.getName());
-		for (String name : names) {
-			warp.uninvite(name);
+		for (Profile name : profiles) {
+			warp.uninvitePlayer(name);
 		}
 	}
 

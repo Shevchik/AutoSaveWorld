@@ -27,16 +27,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
+import autosaveworld.features.purge.DataPurge;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.SchedulerUtils;
 
-public class VaultPurge {
+public class VaultPurge extends DataPurge {
 
-	public void doPurge(ActivePlayersList activePlayersStorage) {
+	public VaultPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
+		super(config, activeplayerslist);
+	}
 
-		int deleted = 0;
+	public void doPurge() {
+		MessageLogger.debug("Player permissions purge started");
 
 		Permission permission = Bukkit.getServicesManager().getRegistration(Permission.class).getProvider();
 		TaskQueue queue = new TaskQueue(permission);
@@ -47,17 +52,17 @@ public class VaultPurge {
 			String playerfilename = playerfile.getName();
 			if (playerfilename.endsWith(".dat")) {
 				String playerUUID = playerfilename.substring(0, playerfilename.length() - 4);
-				if (!activePlayersStorage.isActiveUUID(playerUUID)) {
+				if (!activeplayerslist.isActiveUUID(playerUUID)) {
 					//delete player permissions
 					queue.add(playerUUID);
-					deleted += 1;
+					incDeleted();
 				}
 			}
 		}
 		// flush the rest of the queue
 		queue.flush();
 
-		MessageLogger.debug("Player permissions purge finished, deleted " + deleted + " players permissions");
+		MessageLogger.debug("Player permissions purge finished, deleted " + getDeleted() + " players permissions");
 	}
 
 	private static class TaskQueue {

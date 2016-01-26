@@ -17,28 +17,31 @@
 
 package autosaveworld.features.purge.plugins.mywarp;
 
-import me.taylorkelly.mywarp.MyWarp;
-import me.taylorkelly.mywarp.data.Warp;
+import me.taylorkelly.mywarp.warp.Warp;
+import me.taylorkelly.mywarp.warp.WarpManager;
+
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.taskqueue.Task;
 
 public class WarpDeleteTask implements Task {
 
+	private WarpManager warpmanager;
 	private Warp warp;
 
-	public WarpDeleteTask(Warp warp) {
+	public WarpDeleteTask(WarpManager warpManager, Warp warp) {
+		this.warpmanager = warpManager;
 		this.warp = warp;
 	}
 
 	@Override
-	public boolean isHeavyTask() {
+	public boolean doNotQueue() {
 		return false;
 	}
 
 	@Override
 	public void performTask() {
 		MessageLogger.debug("Deleting warp "+warp.getName());
-		MyWarp.inst().getWarpManager().deleteWarp(warp);
+		warpmanager.remove(warp);
 	}
 
 }

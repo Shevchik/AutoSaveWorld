@@ -17,7 +17,7 @@
 
 package autosaveworld.features.purge.plugins.permissions;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.anjocaido.groupmanager.GroupManager;
@@ -25,28 +25,34 @@ import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
+import autosaveworld.features.purge.DataPurge;
 
-public class GroupManagerPurge {
+public class GroupManagerPurge extends DataPurge {
 
-	public void doPurge(ActivePlayersList activePlayersStorage) {
-		int deleted = 0;
+	public GroupManagerPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
+		super(config, activeplayerslist);
+	}
+
+	public void doPurge() {
+		MessageLogger.debug("Player permissions purge started");
 
 		GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 		for (OverloadedWorldHolder holder : groupManager.getWorldsHolder().allWorldsDataList()) {
 			Map<String, User> users = holder.getUsers();
-			for (User user : new LinkedList<User>(users.values())) {
+			for (User user : new ArrayList<User>(users.values())) {
 				String userid = user.getUUID();
-				if (!activePlayersStorage.isActiveName(userid) && !activePlayersStorage.isActiveUUID(userid)) {
+				if (!activeplayerslist.isActiveName(userid) && !activeplayerslist.isActiveUUID(userid)) {
 					MessageLogger.debug("Player "+userid+" is inactive. Removing permissions");
 					holder.removeUser(userid);
-					deleted++;
+					incDeleted();
 				}
 			}
 		}
 
-		MessageLogger.debug("Player permissions purge finished, deleted " + deleted + " players permissions");
+		MessageLogger.debug("Player permissions purge finished, deleted " + getDeleted() + " players permissions");
 	}
 
 }

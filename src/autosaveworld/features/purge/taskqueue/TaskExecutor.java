@@ -21,18 +21,18 @@ import java.util.ArrayList;
 
 import autosaveworld.utils.SchedulerUtils;
 
-public class TaskQueue {
+public class TaskExecutor implements AutoCloseable {
 
 	private int tasksLimit;
 
-	public TaskQueue(int tasksLimit) {
+	public TaskExecutor(int tasksLimit) {
 		this.tasksLimit = tasksLimit;
 	}
 
-	protected ArrayList<Task> tasks = new ArrayList<Task>();
+	protected final ArrayList<Task> tasks = new ArrayList<Task>();
 
-	public void addTask(final Task task) {
-		if (task.isHeavyTask()) {
+	public void execute(final Task task) {
+		if (task.doNotQueue()) {
 			SchedulerUtils.callSyncTaskAndWait(
 				new Runnable() {
 					@Override
@@ -49,7 +49,7 @@ public class TaskQueue {
 		}
 	}
 
-	public void flush() {
+	protected void flush() {
 		SchedulerUtils.callSyncTaskAndWait(
 			new Runnable() {
 				@Override
@@ -61,6 +61,11 @@ public class TaskQueue {
 				}
 			}
 		);
+	}
+
+	@Override
+	public void close() {
+		flush();
 	}
 
 }

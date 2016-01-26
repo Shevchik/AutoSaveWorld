@@ -31,4 +31,23 @@ public abstract class DataPurge {
 
 	public abstract void doPurge();
 
+	private int deleted;
+	private int cleaned;
+
+	protected void incDeleted() {
+		deleted++;
+	}
+
+	protected void incCleaned() {
+		cleaned++;
+	}
+
+	protected int getDeleted() {
+		return deleted;
+	}
+
+	protected int getCleaned() {
+		return cleaned;
+	}
+
 }

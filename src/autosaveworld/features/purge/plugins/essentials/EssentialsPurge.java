@@ -20,22 +20,18 @@ public class EssentialsPurge extends DataPurge {
 
 	@Override
 	public void doPurge() {
-
 		MessageLogger.debug("Essentials purge started");
 
-		int deleted = 0;
-
-		Essentials ess = JavaPlugin.getPlugin(Essentials.class);
-		UserMap map = ess.getUserMap();
+		UserMap map = JavaPlugin.getPlugin(Essentials.class).getUserMap();
 		for (UUID uuid : map.getAllUniqueUsers()) {
 			if (!activeplayerslist.isActiveUUID(uuid)) {
 				MessageLogger.debug("Essentials user "+uuid+" is inactive. Removing entry and file.");
 				map.getUser(uuid).reset();
-				deleted++;
+				incDeleted();
 			}
 		}
 
-		MessageLogger.debug("Essentials purge finished, removed "+deleted+" inactive users");
+		MessageLogger.debug("Essentials purge finished, removed "+getDeleted()+" users");
 	}
 
 }

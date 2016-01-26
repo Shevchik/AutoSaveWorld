@@ -17,7 +17,7 @@
 
 package autosaveworld.features.purge.plugins.wg;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -27,10 +27,9 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
-import autosaveworld.features.purge.taskqueue.TaskQueue;
+import autosaveworld.features.purge.taskqueue.TaskExecutor;
 
 import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -43,63 +42,58 @@ public class WGPurge extends DataPurge {
 
 	@Override
 	public void doPurge() {
-
 		MessageLogger.debug("WG purge started");
 
-		WorldGuardPlugin wg = WGBukkit.getPlugin();
-
-		int deletedrg = 0;
-
-		TaskQueue queue = new TaskQueue(30);
-		for (final World w : Bukkit.getWorlds()) {
-			MessageLogger.debug("Checking WG protections in world " + w.getName());
-			final RegionManager m = wg.getRegionManager(w);
-			LinkedList<ProtectedRegion> regions = new LinkedList<ProtectedRegion>(m.getRegions().values());
-			for (final ProtectedRegion rg : regions) {
-				MessageLogger.debug("Checking region " + rg.getId());
-				// skip region with zero owners and members
-				if (!rg.hasMembersOrOwners()) {
-					continue;
-				}
-				// check players
-				DomainClearTask domainClearTask = new DomainClearTask(rg);
-				for (DefaultDomain domain : new DefaultDomain[] {rg.getOwners(), rg.getMembers()}) {
-					for (String playerName : domain.getPlayers()) {
-						if (!activeplayerslist.isActiveName(playerName)) {
-							MessageLogger.debug(playerName + " is inactive");
-							domainClearTask.add(playerName);
+		try (TaskExecutor queue = new TaskExecutor(30)) {
+			for (World w : Bukkit.getWorlds()) {
+				MessageLogger.debug("Checking WG protections in world " + w.getName());
+				RegionManager regionmanager = WGBukkit.getRegionManager(w);
+				ArrayList<ProtectedRegion> regions = new ArrayList<ProtectedRegion>(regionmanager.getRegions().values());
+				for (ProtectedRegion rg : regions) {
+					MessageLogger.debug("Checking region " + rg.getId());
+					// skip region with zero owners and members
+					if (!rg.hasMembersOrOwners()) {
+						continue;
+					}
+					// check players
+					DomainClearTask domainClearTask = new DomainClearTask(rg);
+					for (DefaultDomain domain : new DefaultDomain[] {rg.getOwners(), rg.getMembers()}) {
+						for (String playerName : domain.getPlayers()) {
+							if (!activeplayerslist.isActiveName(playerName)) {
+								MessageLogger.debug(playerName + " is inactive");
+								domainClearTask.add(playerName);
+							}
+						}
+						for (UUID playerUUID : domain.getUniqueIds()) {
+							if (!activeplayerslist.isActiveUUID(playerUUID)) {
+								MessageLogger.debug(playerUUID + " is inactive");
+								domainClearTask.add(playerUUID);
+							}
 						}
 					}
-					for (UUID playerUUID : domain.getUniqueIds()) {
-						if (!activeplayerslist.isActiveUUID(playerUUID)) {
-							MessageLogger.debug(playerUUID + " is inactive");
-							domainClearTask.add(playerUUID);
+					// remove region if all owners and members are inactive
+					if (domainClearTask.getPlayersToClearCount() == (rg.getOwners().size() + rg.getMembers().size())) {
+						// regen region if needed
+						if (config.purgeWGRegenRg) {
+							RegionRegenTask regenTask = new RegionRegenTask(w, rg, config.purgeWGNoregenOverlap);
+							queue.execute(regenTask);
 						}
+						// delete region
+						RegionDeleteTask deleteTask = new RegionDeleteTask(w, rg);
+						queue.execute(deleteTask);
+						incDeleted();
+						continue;
 					}
-				}
-				// remove region if all owners and members are inactive
-				if (domainClearTask.getPlayersToClearCount() == (rg.getOwners().size() + rg.getMembers().size())) {
-					// regen region if needed
-					if (config.purgeWGRegenRg) {
-						RegionRegenTask regenTask = new RegionRegenTask(w, rg, config.purgeWGNoregenOverlap);
-						queue.addTask(regenTask);
+					// cleanup region default domain if we have something to cleanup
+					if (domainClearTask.hasPlayersToClear()) {
+						queue.execute(domainClearTask);
+						incCleaned();
 					}
-					// delete region
-					RegionDeleteTask deleteTask = new RegionDeleteTask(w, rg);
-					queue.addTask(deleteTask);
-					deletedrg += 1;
-					continue;
-				}
-				// cleanup region default domain if we have something to cleanup
-				if (domainClearTask.hasPlayersToClear()) {
-					queue.addTask(domainClearTask);
 				}
 			}
 		}
-		// flush the rest of the queue
-		queue.flush();
 
-		MessageLogger.debug("WG purge finished, deleted " + deletedrg + " inactive regions");
+		MessageLogger.debug("WG purge finished, deleted " + getDeleted() + " regions, cleaned "+getCleaned()+ "region");
 	}
 
 }

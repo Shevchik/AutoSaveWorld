@@ -23,12 +23,11 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
-import autosaveworld.features.purge.taskqueue.TaskQueue;
+import autosaveworld.features.purge.taskqueue.TaskExecutor;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Permission;
 import com.griefcraft.model.Protection;
-import com.griefcraft.model.Protection.Type;
 
 public class LWCPurge extends DataPurge {
 
@@ -38,44 +37,39 @@ public class LWCPurge extends DataPurge {
 
 	@Override
 	public void doPurge() {
-
 		MessageLogger.debug("LWC purge started");
 
-		int deleted = 0;
-
-		TaskQueue queue = new TaskQueue(30);
-		List<Protection> protections = LWC.getInstance().getPhysicalDatabase().loadProtections();
-		for (final Protection pr : protections) {
-			LWCMembersClearTask clearTask = new LWCMembersClearTask(pr);
-			if (pr.getType() == Type.PRIVATE) {
+		try (TaskExecutor queue = new TaskExecutor(30)) {
+			List<Protection> protections = LWC.getInstance().getPhysicalDatabase().loadProtections();
+			for (final Protection pr : protections) {
+				LWCMembersClearTask clearTask = new LWCMembersClearTask(pr);
 				for (Permission permission : pr.getPermissions()) {
 					if (!activeplayerslist.isActiveName(permission.getName()) && !activeplayerslist.isActiveUUID(permission.getName())) {
 						clearTask.add(permission);
 					}
 				}
-			}
-			if (!activeplayerslist.isActiveName(pr.getOwner()) && !activeplayerslist.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
-				MessageLogger.debug("Protection owner "+pr.getOwner()+" is inactive");
-				// regen block if needed
-				if (config.purgeLWCDelProtectedBlocks) {
-					LWCRegenTask regenTask = new LWCRegenTask(pr);
-					queue.addTask(regenTask);
+				if (!activeplayerslist.isActiveName(pr.getOwner()) && !activeplayerslist.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
+					MessageLogger.debug("Protection owner "+pr.getOwner()+" is inactive");
+					// regen block if needed
+					if (config.purgeLWCDelProtectedBlocks) {
+						LWCRegenTask regenTask = new LWCRegenTask(pr);
+						queue.execute(regenTask);
+					}
+					// delete protection
+					LWCDeleteTask deleteTask = new LWCDeleteTask(pr);
+					queue.execute(deleteTask);
+					incDeleted();
+					continue;
 				}
-				// delete protection
-				LWCDeleteTask deleteTask = new LWCDeleteTask(pr);
-				queue.addTask(deleteTask);
-
-				deleted++;
-			}
-			// cleanup protection members if needed
-			if (clearTask.hasPlayersToClear()) {
-				queue.addTask(clearTask);
+				// cleanup protection members if needed
+				if (clearTask.hasPlayersToClear()) {
+					queue.execute(clearTask);
+					incCleaned();
+				}
 			}
 		}
-		// flush the rest of the queue
-		queue.flush();
 
-		MessageLogger.debug("LWC purge finished, deleted " + deleted + " inactive protections");
+		MessageLogger.debug("LWC purge finished, deleted " + getDeleted() + " protections, cleaned "+ getCleaned() + " protections");
 	}
 
 }

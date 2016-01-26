@@ -47,7 +47,7 @@ public class LWCMembersClearTask implements Task {
 	}
 
 	@Override
-	public boolean isHeavyTask() {
+	public boolean doNotQueue() {
 		return false;
 	}
 

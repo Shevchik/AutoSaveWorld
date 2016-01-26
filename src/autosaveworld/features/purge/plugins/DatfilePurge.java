@@ -34,26 +34,24 @@ public class DatfilePurge extends DataPurge {
 	}
 
 	public void doPurge() {
-
 		MessageLogger.debug("Playre .dat file purge started");
 
-		int deleted = 0;
-		String worldfoldername = Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath();
-		File playersdatfolder = new File(worldfoldername + File.separator + "playerdata" + File.separator);
-		File playersstatsfolder = new File(worldfoldername + File.separator + "stats" + File.separator);
+		File worldfolder = Bukkit.getWorlds().get(0).getWorldFolder();
+		File playersdatfolder = FileUtils.buildFile(worldfolder, "playerdata");
+		File playersstatsfolder = FileUtils.buildFile(worldfolder, "stats");
 		for (File playerfile : FileUtils.safeListFiles(playersdatfolder)) {
 			if (playerfile.getName().endsWith(".dat")) {
 				String playeruuid = playerfile.getName().substring(0, playerfile.getName().length() - 4);
 				if (!activeplayerslist.isActiveUUID(playeruuid)) {
 					MessageLogger.debug(playeruuid + " is inactive. Removing dat file");
 					playerfile.delete();
-					new File(playersstatsfolder, playerfile.getName()).delete();
-					deleted += 1;
+					FileUtils.buildFile(playersstatsfolder, playerfile.getName()).delete();
+					incDeleted();
 				}
 			}
 		}
 
-		MessageLogger.debug("Player .dat purge finished, deleted " + deleted + " player .dat files");
+		MessageLogger.debug("Player .dat purge finished, deleted " + getDeleted() + " player .dat files");
 	}
 
 }

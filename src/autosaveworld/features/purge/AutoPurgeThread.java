@@ -31,7 +31,6 @@ import autosaveworld.features.purge.plugins.essentials.EssentialsPurge;
 import autosaveworld.features.purge.plugins.lwc.LWCPurge;
 import autosaveworld.features.purge.plugins.mywarp.MyWarpPurge;
 import autosaveworld.features.purge.plugins.permissions.PermissionsPurge;
-import autosaveworld.features.purge.plugins.residence.ResidencePurge;
 import autosaveworld.features.purge.plugins.wg.WGPurge;
 
 public class AutoPurgeThread extends IntervalTaskThread {
@@ -61,7 +60,6 @@ public class AutoPurgeThread extends IntervalTaskThread {
 	}
 
 	public void performPurge() {
-
 		MessageLogger.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
 
 		MessageLogger.debug("Purge started");
@@ -80,10 +78,6 @@ public class AutoPurgeThread extends IntervalTaskThread {
 		if ((pm.getPlugin("LWC") != null) && config.purgeLWC) {
 			MessageLogger.debug("LWC found, adding to purge list");
 			purges.add(new LWCPurge(config, activelist));
-		}
-		if ((pm.getPlugin("Residence") != null) && config.purgeResidence) {
-			MessageLogger.debug("Residence found, adding to purge list");
-			purges.add(new ResidencePurge(config, activelist));
 		}
 		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
 			MessageLogger.debug("MyWarp found, adding to purge list");

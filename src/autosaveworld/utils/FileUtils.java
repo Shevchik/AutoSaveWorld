@@ -30,6 +30,14 @@ public class FileUtils {
 	public static void init() {
 	}
 
+	public static File buildFile(File file, String... childs) {
+		File result = file;
+		for (String child : childs) {
+			result = new File(result, child);
+		}
+		return result;
+	}
+
 	public static void deleteDirectory(File file) throws IOException {
 		if (!file.exists()) {
 			return;

@@ -32,7 +32,7 @@ public class LWCRegenTask implements Task {
 	}
 
 	@Override
-	public boolean isHeavyTask() {
+	public boolean doNotQueue() {
 		return false;
 	}
 
