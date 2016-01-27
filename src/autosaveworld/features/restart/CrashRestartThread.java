@@ -122,6 +122,7 @@ public class CrashRestartThread extends Thread {
 					Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 					for (int i = plugins.length - 1; i >= 0; i--) {
 						try {
+							log.log(Level.SEVERE, "Disabling plugin "+plugins[i].getName());
 							Bukkit.getPluginManager().disablePlugin(plugins[i]);
 						} catch (Throwable e) {
 							e.printStackTrace();
