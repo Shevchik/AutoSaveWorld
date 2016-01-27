@@ -55,7 +55,7 @@ public class MyWarpPurge extends DataPurge {
 		}
 
 		try (TaskExecutor queue = new TaskExecutor(80)) {
-			List<Warp> warps = mywarp.getWarpManager().getMatchingWarps("*", new Predicate<Warp>() {
+			List<Warp> warps = mywarp.getWarpManager().getMatchingWarps("", new Predicate<Warp>() {
 				@Override
 				public boolean apply(Warp warp) {
 					return true;
@@ -71,7 +71,7 @@ public class MyWarpPurge extends DataPurge {
 				}
 				// delete warp if owner and members are inactive
 				if (!activeplayerslist.isActiveUUID(warp.getCreator().getUniqueId()) && (invitesClearTask.getPlayerToClearCount() == warp.getInvitedPlayers().size())) {
-					MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
+					MessageLogger.debug("Warp owner "+warp.getCreator().getUniqueId()+" is inactive");
 					// delete warp
 					MyWapWarpDeleteTask deleteTask = new MyWapWarpDeleteTask(mywarp.getWarpManager(), warp);
 					queue.execute(deleteTask);
