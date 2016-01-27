@@ -34,7 +34,7 @@ public class DatfilePurge extends DataPurge {
 	}
 
 	public void doPurge() {
-		MessageLogger.debug("Playre .dat file purge started");
+		MessageLogger.debug("Player .dat file purge started");
 
 		File worldfolder = Bukkit.getWorlds().get(0).getWorldFolder();
 		File playersdatfolder = FileUtils.buildFile(worldfolder, "playerdata");
