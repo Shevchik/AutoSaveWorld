@@ -20,15 +20,14 @@ package autosaveworld.features.purge.plugins.mywarp;
 import me.taylorkelly.mywarp.warp.Warp;
 import me.taylorkelly.mywarp.warp.WarpManager;
 
-import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.taskqueue.Task;
 
-public class WarpDeleteTask implements Task {
+public class MyWapWarpDeleteTask implements Task {
 
 	private WarpManager warpmanager;
 	private Warp warp;
 
-	public WarpDeleteTask(WarpManager warpManager, Warp warp) {
+	public MyWapWarpDeleteTask(WarpManager warpManager, Warp warp) {
 		this.warpmanager = warpManager;
 		this.warp = warp;
 	}
@@ -40,7 +39,6 @@ public class WarpDeleteTask implements Task {
 
 	@Override
 	public void performTask() {
-		MessageLogger.debug("Deleting warp "+warp.getName());
 		warpmanager.remove(warp);
 	}
 

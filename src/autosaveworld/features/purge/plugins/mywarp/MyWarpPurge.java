@@ -73,7 +73,7 @@ public class MyWarpPurge extends DataPurge {
 				if (!activeplayerslist.isActiveUUID(warp.getCreator().getUniqueId()) && (invitesClearTask.getPlayerToClearCount() == warp.getInvitedPlayers().size())) {
 					MessageLogger.debug("Warp owner "+warp.getCreator()+" is inactive");
 					// delete warp
-					WarpDeleteTask deleteTask = new WarpDeleteTask(mywarp.getWarpManager(), warp);
+					MyWapWarpDeleteTask deleteTask = new MyWapWarpDeleteTask(mywarp.getWarpManager(), warp);
 					queue.execute(deleteTask);
 					incDeleted();
 					continue;
