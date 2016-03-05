@@ -175,7 +175,11 @@ public class AutoSaveThread extends IntervalTaskThread {
 			// invoke saveWorldData
 			ReflectionUtils.getMethod(dataManager.getClass(), NMSNames.getSaveWorldDataMethodName(), 2).invoke(dataManager, worldData, null);
 			// invoke saveChunks
-			ReflectionUtils.getMethod(chunkProvider.getClass(), NMSNames.getSaveChunksMethodName(), 2).invoke(chunkProvider, true, null);
+			try {
+				ReflectionUtils.getMethod(chunkProvider.getClass(), NMSNames.getSaveChunksMethodName(), 2).invoke(chunkProvider, true, null);
+			} catch (RuntimeException e) {
+				ReflectionUtils.getMethod(chunkProvider.getClass(), "a", 1).invoke(chunkProvider, true);
+			}
 		} catch (Throwable e) {
 			MessageLogger.warn("failed to workaround stucture saving, saving world using normal methods");
 			e.printStackTrace();
