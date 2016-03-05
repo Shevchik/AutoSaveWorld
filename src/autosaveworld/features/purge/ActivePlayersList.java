@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.BukkitUtils;
 
 public class ActivePlayersList {
 
@@ -41,7 +42,7 @@ public class ActivePlayersList {
 	public void calculateActivePlayers(long awaytime) {
 		// fill lists
 		// add online players
-		for (Player player : Bukkit.getOnlinePlayers()) {
+		for (Player player : BukkitUtils.getOnlinePlayers()) {
 			String uuidstring = player.getUniqueId().toString().replace("-", "");
 			MessageLogger.debug("Adding online player " + uuidstring + " to active list");
 			plactiveUUID.add(uuidstring);

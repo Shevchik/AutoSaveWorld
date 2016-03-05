@@ -39,6 +39,7 @@ import autosaveworld.features.worldregen.plugins.WorldGuardDataProvider;
 import autosaveworld.features.worldregen.storage.AnvilRegion;
 import autosaveworld.features.worldregen.storage.Coord;
 import autosaveworld.features.worldregen.storage.WorldMap;
+import autosaveworld.utils.BukkitUtils;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.SchedulerUtils;
@@ -67,12 +68,11 @@ public class WorldRegenThread extends Thread {
 
 	private void doWorldRegen() {
 
-		// kick all player and deny them from join
 		ListenerUtils.registerListener(new AntiJoinListener(configmsg));
 		SchedulerUtils.callSyncTaskAndWait(new Runnable() {
 			@Override
 			public void run() {
-				for (Player p : Bukkit.getOnlinePlayers()) {
+				for (Player p : BukkitUtils.getOnlinePlayers()) {
 					MessageLogger.kickPlayer(p, configmsg.messageWorldRegenKick);
 				}
 			}
