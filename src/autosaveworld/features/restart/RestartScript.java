@@ -83,7 +83,7 @@ public class RestartScript {
 	}
 
 	private static boolean isWindows() {
-		return File.pathSeparatorChar == '\\';
+		return File.separatorChar == '\\';
 	}
 
 	private static String getPID() {
