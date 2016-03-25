@@ -27,6 +27,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.restart.RestartScript.PlatformNotSupportedException;
 
 public class RestartShutdownHook extends Thread {
 
@@ -58,7 +59,7 @@ public class RestartShutdownHook extends Thread {
 			return Collections.singletonList(RestartScript.createScript(
 				restartScriptExists() ? Collections.singletonList(restartscript.getAbsolutePath()) : getJavaLaunchCommand()
 			).getAbsolutePath());
-		} catch (IOException e) {
+		} catch (IOException | PlatformNotSupportedException e) {
 			if (restartScriptExists()) {
 				return Collections.singletonList(restartscript.getAbsolutePath());
 			} else {
