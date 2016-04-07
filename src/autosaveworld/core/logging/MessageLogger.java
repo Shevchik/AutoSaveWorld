@@ -30,6 +30,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.utils.BukkitUtils;
 
 public class MessageLogger {
 
@@ -51,10 +52,11 @@ public class MessageLogger {
 
 	public static void broadcast(String message, boolean broadcast) {
 		if (!message.equals("") && broadcast) {
-			try {
-				Bukkit.broadcastMessage(formattingCodesParser.parseFormattingCodes(message));
-			} catch (Throwable t) {
+			message = formattingCodesParser.parseFormattingCodes(message);
+			for (Player player : BukkitUtils.getOnlinePlayers()) {
+				player.sendMessage(message);
 			}
+			Bukkit.getConsoleSender().sendMessage(message);
 		}
 	}
 
