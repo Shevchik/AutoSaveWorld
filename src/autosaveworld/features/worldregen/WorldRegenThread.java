@@ -111,7 +111,7 @@ public class WorldRegenThread extends Thread {
 			return;
 		}
 
-		final WorldMap preservechunks = new WorldMap();
+		final WorldMap preservechunks = new WorldMap(0);
 		for (DataProvider provider : providers) {
 			for (Coord chunkCoord : provider.getChunks()) {
 				preservechunks.addChunk(chunkCoord);

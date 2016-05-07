@@ -26,7 +26,24 @@ public class WorldMap {
 
 	private final HashMap<Coord, Set<Coord>> map = new HashMap<Coord, Set<Coord>>(200);
 
+	private int growRadius;
+
+	public WorldMap(int growRadius) {
+		this.growRadius = growRadius;
+	}
+
 	public void addChunk(Coord chunkCoord) {
+		addChunk0(chunkCoord);
+		if (growRadius > 0) {
+			for (int xAdd = -growRadius; xAdd <= growRadius; xAdd++) {
+				for (int zAdd = growRadius; zAdd <= growRadius; zAdd++) {
+					addChunk0(new Coord(chunkCoord.getX() + xAdd, chunkCoord.getZ() + zAdd));
+				}
+			}
+		}
+	}
+
+	private void addChunk0(Coord chunkCoord) {
 		getChunks0(Coord.getRegionCoord(chunkCoord.getX()), Coord.getRegionCoord(chunkCoord.getZ()))
 		.add(new Coord(Coord.getLocalCoord(chunkCoord.getX()), Coord.getLocalCoord(chunkCoord.getZ())));
 	}
