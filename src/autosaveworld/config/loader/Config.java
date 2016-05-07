@@ -17,12 +17,10 @@
 
 package autosaveworld.config.loader;
 
-import org.bukkit.configuration.file.YamlConfiguration;
+import java.io.File;
 
 public interface Config {
 
-	public YamlConfiguration loadConfig();
-
-	public void saveConfig(YamlConfiguration config);
+	public File getFile();
 
 }

@@ -28,7 +28,7 @@ public class ConfigLoader {
 
 	public static void load(Config config) {
 		try {
-			YamlConfiguration yconfig = config.loadConfig();
+			YamlConfiguration yconfig = YamlConfiguration.loadConfiguration(config.getFile());
 			for (Field field : config.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				ConfigOption option = field.getAnnotation(ConfigOption.class);
@@ -65,7 +65,7 @@ public class ConfigLoader {
 					yconfig.set(option.path(), transform.toYaml(field.get(config)));
 				}
 			}
-			config.saveConfig(yconfig);
+			yconfig.save(config.getFile());
 		} catch (Throwable t) {
 			t.printStackTrace();
 			MessageLogger.debug("Unable to save config "+config.getClass().getSimpleName());

@@ -18,13 +18,10 @@
 package autosaveworld.config;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import autosaveworld.config.loader.Config;
 import autosaveworld.config.loader.ConfigOption;
@@ -227,16 +224,8 @@ public class AutoSaveWorldConfig implements Config {
 	public boolean networkWatcherInterruptMainThreadNetAcc = false;
 
 	@Override
-	public YamlConfiguration loadConfig() {
-		return YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigPath()));
-	}
-
-	@Override
-	public void saveConfig(YamlConfiguration config) {
-		try {
-			config.save(new File(GlobalConstants.getConfigPath()));
-		} catch (IOException e) {
-		}
+	public File getFile() {
+		return new File(GlobalConstants.getConfigPath());
 	}
 
 }

@@ -18,9 +18,6 @@
 package autosaveworld.config;
 
 import java.io.File;
-import java.io.IOException;
-
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import autosaveworld.config.loader.Config;
 import autosaveworld.config.loader.ConfigOption;
@@ -50,16 +47,8 @@ public class AutoSaveWorldConfigMSG implements Config {
 	public String messageInsufficientPermissions = "&cYou do not have access to that command.";
 
 	@Override
-	public YamlConfiguration loadConfig() {
-		return YamlConfiguration.loadConfiguration(new File(GlobalConstants.getConfigMSGPath()));
-	}
-
-	@Override
-	public void saveConfig(YamlConfiguration config) {
-		try {
-			config.save(new File(GlobalConstants.getConfigMSGPath()));
-		} catch (IOException e) {
-		}
+	public File getFile() {
+		return new File(GlobalConstants.getConfigMSGPath());
 	}
 
 }
