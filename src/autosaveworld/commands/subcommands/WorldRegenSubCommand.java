@@ -17,7 +17,9 @@
 
 package autosaveworld.commands.subcommands;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -52,23 +54,30 @@ public class WorldRegenSubCommand implements ISubCommand {
 			MessageLogger.sendMessage(sender, "This world doesn't exist");
 			return;
 		}
-		new WorldRegenThread(plugin, config, configmsg, args[0]).start();
+		if (!new File(args[1]).exists()) {
+			MessageLogger.sendMessage(sender, "This folder doesn't exist");
+		}
+		new WorldRegenThread(plugin, config, configmsg, args[0], args[1]).start();
 	}
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		ArrayList<String> result = new ArrayList<String>();
-		for (World world : Bukkit.getWorlds()) {
-			if (world.getName().startsWith(args[0])) {
-				result.add(world.getName());
+		if (args.length == 1) {
+			ArrayList<String> result = new ArrayList<String>();
+			for (World world : Bukkit.getWorlds()) {
+				if (world.getName().startsWith(args[0])) {
+					result.add(world.getName());
+				}
 			}
+			return result;
+		} else {
+			return Collections.emptyList();
 		}
-		return result;
 	}
 
 	@Override
 	public int getMinArguments() {
-		return 1;
+		return 2;
 	}
 
 }

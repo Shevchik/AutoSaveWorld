@@ -50,12 +50,14 @@ public class WorldRegenThread extends Thread {
 	private AutoSaveWorldConfig config;
 	private AutoSaveWorldConfigMSG configmsg;
 	private String worldtoregen;
+	private String worldRegionFolder;
 
-	public WorldRegenThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, String worldtoregen) {
+	public WorldRegenThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, String worldtoregen, String worldRegionFolder) {
 		this.plugin = plugin;
 		this.config = config;
 		this.configmsg = configmsg;
 		this.worldtoregen = worldtoregen;
+		this.worldRegionFolder = worldRegionFolder;
 	}
 
 	@Override
@@ -121,7 +123,7 @@ public class WorldRegenThread extends Thread {
 		WorldRegenTask clearchunks = new WorldRegenTask() {
 			@Override
 			public void run() throws Throwable {
-				File regionfolder = new File(wtoregen.getWorldFolder(), "region");
+				File regionfolder = new File(worldRegionFolder);
 				for (File regionfile : FileUtils.safeListFiles(regionfolder)) {
 					MessageLogger.printOutDebug("Processing regionfile "+regionfile.getName());
 					try {

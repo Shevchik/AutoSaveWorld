@@ -37,7 +37,7 @@ public class HelpSubCommand implements ISubCommand {
 		MessageLogger.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
 		MessageLogger.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
 		MessageLogger.sendMessage(sender, "&f/asw forcerestart&7 - &3Restarts server without countdown");
-		MessageLogger.sendMessage(sender, "&f/asw regenworld {world}&7 - &3Regenerates world");
+		MessageLogger.sendMessage(sender, "&f/asw regenworld {world} {worldregionsfolder}&7 - &3Regenerates world");
 		MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
 		MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
 		MessageLogger.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Unload plugin {pluginname} and then loads it");
