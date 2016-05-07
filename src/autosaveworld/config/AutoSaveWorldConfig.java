@@ -207,6 +207,8 @@ public class AutoSaveWorldConfig implements Config {
 	// worldregen
 	@ConfigOption(path = "worldregen.newseed")
 	public boolean worldRegenRemoveSeedData = false;
+	@ConfigOption(path = "worldregen.preserveradius")
+	public int worldRegenPreserveRadius = 0;
 	@ConfigOption(path = "worldregen.savewg")
 	public boolean worldRegenSaveWG = true;
 	@ConfigOption(path = "worldregen.savefactions")

@@ -36,7 +36,7 @@ public class WorldMap {
 		addChunk0(chunkCoord);
 		if (growRadius > 0) {
 			for (int xAdd = -growRadius; xAdd <= growRadius; xAdd++) {
-				for (int zAdd = growRadius; zAdd <= growRadius; zAdd++) {
+				for (int zAdd = -growRadius; zAdd <= growRadius; zAdd++) {
 					addChunk0(new Coord(chunkCoord.getX() + xAdd, chunkCoord.getZ() + zAdd));
 				}
 			}
