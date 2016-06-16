@@ -17,6 +17,7 @@
 
 package autosaveworld.config.loader;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,7 +29,11 @@ public class ConfigLoader {
 
 	public static void load(Config config) {
 		try {
-			YamlConfiguration yconfig = YamlConfiguration.loadConfiguration(config.getFile());
+			YamlConfiguration yconfig = new YamlConfiguration();
+			try {
+				yconfig.load(config.getFile());
+			} catch (FileNotFoundException e) {
+			}
 			for (Field field : config.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				ConfigOption option = field.getAnnotation(ConfigOption.class);
@@ -49,8 +54,8 @@ public class ConfigLoader {
 				}
 			}
 		} catch (Throwable t) {
+			MessageLogger.warn("Unable to load config "+config.getClass().getSimpleName() + ", defaulting to already configured or default values");
 			t.printStackTrace();
-			MessageLogger.debug("Unable to load config "+config.getClass().getSimpleName());
 		}
 	}
 
@@ -67,8 +72,8 @@ public class ConfigLoader {
 			}
 			yconfig.save(config.getFile());
 		} catch (Throwable t) {
+			MessageLogger.warn("Unable to save config "+config.getClass().getSimpleName());
 			t.printStackTrace();
-			MessageLogger.debug("Unable to save config "+config.getClass().getSimpleName());
 		}
 	}
 
