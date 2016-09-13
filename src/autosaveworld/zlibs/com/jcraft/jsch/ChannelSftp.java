@@ -1314,7 +1314,7 @@ public class ChannelSftp extends ChannelSession {
 		}
 	}
 
-	private boolean isRemoteDir(String path) {
+	public boolean isRemoteDir(String path) {
 		try {
 			sendSTAT(Util.str2byte(path, fEncoding));
 
