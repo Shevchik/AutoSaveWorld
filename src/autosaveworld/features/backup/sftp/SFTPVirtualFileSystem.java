@@ -47,7 +47,7 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public void createDirectory(String dirname) throws IOException {
 		try {
-			if (getFiles().contains(dirname)) {
+			if (getFiles().contains(dirname) || sftpclient.isRemoteDir(dirname)) {
 				return;
 			}
 			sftpclient.mkdir(dirname);
