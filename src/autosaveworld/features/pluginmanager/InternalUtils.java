@@ -23,13 +23,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLClassLoader;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -38,7 +34,6 @@ import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
 
@@ -50,11 +45,12 @@ public class InternalUtils {
 	protected void unloadPlugin(Plugin plugin) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException, InterruptedException, NoSuchMethodException, InvocationTargetException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
 		Class<? extends PluginManager> managerclass = pluginmanager.getClass();
+		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
 		// disable plugin
 		pluginmanager.disablePlugin(plugin);
 		// kill threads if any
 		for (Thread thread : Thread.getAllStackTraces().keySet()) {
-			if (thread.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
+			if (thread.getClass().getClassLoader() == pluginClassLoader) {
 				thread.interrupt();
 				thread.join(2000);
 				if (thread.isAlive()) {
@@ -75,12 +71,11 @@ public class InternalUtils {
 				if (plugincommand.getPlugin().getName().equalsIgnoreCase(plugin.getName())) {
 					removeCommand(commandMap, commands, cmd);
 				}
-			} else if (cmd.getClass().getClassLoader() == plugin.getClass().getClassLoader()) {
+			} else if (cmd.getClass().getClassLoader() == pluginClassLoader) {
 				removeCommand(commandMap, commands, cmd);
 			}
 		}
 		// close file in url classloader
-		ClassLoader pluginClassLoader = plugin.getClass().getClassLoader();
 		if (pluginClassLoader instanceof URLClassLoader) {
 			URLClassLoader urlloader = (URLClassLoader) pluginClassLoader;
 			urlloader.close();
@@ -100,28 +95,8 @@ public class InternalUtils {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void loadPlugin(File pluginfile) throws UnknownDependencyException, InvalidPluginException, InvalidDescriptionException, IllegalArgumentException, IllegalAccessException {
 		PluginManager pluginmanager = Bukkit.getPluginManager();
-		// cleanup loaders in case some shit happened
-		try {
-			HashSet<String> pluginNames = new HashSet<String>();
-			for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-				pluginNames.add(plugin.getName());
-			}
-			for (PluginLoader loader : ((Map<Pattern, PluginLoader>) ReflectionUtils.getField(pluginmanager.getClass(), "fileAssociations").get(pluginmanager)).values()) {
-				Map<String, ClassLoader> classloaders = (Map<String, ClassLoader>) ReflectionUtils.getField(loader.getClass(), "loaders").get(loader);
-				Iterator<Entry<String, ClassLoader>> iterator = classloaders.entrySet().iterator();
-				while (iterator.hasNext()) {
-					Entry<String, ClassLoader> entry = iterator.next();
-					if (!pluginNames.contains(entry.getKey())) {
-						iterator.remove();
-					}
-				}
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
 		// load plugin
 		Plugin plugin = pluginmanager.loadPlugin(pluginfile);
 		// enable plugin
