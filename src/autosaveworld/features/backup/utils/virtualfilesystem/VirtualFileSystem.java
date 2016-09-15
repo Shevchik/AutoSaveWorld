@@ -20,28 +20,51 @@ package autosaveworld.features.backup.utils.virtualfilesystem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
+
+import autosaveworld.utils.FileUtils;
 
 public abstract class VirtualFileSystem {
 
-	public void createAndChangeDirectory(String dirname) throws IOException {
+	public void createAndEnterDirectory(String dirname) throws IOException {
 		createDirectory(dirname);
-		changeDirectory(dirname);
+		enterDirectory(dirname);
 	}
 
-	public abstract void changeDirectory(String dirname) throws IOException;
+	public void enterDirectory(String dirname) throws IOException {
+		for (String path : FileUtils.splitPath(dirname)) {
+			enterDirectory0(path);
+		}
+	}
 
-	public abstract void createDirectory(String dirname) throws IOException;
+	protected abstract void enterDirectory0(String dirname) throws IOException;
 
-	public abstract void changeToParentDirectiry() throws IOException;
+	public void createDirectory(String dirname) throws IOException {
+		int createdCount = 0;
+		for (String path : FileUtils.splitPath(dirname)) {
+			if (getEntries().contains(path)) {
+				break;
+			}
+			createDirectory0(path);
+			enterDirectory0(dirname);
+			createdCount++;
+		}
+		while (createdCount-- > 0) {
+			leaveDirectory();
+		}
+	}
+
+	protected abstract void createDirectory0(String dirname) throws IOException;
+
+	public abstract void leaveDirectory() throws IOException;
 
 	public void deleteDirectoryRecursive(String dirname) throws IOException {
 		if (isDirectory(dirname)) {
-			changeDirectory(dirname);
-			for (String file : getFiles()) {
+			enterDirectory(dirname);
+			for (String file : getEntries()) {
 				deleteDirectoryRecursive(file);
 			}
-			changeToParentDirectiry();
+			leaveDirectory();
 			deleteDirectory(dirname);
 		} else {
 			deleteFile(dirname);
@@ -54,8 +77,8 @@ public abstract class VirtualFileSystem {
 
 	public abstract void deleteFile(String name) throws IOException;
 
-	public List<String> getFiles() throws IOException {
-		List<String> files = getFiles0();
+	public Set<String> getEntries() throws IOException {
+		Set<String> files = getEntries0();
 		Iterator<String> iterator = files.iterator();
 		while (iterator.hasNext()) {
 			String name = iterator.next();
@@ -66,7 +89,7 @@ public abstract class VirtualFileSystem {
 		return files;
 	}
 
-	protected abstract List<String> getFiles0() throws IOException;
+	protected abstract Set<String> getEntries0() throws IOException;
 
 	public abstract void createFile(String name, InputStream inputsteam) throws IOException;
 

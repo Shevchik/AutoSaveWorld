@@ -19,9 +19,9 @@ package autosaveworld.features.backup.ftp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
@@ -34,17 +34,17 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public void changeDirectory(String dirname) throws IOException {
+	public void enterDirectory0(String dirname) throws IOException {
 		ftpclient.changeWorkingDirectory(dirname);
 	}
 
 	@Override
-	public void createDirectory(String dirname) throws IOException {
+	public void createDirectory0(String dirname) throws IOException {
 		ftpclient.makeDirectory(dirname);
 	}
 
 	@Override
-	public void changeToParentDirectiry() throws IOException {
+	public void leaveDirectory() throws IOException {
 		ftpclient.changeToParentDirectory();
 	}
 
@@ -68,8 +68,8 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	protected List<String> getFiles0() throws IOException {
-		return new ArrayList<String>(Arrays.asList(ftpclient.listNames()));
+	protected Set<String> getEntries0() throws IOException {
+		return new HashSet<String>(Arrays.asList(ftpclient.listNames()));
 	}
 
 	@Override

@@ -24,10 +24,22 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileUtils {
 
 	public static void init() {
+	}
+
+	public static List<String> splitPath(String path) {
+		List<String> paths = new ArrayList<>();
+		for (String split : path.split("[|]")) {
+			if (!split.isEmpty()) {
+				paths.add(split);
+			}
+		}
+		return paths;
 	}
 
 	public static File buildFile(File file, String... childs) {

@@ -20,7 +20,7 @@ package autosaveworld.features.backup;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 public class BackupUtils {
 
@@ -28,7 +28,7 @@ public class BackupUtils {
 		return findOldestBackupName(Arrays.asList(backups));
 	}
 
-	public static String findOldestBackupName(List<String> backups) {
+	public static String findOldestBackupName(Collection<String> backups) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		String oldestBackupName = null;
 		long old = System.currentTimeMillis();

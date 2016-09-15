@@ -19,14 +19,14 @@ package autosaveworld.features.backup.sftp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
-import autosaveworld.zlibs.com.jcraft.jsch.SftpException;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp.LsEntry;
+import autosaveworld.zlibs.com.jcraft.jsch.SftpException;
 
 public class SFTPVirtualFileSystem extends VirtualFileSystem {
 
@@ -36,7 +36,7 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public void changeDirectory(String dirname) throws IOException {
+	protected void enterDirectory0(String dirname) throws IOException {
 		try {
 			sftpclient.cd(dirname);
 		} catch (SftpException ex) {
@@ -45,11 +45,8 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public void createDirectory(String dirname) throws IOException {
+	protected void createDirectory0(String dirname) throws IOException {
 		try {
-			if (getFiles().contains(dirname)) {
-				return;
-			}
 			sftpclient.mkdir(dirname);
 		} catch (SftpException ex) {
 			throw wrapException(ex);
@@ -57,7 +54,7 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public void changeToParentDirectiry() throws IOException {
+	public void leaveDirectory() throws IOException {
 		try {
 			sftpclient.cd("..");
 		} catch (SftpException ex) {
@@ -93,9 +90,9 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	protected List<String> getFiles0() throws IOException {
+	protected Set<String> getEntries0() throws IOException {
 		try {
-			ArrayList<String> files = new ArrayList<String>();
+			HashSet<String> files = new HashSet<String>();
 			Vector<LsEntry> names = sftpclient.ls(".");
 			for (int i = 0; i < names.size(); i++) {
 				files.add(names.get(i).getFilename());

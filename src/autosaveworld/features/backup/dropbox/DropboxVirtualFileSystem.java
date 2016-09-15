@@ -19,8 +19,8 @@ package autosaveworld.features.backup.dropbox;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
 import autosaveworld.zlibs.com.dropbox.core.DbxClient;
@@ -38,12 +38,12 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public void changeDirectory(String dirname) throws IOException {
+	public void enterDirectory0(String dirname) throws IOException {
 		currentpath += "/" + dirname;
 	}
 
 	@Override
-	public void createDirectory(String dirname) throws IOException {
+	public void createDirectory0(String dirname) throws IOException {
 		try {
 			dbxclient.createFolder(getPath(dirname));
 		} catch (DbxException e) {
@@ -52,7 +52,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	public void changeToParentDirectiry() throws IOException {
+	public void leaveDirectory() throws IOException {
         if (currentpath.isEmpty()) {
         	throw new IOException("Can't get parent directory of a root dir");
         }
@@ -84,9 +84,9 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	protected List<String> getFiles0() throws IOException {
+	protected Set<String> getEntries0() throws IOException {
 		try {
-			ArrayList<String> files = new ArrayList<String>();
+			HashSet<String> files = new HashSet<String>();
 			for (DbxEntry entry : dbxclient.getMetadataWithChildren(currentpath).children) {
 				files.add(entry.name);
 			}

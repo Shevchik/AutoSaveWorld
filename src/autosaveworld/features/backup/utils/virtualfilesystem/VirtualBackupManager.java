@@ -17,16 +17,28 @@
 
 package autosaveworld.features.backup.utils.virtualfilesystem;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.BackupUtils;
+import autosaveworld.features.backup.ExcludeManager;
+import autosaveworld.features.backup.InputStreamConstruct;
+import autosaveworld.features.backup.utils.PipedZip;
 
 public class VirtualBackupManager {
 
@@ -55,10 +67,9 @@ public class VirtualBackupManager {
 	}
 
 	public void backup() throws IOException {
-		vfs.createAndChangeDirectory(backuppath);
-		vfs.createAndChangeDirectory("backups");
-		//delete oldest backup
-		List<String> backups = vfs.getFiles();
+		vfs.createAndEnterDirectory(backuppath);
+		vfs.createAndEnterDirectory("backups");
+		Set<String> backups = vfs.getEntries();
 		if ((maxbackups != 0) && (backups.size() >= maxbackups)) {
 			MessageLogger.debug("Deleting oldest backup");
 			String oldestBackup = BackupUtils.findOldestBackupName(backups);
@@ -66,34 +77,89 @@ public class VirtualBackupManager {
 				vfs.deleteDirectoryRecursive(oldestBackup);
 			}
 		}
-		//create new directory
-		String datedir = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());
-		vfs.createAndChangeDirectory(datedir);
-		//do a backup
-		VirutialBackupOperations bo = new VirutialBackupOperations(vfs, zip, excludefolders);
-		//do worlds backup
-		if (!worlds.isEmpty()) {
-			MessageLogger.debug("Backuping Worlds");
-			for (World w : Bukkit.getWorlds()) {
-				if (worlds.contains("*") || worlds.contains(w.getWorldFolder().getName())) {
-					bo.backupWorld(w);
-				}
+		vfs.createAndEnterDirectory(new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis()));
+		List<File> foldersToBackup = new ArrayList<>();
+		for (World w : Bukkit.getWorlds()) {
+			if (worlds.contains("*") || worlds.contains(w.getWorldFolder().getName())) {
+				foldersToBackup.add(w.getWorldFolder());
 			}
-			MessageLogger.debug("Backuped Worlds");
 		}
-		//do plugins backup
 		if (backupplugins) {
-			MessageLogger.debug("Backuping plugins");
-			bo.backupPlugins();
-			MessageLogger.debug("Backuped plugins");
+			foldersToBackup.add(new File(GlobalConstants.getPluginsFolder()));
 		}
-		//backup other folders
-		if (!otherfolders.isEmpty()) {
-			MessageLogger.debug("Backuping other folders");
-			bo.backupOtherFolders(otherfolders);
-			MessageLogger.debug("Backuped other folders");
+		for (String otherfolder : otherfolders) {
+			foldersToBackup.add(new File(otherfolder));
+		}
+		for (File folder : foldersToBackup) {
+			MessageLogger.debug("Backuping folder " + folder);
+			try {
+				backupFolder(folder.getAbsoluteFile());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			MessageLogger.debug("Backuped folder " + folder);
 		}
 	}
+
+	private void backupFolder(File folder) throws IOException {
+		if (!zip) {
+			uploadDirectory(folder);
+		} else {
+			zipAndUploadDirectory(folder);
+		}
+	}
+
+
+	private void uploadDirectory(File src)  throws IOException {
+		Files.walkFileTree(src.toPath(), new FileVisitor<Path>() {
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+				if (ExcludeManager.isFolderExcluded(excludefolders, dir.toString())) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+				vfs.createAndEnterDirectory(dir.getFileName().toString());
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				try (InputStream is = InputStreamConstruct.getFileInputStream(file.toFile())) {
+					storeFile(is, file.getFileName().toString());
+				}
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				vfs.leaveDirectory();
+				return FileVisitResult.CONTINUE;
+			}
+		});
+	}
+
+	private void zipAndUploadDirectory(File src) throws IOException {
+		try (InputStream is = PipedZip.startZIP(src, excludefolders)) {
+			storeFile(is, src.getName() + ".zip");
+		}
+	}
+
+	private void storeFile(InputStream is, String filename) {
+		try {
+			vfs.createFile(filename, is);
+		} catch (IOException e) {
+			MessageLogger.warn("Failed to backup file: " + filename);
+			try {
+				vfs.deleteFile(filename);
+			} catch (IOException ex) {
+			}
+		}
+	}
+
 
 	public static class Builder {
 
