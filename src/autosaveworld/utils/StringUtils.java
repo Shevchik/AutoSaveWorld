@@ -44,4 +44,8 @@ public class StringUtils {
 		return sb.toString();
 	}
 
+	public static String eraseRight(String str, int eraseLength) {
+		return str.substring(0, str.length() - eraseLength);
+	}
+
 }

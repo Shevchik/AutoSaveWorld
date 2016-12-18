@@ -36,7 +36,6 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.BackupUtils;
-import autosaveworld.features.backup.ExcludeManager;
 import autosaveworld.features.backup.InputStreamConstruct;
 import autosaveworld.features.backup.utils.PipedZip;
 
@@ -114,7 +113,7 @@ public class VirtualBackupManager {
 		Files.walkFileTree(src.toPath(), new FileVisitor<Path>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				if (ExcludeManager.isFolderExcluded(excludefolders, dir.toString())) {
+				if (BackupUtils.isFolderExcluded(excludefolders, dir.toString())) {
 					return FileVisitResult.SKIP_SUBTREE;
 				}
 				vfs.createAndEnterDirectory(dir.getFileName().toString());

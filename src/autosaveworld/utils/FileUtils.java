@@ -32,6 +32,10 @@ public class FileUtils {
 	public static void init() {
 	}
 
+	public static String getAbsoluteFileName(String path) {
+		return new File(path).getAbsolutePath();
+	}
+
 	public static List<String> splitPath(String path) {
 		List<String> paths = new ArrayList<>();
 		for (String split : path.split("[|]")) {

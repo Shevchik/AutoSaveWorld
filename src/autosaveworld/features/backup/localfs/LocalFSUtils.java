@@ -25,7 +25,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.backup.ExcludeManager;
+import autosaveworld.features.backup.BackupUtils;
 import autosaveworld.features.backup.InputStreamConstruct;
 import autosaveworld.utils.FileUtils;
 
@@ -35,7 +35,7 @@ public class LocalFSUtils {
 		if (sourceLocation.isDirectory()) {
 			targetLocation.mkdirs();
 			for (String filename : FileUtils.safeList(sourceLocation)) {
-				if (!ExcludeManager.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) {
+				if (!BackupUtils.isFolderExcluded(excludefolders, new File(sourceLocation, filename).getPath())) {
 					copyDirectory(new File(sourceLocation, filename), new File(targetLocation, filename), excludefolders);
 				}
 			}

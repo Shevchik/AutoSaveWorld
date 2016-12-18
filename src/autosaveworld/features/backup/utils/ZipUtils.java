@@ -28,7 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.backup.ExcludeManager;
+import autosaveworld.features.backup.BackupUtils;
 import autosaveworld.features.backup.InputStreamConstruct;
 import autosaveworld.utils.FileUtils;
 
@@ -62,7 +62,7 @@ public class ZipUtils {
 			File srcFile = new File(zipDir, child);
 
 			if (srcFile.isDirectory()) {
-				if (!ExcludeManager.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) {
+				if (!BackupUtils.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) {
 					zipDir(excludefolders, zipOutStream, srcDir, currentDir + child + File.separator);
 				}
 			} else {

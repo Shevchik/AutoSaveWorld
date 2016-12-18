@@ -21,6 +21,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+
+import autosaveworld.utils.FileUtils;
+import autosaveworld.utils.StringUtils;
 
 public class BackupUtils {
 
@@ -48,6 +52,26 @@ public class BackupUtils {
 			}
 		}
 		return oldestBackupName;
+	}
+
+	public static boolean isFolderExcluded(List<String> excludelist, String folderPath) {
+		String folderName = FileUtils.getAbsoluteFileName(folderPath);
+	
+		for (String excludedFolder : excludelist) {
+			//asterisk at the end of excluded folder path excludes any folders starting with excluded folder pathname
+			if (excludedFolder.endsWith("*")) {
+				String excludedFolderName = FileUtils.getAbsoluteFileName(StringUtils.eraseRight(excludedFolder, 1));
+				if (folderName.startsWith(excludedFolderName)) {
+					return true;
+				}
+			} else {
+				if (folderName.equals(FileUtils.getAbsoluteFileName(excludedFolder))) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 }
