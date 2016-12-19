@@ -38,7 +38,7 @@ public class FileUtils {
 
 	public static List<String> splitPath(String path) {
 		List<String> paths = new ArrayList<>();
-		for (String split : path.split("[|]")) {
+		for (String split : path.split("[/]")) {
 			if (!split.isEmpty()) {
 				paths.add(split);
 			}
