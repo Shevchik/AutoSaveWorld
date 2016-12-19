@@ -48,4 +48,8 @@ public class StringUtils {
 		return str.substring(0, str.length() - eraseLength);
 	}
 
+	public static boolean isNullOrEmpty(String str) {
+		return str == null || str.isEmpty();
+	}
+
 }

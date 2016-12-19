@@ -19,10 +19,12 @@ package autosaveworld.features.backup.dropbox;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
+import autosaveworld.utils.StringUtils;
 import autosaveworld.zlibs.com.dropbox.core.DbxClient;
 import autosaveworld.zlibs.com.dropbox.core.DbxEntry;
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
@@ -32,14 +34,14 @@ import autosaveworld.zlibs.com.dropbox.core.DbxWriteMode;
 public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
 	private DbxClient dbxclient;
-	private String currentpath = "";
+	private ArrayList<String> currentpath = new ArrayList<String>();
 	public DropboxVirtualFileSystem(DbxClient dbxclient) {
 		this.dbxclient = dbxclient;
 	}
 
 	@Override
 	public void enterDirectory0(String dirname) throws IOException {
-		currentpath += "/" + dirname;
+		currentpath.add(dirname);
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
         if (currentpath.isEmpty()) {
         	throw new IOException("Can't get parent directory of a root dir");
         }
-        currentpath = currentpath.substring(0, currentpath.lastIndexOf('/'));
+        currentpath.remove(currentpath.size() - 1);
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	protected Set<String> getEntries0() throws IOException {
 		try {
 			HashSet<String> files = new HashSet<String>();
-			for (DbxEntry entry : dbxclient.getMetadataWithChildren(currentpath).children) {
+			for (DbxEntry entry : dbxclient.getMetadataWithChildren(getPath(null)).children) {
 				files.add(entry.name);
 			}
 			return files;
@@ -115,7 +117,11 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	private String getPath(String name) {
-		return currentpath + "/" + name;
+		String path = '/' + StringUtils.join(currentpath, "/");
+		if (!StringUtils.isNullOrEmpty(name)) {
+			path += "/" + name;
+		}
+		return path;
 	}
 
 
