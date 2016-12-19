@@ -67,6 +67,15 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
+	public boolean exists(String path) throws IOException {
+		try {
+			return dbxclient.getMetadata(getPath(path)) != null;
+		} catch (DbxException e) {
+			throw wrapException(e);
+		}
+	}
+
+	@Override
 	public boolean isDirectory(String dirname) throws IOException {
 		try {
 			return dbxclient.getMetadata(getPath(dirname)).isFolder();

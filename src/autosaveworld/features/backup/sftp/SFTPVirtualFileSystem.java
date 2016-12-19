@@ -63,6 +63,19 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
+	public boolean exists(String path) throws IOException {
+		try {
+			sftpclient.stat(path);
+			return true;
+		} catch (SftpException ex) {
+			if (ex.id == 2) {
+				return false;
+			}
+			throw wrapException(ex);
+		}
+	}
+
+	@Override
 	public boolean isDirectory(String dirname) throws IOException {
 		try {
 			return sftpclient.stat(dirname).isDir();

@@ -35,21 +35,39 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 
 	@Override
 	public void enterDirectory0(String dirname) throws IOException {
-		ftpclient.changeWorkingDirectory(dirname);
+		boolean result = ftpclient.changeWorkingDirectory(dirname);
+		if (!result) {
+			throw new IOException("Changing working directory failed");
+		}
 	}
 
 	@Override
 	public void createDirectory0(String dirname) throws IOException {
-		ftpclient.makeDirectory(dirname);
+		boolean result = ftpclient.makeDirectory(dirname);
+		if (!result) {
+			throw new IOException("Creating directory failed");
+		}
 	}
 
 	@Override
 	public void leaveDirectory() throws IOException {
-		ftpclient.changeToParentDirectory();
+		boolean result = ftpclient.changeToParentDirectory();
+		if (!result) {
+			throw new IOException("Leaving working directory failed");
+		}
+	}
+
+	@Override
+	public boolean exists(String path) throws IOException {
+		//there is no standard way to check if path exists
+		//list files and use contains check, that may take a lot of time
+		return getEntries().contains(path);
 	}
 
 	@Override
 	public boolean isDirectory(String dirname) throws IOException {
+		//there is no standard way to check if path is directory or get path metadata
+		//so just try to enter the path and assume positive result as path being a directory
 		boolean isDirectory = ftpclient.changeWorkingDirectory(dirname);
 		if (isDirectory) {
 			ftpclient.changeToParentDirectory();
@@ -59,12 +77,18 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 
 	@Override
 	public void deleteDirectory(String dirname) throws IOException {
-		ftpclient.removeDirectory(dirname);
+		boolean result = ftpclient.removeDirectory(dirname);
+		if (!result) {
+			throw new IOException("Deleting file failed");
+		}
 	}
 
 	@Override
 	public void deleteFile(String name) throws IOException {
-		ftpclient.deleteFile(name);
+		boolean result = ftpclient.deleteFile(name);
+		if (!result) {
+			throw new IOException("Deleting directory failed");
+		}
 	}
 
 	@Override

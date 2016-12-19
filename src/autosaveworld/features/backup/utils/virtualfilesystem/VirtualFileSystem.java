@@ -42,10 +42,9 @@ public abstract class VirtualFileSystem {
 	public void createDirectory(String dirname) throws IOException {
 		int createdCount = 0;
 		for (String path : FileUtils.splitPath(dirname)) {
-			if (getEntries().contains(path)) {
-				break;
+			if (!exists(path)) {
+				createDirectory0(path);	
 			}
-			createDirectory0(path);
 			enterDirectory0(dirname);
 			createdCount++;
 		}
@@ -70,6 +69,8 @@ public abstract class VirtualFileSystem {
 			deleteFile(dirname);
 		}
 	}
+
+	public abstract boolean exists(String path) throws IOException;
 
 	public abstract boolean isDirectory(String dirname) throws IOException;
 
