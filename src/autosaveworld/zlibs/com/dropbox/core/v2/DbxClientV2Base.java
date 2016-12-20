@@ -3,10 +3,7 @@
 
 package autosaveworld.zlibs.com.dropbox.core.v2;
 
-import autosaveworld.zlibs.com.dropbox.core.v2.auth.DbxUserAuthRequests;
 import autosaveworld.zlibs.com.dropbox.core.v2.files.DbxUserFilesRequests;
-import autosaveworld.zlibs.com.dropbox.core.v2.sharing.DbxUserSharingRequests;
-import autosaveworld.zlibs.com.dropbox.core.v2.users.DbxUserUsersRequests;
 
 /**
  * Base class for user auth clients.
@@ -14,10 +11,7 @@ import autosaveworld.zlibs.com.dropbox.core.v2.users.DbxUserUsersRequests;
 public class DbxClientV2Base {
     protected final DbxRawClientV2 _client;
 
-    private final DbxUserAuthRequests auth;
     private final DbxUserFilesRequests files;
-    private final DbxUserSharingRequests sharing;
-    private final DbxUserUsersRequests users;
 
     /**
      * For internal use only.
@@ -26,19 +20,7 @@ public class DbxClientV2Base {
      */
     protected DbxClientV2Base(DbxRawClientV2 _client) {
         this._client = _client;
-        this.auth = new DbxUserAuthRequests(_client);
         this.files = new DbxUserFilesRequests(_client);
-        this.sharing = new DbxUserSharingRequests(_client);
-        this.users = new DbxUserUsersRequests(_client);
-    }
-
-    /**
-     * Returns client for issuing requests in the {@code "auth"} namespace.
-     *
-     * @return Dropbox auth client
-     */
-    public DbxUserAuthRequests auth() {
-        return auth;
     }
 
     /**
@@ -50,21 +32,4 @@ public class DbxClientV2Base {
         return files;
     }
 
-    /**
-     * Returns client for issuing requests in the {@code "sharing"} namespace.
-     *
-     * @return Dropbox sharing client
-     */
-    public DbxUserSharingRequests sharing() {
-        return sharing;
-    }
-
-    /**
-     * Returns client for issuing requests in the {@code "users"} namespace.
-     *
-     * @return Dropbox users client
-     */
-    public DbxUserUsersRequests users() {
-        return users;
-    }
 }
