@@ -23,7 +23,6 @@ public class FullAccount extends Account {
     protected final String country;
     protected final String locale;
     protected final String referralLink;
-    protected final FullTeam team;
     protected final String teamMemberId;
     protected final boolean isPaired;
     protected final AccountType accountType;
@@ -70,7 +69,7 @@ public class FullAccount extends Account {
      * @throws IllegalArgumentException  If any argument does not meet its
      *     preconditions.
      */
-    public FullAccount(String accountId, Name name, String email, boolean emailVerified, boolean disabled, String locale, String referralLink, boolean isPaired, AccountType accountType, String profilePhotoUrl, String country, FullTeam team, String teamMemberId) {
+    public FullAccount(String accountId, Name name, String email, boolean emailVerified, boolean disabled, String locale, String referralLink, boolean isPaired, AccountType accountType, String profilePhotoUrl, String country, String teamMemberId) {
         super(accountId, name, email, emailVerified, disabled, profilePhotoUrl);
         if (country != null) {
             if (country.length() < 2) {
@@ -92,7 +91,6 @@ public class FullAccount extends Account {
             throw new IllegalArgumentException("Required value for 'referralLink' is null");
         }
         this.referralLink = referralLink;
-        this.team = team;
         this.teamMemberId = teamMemberId;
         this.isPaired = isPaired;
         if (accountType == null) {
@@ -133,7 +131,7 @@ public class FullAccount extends Account {
      *     preconditions.
      */
     public FullAccount(String accountId, Name name, String email, boolean emailVerified, boolean disabled, String locale, String referralLink, boolean isPaired, AccountType accountType) {
-        this(accountId, name, email, emailVerified, disabled, locale, referralLink, isPaired, accountType, null, null, null, null);
+        this(accountId, name, email, emailVerified, disabled, locale, referralLink, isPaired, accountType, null, null, null);
     }
 
     /**
@@ -244,15 +242,6 @@ public class FullAccount extends Account {
     }
 
     /**
-     * If this account is a member of a team, information about that team.
-     *
-     * @return value for this field, or {@code null} if not present.
-     */
-    public FullTeam getTeam() {
-        return team;
-    }
-
-    /**
      * This account's unique team member id. This field will only be present if
      * {@link FullAccount#getTeam} is present.
      *
@@ -313,7 +302,6 @@ public class FullAccount extends Account {
 
         protected String profilePhotoUrl;
         protected String country;
-        protected FullTeam team;
         protected String teamMemberId;
 
         protected Builder(String accountId, Name name, String email, boolean emailVerified, boolean disabled, String locale, String referralLink, boolean isPaired, AccountType accountType) {
@@ -355,7 +343,6 @@ public class FullAccount extends Account {
             this.accountType = accountType;
             this.profilePhotoUrl = null;
             this.country = null;
-            this.team = null;
             this.teamMemberId = null;
         }
 
@@ -401,19 +388,6 @@ public class FullAccount extends Account {
         /**
          * Set value for optional field.
          *
-         * @param team  If this account is a member of a team, information about
-         *     that team.
-         *
-         * @return this builder
-         */
-        public Builder withTeam(FullTeam team) {
-            this.team = team;
-            return this;
-        }
-
-        /**
-         * Set value for optional field.
-         *
          * @param teamMemberId  This account's unique team member id. This field
          *     will only be present if {@link FullAccount#getTeam} is present.
          *
@@ -431,7 +405,7 @@ public class FullAccount extends Account {
          * @return new instance of {@link FullAccount}
          */
         public FullAccount build() {
-            return new FullAccount(accountId, name, email, emailVerified, disabled, locale, referralLink, isPaired, accountType, profilePhotoUrl, country, team, teamMemberId);
+            return new FullAccount(accountId, name, email, emailVerified, disabled, locale, referralLink, isPaired, accountType, profilePhotoUrl, country, teamMemberId);
         }
     }
 
@@ -441,7 +415,6 @@ public class FullAccount extends Account {
             country,
             locale,
             referralLink,
-            team,
             teamMemberId,
             isPaired,
             accountType
@@ -469,7 +442,6 @@ public class FullAccount extends Account {
                 && ((this.accountType == other.accountType) || (this.accountType.equals(other.accountType)))
                 && ((this.profilePhotoUrl == other.profilePhotoUrl) || (this.profilePhotoUrl != null && this.profilePhotoUrl.equals(other.profilePhotoUrl)))
                 && ((this.country == other.country) || (this.country != null && this.country.equals(other.country)))
-                && ((this.team == other.team) || (this.team != null && this.team.equals(other.team)))
                 && ((this.teamMemberId == other.teamMemberId) || (this.teamMemberId != null && this.teamMemberId.equals(other.teamMemberId)))
                 ;
         }
@@ -532,10 +504,6 @@ public class FullAccount extends Account {
                 g.writeFieldName("country");
                 StoneSerializers.nullable(StoneSerializers.string()).serialize(value.country, g);
             }
-            if (value.team != null) {
-                g.writeFieldName("team");
-                StoneSerializers.nullable(FullTeam.Serializer.INSTANCE).serialize(value.team, g);
-            }
             if (value.teamMemberId != null) {
                 g.writeFieldName("team_member_id");
                 StoneSerializers.nullable(StoneSerializers.string()).serialize(value.teamMemberId, g);
@@ -565,7 +533,6 @@ public class FullAccount extends Account {
                 AccountType f_accountType = null;
                 String f_profilePhotoUrl = null;
                 String f_country = null;
-                FullTeam f_team = null;
                 String f_teamMemberId = null;
                 while (p.getCurrentToken() == JsonToken.FIELD_NAME) {
                     String field = p.getCurrentName();
@@ -603,9 +570,6 @@ public class FullAccount extends Account {
                     else if ("country".equals(field)) {
                         f_country = StoneSerializers.nullable(StoneSerializers.string()).deserialize(p);
                     }
-                    else if ("team".equals(field)) {
-                        f_team = StoneSerializers.nullable(FullTeam.Serializer.INSTANCE).deserialize(p);
-                    }
                     else if ("team_member_id".equals(field)) {
                         f_teamMemberId = StoneSerializers.nullable(StoneSerializers.string()).deserialize(p);
                     }
@@ -640,7 +604,7 @@ public class FullAccount extends Account {
                 if (f_accountType == null) {
                     throw new JsonParseException(p, "Required field \"account_type\" missing.");
                 }
-                value = new FullAccount(f_accountId, f_name, f_email, f_emailVerified, f_disabled, f_locale, f_referralLink, f_isPaired, f_accountType, f_profilePhotoUrl, f_country, f_team, f_teamMemberId);
+                value = new FullAccount(f_accountId, f_name, f_email, f_emailVerified, f_disabled, f_locale, f_referralLink, f_isPaired, f_accountType, f_profilePhotoUrl, f_country, f_teamMemberId);
             }
             else {
                 throw new JsonParseException(p, "No subtype found that matches tag: \"" + tag + "\"");
