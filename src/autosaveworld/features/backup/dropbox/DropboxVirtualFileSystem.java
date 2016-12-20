@@ -140,7 +140,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 				dbxclient.files().uploadSessionAppendV2(new UploadSessionCursor(sessionId, totalBytesRead)).uploadAndFinish(new ByteArrayInputStream(buffer, 0, bytesRead));
 				totalBytesRead += bytesRead;
 			}
-			dbxclient.files().uploadSessionFinish(new UploadSessionCursor(sessionId, totalBytesRead), new CommitInfo(getPath(name)));
+			dbxclient.files().uploadSessionFinish(new UploadSessionCursor(sessionId, totalBytesRead), new CommitInfo(getPath(name))).finish();
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
