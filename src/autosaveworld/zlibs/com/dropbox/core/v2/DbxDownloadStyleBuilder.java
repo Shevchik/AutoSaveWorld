@@ -1,18 +1,14 @@
 package autosaveworld.zlibs.com.dropbox.core.v2;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import autosaveworld.zlibs.com.dropbox.core.DbxDownloader;
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
-import autosaveworld.zlibs.com.dropbox.core.DbxStreamReader;
-import autosaveworld.zlibs.com.dropbox.core.NoThrowInputStream;
 import autosaveworld.zlibs.com.dropbox.core.http.HttpRequestor;
-import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * The common interface for all builders associated with download style methods. After setting any

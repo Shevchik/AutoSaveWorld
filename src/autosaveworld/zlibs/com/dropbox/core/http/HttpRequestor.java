@@ -78,10 +78,6 @@ public abstract class HttpRequestor
         public abstract void abort();
         public abstract Response finish() throws IOException;
 
-        public void upload(File file) throws IOException {
-            upload(new FileInputStream(file));
-        }
-
         public void upload(InputStream in, long limit) throws IOException {
             upload(IOUtil.limit(in, limit));
         }
