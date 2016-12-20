@@ -103,12 +103,15 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	protected Set<String> getEntries0() throws IOException {
+	public Set<String> getEntries() throws IOException {
 		try {
 			HashSet<String> files = new HashSet<String>();
 			Vector<LsEntry> names = sftpclient.ls(".");
 			for (int i = 0; i < names.size(); i++) {
-				files.add(names.get(i).getFilename());
+				String filename = names.get(i).getFilename();
+				if (!(filename.equals(".") || filename.equals(".."))) {
+					files.add(filename);
+				}
 			}
 			return files;
 		} catch (SftpException ex) {

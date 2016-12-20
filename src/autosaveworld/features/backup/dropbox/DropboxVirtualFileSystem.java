@@ -107,7 +107,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	protected Set<String> getEntries0() throws IOException {
+	public Set<String> getEntries() throws IOException {
 		try {
 			HashSet<String> files = new HashSet<String>();
 			String path = getPath(null);

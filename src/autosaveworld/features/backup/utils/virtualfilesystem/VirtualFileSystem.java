@@ -19,7 +19,6 @@ package autosaveworld.features.backup.utils.virtualfilesystem;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Set;
 
 import autosaveworld.utils.FileUtils;
@@ -78,19 +77,7 @@ public abstract class VirtualFileSystem {
 
 	public abstract void deleteFile(String name) throws IOException;
 
-	public Set<String> getEntries() throws IOException {
-		Set<String> files = getEntries0();
-		Iterator<String> iterator = files.iterator();
-		while (iterator.hasNext()) {
-			String name = iterator.next();
-			if (name.equals(".") || name.equals("..")) {
-				iterator.remove();
-			}
-		}
-		return files;
-	}
-
-	protected abstract Set<String> getEntries0() throws IOException;
+	public abstract Set<String> getEntries() throws IOException;
 
 	public abstract void createFile(String name, InputStream inputsteam) throws IOException;
 

@@ -92,7 +92,7 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	@Override
-	protected Set<String> getEntries0() throws IOException {
+	public Set<String> getEntries() throws IOException {
 		return new HashSet<String>(Arrays.asList(ftpclient.listNames()));
 	}
 
