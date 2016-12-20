@@ -29,15 +29,15 @@ public class HelpSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		MessageLogger.sendMessage(sender, "&f/asw save&7 - &3Saves all worlds and players");
+		MessageLogger.sendMessage(sender, "&f/asw save&7 - &3Runs a save");
 		MessageLogger.sendMessage(sender, "&f/save&7 - &3Same as /asw save");
-		MessageLogger.sendMessage(sender, "&f/asw backup&7 - &3Backups worlds defined in config.yml (* - all worlds) and plugins (if enabled in config)");
+		MessageLogger.sendMessage(sender, "&f/asw backup&7 - &3Does a backup");
 		MessageLogger.sendMessage(sender, "&f/backup&7 - &3Same as /asw backup");
 		MessageLogger.sendMessage(sender, "&f/asw purge&7 - &3Purges plugins info from inactive players");
 		MessageLogger.sendMessage(sender, "&f/purge&7 - &3Same as /asw purge");
 		MessageLogger.sendMessage(sender, "&f/asw restart&7 - &3Restarts server");
 		MessageLogger.sendMessage(sender, "&f/asw forcerestart&7 - &3Restarts server without countdown");
-		MessageLogger.sendMessage(sender, "&f/asw regenworld {world} {worldregionsfolder}&7 - &3Regenerates world");
+		MessageLogger.sendMessage(sender, "&f/asw regenworld {world} {worldregionsfolder}&7 - &3Regenerates world (world regions folder is the folder where .mca files for this world are located)");
 		MessageLogger.sendMessage(sender, "&f/asw pmanager load {pluginname}&7 - &3Loads plugin {pluginname}");
 		MessageLogger.sendMessage(sender, "&f/asw pmanager unload {pluginname}&7 - &3Unloads plugin {pluginname}");
 		MessageLogger.sendMessage(sender, "&f/asw pmanager reload {pluginname}&7 - &3Unload plugin {pluginname} and then loads it");
