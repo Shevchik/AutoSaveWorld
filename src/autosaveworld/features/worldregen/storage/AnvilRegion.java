@@ -83,14 +83,24 @@ public class AnvilRegion {
 					raf.seek((location >> 8) * 4096);
 					int reallength = raf.readInt();
 					int compressiontype = raf.readByte();
-					byte[] data = new byte[reallength - 1];
-					raf.read(data);
-					Coord coord = new Coord(x, z);
-					chunks.put(coord, new ChunkInfo(compressiontype, data));
+					chunks.put(new Coord(x, z), new ChunkInfo(compressiontype, readFully(raf, reallength - 1)));
 				}
 			}
 		}
 		raf.close();
+	}
+
+	private static byte[] readFully(RandomAccessFile file, int len) throws IOException {
+		byte[] data = new byte[len];
+		int totalRead = 0;
+		while (totalRead < data.length) {
+			int read = file.read(data, totalRead, data.length - totalRead);
+			if (read == -1) {
+				throw new IOException("Unexpected end of stream");
+			}
+			totalRead += read;
+		}
+		return data;
 	}
 
 	public void saveToDisk() throws IOException {
