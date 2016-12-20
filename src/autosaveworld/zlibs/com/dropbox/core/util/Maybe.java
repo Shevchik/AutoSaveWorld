@@ -1,89 +1,75 @@
 package autosaveworld.zlibs.com.dropbox.core.util;
 
-public final class Maybe<T> {
+public abstract class Maybe<T>
+{
+    private Maybe() {}
 
-	private final boolean isJust;
-	private final T value;
+    public abstract boolean isNothing();
+    public abstract boolean isJust();
+    public abstract T getJust();
+    public abstract T get(T def);
+    public abstract String toString();
+    public abstract int hashCode();
+    public abstract boolean equals(Maybe<T> other);
 
-	private Maybe(boolean isJust, T value) {
-		this.isJust = isJust;
-		this.value = value;
-	}
+    public static <T> Maybe<T> Just(T value)
+    {
+        return new Just<T>(value);
+    }
 
-	private static final Maybe<Object> Nothing = new Maybe<Object>(false, null);
+    private static final class Just<T> extends Maybe<T>
+    {
+        private final T value;
+        private Just(T value)
+        {
+            this.value = value;
+        }
 
-	public boolean isNothing() {
-		return !this.isJust;
-	}
+        public boolean isNothing() { return false; }
+        public boolean isJust() { return true; }
+        public T getJust() { return value; }
+        public T get(T def) { return value; }
+        public String toString() { return "Just(" + value + ")"; }
+        public int hashCode() { return 1 + LangUtil.nullableHashCode(value); }
 
-	public boolean isJust() {
-		return this.isJust;
-	}
+        @Override
+        public boolean equals(Maybe<T> other)
+        {
+            if (other instanceof Just) {
+                Just<T> j = (Just<T>) other;
+                return LangUtil.nullableEquals(value, j.value);
+            }
+            else if (other instanceof Nothing) {
+                return false;
+            }
+            else {
+                throw LangUtil.badType(other);
+            }
+        }
+    }
 
-	public T getJust() {
-		return this.value;
-	}
+    @SuppressWarnings("unchecked")
+    public static <T> Maybe<T> Nothing()
+    {
+        return (Maybe<T>) Nothing;
+    }
 
-	public T get(T def) {
-		if (isJust) {
-			return value;
-		} else {
-			return def;
-		}
-	}
+    private static final Maybe<Object> Nothing = new Nothing<Object>();
+    private static final class Nothing<T> extends Maybe<T>
+    {
+        private Nothing() {}
 
-	@SuppressWarnings("unchecked")
-	public static <T> Maybe<T> Nothing() {
-		return (Maybe<T>) Nothing;
-	}
+        public boolean isNothing() { return true; }
+        public boolean isJust() { return false; }
+        public T getJust() { throw new IllegalStateException("can't call getJust() on a Nothing"); }
+        public T get(T def) { return def; }
+        public String toString() { return "Nothing"; }
+        public int hashCode() { return 0; }
 
-	public static <T> Maybe<T> Just(T value) {
-		return new Maybe<T>(true, value);
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (other == null) {
-			return false;
-		}
-		if (other.getClass() != this.getClass()) {
-			return false;
-		}
-		return equals((Maybe<?>) other);
-	}
-
-	public boolean equals(Maybe<?> other) {
-		return (this.isJust == other.isJust) && eq(this.value, other.value);
-	}
-
-	private static boolean eq(Object a, Object b) {
-		if (a == null) {
-			return (b == null);
-		}
-		if (b == null) {
-			return false;
-		}
-		return a.equals(b);
-	}
-
-	@Override
-	public String toString() {
-		if (isJust) {
-			return "Just(" + value + ")";
-		} else {
-			return "Nothing";
-		}
-	}
-
-	@Override
-	public int hashCode() {
-		if (!isJust) {
-			return 0;
-		}
-		if (value == null) {
-			return 1;
-		}
-		return value.hashCode();
-	}
-
+        @Override
+        public boolean equals(Maybe<T> other)
+        {
+            return other == this;  // There's only a single Nothing instance.
+        }
+    }
 }

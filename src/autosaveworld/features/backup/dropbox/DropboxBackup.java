@@ -17,12 +17,10 @@
 
 package autosaveworld.features.backup.dropbox;
 
-import java.util.Locale;
-
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
-import autosaveworld.zlibs.com.dropbox.core.DbxClient;
 import autosaveworld.zlibs.com.dropbox.core.DbxRequestConfig;
+import autosaveworld.zlibs.com.dropbox.core.v2.DbxClientV2;
 
 public class DropboxBackup {
 
@@ -32,11 +30,11 @@ public class DropboxBackup {
 		this.config = config;
 	}
 
-	private DbxRequestConfig dconfig = new DbxRequestConfig("AutoSaveWorld", Locale.getDefault().toString());
+	private DbxRequestConfig dconfig = DbxRequestConfig.newBuilder("AutoSaveWorld").withAutoRetryEnabled().withUserLocaleFromPreferences().build();
 
 	public void performBackup() {
 		try {
-			DbxClient client = new DbxClient(dconfig, config.backupDropboxAPPTOKEN);
+			DbxClientV2 client = new DbxClientV2(dconfig, config.backupDropboxAPPTOKEN);
 
 			VirtualBackupManager.builder()
 			.setBackupPath(config.backupDropboxPath)

@@ -17,6 +17,7 @@
 
 package autosaveworld.features.backup.dropbox;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,17 +26,21 @@ import java.util.Set;
 
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
 import autosaveworld.utils.StringUtils;
-import autosaveworld.zlibs.com.dropbox.core.DbxClient;
-import autosaveworld.zlibs.com.dropbox.core.DbxEntry;
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
-import autosaveworld.zlibs.com.dropbox.core.DbxStreamWriter;
-import autosaveworld.zlibs.com.dropbox.core.DbxWriteMode;
+import autosaveworld.zlibs.com.dropbox.core.v2.DbxClientV2;
+import autosaveworld.zlibs.com.dropbox.core.v2.files.CommitInfo;
+import autosaveworld.zlibs.com.dropbox.core.v2.files.FolderMetadata;
+import autosaveworld.zlibs.com.dropbox.core.v2.files.GetMetadataErrorException;
+import autosaveworld.zlibs.com.dropbox.core.v2.files.ListFolderResult;
+import autosaveworld.zlibs.com.dropbox.core.v2.files.Metadata;
+import autosaveworld.zlibs.com.dropbox.core.v2.files.UploadSessionCursor;
+import autosaveworld.zlibs.com.dropbox.core.v2.files.UploadSessionStartResult;
 
 public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
-	private DbxClient dbxclient;
+	private DbxClientV2 dbxclient;
 	private ArrayList<String> currentpath = new ArrayList<String>();
-	public DropboxVirtualFileSystem(DbxClient dbxclient) {
+	public DropboxVirtualFileSystem(DbxClientV2 dbxclient) {
 		this.dbxclient = dbxclient;
 	}
 
@@ -47,7 +52,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public void createDirectory0(String dirname) throws IOException {
 		try {
-			dbxclient.createFolder(getPath(dirname));
+			dbxclient.files().createFolder(getPath(dirname));
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
@@ -69,7 +74,14 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public boolean exists(String path) throws IOException {
 		try {
-			return dbxclient.getMetadata(getPath(path)) != null;
+			dbxclient.files().getMetadata(getPath(path));
+			return true;
+		} catch (GetMetadataErrorException e) {
+			if (e.errorValue.isPath() && e.errorValue.getPathValue().isNotFound()) {
+				return false;
+			} else {
+				throw wrapException(e);
+			}
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
@@ -78,7 +90,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public boolean isDirectory(String dirname) throws IOException {
 		try {
-			return dbxclient.getMetadata(getPath(dirname)).isFolder();
+			return dbxclient.files().getMetadata(getPath(dirname)) instanceof FolderMetadata;
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
@@ -98,8 +110,11 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	protected Set<String> getEntries0() throws IOException {
 		try {
 			HashSet<String> files = new HashSet<String>();
-			for (DbxEntry entry : dbxclient.getMetadataWithChildren(getPath(null)).children) {
-				files.add(entry.name);
+			String path = getPath(null);
+			for (ListFolderResult result = dbxclient.files().listFolder(path); result.getHasMore(); result = dbxclient.files().listFolderContinue(result.getCursor())) {
+				for (Metadata metadata : result.getEntries()) {
+					files.add(metadata.getName());
+				}
 			}
 			return files;
 		} catch (DbxException e) {
@@ -110,7 +125,16 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public void createFile(String name, InputStream inputsteam) throws IOException {
 		try {
-			dbxclient.uploadFileChunked(getPath(name), DbxWriteMode.force(), -1, new DbxStreamWriter.InputStreamCopier(inputsteam));
+			byte[] buffer = new byte[1024 * 1024 * 20];
+			long totalBytesRead = inputsteam.read(buffer);
+			UploadSessionStartResult res = dbxclient.files().uploadSessionStart().uploadAndFinish(new ByteArrayInputStream(buffer, 0, (int) totalBytesRead));
+			String sessionId = res.getSessionId();
+			int bytesRead = -1;
+			while ((bytesRead = inputsteam.read(buffer)) != -1) {
+				dbxclient.files().uploadSessionAppendV2(new UploadSessionCursor(sessionId, totalBytesRead)).uploadAndFinish(new ByteArrayInputStream(buffer, 0, bytesRead));
+				totalBytesRead += bytesRead;
+			}
+			dbxclient.files().uploadSessionFinish(new UploadSessionCursor(sessionId, totalBytesRead), new CommitInfo(getPath(name)));
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
@@ -119,18 +143,18 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
 	private void delete(String name) throws IOException {
 		try {
-			dbxclient.delete(getPath(name));
+			dbxclient.files().delete(getPath(name));
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
 	}
 
 	private String getPath(String name) {
-		String path = '/' + StringUtils.join(currentpath, "/");
+		ArrayList<String> fullpath = new ArrayList<>(currentpath);
 		if (!StringUtils.isNullOrEmpty(name)) {
-			path += "/" + name;
+			fullpath.add(name);
 		}
-		return path;
+		return "/" + StringUtils.join(fullpath, "/");
 	}
 
 
