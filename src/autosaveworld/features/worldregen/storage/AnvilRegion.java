@@ -40,8 +40,10 @@ public class AnvilRegion {
 		this.columnZ = Integer.parseInt(split[2]);
 	}
 
+	private static final int dataBlockSize = 4096;
+
 	private final int[] timestamps = new int[1024];
-	private final HashMap<Coord, ChunkInfo> chunks = new HashMap<Coord, ChunkInfo>();
+	private final HashMap<Coord, byte[]> chunks = new HashMap<Coord, byte[]>();
 
 	public int getX() {
 		return columnX;
@@ -59,13 +61,17 @@ public class AnvilRegion {
 		chunks.remove(chunkcoord);
 	}
 
+	private File getFile() {
+		return new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
+	}
+
 	public void loadFromDisk() throws IOException {
-		File regionfile = new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
+		File regionfile = getFile();
 		if (!regionfile.exists()) {
 			return;
 		}
 		RandomAccessFile raf = new RandomAccessFile(regionfile, "rw");
-		if (raf.length() < 8096) {
+		if (raf.length() < dataBlockSize * 2) {
 			raf.close();
 			return;
 		}
@@ -80,10 +86,8 @@ public class AnvilRegion {
 			for (int x = 0; x < 32; x++) {
 				int location = locations[x + z * 32];
 				if (location != 0) {
-					raf.seek((location >> 8) * 4096);
-					int reallength = raf.readInt();
-					int compressiontype = raf.readByte();
-					chunks.put(new Coord(x, z), new ChunkInfo(compressiontype, readFully(raf, reallength - 1)));
+					raf.seek((location >> 8) * dataBlockSize);
+					chunks.put(new Coord(x, z), readFully(raf, raf.readInt()));
 				}
 			}
 		}
@@ -104,7 +108,7 @@ public class AnvilRegion {
 	}
 
 	public void saveToDisk() throws IOException {
-		File regionfile = new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
+		File regionfile = getFile();
 		if (chunks.isEmpty()) {
 			delete();
 			return;
@@ -113,12 +117,12 @@ public class AnvilRegion {
 			regionfile.createNewFile();
 		}
 		RandomAccessFile raf = new RandomAccessFile(regionfile, "rw");
-		ArrayList<ChunkInfo> chunkbuffers = new ArrayList<ChunkInfo>();
+		ArrayList<byte[]> chunkbuffers = new ArrayList<byte[]>();
 		int[] locations = new int[1024];
 		int currentoffset = 2;
-		for (Entry<Coord, ChunkInfo> entry : chunks.entrySet()) {
+		for (Entry<Coord, byte[]> entry : chunks.entrySet()) {
 			chunkbuffers.add(entry.getValue());
-			int newsize = getBlocks(entry.getValue().data.length);
+			int newsize = calcPaddedChunkDataDataBlocks(entry.getValue().length);
 			locations[entry.getKey().getX() + entry.getKey().getZ() * 32] = ((currentoffset << 8) | newsize);
 			currentoffset += newsize;
 		}
@@ -128,36 +132,32 @@ public class AnvilRegion {
 		for (int timestamp : timestamps) {
 			raf.writeInt(timestamp);
 		}
-		for (ChunkInfo info : chunkbuffers) {
-			raf.writeInt(info.data.length + 1);
-			raf.writeByte(info.compressiontype);
-			raf.write(info.data);
-			byte[] empty = new byte[getBlocks(info.data.length) * 4096 - 5 - info.data.length];
-			raf.write(empty);
+		for (byte[] data : chunkbuffers) {
+			raf.writeInt(data.length);
+			raf.write(data);
+			byte[] pad = new byte[calcPadBytesLength(data.length)];
+			raf.write(pad);
 		}
 		raf.close();
 	}
 
 	public void delete() {
-		File regionfile = new File(regionfolder, "r." + Integer.toString(columnX) + "." + Integer.toString(columnZ) + ".mca");
-		regionfile.delete();	
+		getFile().delete();
 	}
 
-	private int getBlocks(int chunkdatasize) {
-		int chunkdatawithsize = chunkdatasize + 5;
-		if ((chunkdatawithsize & 4095) == 0) {
-			return chunkdatawithsize / 4096;
-		}
-		return (chunkdatawithsize / 4096) + 1;
+	private static final int chunkDataLenFieldSize = Integer.SIZE / Byte.SIZE;
+
+	private int calcPadBytesLength(int chunkdatasize) {
+		return calcPaddedChunkDataDataBlocks(chunkdatasize) * dataBlockSize - chunkDataLenFieldSize - chunkdatasize;
 	}
 
-	private static class ChunkInfo {
-		private int compressiontype;
-		private byte[] data;
-
-		public ChunkInfo(int compressiontype, byte[] data) {
-			this.compressiontype = compressiontype;
-			this.data = data;
+	private int calcPaddedChunkDataDataBlocks(int chunkdatasize) {
+		int chunkdatawithsize = chunkdatasize + chunkDataLenFieldSize;
+		int datablocks = chunkdatawithsize / dataBlockSize;
+		if (chunkdatawithsize % dataBlockSize == 0) {
+			return datablocks;
+		} else {
+			return datablocks + 1;
 		}
 	}
 
