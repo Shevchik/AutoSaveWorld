@@ -65,9 +65,9 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "backup.localfs.enabled")
 	public boolean backupLFSEnabled = true;
 	@ConfigOption(path = "backup.localfs.destinationfolders", postload = DefaultDestFolder.class)
-	public List<String> backupLFSExtFolders = new ArrayList<String>();
+	public List<String> backupLFSExtFolders = new ArrayList<>();
 	@ConfigOption(path = "backup.localfs.worlds", postload = AstListAppend.class)
-	public List<String> backupLFSBackupWorldsList = new ArrayList<String>();
+	public List<String> backupLFSBackupWorldsList = new ArrayList<>();
 	@ConfigOption(path = "backup.localfs.MaxNumberOfWorldsBackups")
 	public int backupLFSMaxNumberOfWorldsBackups = 15;
 	@ConfigOption(path = "backup.localfs.pluginsfolder")
@@ -75,11 +75,11 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "backup.localfs.MaxNumberOfPluginsBackups")
 	public int backupLFSMaxNumberOfPluginsBackups = 15;
 	@ConfigOption(path = "backup.localfs.otherfolders")
-	public List<String> backupLFSOtherFolders = new ArrayList<String>();
+	public List<String> backupLFSOtherFolders = new ArrayList<>();
 	@ConfigOption(path = "backup.localfs.MaxNumberOfOtherFoldersBackups")
 	public int backupLFSMaxNumberOfOtherBackups = 15;
 	@ConfigOption(path = "backup.localfs.excludefolders")
-	public List<String> backupLFSExcludeFolders = new ArrayList<String>();
+	public List<String> backupLFSExcludeFolders = new ArrayList<>();
 	@ConfigOption(path = "backup.localfs.zip")
 	public boolean backupLFSZipEnabled = false;
 	// ftp backup
@@ -100,13 +100,13 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "backup.ftp.path")
 	public String backupFTPPath = "asw";
 	@ConfigOption(path = "backup.ftp.worlds", postload = AstListAppend.class)
-	public List<String> backupFTPWorldsList = new ArrayList<String>();
+	public List<String> backupFTPWorldsList = new ArrayList<>();
 	@ConfigOption(path = "backup.ftp.pluginsfolder")
 	public boolean backupFTPPluginsFolder = false;
 	@ConfigOption(path = "backup.ftp.otherfolders")
-	public List<String> backupFTPOtherFolders = new ArrayList<String>();
+	public List<String> backupFTPOtherFolders = new ArrayList<>();
 	@ConfigOption(path = "backup.ftp.excludefolders")
-	public List<String> backupFTPExcludeFolders = new ArrayList<String>();
+	public List<String> backupFTPExcludeFolders = new ArrayList<>();
 	@ConfigOption(path = "backup.ftp.maxNumberOfBackups")
 	public int backupFTPMaxNumberOfBackups = 4;
 	@ConfigOption(path = "backup.ftp.zip")
@@ -115,7 +115,7 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "backup.script.enabled")
 	public boolean backupScriptEnabled = false;
 	@ConfigOption(path = "backup.script.scriptpaths")
-	public List<String> backupScriptPaths = new ArrayList<String>();
+	public List<String> backupScriptPaths = new ArrayList<>();
 	// dropbox backup
 	@ConfigOption(path = "backup.dropbox.enabled")
 	public boolean backupDropboxEnabled = false;
@@ -124,13 +124,13 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "backup.dropbox.path")
 	public String backupDropboxPath = "asw";
 	@ConfigOption(path = "backup.dropbox.worlds", postload = AstListAppend.class)
-	public List<String> backupDropboxWorldsList = new ArrayList<String>();
+	public List<String> backupDropboxWorldsList = new ArrayList<>();
 	@ConfigOption(path = "backup.dropbox.pluginsfolder")
 	public boolean backupDropboxPluginsFolder = false;
 	@ConfigOption(path = "backup.dropbox.otherfolders")
-	public List<String> backupDropboxOtherFolders = new ArrayList<String>();
+	public List<String> backupDropboxOtherFolders = new ArrayList<>();
 	@ConfigOption(path = "backup.dropbox.excludefolders")
-	public List<String> backupDropboxExcludeFolders = new ArrayList<String>();
+	public List<String> backupDropboxExcludeFolders = new ArrayList<>();
 	@ConfigOption(path = "backup.dropbox.maxNumberOfBackups")
 	public int backupDropboxMaxNumberOfBackups = 4;
 	@ConfigOption(path = "backup.dropbox.zip")
@@ -143,9 +143,9 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "purge.awaytime")
 	public long purgeAwayTime = 60 * 60 * 24 * 30;
 	@ConfigOption(path = "purge.ignorednicks")
-	public List<String> purgeIgnoredNicks = new ArrayList<String>();
+	public List<String> purgeIgnoredNicks = new ArrayList<>();
 	@ConfigOption(path = "purge.ignoreduuids")
-	public List<String> purgeIgnoredUUIDs = new ArrayList<String>();
+	public List<String> purgeIgnoredUUIDs = new ArrayList<>();
 	@ConfigOption(path = "purge.broadcast")
 	public boolean purgeBroadcast = true;
 	@ConfigOption(path = "purge.wg.enabled")
@@ -190,22 +190,22 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "restart.auto.scriptpath", legacypath = "autorestart.scriptpath")
 	public String autoRestartScriptPath = "";
 	@ConfigOption(path = "restart.auto.time", legacypath = "autorestart.time")
-	public List<String> autoRestartTimes = new ArrayList<String>();
+	public List<String> autoRestartTimes = new ArrayList<>();
 	@ConfigOption(path = "restart.auto.countdown.enabled", legacypath = "autorestart.countdown.enabled")
 	public boolean autoRestartCountdown = true;
 	@ConfigOption(path = "restart.auto.countdown.broadcastonsecond", legacypath = "autorestart.countdown.broadcastonsecond", postload = DefaultCountdown.class)
-	public List<Integer> autoRestartCountdownSeconds = new ArrayList<Integer>();
+	public List<Integer> autoRestartCountdownSeconds = new ArrayList<>();
 	@ConfigOption(path = "restart.auto.commands", legacypath = "autorestart.commands")
-	public List<String> autoRestartPreStopCommmands = new ArrayList<String>();
+	public List<String> autoRestartPreStopCommmands = new ArrayList<>();
 	// consolecmmand
 	@ConfigOption(path = "consolecommand.timemode.enabled")
 	public boolean ccTimesModeEnabled = false;
 	@ConfigOption(path = "consolecommand.timemode.times", transform = ConfSectStringHashMap.class)
-	public Map<String, List<String>> ccTimesModeCommands = new HashMap<String, List<String>>();
+	public Map<String, List<String>> ccTimesModeCommands = new HashMap<>();
 	@ConfigOption(path = "consolecommand.intervalmode.enabled")
 	public boolean ccIntervalsModeEnabled = false;
 	@ConfigOption(path = "consolecommand.intervalmode.intervals", transform = ConfSectIntHashMap.class)
-	public Map<Integer, List<String>> ccIntervalsModeCommands = new HashMap<Integer, List<String>>();
+	public Map<Integer, List<String>> ccIntervalsModeCommands = new HashMap<>();
 	// worldregen
 	@ConfigOption(path = "worldregen.newseed")
 	public boolean worldRegenRemoveSeedData = false;

@@ -38,7 +38,7 @@ public class CommandsHandler extends NoTabCompleteCommandsHandler implements Tab
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String commandLabel, String[] args) {
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<String> result = new ArrayList<>();
 		if (command.getName().equals("autosaveworld")) {
 			if (args.length == 1) {
 				for (String subcommandname : subcommandhandlers.keySet()) {
@@ -53,14 +53,14 @@ public class CommandsHandler extends NoTabCompleteCommandsHandler implements Tab
 			} else {
 				String subcommandname = args[0].toLowerCase();
 				if (!permCheck.isAllowed(sender, command.getName(), args, config.commandOnlyFromConsole)) {
-					return new ArrayList<String>();
+					return new ArrayList<>();
 				}
 				if (subcommandhandlers.containsKey(subcommandname)) {
 					return subcommandhandlers.get(subcommandname).tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
 				}
 			}
 		}
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 }

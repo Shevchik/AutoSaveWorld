@@ -47,7 +47,7 @@ public class LocaleChanger {
 
 	// available locales
 	public List<String> getAvailableLocales() {
-		List<String> locales = new LinkedList<String>();
+		List<String> locales = new LinkedList<>();
 		// add additional locales based on files in the jar.
 		try (final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());) {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();

@@ -54,7 +54,7 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 	protected final AutoSaveWorldConfigMSG configmsg;
 	protected final LocaleChanger localeChanger;
 
-	protected final HashMap<String, ISubCommand> subcommandhandlers = new HashMap<String, ISubCommand>();
+	protected final HashMap<String, ISubCommand> subcommandhandlers = new HashMap<>();
 
 	public NoTabCompleteCommandsHandler(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, LocaleChanger localeChanger) {
 		this.plugin = plugin;
@@ -118,7 +118,7 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 			String subcommand = args[0].toLowerCase();
 			if (subcommandhandlers.containsKey(subcommand)) {
 				ISubCommand handler = subcommandhandlers.get(subcommand);
-				if (handler.getMinArguments() > args.length - 1) {
+				if (handler.getMinArguments() > (args.length - 1)) {
 					MessageLogger.sendMessage(sender, "&4Not enough args");
 					return true;
 				} else {
