@@ -95,6 +95,8 @@ public class AutoSaveWorldConfig implements Config {
 	public String backupFTPUsername = "user";
 	@ConfigOption(path = "backup.ftp.password")
 	public String backupFTPPassworld = "password";
+	@ConfigOption(path = "backup.ftp.passive")
+	public boolean backupFTPPassive = false;
 	@ConfigOption(path = "backup.ftp.path")
 	public String backupFTPPath = "asw";
 	@ConfigOption(path = "backup.ftp.worlds", postload = AstListAppend.class)

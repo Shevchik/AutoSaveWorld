@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTP;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
@@ -41,16 +40,20 @@ public class FTPBackup {
 		ftpclient.connect(config.backupFTPHostname, config.backupFTPPort);
 		if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
 			ftpclient.disconnect();
-			MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
-			return;
+			throw new IOException("Failed to connect to ftp server");
 		}
 		if (!ftpclient.login(config.backupFTPUsername, config.backupFTPPassworld)) {
 			ftpclient.disconnect();
-			MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
-			return;
+			throw new IOException("Failed to login to ftp sever");
 		}
 
 		ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
+
+		if (config.backupFTPPassive) {
+			ftpclient.enterLocalPassiveMode();
+		} else {
+			ftpclient.enterLocalActiveMode();
+		}
 
 		VirtualBackupManager.builder()
 		.setBackupPath(config.backupFTPPath)
