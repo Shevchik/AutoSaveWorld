@@ -111,10 +111,16 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 		try {
 			HashSet<String> files = new HashSet<String>();
 			String path = getPath(null);
-			for (ListFolderResult result = dbxclient.files().listFolder(path); result.getHasMore(); result = dbxclient.files().listFolderContinue(result.getCursor())) {
+
+			ListFolderResult result = dbxclient.files().listFolder(path);
+			while (true) {
 				for (Metadata metadata : result.getEntries()) {
 					files.add(metadata.getName());
 				}
+				if (!result.getHasMore()) {
+					break;
+				}
+				result = dbxclient.files().listFolderContinue(result.getCursor());
 			}
 			return files;
 		} catch (DbxException e) {
