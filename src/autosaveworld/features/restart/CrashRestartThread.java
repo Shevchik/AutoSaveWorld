@@ -38,6 +38,7 @@ import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.SchedulerUtils;
+import co.aikar.timings.MinecraftTimings;
 
 public class CrashRestartThread extends Thread {
 
@@ -119,6 +120,11 @@ public class CrashRestartThread extends Thread {
 				// disable spigot async catcher
 				try {
 					AsyncCatcher.enabled = false;
+				} catch (Throwable t) {
+				}
+				// disable paper timings so async access doesn't print unneeded exceptions
+				try {
+					MinecraftTimings.stopServer();
 				} catch (Throwable t) {
 				}
 				log.log(Level.SEVERE, "Disabling plugins");
