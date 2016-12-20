@@ -43,10 +43,12 @@ public class ConfigLoader {
 					Object newvalue = field.get(config);
 					if (yconfig.contains(path)) {
 						newvalue = transform.fromYaml(yconfig.get(path));
-					}
-					for (String legacyPath : option.legacypath()) {
-						if (yconfig.contains(legacyPath)) {
-							newvalue = transform.fromYaml(yconfig.get(legacyPath));
+					} else {
+						for (String legacyPath : option.legacypath()) {
+							if (yconfig.contains(legacyPath)) {
+								newvalue = transform.fromYaml(yconfig.get(legacyPath));
+								break;
+							}
 						}
 					}
 					option.postload().newInstance().postLoad(newvalue);

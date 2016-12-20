@@ -38,22 +38,22 @@ public class SFTPBackup {
 
 	public void performBackup() throws JSchException, IOException {
 		JSch jsch = new JSch();
-		Session session = jsch.getSession(config.backupFTPUsername, config.backupFTPHostname, config.backupFTPPort);
+		Session session = jsch.getSession(config.backupSFTPUsername, config.backupSFTPHostname, config.backupSFTPPort);
 		session.setTimeout(10000);
-		session.setPassword(config.backupFTPPassworld);
+		session.setPassword(config.backupSFTPPassworld);
 		session.connect();
 		Channel channel = session.openChannel(ChannelType.SFTP);
 		channel.connect();
 		ChannelSftp channelSftp = (ChannelSftp) channel;
 
 		VirtualBackupManager.builder()
-		.setBackupPath(config.backupFTPPath)
-		.setWorldList(config.backupFTPWorldsList)
-		.setBackupPlugins(config.backupFTPPluginsFolder)
-		.setOtherFolders(config.backupFTPOtherFolders)
-		.setExcludedFolders(config.backupFTPExcludeFolders)
-		.setMaxBackupNumber(config.backupFTPMaxNumberOfBackups)
-		.setZip(config.backupFTPZipEnabled)
+		.setBackupPath(config.backupSFTPPath)
+		.setWorldList(config.backupSFTPWorldsList)
+		.setBackupPlugins(config.backupSFTPPluginsFolder)
+		.setOtherFolders(config.backupSFTPOtherFolders)
+		.setExcludedFolders(config.backupSFTPExcludeFolders)
+		.setMaxBackupNumber(config.backupSFTPMaxNumberOfBackups)
+		.setZip(config.backupSFTPZipEnabled)
 		.setVFS(new SFTPVirtualFileSystem(channelSftp))
 		.create().backup();
 

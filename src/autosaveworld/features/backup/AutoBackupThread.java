@@ -74,32 +74,52 @@ public class AutoBackupThread extends IntervalTaskThread {
 
 		if (config.backupLFSEnabled) {
 			MessageLogger.debug("Starting LocalFS backup");
-			new LocalFSBackup(config).performBackup();
-			MessageLogger.debug("LocalFS backup finished");
+			try {
+				new LocalFSBackup(config).performBackup();
+				MessageLogger.debug("LocalFS backup finished");
+			} catch (Exception e) {
+				MessageLogger.exception("Error occured while performing LocalFS backup", e);
+			}
 		}
 
 		if (config.backupFTPEnabled) {
-			if (config.backupFTPSFTP) {
-				MessageLogger.debug("Starting SFTP backup");
-				new SFTPBackup(config).performBackup();
-				MessageLogger.debug("SFTP backup finished");
-			} else {
-				MessageLogger.debug("Starting FTP backup");
+			MessageLogger.debug("Starting FTP backup");
+			try {
 				new FTPBackup(config).performBackup();
 				MessageLogger.debug("FTP backup finished");
+			} catch (Exception e) {
+				MessageLogger.exception("Error occured while performing FTP backup", e);
+			}
+		}
+
+		if (config.backupSFTPEnabled) {
+			MessageLogger.debug("Starting SFTP backup");
+			try {
+				new SFTPBackup(config).performBackup();
+				MessageLogger.debug("SFTP backup finished");
+			} catch (Exception e) {
+				MessageLogger.exception("Error occured while performing SFTP backup", e);
 			}
 		}
 
 		if (config.backupScriptEnabled) {
 			MessageLogger.debug("Starting Script backup");
-			new ScriptBackup(config).performBackup();
-			MessageLogger.debug("Script Backup Finished");
+			try {
+				new ScriptBackup(config).performBackup();
+				MessageLogger.debug("Script Backup Finished");
+			} catch (Exception e) {
+				MessageLogger.exception("Error occured while performing Script backup", e);
+			}
 		}
 
 		if (config.backupDropboxEnabled) {
 			MessageLogger.debug("Starting Dropbox backup");
-			new DropboxBackup(config).performBackup();
-			MessageLogger.debug("Dropbox backup Finished");
+			try {
+				new DropboxBackup(config).performBackup();
+				MessageLogger.debug("Dropbox backup Finished");
+			} catch (Exception e) {
+				MessageLogger.exception("Error occured while performing DropBox backup", e);
+			}
 		}
 
 		MessageLogger.debug("Full backup time: " + (System.currentTimeMillis() - timestart) + " milliseconds");
