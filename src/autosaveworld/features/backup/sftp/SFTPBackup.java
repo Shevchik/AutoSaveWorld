@@ -17,13 +17,15 @@
 
 package autosaveworld.features.backup.sftp;
 
+import java.io.IOException;
+
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.com.jcraft.jsch.Channel;
 import autosaveworld.zlibs.com.jcraft.jsch.Channel.ChannelType;
 import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
 import autosaveworld.zlibs.com.jcraft.jsch.JSch;
+import autosaveworld.zlibs.com.jcraft.jsch.JSchException;
 import autosaveworld.zlibs.com.jcraft.jsch.Session;
 
 public class SFTPBackup {
@@ -34,34 +36,29 @@ public class SFTPBackup {
 		this.config = config;
 	}
 
-	public void performBackup() {
-		try {
-			JSch jsch = new JSch();
-			Session session = jsch.getSession(config.backupFTPUsername, config.backupFTPHostname, config.backupFTPPort);
-			session.setTimeout(10000);
-			session.setPassword(config.backupFTPPassworld);
-			session.connect();
-			Channel channel = session.openChannel(ChannelType.SFTP);
-			channel.connect();
-			ChannelSftp channelSftp = (ChannelSftp) channel;
+	public void performBackup() throws JSchException, IOException {
+		JSch jsch = new JSch();
+		Session session = jsch.getSession(config.backupFTPUsername, config.backupFTPHostname, config.backupFTPPort);
+		session.setTimeout(10000);
+		session.setPassword(config.backupFTPPassworld);
+		session.connect();
+		Channel channel = session.openChannel(ChannelType.SFTP);
+		channel.connect();
+		ChannelSftp channelSftp = (ChannelSftp) channel;
 
-			VirtualBackupManager.builder()
-			.setBackupPath(config.backupFTPPath)
-			.setWorldList(config.backupFTPWorldsList)
-			.setBackupPlugins(config.backupFTPPluginsFolder)
-			.setOtherFolders(config.backupFTPOtherFolders)
-			.setExcludedFolders(config.backupFTPExcludeFolders)
-			.setMaxBackupNumber(config.backupFTPMaxNumberOfBackups)
-			.setZip(config.backupFTPZipEnabled)
-			.setVFS(new SFTPVirtualFileSystem(channelSftp))
-			.create().backup();
+		VirtualBackupManager.builder()
+		.setBackupPath(config.backupFTPPath)
+		.setWorldList(config.backupFTPWorldsList)
+		.setBackupPlugins(config.backupFTPPluginsFolder)
+		.setOtherFolders(config.backupFTPOtherFolders)
+		.setExcludedFolders(config.backupFTPExcludeFolders)
+		.setMaxBackupNumber(config.backupFTPMaxNumberOfBackups)
+		.setZip(config.backupFTPZipEnabled)
+		.setVFS(new SFTPVirtualFileSystem(channelSftp))
+		.create().backup();
 
-			channelSftp.exit();
-			session.disconnect();
-		} catch (Throwable e) {
-			MessageLogger.warn("Error occured while performing a backup");
-			e.printStackTrace();
-		}
+		channelSftp.exit();
+		session.disconnect();
 	}
 
 }

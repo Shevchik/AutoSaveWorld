@@ -17,6 +17,9 @@
 
 package autosaveworld.features.backup.ftp;
 
+import java.io.IOException;
+import java.net.SocketException;
+
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
@@ -32,40 +35,35 @@ public class FTPBackup {
 		this.config = config;
 	}
 
-	public void performBackup() {
-		try {
-			FTPClient ftpclient = new FTPClient();
+	public void performBackup() throws SocketException, IOException {
+		FTPClient ftpclient = new FTPClient();
 
-			ftpclient.connect(config.backupFTPHostname, config.backupFTPPort);
-			if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
-				ftpclient.disconnect();
-				MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
-				return;
-			}
-			if (!ftpclient.login(config.backupFTPUsername, config.backupFTPPassworld)) {
-				ftpclient.disconnect();
-				MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
-				return;
-			}
-
-			ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
-
-			VirtualBackupManager.builder()
-			.setBackupPath(config.backupFTPPath)
-			.setWorldList(config.backupFTPWorldsList)
-			.setBackupPlugins(config.backupFTPPluginsFolder)
-			.setOtherFolders(config.backupFTPOtherFolders)
-			.setExcludedFolders(config.backupFTPExcludeFolders)
-			.setMaxBackupNumber(config.backupFTPMaxNumberOfBackups)
-			.setZip(config.backupFTPZipEnabled)
-			.setVFS(new FTPVirtualFileSystem(ftpclient))
-			.create().backup();
-
-			ftpclient.logout();
-		} catch (Throwable e) {
-			MessageLogger.warn("Error occured while performing a backup");
-			e.printStackTrace();
+		ftpclient.connect(config.backupFTPHostname, config.backupFTPPort);
+		if (!FTPReply.isPositiveCompletion(ftpclient.getReplyCode())) {
+			ftpclient.disconnect();
+			MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
+			return;
 		}
+		if (!ftpclient.login(config.backupFTPUsername, config.backupFTPPassworld)) {
+			ftpclient.disconnect();
+			MessageLogger.warn("Failed to connect to ftp server. Backup to ftp server failed");
+			return;
+		}
+
+		ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
+
+		VirtualBackupManager.builder()
+		.setBackupPath(config.backupFTPPath)
+		.setWorldList(config.backupFTPWorldsList)
+		.setBackupPlugins(config.backupFTPPluginsFolder)
+		.setOtherFolders(config.backupFTPOtherFolders)
+		.setExcludedFolders(config.backupFTPExcludeFolders)
+		.setMaxBackupNumber(config.backupFTPMaxNumberOfBackups)
+		.setZip(config.backupFTPZipEnabled)
+		.setVFS(new FTPVirtualFileSystem(ftpclient))
+		.create().backup();
+
+		ftpclient.logout();
 	}
 
 }

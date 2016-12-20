@@ -54,17 +54,13 @@ public class AutoBackupThread extends IntervalTaskThread {
 	}
 
 	@Override
-	public void doTask() {
+	public void doTask() throws Exception {
 		backupRunning = true;
-		try {
-			performBackup();
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+		performBackup();
 		backupRunning = false;
 	}
 
-	public void performBackup() {
+	public void performBackup() throws Exception {
 
 		if (config.backupsaveBefore) {
 			plugin.saveThread.performSave();

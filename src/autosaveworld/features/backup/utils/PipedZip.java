@@ -24,6 +24,8 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.List;
 
+import autosaveworld.core.logging.MessageLogger;
+
 public class PipedZip {
 
 	public static InputStream startZIP(final File inputDir, final List<String> excludefolders) {
@@ -32,19 +34,57 @@ public class PipedZip {
 		try {
 			pipedout.connect(pipedin);
 		} catch (IOException e) {
+			MessageLogger.exception("Exception while connecting stream pipes", e);
 		}
+		final IOExceptionRethrowInputStream in = new IOExceptionRethrowInputStream(pipedin);
 		new Thread("PipedZip files copy thread") {
 			@Override
 			public void run() {
-				ZipUtils.zipFolder(inputDir, pipedout, excludefolders);
+				try {
+					ZipUtils.zipFolder(inputDir, pipedout, excludefolders);
+				} catch (IOException e) {
+					in.exception(e);
+				}
 				try {
 					pipedout.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					MessageLogger.exception("Exception while closing stream pipes", e);
 				}
 			}
 		}.start();
-		return pipedin;
+		return in;
+	}
+
+	private static class IOExceptionRethrowInputStream extends InputStream {
+
+		private final InputStream real;
+		public IOExceptionRethrowInputStream(InputStream real) {
+			this.real = real;
+		}
+
+		private volatile IOException exception;
+
+		public void exception(IOException e) {
+			this.exception = e;
+		}
+
+		@Override
+		public int read() throws IOException {
+			int res = real.read();
+			if (exception != null) {
+				throw exception;
+			}
+			return res;
+		}
+
+		public int read(byte b[], int off, int len) throws IOException {
+			int res = real.read(b, off, len);
+			if (exception != null) {
+				throw exception;
+			}
+			return res;
+		}
+
 	}
 
 }

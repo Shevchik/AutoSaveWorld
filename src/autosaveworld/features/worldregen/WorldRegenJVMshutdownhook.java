@@ -41,8 +41,8 @@ public class WorldRegenJVMshutdownhook extends Thread {
 				task.run();
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
 			MessageLogger.printOutDebug("WorldRegen failed");
+			MessageLogger.printOutException(t);
 		}
 
 		// Signal that restarthook can restart

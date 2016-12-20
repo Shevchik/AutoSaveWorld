@@ -55,8 +55,8 @@ public abstract class IntervalTaskThread extends Thread {
 				if (isEnabled() || shouldrun) {
 					try {
 						doTask();
-					} catch (Throwable t) {
-						t.printStackTrace();
+					} catch (Exception t) {
+						MessageLogger.exception("Exception while performing interval task", t);
 					}
 				}
 			}
@@ -80,6 +80,6 @@ public abstract class IntervalTaskThread extends Thread {
 
 	public abstract int getInterval();
 
-	public abstract void doTask();
+	public abstract void doTask() throws Exception;
 
 }

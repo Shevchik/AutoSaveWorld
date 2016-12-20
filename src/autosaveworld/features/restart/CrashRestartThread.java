@@ -135,7 +135,7 @@ public class CrashRestartThread extends Thread {
 						log.log(Level.SEVERE, "Disabling plugin "+plugins[i].getName());
 						Bukkit.getPluginManager().disablePlugin(plugins[i]);
 					} catch (Throwable e) {
-						e.printStackTrace();
+						log.log(Level.SEVERE, "Error while disabling plugin", e);
 					}
 				}
 				log.log(Level.SEVERE, "Saving players");
@@ -143,16 +143,17 @@ public class CrashRestartThread extends Thread {
 				try {
 					Bukkit.savePlayers();
 				} catch (Throwable e) {
-					e.printStackTrace();
+					log.log(Level.SEVERE, "Error while saving players", e);
 				}
 				log.log(Level.SEVERE, "Saving worlds");
 				// save worlds
 				for (World w : Bukkit.getWorlds()) {
 					if (w.isAutoSave()) {
 						try {
+							log.log(Level.SEVERE, "Saving world " + w.getName());
 							w.save();
 						} catch (Throwable e) {
-							e.printStackTrace();
+							log.log(Level.SEVERE, "Error while saving world", e);
 						}
 					}
 				}
@@ -168,8 +169,8 @@ public class CrashRestartThread extends Thread {
 						shutdownmethod.setAccessible(true);
 						shutdownmethod.invoke(null, 0);
 					} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						t.printStackTrace();
-						e.printStackTrace();
+						MessageLogger.exception("Unable to shutdown JVM normally", t);
+						MessageLogger.exception("Unable to shutdown JVM using workaround", e);
 					}
 				}
 

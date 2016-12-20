@@ -70,9 +70,10 @@ public class VirtualBackupManager {
 		vfs.createAndEnterDirectory("backups");
 		Set<String> backups = vfs.getEntries();
 		if ((maxbackups != 0) && (backups.size() >= maxbackups)) {
-			MessageLogger.debug("Deleting oldest backup");
+			MessageLogger.debug("Finding oldest backup");
 			String oldestBackup = BackupUtils.findOldestBackupName(backups);
 			if (oldestBackup != null) {
+				MessageLogger.debug("Deleting oldest backup " + oldestBackup);
 				vfs.deleteDirectoryRecursive(oldestBackup);
 			}
 		}
@@ -90,11 +91,12 @@ public class VirtualBackupManager {
 			foldersToBackup.add(new File(otherfolder));
 		}
 		for (File folder : foldersToBackup) {
+			folder = folder.getAbsoluteFile();
 			MessageLogger.debug("Backuping folder " + folder);
 			try {
 				backupFolder(folder.getAbsoluteFile());
 			} catch (Exception e) {
-				e.printStackTrace();
+				MessageLogger.exception("Failed to backup folder " + folder, e);
 			}
 			MessageLogger.debug("Backuped folder " + folder);
 		}
@@ -151,7 +153,7 @@ public class VirtualBackupManager {
 		try {
 			vfs.createFile(filename, is);
 		} catch (IOException e) {
-			MessageLogger.warn("Failed to backup file: " + filename);
+			MessageLogger.exception("Failed to backup file: " + filename, e);
 			try {
 				vfs.deleteFile(filename);
 			} catch (IOException ex) {

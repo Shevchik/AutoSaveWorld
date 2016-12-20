@@ -17,6 +17,8 @@
 
 package autosaveworld.features.backup.dropbox;
 
+import java.io.IOException;
+
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.com.dropbox.core.DbxRequestConfig;
@@ -32,23 +34,19 @@ public class DropboxBackup {
 
 	private DbxRequestConfig dconfig = DbxRequestConfig.newBuilder("AutoSaveWorld").withAutoRetryEnabled().withUserLocaleFromPreferences().build();
 
-	public void performBackup() {
-		try {
-			DbxClientV2 client = new DbxClientV2(dconfig, config.backupDropboxAPPTOKEN);
+	public void performBackup() throws IOException {
+		DbxClientV2 client = new DbxClientV2(dconfig, config.backupDropboxAPPTOKEN);
 
-			VirtualBackupManager.builder()
-			.setBackupPath(config.backupDropboxPath)
-			.setWorldList(config.backupDropboxWorldsList)
-			.setBackupPlugins(config.backupDropboxPluginsFolder)
-			.setOtherFolders(config.backupDropboxOtherFolders)
-			.setExcludedFolders(config.backupDropboxExcludeFolders)
-			.setMaxBackupNumber(config.backupDropboxMaxNumberOfBackups)
-			.setZip(config.backupDropboxZipEnabled)
-			.setVFS(new DropboxVirtualFileSystem(client))
-			.create().backup();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		VirtualBackupManager.builder()
+		.setBackupPath(config.backupDropboxPath)
+		.setWorldList(config.backupDropboxWorldsList)
+		.setBackupPlugins(config.backupDropboxPluginsFolder)
+		.setOtherFolders(config.backupDropboxOtherFolders)
+		.setExcludedFolders(config.backupDropboxExcludeFolders)
+		.setMaxBackupNumber(config.backupDropboxMaxNumberOfBackups)
+		.setZip(config.backupDropboxZipEnabled)
+		.setVFS(new DropboxVirtualFileSystem(client))
+		.create().backup();
 	}
 
 }

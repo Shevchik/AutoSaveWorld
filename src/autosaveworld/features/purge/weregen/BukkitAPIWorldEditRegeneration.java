@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import org.bukkit.Material;
 import org.bukkit.World;
 
+import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.weregen.UtilClasses.BlockToPlaceBack;
 import autosaveworld.features.purge.weregen.UtilClasses.ItemSpawnListener;
 import autosaveworld.features.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
@@ -84,8 +85,8 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		for (Vector2D chunk : region.getChunks()) {
 			try {
 				world.regenerateChunk(chunk.getBlockX(), chunk.getBlockZ());
-			} catch (Throwable t) {
-				t.printStackTrace();
+			} catch (Exception t) {
+				MessageLogger.exception("Unable to regenerate chunk " + chunk.getBlockX() + " " + chunk.getBlockZ(), t);
 			}
 		}
 
@@ -148,8 +149,8 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 						if (!block.isAir()) {
 							es.rawSetBlock(pt, block);
 						}
-					} catch (Throwable t) {
-						t.printStackTrace();
+					} catch (Exception t) {
+						MessageLogger.exception("Unable to place back block " + pt.getBlockX() + " " + pt.getBlockY() + " " + pt.getBlockZ(), t);
 					} finally {
 						entryit.remove();
 					}

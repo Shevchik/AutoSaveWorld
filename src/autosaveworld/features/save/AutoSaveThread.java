@@ -137,8 +137,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 				// invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
 				ReflectionUtils.getMethod(worldserver.getClass(), NMSNames.getSaveLevelMethodName(), 0).invoke(worldserver);
 			} catch (Exception e) {
-				MessageLogger.warn("Could not dump RegionFileCache");
-				e.printStackTrace();
+				MessageLogger.exception("Could not dump RegionFileCache", e);
 			}
 		}
 	}
@@ -181,9 +180,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 				ReflectionUtils.getMethod(chunkProvider.getClass(), "a", 1).invoke(chunkProvider, true);
 			}
 		} catch (Throwable e) {
-			MessageLogger.warn("failed to workaround stucture saving, saving world using normal methods");
-			e.printStackTrace();
-			// failed to save using reflection, save world using normal methods
+			MessageLogger.exception("Failed to workaround stucture saving, saving world using normal methods", e);
 			saveWorldNormal(world);
 		}
 	}

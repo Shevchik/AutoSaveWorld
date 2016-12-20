@@ -19,6 +19,7 @@ package autosaveworld.features.backup.utils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,24 +35,20 @@ import autosaveworld.utils.FileUtils;
 
 public class ZipUtils {
 
-	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) {
+	public static void zipFolder(final File srcDir, final File destFile, List<String> excludefolders) throws FileNotFoundException, IOException {
 		destFile.getParentFile().mkdirs();
 
 		try (OutputStream fos = new FileOutputStream(destFile)) {
 			zipFolder(srcDir, fos, excludefolders);
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
-	public static void zipFolder(final File srcDir, final OutputStream outputStream, List<String> excludefolders) {
+	public static void zipFolder(final File srcDir, final OutputStream outputStream, List<String> excludefolders) throws IOException {
 		try (BufferedOutputStream bufOutStream = new BufferedOutputStream(outputStream)) {
 			try (ZipOutputStream zipOutStream = new ZipOutputStream(bufOutStream)) {
 				zipDir(excludefolders, zipOutStream, srcDir, "");
 			}
 			bufOutStream.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

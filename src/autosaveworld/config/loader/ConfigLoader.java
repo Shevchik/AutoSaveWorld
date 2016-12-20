@@ -54,8 +54,7 @@ public class ConfigLoader {
 				}
 			}
 		} catch (Throwable t) {
-			MessageLogger.warn("Unable to load config "+config.getClass().getSimpleName() + ", defaulting to already configured or default values");
-			t.printStackTrace();
+			MessageLogger.exception("Unable to load config "+config.getClass().getSimpleName() + ", defaulting to already configured or default values", t);
 		}
 	}
 
@@ -72,8 +71,7 @@ public class ConfigLoader {
 			}
 			yconfig.save(config.getFile());
 		} catch (Throwable t) {
-			MessageLogger.warn("Unable to save config "+config.getClass().getSimpleName());
-			t.printStackTrace();
+			MessageLogger.exception("Unable to save config "+config.getClass().getSimpleName(), t);
 		}
 	}
 

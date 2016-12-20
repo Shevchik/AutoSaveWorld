@@ -106,8 +106,7 @@ public class WorldRegenThread extends Thread {
 				providers.add(new PStonesDataProvider(wtoregen));
 			}
 		} catch (Throwable t) {
-			MessageLogger.warn("Failed to initialize preserve chunk list");
-			t.printStackTrace();
+			MessageLogger.exception("Failed to initialize preserve chunk list", t);
 			return;
 		}
 

@@ -166,8 +166,7 @@ public class PluginManager {
 			}
 			MessageLogger.sendMessage(sender, "Command not found");
 		} catch (Exception e) {
-			e.printStackTrace();
-			MessageLogger.sendMessage(sender, "Error occured while finding command owner");
+			MessageLogger.sendExceptionMessage(sender, "Error occured while finding command owner", e);
 		}
 	}
 
@@ -196,8 +195,7 @@ public class PluginManager {
 			iutils.loadPlugin(pmpluginfile);
 			MessageLogger.sendMessage(sender, "Plugin loaded");
 		} catch (Exception e) {
-			e.printStackTrace();
-			MessageLogger.sendMessage(sender, "Some error occured while loading plugin");
+			MessageLogger.sendExceptionMessage(sender, "Error occured while loading plugin", e);
 		}
 	}
 
@@ -222,8 +220,7 @@ public class PluginManager {
 			iutils.unloadPlugin(pmplugin);
 			MessageLogger.sendMessage(sender, "Plugin unloaded");
 		} catch (Exception e) {
-			e.printStackTrace();
-			MessageLogger.sendMessage(sender, "Some error occured while unloading plugin");
+			MessageLogger.sendExceptionMessage(sender, "Error occured while unloading plugin", e);
 		}
 	}
 
@@ -256,8 +253,7 @@ public class PluginManager {
 			iutils.loadPlugin(pmpluginfile);
 			MessageLogger.sendMessage(sender, "Plugin reloaded");
 		} catch (Exception e) {
-			e.printStackTrace();
-			MessageLogger.sendMessage(sender, "Some error occured while reloading plugin");
+			MessageLogger.sendExceptionMessage(sender, "Error occured while reloading plugin", e);
 		}
 	}
 

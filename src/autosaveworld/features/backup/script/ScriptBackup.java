@@ -43,7 +43,7 @@ public class ScriptBackup {
 					p = pb.start();
 					p.waitFor();
 				} catch (Exception e) {
-					e.printStackTrace();
+					MessageLogger.exception("Exception occured while executing script " + scriptpath, e);
 				}
 			} else {
 				MessageLogger.debug("Script path is invalid");

@@ -50,8 +50,7 @@ public class MyWarpPurge extends DataPurge {
 		try {
 			mywarp = (MyWarp) ReflectionUtils.getField(mywarpplugin.getClass(), "myWarp").get(mywarpplugin);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-			return;
+			throw new RuntimeException(e);
 		}
 
 		try (TaskExecutor queue = new TaskExecutor(80)) {
