@@ -23,23 +23,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
 
-import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.IntervalTaskThread;
 import autosaveworld.features.backup.AutoBackupThread;
 import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
+import autosaveworld.utils.Threads.IntervalTaskThread;
 
 public class AutoSaveThread extends IntervalTaskThread {
 
-	private AutoSaveWorldConfig config;
-	private AutoSaveWorldConfigMSG configmsg;
-
-	public AutoSaveThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
+	public AutoSaveThread() {
 		super("AutoSaveThread");
-		this.config = config;
-		this.configmsg = configmsg;
 	}
 
 	@Override
@@ -60,7 +54,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 
 	@Override
 	public int getInterval() {
-		return config.saveInterval;
+		return AutoSaveWorld.getInstance().getMainConfig().saveInterval;
 	}
 
 	@Override
@@ -74,7 +68,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 	}
 
 	public void performSaveNow() {
-		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageSaveBroadcastPre, AutoSaveWorld.getInstance().getMainConfig().saveBroadcast);
 
 		MessageLogger.debug("Saving players");
 		Bukkit.savePlayers();
@@ -85,12 +79,12 @@ public class AutoSaveThread extends IntervalTaskThread {
 		}
 		MessageLogger.debug("Saved Worlds");
 
-		MessageLogger.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageSaveBroadcastPost, AutoSaveWorld.getInstance().getMainConfig().saveBroadcast);
 	}
 
 	public void performSave() {
 
-		MessageLogger.broadcast(configmsg.messageSaveBroadcastPre, config.saveBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageSaveBroadcastPre, AutoSaveWorld.getInstance().getMainConfig().saveBroadcast);
 
 		// Save the players
 		MessageLogger.debug("Saving players");
@@ -119,7 +113,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 		MessageLogger.debug("Saved Worlds");
 
 		// Dump region cache
-		if (config.saveDumpRegionCache) {
+		if (AutoSaveWorld.getInstance().getMainConfig().saveDumpRegionCache) {
 			MessageLogger.debug("Dumping cache");
 			for (World world : Bukkit.getWorlds()) {
 				dumpRegionCache(world);
@@ -127,7 +121,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 			MessageLogger.debug("Dumped cache");
 		}
 
-		MessageLogger.broadcast(configmsg.messageSaveBroadcastPost, config.saveBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageSaveBroadcastPost, AutoSaveWorld.getInstance().getMainConfig().saveBroadcast);
 	}
 
 	private void dumpRegionCache(World world) {
@@ -147,7 +141,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 			return;
 		}
 
-		if (config.saveDisableStructureSaving && needSaveWorkAround()) {
+		if (AutoSaveWorld.getInstance().getMainConfig().saveDisableStructureSaving && needSaveWorkAround()) {
 			saveWorldDoNoSaveStructureInfo(world);
 		} else {
 			saveWorldNormal(world);

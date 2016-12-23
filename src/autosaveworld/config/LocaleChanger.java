@@ -37,19 +37,11 @@ import autosaveworld.core.logging.MessageLogger;
 
 public class LocaleChanger {
 
-	private AutoSaveWorld plugin;
-	private AutoSaveWorldConfigMSG configmsg;
-
-	public LocaleChanger(AutoSaveWorld plugin, AutoSaveWorldConfigMSG configmsg) {
-		this.plugin = plugin;
-		this.configmsg = configmsg;
-	}
-
 	// available locales
 	public List<String> getAvailableLocales() {
 		List<String> locales = new LinkedList<>();
 		// add additional locales based on files in the jar.
-		try (final ZipFile zipFile = new ZipFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());) {
+		try (final ZipFile zipFile = new ZipFile(AutoSaveWorld.getInstance().getClass().getProtectionDomain().getCodeSource().getLocation().getFile());) {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry ze = entries.nextElement();
@@ -76,7 +68,7 @@ public class LocaleChanger {
 		loadLocaleFile(locale);
 		// now load it
 		MessageLogger.debug("loading configs");
-		ConfigLoader.loadAndSave(configmsg);
+		ConfigLoader.loadAndSave(AutoSaveWorld.getInstance().getMessageConfig());
 	}
 
 	// load needed locale file

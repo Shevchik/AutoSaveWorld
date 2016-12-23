@@ -23,30 +23,24 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-import autosaveworld.config.AutoSaveWorldConfigMSG;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 
 public class AntiJoinListener implements Listener {
 
-	private AutoSaveWorldConfigMSG configmsg;
-
-	public AntiJoinListener(AutoSaveWorldConfigMSG configmsg) {
-		this.configmsg = configmsg;
-	}
-
 	@EventHandler 
 	public void onAsyncLogin(AsyncPlayerPreLoginEvent e) {
-		MessageLogger.disallow(e, configmsg.messageWorldRegenKick);
+		MessageLogger.disallow(e, AutoSaveWorld.getInstance().getMessageConfig().messageWorldRegenKick);
 	}
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent e) {
-		MessageLogger.disallow(e, configmsg.messageWorldRegenKick);
+		MessageLogger.disallow(e, AutoSaveWorld.getInstance().getMessageConfig().messageWorldRegenKick);
 	}
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		MessageLogger.kickPlayer(e.getPlayer(), configmsg.messageWorldRegenKick);
+		MessageLogger.kickPlayer(e.getPlayer(), AutoSaveWorld.getInstance().getMessageConfig().messageWorldRegenKick);
 	}
 
 }

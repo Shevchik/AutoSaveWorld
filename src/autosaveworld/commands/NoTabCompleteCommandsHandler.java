@@ -41,46 +41,34 @@ import autosaveworld.commands.subcommands.ServerStatusSubCommand;
 import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.commands.subcommands.VersionSubCommand;
 import autosaveworld.commands.subcommands.WorldRegenSubCommand;
-import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 
 public class NoTabCompleteCommandsHandler implements CommandExecutor {
 
-	protected final AutoSaveWorld plugin;
-	protected final AutoSaveWorldConfig config;
-	protected final AutoSaveWorldConfigMSG configmsg;
-	protected final LocaleChanger localeChanger;
+	protected final LocaleChanger localeChanger = new LocaleChanger();
 
 	protected final HashMap<String, ISubCommand> subcommandhandlers = new HashMap<>();
 
-	public NoTabCompleteCommandsHandler(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, LocaleChanger localeChanger) {
-		this.plugin = plugin;
-		this.config = config;
-		this.configmsg = configmsg;
-		this.localeChanger = localeChanger;
-	}
-
 	public void initSubCommandHandlers() {
 		subcommandhandlers.clear();
-		subcommandhandlers.put("version", new VersionSubCommand(plugin));
+		subcommandhandlers.put("version", new VersionSubCommand());
 		subcommandhandlers.put("help", new HelpSubCommand());
-		subcommandhandlers.put("reload", new ReloadAllSubCommand(config, configmsg));
-		subcommandhandlers.put("reloadconfig", new ReloadConfigSubCommand(config));
-		subcommandhandlers.put("reloadmsg", new ReloadConfigMSGSubCommand(configmsg));
+		subcommandhandlers.put("reload", new ReloadAllSubCommand());
+		subcommandhandlers.put("reloadconfig", new ReloadConfigSubCommand());
+		subcommandhandlers.put("reloadmsg", new ReloadConfigMSGSubCommand());
 		subcommandhandlers.put("locale", new LocaleSubCommand(localeChanger));
-		subcommandhandlers.put("process", new ProcessManagerSubCommand(plugin));
-		subcommandhandlers.put("pmanager", new PluginManagerSubCommand(plugin));
+		subcommandhandlers.put("process", new ProcessManagerSubCommand());
+		subcommandhandlers.put("pmanager", new PluginManagerSubCommand());
 		subcommandhandlers.put("forcegc", new ForceGCSubCommand());
 		subcommandhandlers.put("serverstatus", new ServerStatusSubCommand());
-		subcommandhandlers.put("save", new SaveSubCommand(plugin));
-		subcommandhandlers.put("backup", new BackupSubCommand(plugin));
-		subcommandhandlers.put("purge", new PurgeSubCommand(plugin));
-		subcommandhandlers.put("restart", new RestartSubCommand(plugin));
-		subcommandhandlers.put("forcerestart", new ForceRestartSubCommand(plugin));
-		subcommandhandlers.put("regenworld", new WorldRegenSubCommand(plugin, config, configmsg));
+		subcommandhandlers.put("save", new SaveSubCommand());
+		subcommandhandlers.put("backup", new BackupSubCommand());
+		subcommandhandlers.put("purge", new PurgeSubCommand());
+		subcommandhandlers.put("restart", new RestartSubCommand());
+		subcommandhandlers.put("forcerestart", new ForceRestartSubCommand());
+		subcommandhandlers.put("regenworld", new WorldRegenSubCommand());
 		subcommandhandlers.put("stop", new StopCommand());
 	}
 
@@ -92,23 +80,23 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 		String commandName = command.getName().toLowerCase();
 
 		// check permissions
-		if (!permCheck.isAllowed(sender, commandName, args, config.commandOnlyFromConsole)) {
-			MessageLogger.sendMessage(sender, configmsg.messageInsufficientPermissions);
+		if (!permCheck.isAllowed(sender, commandName, args, AutoSaveWorld.getInstance().getMainConfig().commandOnlyFromConsole)) {
+			MessageLogger.sendMessage(sender, AutoSaveWorld.getInstance().getMessageConfig().messageInsufficientPermissions);
 			return true;
 		}
 
 		// now handle commands
 		if (commandName.equalsIgnoreCase("autosave")) {
 			// "autosave" command handler
-			plugin.saveThread.triggerTaskRun();
+			AutoSaveWorld.getInstance().saveThread.triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autobackup")) {
 			// "autobackup" command handler
-			plugin.backupThread.triggerTaskRun();
+			AutoSaveWorld.getInstance().backupThread.triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autopurge")) {
 			// "autopurge" command handler
-			plugin.purgeThread.triggerTaskRun();
+			AutoSaveWorld.getInstance().purgeThread.triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autosaveworld")) {
 			// "autosaveworld" command handler

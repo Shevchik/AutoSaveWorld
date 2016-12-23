@@ -17,40 +17,31 @@
 
 package autosaveworld.features.backup;
 
-import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.IntervalTaskThread;
 import autosaveworld.features.backup.dropbox.DropboxBackup;
 import autosaveworld.features.backup.ftp.FTPBackup;
 import autosaveworld.features.backup.localfs.LocalFSBackup;
 import autosaveworld.features.backup.script.ScriptBackup;
 import autosaveworld.features.backup.sftp.SFTPBackup;
+import autosaveworld.utils.Threads.IntervalTaskThread;
 
 public class AutoBackupThread extends IntervalTaskThread {
 
-	private AutoSaveWorld plugin;
-	private AutoSaveWorldConfig config;
-	private AutoSaveWorldConfigMSG configmsg;
-
-	public AutoBackupThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
+	public AutoBackupThread() {
 		super("AutoBackupThread");
-		this.plugin = plugin;
-		this.config = config;
-		this.configmsg = configmsg;
 	}
 
 	public static volatile boolean backupRunning = false;
 
 	@Override
 	public boolean isEnabled() {
-		return config.backupEnabled;
+		return AutoSaveWorld.getInstance().getMainConfig().backupEnabled;
 	}
 
 	@Override
 	public int getInterval() {
-		return config.backupInterval;
+		return AutoSaveWorld.getInstance().getMainConfig().backupInterval;
 	}
 
 	@Override
@@ -62,60 +53,60 @@ public class AutoBackupThread extends IntervalTaskThread {
 
 	public void performBackup() throws Exception {
 
-		if (config.backupsaveBefore) {
-			plugin.saveThread.performSave();
+		if (AutoSaveWorld.getInstance().getMainConfig().backupsaveBefore) {
+			AutoSaveWorld.getInstance().saveThread.performSave();
 		}
 
 		long timestart = System.currentTimeMillis();
 
-		MessageLogger.broadcast(configmsg.messageBackupBroadcastPre, config.backupBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageBackupBroadcastPre, AutoSaveWorld.getInstance().getMainConfig().backupBroadcast);
 
-		InputStreamConstruct.setRateLimit(config.backupRateLimit);
+		InputStreamConstruct.setRateLimit(AutoSaveWorld.getInstance().getMainConfig().backupRateLimit);
 
-		if (config.backupLFSEnabled) {
+		if (AutoSaveWorld.getInstance().getMainConfig().backupLFSEnabled) {
 			MessageLogger.debug("Starting LocalFS backup");
 			try {
-				new LocalFSBackup(config).performBackup();
+				new LocalFSBackup().performBackup();
 				MessageLogger.debug("LocalFS backup finished");
 			} catch (Exception e) {
 				MessageLogger.exception("Error occured while performing LocalFS backup", e);
 			}
 		}
 
-		if (config.backupFTPEnabled) {
+		if (AutoSaveWorld.getInstance().getMainConfig().backupFTPEnabled) {
 			MessageLogger.debug("Starting FTP backup");
 			try {
-				new FTPBackup(config).performBackup();
+				new FTPBackup().performBackup();
 				MessageLogger.debug("FTP backup finished");
 			} catch (Exception e) {
 				MessageLogger.exception("Error occured while performing FTP backup", e);
 			}
 		}
 
-		if (config.backupSFTPEnabled) {
+		if (AutoSaveWorld.getInstance().getMainConfig().backupSFTPEnabled) {
 			MessageLogger.debug("Starting SFTP backup");
 			try {
-				new SFTPBackup(config).performBackup();
+				new SFTPBackup().performBackup();
 				MessageLogger.debug("SFTP backup finished");
 			} catch (Exception e) {
 				MessageLogger.exception("Error occured while performing SFTP backup", e);
 			}
 		}
 
-		if (config.backupScriptEnabled) {
+		if (AutoSaveWorld.getInstance().getMainConfig().backupScriptEnabled) {
 			MessageLogger.debug("Starting Script backup");
 			try {
-				new ScriptBackup(config).performBackup();
+				new ScriptBackup().performBackup();
 				MessageLogger.debug("Script Backup Finished");
 			} catch (Exception e) {
 				MessageLogger.exception("Error occured while performing Script backup", e);
 			}
 		}
 
-		if (config.backupDropboxEnabled) {
+		if (AutoSaveWorld.getInstance().getMainConfig().backupDropboxEnabled) {
 			MessageLogger.debug("Starting Dropbox backup");
 			try {
-				new DropboxBackup(config).performBackup();
+				new DropboxBackup().performBackup();
 				MessageLogger.debug("Dropbox backup Finished");
 			} catch (Exception e) {
 				MessageLogger.exception("Error occured while performing DropBox backup", e);
@@ -124,7 +115,7 @@ public class AutoBackupThread extends IntervalTaskThread {
 
 		MessageLogger.debug("Full backup time: " + (System.currentTimeMillis() - timestart) + " milliseconds");
 
-		MessageLogger.broadcast(configmsg.messageBackupBroadcastPost, config.backupBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageBackupBroadcastPost, AutoSaveWorld.getInstance().getMainConfig().backupBroadcast);
 
 	}
 

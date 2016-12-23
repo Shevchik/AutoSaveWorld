@@ -27,22 +27,10 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
 import autosaveworld.commands.ISubCommand;
-import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
-import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.worldregen.WorldRegenThread;
 
 public class WorldRegenSubCommand implements ISubCommand {
-
-	private AutoSaveWorld plugin;
-	private AutoSaveWorldConfig config;
-	private AutoSaveWorldConfigMSG configmsg;
-	public WorldRegenSubCommand(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
-		this.plugin = plugin;
-		this.config = config;
-		this.configmsg = configmsg;
-	}
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
@@ -57,7 +45,7 @@ public class WorldRegenSubCommand implements ISubCommand {
 		if (!new File(args[1]).exists()) {
 			MessageLogger.sendMessage(sender, "This folder doesn't exist");
 		}
-		new WorldRegenThread(plugin, config, configmsg, args[0], args[1]).start();
+		new WorldRegenThread(args[0], args[1]).start();
 	}
 
 	@Override

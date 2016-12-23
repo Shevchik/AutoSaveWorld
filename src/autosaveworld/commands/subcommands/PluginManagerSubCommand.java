@@ -23,25 +23,22 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 
 import autosaveworld.commands.ISubCommand;
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.features.pluginmanager.PluginManager;
 import autosaveworld.utils.StringUtils;
 
 public class PluginManagerSubCommand implements ISubCommand {
 
-	private AutoSaveWorld plugin;
-	public PluginManagerSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
+	private final PluginManager pluginmanager = new PluginManager();
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
 		String[] nameArray = Arrays.copyOfRange(args, 1, args.length);
-		plugin.pluginmanager.handlePluginManagerCommand(sender, args[0], StringUtils.join(nameArray, " "));
+		pluginmanager.handlePluginManagerCommand(sender, args[0], StringUtils.join(nameArray, " "));
 	}
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return plugin.pluginmanager.getTabComplete(sender, args);
+		return pluginmanager.getTabComplete(sender, args);
 	}
 
 	@Override

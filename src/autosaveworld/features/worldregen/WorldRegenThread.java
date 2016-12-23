@@ -26,7 +26,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.restart.RestartWaiter;
@@ -41,21 +40,14 @@ import autosaveworld.features.worldregen.storage.Coord;
 import autosaveworld.features.worldregen.storage.WorldMap;
 import autosaveworld.utils.BukkitUtils;
 import autosaveworld.utils.FileUtils;
-import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class WorldRegenThread extends Thread {
 
-	private AutoSaveWorld plugin;
-	private AutoSaveWorldConfig config;
-	private AutoSaveWorldConfigMSG configmsg;
-	private String worldtoregen;
-	private String worldRegionFolder;
-
-	public WorldRegenThread(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, String worldtoregen, String worldRegionFolder) {
-		this.plugin = plugin;
-		this.config = config;
-		this.configmsg = configmsg;
+	private final String worldtoregen;
+	private final String worldRegionFolder;
+	public WorldRegenThread(String worldtoregen, String worldRegionFolder) {
+		super("AutoSaveWorld WorldRegenCopyThread");
 		this.worldtoregen = worldtoregen;
 		this.worldRegionFolder = worldRegionFolder;
 	}
@@ -63,19 +55,17 @@ public class WorldRegenThread extends Thread {
 	@Override
 	public void run() {
 		MessageLogger.debug("WorldRegenThread Started");
-		Thread.currentThread().setName("AutoSaveWorld WorldRegenCopyThread");
-
 		doWorldRegen();
 	}
 
 	private void doWorldRegen() {
 
-		ListenerUtils.registerListener(new AntiJoinListener(configmsg));
+		BukkitUtils.registerListener(new AntiJoinListener());
 		SchedulerUtils.callSyncTaskAndWait(new Runnable() {
 			@Override
 			public void run() {
 				for (Player p : BukkitUtils.getOnlinePlayers()) {
-					MessageLogger.kickPlayer(p, configmsg.messageWorldRegenKick);
+					MessageLogger.kickPlayer(p, AutoSaveWorld.getInstance().getMessageConfig().messageWorldRegenKick);
 				}
 			}
 		});
@@ -84,6 +74,7 @@ public class WorldRegenThread extends Thread {
 
 		final ArrayList<DataProvider> providers = new ArrayList<DataProvider>();
 
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
 		try {
 			if ((Bukkit.getPluginManager().getPlugin("WorldGuard") != null) && config.worldRegenSaveWG) {
 				MessageLogger.debug("WG found, adding to copy list");
@@ -124,7 +115,7 @@ public class WorldRegenThread extends Thread {
 			public void run() throws Throwable {
 				File regionfolder = new File(worldRegionFolder);
 				for (File regionfile : FileUtils.safeListFiles(regionfolder)) {
-					MessageLogger.printOutDebug("Processing regionfile "+regionfile.getName());
+					MessageLogger.printOut("Processing regionfile "+regionfile.getName());
 					try {
 						AnvilRegion region = new AnvilRegion(regionfolder, regionfile.getName());
 						if (preservechunks.hasChunks(region.getX(), region.getZ())) {
@@ -140,7 +131,7 @@ public class WorldRegenThread extends Thread {
 							region.delete();
 						}
 					} catch (Throwable e) {
-						MessageLogger.printOutDebug("Failed to process regionfile "+regionfile.getName());
+						MessageLogger.printOut("Failed to process regionfile "+regionfile.getName());
 					}
 				}
 			}
@@ -165,7 +156,7 @@ public class WorldRegenThread extends Thread {
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		RestartWaiter.incrementWait();
 
-		plugin.autorestartThread.startrestart(true);
+		AutoSaveWorld.getInstance().autorestartThread.triggerRestart(true);
 	}
 
 }

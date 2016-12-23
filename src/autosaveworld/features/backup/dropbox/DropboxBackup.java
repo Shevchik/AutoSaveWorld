@@ -20,21 +20,18 @@ package autosaveworld.features.backup.dropbox;
 import java.io.IOException;
 
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.com.dropbox.core.DbxRequestConfig;
 import autosaveworld.zlibs.com.dropbox.core.v2.DbxClientV2;
 
 public class DropboxBackup {
 
-	private AutoSaveWorldConfig config;
-
-	public DropboxBackup(AutoSaveWorldConfig config) {
-		this.config = config;
-	}
-
-	private DbxRequestConfig dconfig = DbxRequestConfig.newBuilder("AutoSaveWorld").withAutoRetryEnabled().withUserLocaleFromPreferences().build();
+	private final DbxRequestConfig dconfig = DbxRequestConfig.newBuilder(AutoSaveWorld.getInstance().getName()).withAutoRetryEnabled().withUserLocaleFromPreferences().build();
 
 	public void performBackup() throws IOException {
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
+
 		DbxClientV2 client = new DbxClientV2(dconfig, config.backupDropboxAPPTOKEN);
 
 		VirtualBackupManager.builder()

@@ -23,35 +23,30 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.IntervalTaskThread;
 import autosaveworld.features.purge.plugins.DatfilePurge;
 import autosaveworld.features.purge.plugins.essentials.EssentialsPurge;
 import autosaveworld.features.purge.plugins.lwc.LWCPurge;
 import autosaveworld.features.purge.plugins.mywarp.MyWarpPurge;
 import autosaveworld.features.purge.plugins.permissions.PermissionsPurge;
 import autosaveworld.features.purge.plugins.wg.WGPurge;
+import autosaveworld.utils.Threads.IntervalTaskThread;
 
 public class AutoPurgeThread extends IntervalTaskThread {
 
-	private AutoSaveWorldConfig config;
-	private AutoSaveWorldConfigMSG configmsg;
-
-	public AutoPurgeThread(AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg) {
+	public AutoPurgeThread() {
 		super("AutoPurgeThread");
-		this.config = config;
-		this.configmsg = configmsg;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return config.purgeEnabled;
+		return AutoSaveWorld.getInstance().getMainConfig().purgeEnabled;
 	}
 
 	@Override
 	public int getInterval() {
-		return config.purgeInterval;
+		return AutoSaveWorld.getInstance().getMainConfig().purgeInterval;
 	}
 
 	@Override
@@ -60,13 +55,15 @@ public class AutoPurgeThread extends IntervalTaskThread {
 	}
 
 	public void performPurge() {
-		MessageLogger.broadcast(configmsg.messagePurgeBroadcastPre, config.purgeBroadcast);
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
+
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messagePurgeBroadcastPre, config.purgeBroadcast);
 
 		MessageLogger.debug("Purge started");
 
 		MessageLogger.debug("Finiding active players");
-		ActivePlayersList activelist = new ActivePlayersList(config);
-		activelist.calculateActivePlayers(config.purgeAwayTime * 1000);
+		ActivePlayersList activelist = new ActivePlayersList(config.purgeIgnoredNicks, config.purgeIgnoredUUIDs);
+		activelist.calculateActivePlayers(AutoSaveWorld.getInstance().getMainConfig().purgeAwayTime * 1000);
 		MessageLogger.debug("Found " + activelist.getActivePlayersCount() + " active players");
 
 		ArrayList<DataPurge> purges = new ArrayList<DataPurge>();
@@ -102,8 +99,7 @@ public class AutoPurgeThread extends IntervalTaskThread {
 
 		MessageLogger.debug("Purge finished");
 
-		MessageLogger.broadcast(configmsg.messagePurgeBroadcastPost, config.purgeBroadcast);
-
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messagePurgeBroadcastPost, config.purgeBroadcast);
 	}
 
 }

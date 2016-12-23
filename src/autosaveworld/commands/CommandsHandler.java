@@ -19,22 +19,16 @@ package autosaveworld.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import autosaveworld.config.AutoSaveWorldConfig;
-import autosaveworld.config.AutoSaveWorldConfigMSG;
-import autosaveworld.config.LocaleChanger;
 import autosaveworld.core.AutoSaveWorld;
 
 public class CommandsHandler extends NoTabCompleteCommandsHandler implements TabCompleter {
-
-	public CommandsHandler(AutoSaveWorld plugin, AutoSaveWorldConfig config, AutoSaveWorldConfigMSG configmsg, LocaleChanger localeChanger) {
-		super(plugin, config, configmsg, localeChanger);
-	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String commandLabel, String[] args) {
@@ -44,7 +38,7 @@ public class CommandsHandler extends NoTabCompleteCommandsHandler implements Tab
 				for (String subcommandname : subcommandhandlers.keySet()) {
 					if (
 						subcommandname.startsWith(args[0].toLowerCase()) &&
-						permCheck.isAllowed(sender, command.getName(), new String[] {subcommandname}, config.commandOnlyFromConsole)
+						permCheck.isAllowed(sender, command.getName(), new String[] {subcommandname}, AutoSaveWorld.getInstance().getMainConfig().commandOnlyFromConsole)
 					) {
 						result.add(subcommandname);
 					}
@@ -52,8 +46,8 @@ public class CommandsHandler extends NoTabCompleteCommandsHandler implements Tab
 				return result;
 			} else {
 				String subcommandname = args[0].toLowerCase();
-				if (!permCheck.isAllowed(sender, command.getName(), args, config.commandOnlyFromConsole)) {
-					return new ArrayList<>();
+				if (!permCheck.isAllowed(sender, command.getName(), args, AutoSaveWorld.getInstance().getMainConfig().commandOnlyFromConsole)) {
+					return Collections.emptyList();
 				}
 				if (subcommandhandlers.containsKey(subcommandname)) {
 					return subcommandhandlers.get(subcommandname).tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));

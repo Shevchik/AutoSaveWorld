@@ -27,14 +27,9 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class BackupSubCommand implements ISubCommand {
 
-	private AutoSaveWorld plugin;
-	public BackupSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		plugin.backupThread.triggerTaskRun();
+		AutoSaveWorld.getInstance().backupThread.triggerTaskRun();
 	}
 
 	@Override

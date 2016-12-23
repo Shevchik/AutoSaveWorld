@@ -29,25 +29,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.ReflectionUtils;
 
 public class NetworkWatcherProxySelector extends ProxySelector {
 
-	private AutoSaveWorldConfig config;
-	private ProxySelector defaultSelector;
+	private final ProxySelector defaultSelector;
 
 	public ProxySelector getDefaultSelector() {
 		return defaultSelector;
 	}
 
-	public NetworkWatcherProxySelector(ProxySelector defaultSelector, AutoSaveWorldConfig config) {
+	public NetworkWatcherProxySelector(ProxySelector defaultSelector) {
 		this.defaultSelector = defaultSelector;
-		this.config = config;
 	}
 
 	@Override
 	public List<Proxy> select(URI uri) {
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
 		if (config.networkWatcherWarnMainThreadAcc) {
 			if (Bukkit.isPrimaryThread()) {
 				if (config.networkWatcherInterruptMainThreadNetAcc) {

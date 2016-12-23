@@ -20,6 +20,7 @@ package autosaveworld.features.backup.sftp;
 import java.io.IOException;
 
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.com.jcraft.jsch.Channel;
 import autosaveworld.zlibs.com.jcraft.jsch.Channel.ChannelType;
@@ -30,13 +31,9 @@ import autosaveworld.zlibs.com.jcraft.jsch.Session;
 
 public class SFTPBackup {
 
-	private AutoSaveWorldConfig config;
-
-	public SFTPBackup(AutoSaveWorldConfig config) {
-		this.config = config;
-	}
-
 	public void performBackup() throws JSchException, IOException {
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
+
 		JSch jsch = new JSch();
 		Session session = jsch.getSession(config.backupSFTPUsername, config.backupSFTPHostname, config.backupSFTPPort);
 		session.setTimeout(10000);

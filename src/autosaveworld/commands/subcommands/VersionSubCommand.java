@@ -28,13 +28,9 @@ import autosaveworld.core.logging.MessageLogger;
 
 public class VersionSubCommand implements ISubCommand {
 
-	private AutoSaveWorld plugin;
-	public VersionSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
 	@Override
 	public void handle(CommandSender sender, String[] args) {
+		AutoSaveWorld plugin = AutoSaveWorld.getInstance();
 		MessageLogger.sendMessage(sender, plugin.getDescription().getName() + " " + plugin.getDescription().getVersion());
 	}
 

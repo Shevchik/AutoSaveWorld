@@ -23,20 +23,15 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 
 import autosaveworld.commands.ISubCommand;
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.loader.ConfigLoader;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 
 public class ReloadConfigSubCommand implements ISubCommand {
 
-	private AutoSaveWorldConfig config;
-	public ReloadConfigSubCommand(AutoSaveWorldConfig config) {
-		this.config = config;
-	}
-
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		ConfigLoader.loadAndSave(config);
+		ConfigLoader.loadAndSave(AutoSaveWorld.getInstance().getMainConfig());
 		MessageLogger.sendMessage(sender, "Main configuration reloaded");
 	}
 

@@ -31,14 +31,9 @@ import autosaveworld.features.restart.RestartScript.PlatformNotSupportedExceptio
 
 public class RestartShutdownHook extends Thread {
 
-	public RestartShutdownHook() {
-		RestartWaiter.init();
-	}
-
-	private File restartscript = null;
-
-	public void setPath(String path) {
-		restartscript = new File(path);
+	private final File restartscript;
+	public RestartShutdownHook(File restartscript) {
+		this.restartscript = restartscript;
 	}
 
 	public void restart() {

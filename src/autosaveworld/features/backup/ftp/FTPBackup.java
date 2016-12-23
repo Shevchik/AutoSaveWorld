@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTP;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
@@ -28,13 +29,9 @@ import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPReply;
 
 public class FTPBackup {
 
-	private AutoSaveWorldConfig config;
-
-	public FTPBackup(AutoSaveWorldConfig config) {
-		this.config = config;
-	}
-
 	public void performBackup() throws SocketException, IOException {
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
+
 		FTPClient ftpclient = new FTPClient();
 
 		ftpclient.connect(config.backupFTPHostname, config.backupFTPPort);

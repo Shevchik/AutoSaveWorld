@@ -18,26 +18,29 @@
 package autosaveworld.features.purge;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.BukkitUtils;
 
 public class ActivePlayersList {
 
-	private AutoSaveWorldConfig config;
-
-	public ActivePlayersList(AutoSaveWorldConfig config) {
-		this.config = config;
+	private final List<String> ignoreNicks;
+	private final List<String> ignoreUUIDs;
+	public ActivePlayersList(List<String> ignoreNicks, List<String> ignoreUUIDs) {
+		this.ignoreNicks = ignoreNicks;
+		this.ignoreUUIDs = ignoreUUIDs;
 	}
 
-	private HashSet<String> plactiveUUID = new HashSet<String>();
-	private HashSet<String> plactiveNames = new HashSet<String>();
+	private final HashSet<String> plactiveUUID = new HashSet<String>();
+	private final HashSet<String> plactiveNames = new HashSet<String>();
+
+	private OfflinePlayer[] players;
 
 	public void calculateActivePlayers(long awaytime) {
 		// fill lists
@@ -48,9 +51,9 @@ public class ActivePlayersList {
 			plactiveUUID.add(uuidstring);
 			plactiveNames.add(player.getName().toLowerCase());
 		}
-		OfflinePlayer[] offplayers = Bukkit.getOfflinePlayers();
+		players = Bukkit.getOfflinePlayers();
 		// add offline players that were away not for that long
-		for (OfflinePlayer offplayer : offplayers) {
+		for (OfflinePlayer offplayer : players) {
 			String uuidstring = offplayer.getUniqueId().toString().replace("-", "");
 			MessageLogger.debug("Checking player " + uuidstring);
 			if ((System.currentTimeMillis() - offplayer.getLastPlayed()) < awaytime) {
@@ -63,15 +66,14 @@ public class ActivePlayersList {
 			}
 		}
 		// add players from ignored lists
-		for (OfflinePlayer offplayer : offplayers) {
-			if ((offplayer.getName() != null) && config.purgeIgnoredNicks.contains(offplayer.getName())) {
+		for (OfflinePlayer offplayer : players) {
+			if ((offplayer.getName() != null) && ignoreNicks.contains(offplayer.getName())) {
 				String uuidstring = offplayer.getUniqueId().toString();
 				MessageLogger.debug("Adding ignored player " + uuidstring.replace("-", "") + " to active list");
-				config.purgeIgnoredUUIDs.add(uuidstring);
+				ignoreUUIDs.add(uuidstring);
 			}
 		}
-		config.purgeIgnoredNicks.clear();
-		for (String listuuid : config.purgeIgnoredUUIDs) {
+		for (String listuuid : ignoreUUIDs) {
 			MessageLogger.debug("Adding ignored player " + listuuid.replace("-", "") + " to active list");
 			plactiveUUID.add(listuuid.replace("-", ""));
 			OfflinePlayer offplayer = Bukkit.getOfflinePlayer(UUID.fromString(listuuid));
@@ -80,6 +82,10 @@ public class ActivePlayersList {
 				plactiveNames.add(name.toLowerCase());
 			}
 		}
+	}
+
+	public OfflinePlayer[] getAllPlayers() {
+		return players;
 	}
 
 	public int getActivePlayersCount() {

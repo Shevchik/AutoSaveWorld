@@ -27,14 +27,9 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class RestartSubCommand implements ISubCommand {
 
-	private AutoSaveWorld plugin;
-	public RestartSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		plugin.autorestartThread.startrestart(false);
+		AutoSaveWorld.getInstance().autorestartThread.triggerRestart(false);
 	}
 
 	@Override

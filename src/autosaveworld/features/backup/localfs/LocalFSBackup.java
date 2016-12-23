@@ -23,17 +23,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 
 public class LocalFSBackup {
 
-	private AutoSaveWorldConfig config;
-
-	public LocalFSBackup(AutoSaveWorldConfig config) {
-		this.config = config;
-	}
-
 	public void performBackup() {
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
 		for (String extpath : config.backupLFSExtFolders) {
 			LocalFSBackupOperations bo = new LocalFSBackupOperations(config.backupLFSZipEnabled, extpath, config.backupLFSExcludeFolders);
 			String backuptimestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis());

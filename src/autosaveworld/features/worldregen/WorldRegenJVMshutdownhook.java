@@ -41,7 +41,7 @@ public class WorldRegenJVMshutdownhook extends Thread {
 				task.run();
 			}
 		} catch (Throwable t) {
-			MessageLogger.printOutDebug("WorldRegen failed");
+			MessageLogger.printOut("WorldRegen failed");
 			MessageLogger.printOutException(t);
 		}
 

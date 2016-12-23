@@ -17,6 +17,8 @@
 
 package autosaveworld.core;
 
+import java.io.File;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
@@ -24,22 +26,19 @@ import autosaveworld.commands.NoTabCompleteCommandsHandler;
 import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
-import autosaveworld.config.LocaleChanger;
 import autosaveworld.config.loader.ConfigLoader;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.ThreadType;
 import autosaveworld.features.backup.AutoBackupThread;
 import autosaveworld.features.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.features.networkwatcher.NetworkWatcher;
-import autosaveworld.features.pluginmanager.PluginManager;
-import autosaveworld.features.processmanager.ProcessManager;
 import autosaveworld.features.purge.AutoPurgeThread;
 import autosaveworld.features.restart.AutoRestartThread;
 import autosaveworld.features.restart.CrashRestartThread;
 import autosaveworld.features.restart.RestartShutdownHook;
+import autosaveworld.features.restart.RestartWaiter;
 import autosaveworld.features.save.AutoSaveThread;
 import autosaveworld.utils.FileUtils;
-import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.StringUtils;
@@ -55,63 +54,65 @@ public class AutoSaveWorld extends JavaPlugin {
 	// restart
 	public CrashRestartThread crashrestartThread;
 	public AutoRestartThread autorestartThread;
-	private RestartShutdownHook JVMsh;
 	// autoconsolecommand
 	public AutoConsoleCommandThread consolecommandThread;
-	// plugin manager
-	public PluginManager pluginmanager;
-	// process manager
-	public ProcessManager processmanager;
-	// network watcher
-	public NetworkWatcher watcher;
-	// configs
-	public AutoSaveWorldConfigMSG configmsg;
-	public AutoSaveWorldConfig config;
+
+	private static AutoSaveWorld instance;
+
+	public static AutoSaveWorld getInstance() {
+		if (instance == null) {
+			throw new IllegalStateException("Instance access before init");
+		}
+		return instance;
+	}
+
+	private final AutoSaveWorldConfig config = new AutoSaveWorldConfig();
+	private final AutoSaveWorldConfigMSG configmsg = new AutoSaveWorldConfigMSG();
+
+	private final NetworkWatcher watcher = new NetworkWatcher();
+
+	public AutoSaveWorldConfig getMainConfig() {
+		return config;
+	}
+
+	public AutoSaveWorldConfigMSG getMessageConfig() {
+		return configmsg;
+	}
+
+	public AutoSaveWorld() {
+		if (instance != null) {
+			MessageLogger.warn("Instance wasn't null when enabling, this is not a good sign");
+		}
+		instance = this;
+	}
 
 	@Override
 	public void onEnable() {
-		// Init global constants
 		GlobalConstants.init(this);
-		// Load main config
-		config = new AutoSaveWorldConfig();
 		ConfigLoader.loadAndSave(config);
-		// Init logger and message utils
-		MessageLogger.init(getLogger(), config);
-		// Init other utils
-		SchedulerUtils.init(this);
-		ListenerUtils.init(this);
+		ConfigLoader.loadAndSave(configmsg);
+		SchedulerUtils.init();
 		ReflectionUtils.init();
 		FileUtils.init();
 		StringUtils.init();
-		// Load messages
-		configmsg = new AutoSaveWorldConfigMSG();
-		ConfigLoader.loadAndSave(configmsg);
-		// Register commands
+		RestartWaiter.init();
 		try {
-			CommandsHandler commandshandler = new CommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
+			CommandsHandler commandshandler = new CommandsHandler();
 			commandshandler.initSubCommandHandlers();
 			for (String commandName : getDescription().getCommands().keySet()) {
 				getCommand(commandName).setExecutor(commandshandler);
 			}
 		} catch (Throwable t) {
-			NoTabCompleteCommandsHandler commandshandler = new NoTabCompleteCommandsHandler(this, config, configmsg, new LocaleChanger(this, configmsg));
+			NoTabCompleteCommandsHandler commandshandler = new NoTabCompleteCommandsHandler();
 			commandshandler.initSubCommandHandlers();
 			for (String commandName : getDescription().getCommands().keySet()) {
 				getCommand(commandName).setExecutor(commandshandler);
 			}
 		}
-		// Load plugin manager
-		pluginmanager = new PluginManager();
-		// Load process manager
-		processmanager = new ProcessManager();
-		// Load network watcher
-		watcher = new NetworkWatcher(config);
 		watcher.register();
-		// Start Threads
 		startThread(ThreadType.SAVE);
 		startThread(ThreadType.BACKUP);
 		startThread(ThreadType.PURGE);
-		JVMsh = new RestartShutdownHook();
 		startThread(ThreadType.CRASHRESTART);
 		startThread(ThreadType.AUTORESTART);
 		startThread(ThreadType.CONSOLECOMMAND);
@@ -121,77 +122,65 @@ public class AutoSaveWorld extends JavaPlugin {
 	public void onDisable() {
 		if (config.restartOnCrashOnNonAswStop && !StopCommand.isStoppedByAsw()) {
 			MessageLogger.debug("Restarting due to server stopped not by asw command");
-			JVMsh.setPath(config.restartOnCrashScriptPath);
-			Runtime.getRuntime().addShutdownHook(JVMsh);
+			Runtime.getRuntime().addShutdownHook(new RestartShutdownHook(new File(config.restartOnCrashScriptPath)));
 		}
 		if (config.saveOnASWDisable) {
-			// Perform a Save NOW!
 			MessageLogger.debug("Saving");
 			saveThread.performSaveNow();
 		}
-		// Save config
 		MessageLogger.debug("Saving config");
 		ConfigLoader.save(config);
 		ConfigLoader.save(configmsg);
-		// Stop threads
 		MessageLogger.debug("Stopping Threads");
 		stopThread(ThreadType.SAVE);
 		stopThread(ThreadType.BACKUP);
 		stopThread(ThreadType.PURGE);
 		stopThread(ThreadType.CRASHRESTART);
 		stopThread(ThreadType.AUTORESTART);
-		JVMsh = null;
 		stopThread(ThreadType.CONSOLECOMMAND);
-		// stop network watcher
 		watcher.unregister();
-		watcher = null;
-		// null some variables
-		pluginmanager = null;
-		processmanager = null;
-		configmsg = null;
-		config = null;
 	}
 
 	protected void startThread(ThreadType type) {
 		switch (type) {
 			case SAVE: {
 				if ((saveThread == null) || !saveThread.isAlive()) {
-					saveThread = new AutoSaveThread(config, configmsg);
+					saveThread = new AutoSaveThread();
 					saveThread.start();
 				}
 				return;
 			}
 			case BACKUP: {
 				if ((backupThread == null) || !backupThread.isAlive()) {
-					backupThread = new AutoBackupThread(this, config, configmsg);
+					backupThread = new AutoBackupThread();
 					backupThread.start();
 				}
 				return;
 			}
 			case PURGE: {
 				if ((purgeThread == null) || !purgeThread.isAlive()) {
-					purgeThread = new AutoPurgeThread(config, configmsg);
+					purgeThread = new AutoPurgeThread();
 					purgeThread.start();
 				}
 				return;
 			}
 			case CRASHRESTART: {
 				if ((crashrestartThread == null) || !crashrestartThread.isAlive()) {
-					crashrestartThread = new CrashRestartThread(Thread.currentThread(), config, JVMsh);
+					crashrestartThread = new CrashRestartThread(Thread.currentThread());
 					crashrestartThread.start();
 				}
 				return;
 			}
 			case AUTORESTART: {
 				if ((autorestartThread == null) || !autorestartThread.isAlive()) {
-					autorestartThread = new AutoRestartThread(config, configmsg, JVMsh);
+					autorestartThread = new AutoRestartThread();
 					autorestartThread.start();
 				}
 				return;
 			}
 			case CONSOLECOMMAND: {
 				if ((consolecommandThread == null) || !consolecommandThread.isAlive()) {
-					consolecommandThread = new AutoConsoleCommandThread(config);
+					consolecommandThread = new AutoConsoleCommandThread();
 					consolecommandThread.start();
 				}
 				return;

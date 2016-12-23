@@ -20,17 +20,14 @@ package autosaveworld.features.backup.script;
 import java.io.File;
 
 import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 
 public class ScriptBackup {
 
-	private AutoSaveWorldConfig config;
-
-	public ScriptBackup(AutoSaveWorldConfig config) {
-		this.config = config;
-	}
-
 	public void performBackup() {
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
+
 		for (String scriptpath : config.backupScriptPaths) {
 			File scriptfile = new File(scriptpath);
 			if (!scriptpath.isEmpty() && scriptfile.exists() && scriptfile.isFile()) {

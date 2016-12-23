@@ -17,6 +17,7 @@
 
 package autosaveworld.features.restart;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
@@ -35,49 +36,31 @@ import org.bukkit.plugin.Plugin;
 import org.spigotmc.AsyncCatcher;
 
 import autosaveworld.commands.subcommands.StopCommand;
-import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.utils.SchedulerUtils;
+import autosaveworld.utils.Threads.SIntervalTaskThread;
 import co.aikar.timings.MinecraftTimings;
 
-public class CrashRestartThread extends Thread {
+public class CrashRestartThread extends SIntervalTaskThread {
 
 	private final Thread bukkitMainThread;
-	private final AutoSaveWorldConfig config;
-	private final RestartShutdownHook jvmsh;
-
-	public CrashRestartThread(Thread thread, AutoSaveWorldConfig config, RestartShutdownHook jvmsh) {
-		super("AutoSaveWorld CrashRestartThread");
-		bukkitMainThread = thread;
-		this.config = config;
-		this.jvmsh = jvmsh;
+	public CrashRestartThread(Thread mainthread) {
+		super("CrashRestartThread");
+		this.bukkitMainThread = mainthread;
 	}
-
-	public void stopThread() {
-		run = false;
-	}
-
-	private volatile boolean run = true;
 
 	protected long syncticktime = 0;
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void run() {
-		MessageLogger.debug("CrashRestartThread started");
-
-		MessageLogger.debug("Delaying crashrestart checker start for " + config.restartOnCrashCheckerStartDelay + " seconds");
+	protected void onStart() {
 		// wait for configurable delay
+		int delay = AutoSaveWorld.getInstance().getMainConfig().restartOnCrashCheckerStartDelay;
+		MessageLogger.debug("Delaying crashrestart checker start for " + delay + " seconds");
 		try {
-			Thread.sleep(config.restartOnCrashCheckerStartDelay * 1000L);
+			Thread.sleep(delay * 1000L);
 		} catch (InterruptedException e) {
 		}
-		// do not enable self if plugin is disabled
-		if (!run) {
-			return;
-		}
-
-		MessageLogger.debug("Running crashrestart checker");
 		// schedule sync task in, this will provide us info about when the last server tick occured
 		SchedulerUtils.scheduleSyncRepeatingTask(new Runnable() {
 			@Override
@@ -85,104 +68,103 @@ public class CrashRestartThread extends Thread {
 				syncticktime = System.currentTimeMillis();
 			}
 		}, 0, 20);
+	}
 
-		while (run) {
-			long diff = System.currentTimeMillis() - syncticktime;
-			if ((syncticktime != 0) && (diff >= (config.restartOnCrashTimeout * 1000L)) && config.restartOncrashEnabled) {
-				run = false;
+	@Override
+	public boolean isEnabled() {
+		long diff = System.currentTimeMillis() - syncticktime;
+		return
+		(AutoSaveWorld.getInstance().getMainConfig().restartOncrashEnabled) &&
+		(syncticktime != 0) &&
+		(diff >= AutoSaveWorld.getInstance().getMainConfig().restartOnCrashTimeout * 1000L);
+	}
 
-				Logger log = Bukkit.getLogger();
-				log.log(Level.SEVERE, "Server has stopped responding");
-				log.log(Level.SEVERE, "Dumping threads info");
-				log.log(Level.SEVERE, "Main thread");
-				ArrayList<ThreadInfo> threads = new ArrayList<ThreadInfo>(Arrays.asList(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)));
-				ThreadInfo mainthread = extractMainThread(threads);
-				dumpThread(mainthread, log);
-				log.log(Level.SEVERE, "Other threads");
-				for (ThreadInfo thread : threads) {
-					dumpThread(thread, log);
-				}
+	@SuppressWarnings("deprecation")
+	@Override
+	public void doTask() {
+		stopThread();
 
-				if (!config.restartJustStop) {
-					jvmsh.setPath(config.restartOnCrashScriptPath);
-					Runtime.getRuntime().addShutdownHook(jvmsh);
-				}
-
-				// make sure that we don't trigger restart twice
-				StopCommand.stop();
-				// freeze main thread
-				bukkitMainThread.suspend();
-				// kill main thread, so it will exit all monitors
-				// will have to attempt to kill it while it is still active because plugins code may catch throwables
-				while (bukkitMainThread.isAlive()) {
-					bukkitMainThread.stop();
-				}
-				// disable spigot async catcher
-				try {
-					AsyncCatcher.enabled = false;
-				} catch (Throwable t) {
-				}
-				// disable paper timings so async access doesn't print unneeded exceptions
-				try {
-					MinecraftTimings.stopServer();
-				} catch (Throwable t) {
-				}
-				log.log(Level.SEVERE, "Disabling plugins");
-				// unload plugins
-				Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
-				for (int i = plugins.length - 1; i >= 0; i--) {
-					try {
-						log.log(Level.SEVERE, "Disabling plugin "+plugins[i].getName());
-						Bukkit.getPluginManager().disablePlugin(plugins[i]);
-					} catch (Throwable e) {
-						log.log(Level.SEVERE, "Error while disabling plugin", e);
-					}
-				}
-				log.log(Level.SEVERE, "Saving players");
-				// save players
-				try {
-					Bukkit.savePlayers();
-				} catch (Throwable e) {
-					log.log(Level.SEVERE, "Error while saving players", e);
-				}
-				log.log(Level.SEVERE, "Saving worlds");
-				// save worlds
-				for (World w : Bukkit.getWorlds()) {
-					if (w.isAutoSave()) {
-						try {
-							log.log(Level.SEVERE, "Saving world " + w.getName());
-							w.save();
-						} catch (Throwable e) {
-							log.log(Level.SEVERE, "Error while saving world", e);
-						}
-					}
-				}
-				log.log(Level.SEVERE, "Restarting server");
-				// shutdown JVM
-				try {
-					System.exit(0);
-				} catch (Throwable t) {
-					// fuck you forge
-					try {
-						Class<?> shutdownclass = Class.forName("java.lang.Shutdown", false, ClassLoader.getSystemClassLoader());
-						Method shutdownmethod = shutdownclass.getDeclaredMethod("exit", int.class);
-						shutdownmethod.setAccessible(true);
-						shutdownmethod.invoke(null, 0);
-					} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						MessageLogger.exception("Unable to shutdown JVM normally", t);
-						MessageLogger.exception("Unable to shutdown JVM using workaround", e);
-					}
-				}
-
-			}
-
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
+		Logger log = Bukkit.getLogger();
+		log.log(Level.SEVERE, "Server has stopped responding");
+		log.log(Level.SEVERE, "Dumping threads info");
+		log.log(Level.SEVERE, "Main thread");
+		ArrayList<ThreadInfo> threads = new ArrayList<ThreadInfo>(Arrays.asList(ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)));
+		ThreadInfo mainthread = extractMainThread(threads);
+		dumpThread(mainthread, log);
+		log.log(Level.SEVERE, "Other threads");
+		for (ThreadInfo thread : threads) {
+			dumpThread(thread, log);
 		}
 
-		MessageLogger.debug("Graceful quit of CrashRestartThread");
+		if (!AutoSaveWorld.getInstance().getMainConfig().restartJustStop) {
+			Runtime.getRuntime().addShutdownHook(new RestartShutdownHook(new File(AutoSaveWorld.getInstance().getMainConfig().restartOnCrashScriptPath)));
+		}
+
+		// make sure that we don't trigger restart twice
+		StopCommand.stop();
+		// freeze main thread
+		bukkitMainThread.suspend();
+		// kill main thread, so it will exit all monitors
+		// will have to attempt to kill it while it is still active because plugins code may catch throwables
+		while (bukkitMainThread.isAlive()) {
+			bukkitMainThread.stop();
+		}
+		// disable spigot async catcher
+		try {
+			AsyncCatcher.enabled = false;
+		} catch (Throwable t) {
+		}
+		// disable paper timings so async access doesn't print unneeded exceptions
+		try {
+			MinecraftTimings.stopServer();
+		} catch (Throwable t) {
+		}
+		log.log(Level.SEVERE, "Disabling plugins");
+		// unload plugins
+		Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+		for (int i = plugins.length - 1; i >= 0; i--) {
+			try {
+				log.log(Level.SEVERE, "Disabling plugin "+plugins[i].getName());
+				Bukkit.getPluginManager().disablePlugin(plugins[i]);
+			} catch (Throwable e) {
+				log.log(Level.SEVERE, "Error while disabling plugin", e);
+			}
+		}
+		log.log(Level.SEVERE, "Saving players");
+		// save players
+		try {
+			Bukkit.savePlayers();
+		} catch (Throwable e) {
+			log.log(Level.SEVERE, "Error while saving players", e);
+		}
+		log.log(Level.SEVERE, "Saving worlds");
+		// save worlds
+		for (World w : Bukkit.getWorlds()) {
+			if (w.isAutoSave()) {
+				try {
+					log.log(Level.SEVERE, "Saving world " + w.getName());
+					w.save();
+				} catch (Throwable e) {
+					log.log(Level.SEVERE, "Error while saving world", e);
+				}
+			}
+		}
+		log.log(Level.SEVERE, "Restarting server");
+		// shutdown JVM
+		try {
+			System.exit(0);
+		} catch (Throwable t) {
+			// fuck you forge
+			try {
+				Class<?> shutdownclass = Class.forName("java.lang.Shutdown", false, ClassLoader.getSystemClassLoader());
+				Method shutdownmethod = shutdownclass.getDeclaredMethod("exit", int.class);
+				shutdownmethod.setAccessible(true);
+				shutdownmethod.invoke(null, 0);
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				MessageLogger.exception("Unable to shutdown JVM normally", t);
+				MessageLogger.exception("Unable to shutdown JVM using workaround", e);
+			}
+		}
 	}
 
 	private ThreadInfo extractMainThread(List<ThreadInfo> data) {

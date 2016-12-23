@@ -24,14 +24,11 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 
 import autosaveworld.commands.ISubCommand;
-import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.features.processmanager.ProcessManager;
 
 public class ProcessManagerSubCommand implements ISubCommand {
 
-	private AutoSaveWorld plugin;
-	public ProcessManagerSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
+	private final ProcessManager processmanager = new ProcessManager();
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
@@ -43,7 +40,7 @@ public class ProcessManagerSubCommand implements ISubCommand {
 		if (args.length > 2) {
 			processargs = Arrays.copyOfRange(args, 2, args.length);
 		}
-		plugin.processmanager.handleProcessManagerCommand(sender, args[0], processname, processargs);
+		processmanager.handleProcessManagerCommand(sender, args[0], processname, processargs);
 	}
 
 	@Override

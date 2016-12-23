@@ -25,7 +25,6 @@ import java.io.PrintWriter;
 import java.io.SyncFailedException;
 import java.io.Writer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -33,20 +32,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.utils.BukkitUtils;
 
 public class MessageLogger {
 
 	private static final FormattingCodesParser formattingCodesParser = new FormattingCodesParser();
-
-	private static AutoSaveWorldConfig config;
-	private static Logger log;
-
-	public static void init(Logger log, AutoSaveWorldConfig config) {
-		MessageLogger.log = log;
-		MessageLogger.config = config;
-	}
 
 	public static void sendMessage(CommandSender sender, String message) {
 		if (!message.equals("")) {
@@ -93,21 +84,17 @@ public class MessageLogger {
 	}
 
 	public static void debug(String message) {
-		if (config != null && config.varDebug && log != null) {
-			log.info(formattingCodesParser.stripFormattingCodes(message));
+		if (AutoSaveWorld.getInstance().getMainConfig().varDebug) {
+			AutoSaveWorld.getInstance().getLogger().info(formattingCodesParser.stripFormattingCodes(message));
 		}
 	}
 
 	public static void exception(String message, Throwable t) {
-		if (log != null) {
-			log.log(Level.SEVERE, message, t);
-		}
+		AutoSaveWorld.getInstance().getLogger().log(Level.SEVERE, message, t);
 	}
 
 	public static void warn(String message) {
-		if (log != null) {
-			log.warning(formattingCodesParser.stripFormattingCodes(message));
-		}
+		AutoSaveWorld.getInstance().getLogger().warning(formattingCodesParser.stripFormattingCodes(message));
 	}
 
 	private static final PrintStream outstream = new PrintStream(new FileOutputStream(FileDescriptor.err), true);
@@ -120,14 +107,8 @@ public class MessageLogger {
 		}
 	}
 
-	public static void printOutDebug(String message) {
-		if (config != null && config.varDebug) {
-			printOut(message);
-		}
-	}
-
 	public static void printOut(String message) {
-		if (config != null && config.varDebug) {
+		if (AutoSaveWorld.getInstance().getMainConfig().varDebug) {
 			outstream.println("[AutoSaveWorld] "+message);
 			try {
 				FileDescriptor.err.sync();

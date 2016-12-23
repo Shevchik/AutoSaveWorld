@@ -26,10 +26,7 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class SchedulerUtils {
 
-	private static AutoSaveWorld plugin;
-
-	public static void init(AutoSaveWorld plugin) {
-		SchedulerUtils.plugin = plugin;
+	public static void init() {
 	}
 
 	public static void callSyncTaskAndWait(Runnable run) {
@@ -42,7 +39,7 @@ public class SchedulerUtils {
 
 	private static void scheduleSyncTaskAndWaitInternal(final Runnable run, int timeout) {
 		final CountDownLatch latch = new CountDownLatch(1);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(AutoSaveWorld.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				run.run();
@@ -60,11 +57,11 @@ public class SchedulerUtils {
 	}
 
 	public static void scheduleSyncTask(Runnable run) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, run);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(AutoSaveWorld.getInstance(), run);
 	}
 
 	public static void scheduleSyncRepeatingTask(Runnable run, int delay, int interval) {
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, run, delay, interval);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(AutoSaveWorld.getInstance(), run, delay, interval);
 	}
 
 }

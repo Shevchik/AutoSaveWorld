@@ -27,7 +27,7 @@ import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.weregen.UtilClasses.BlockToPlaceBack;
 import autosaveworld.features.purge.weregen.UtilClasses.ItemSpawnListener;
 import autosaveworld.features.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
-import autosaveworld.utils.ListenerUtils;
+import autosaveworld.utils.BukkitUtils;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
@@ -62,7 +62,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		LinkedList<BlockToPlaceBack> placeBackQueue = new LinkedList<BlockToPlaceBack>();
 
 		// register listener that will prevent trash items from spawning
-		ListenerUtils.registerListener(itemremover);
+		BukkitUtils.registerListener(itemremover);
 
 		// first save all blocks that are inside affected chunks but outside the region
 		for (Vector2D chunk : region.getChunks()) {
@@ -96,7 +96,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		}
 
 		// unregister listener that prevents item drop
-		ListenerUtils.unregisterListener(itemremover);
+		BukkitUtils.unregisterListener(itemremover);
 	}
 
 	private static PlaceBackStage[] placeBackStages = new PlaceBackStage[] {

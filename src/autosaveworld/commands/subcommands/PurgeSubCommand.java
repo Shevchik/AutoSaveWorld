@@ -27,14 +27,9 @@ import autosaveworld.core.AutoSaveWorld;
 
 public class PurgeSubCommand implements ISubCommand {
 
-	private AutoSaveWorld plugin;
-	public PurgeSubCommand(AutoSaveWorld plugin) {
-		this.plugin = plugin;
-	}
-
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		plugin.purgeThread.triggerTaskRun();
+		AutoSaveWorld.getInstance().purgeThread.triggerTaskRun();
 	}
 
 	@Override
