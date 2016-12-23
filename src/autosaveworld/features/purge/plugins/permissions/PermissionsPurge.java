@@ -22,7 +22,7 @@ import org.bukkit.Bukkit;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
-import autosaveworld.utils.CommandUtils;
+import autosaveworld.utils.BukkitUtils;
 
 public class PermissionsPurge extends DataPurge {
 
@@ -39,7 +39,7 @@ public class PermissionsPurge extends DataPurge {
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
 			new VaultPurge(config, activeplayerslist).doPurge();
 		}
-		CommandUtils.dispatchCommandAsConsole(config.purgePermsSaveCMD);
+		BukkitUtils.dispatchCommandAsConsole(config.purgePermsSaveCMD);
 	}
 
 }

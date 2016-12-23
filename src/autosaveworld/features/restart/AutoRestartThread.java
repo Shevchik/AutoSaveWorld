@@ -23,7 +23,7 @@ import autosaveworld.commands.subcommands.StopCommand;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.utils.CommandUtils;
+import autosaveworld.utils.BukkitUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class AutoRestartThread extends Thread {
@@ -94,7 +94,7 @@ public class AutoRestartThread extends Thread {
 					@Override
 					public void run() {
 						for (String command : config.autoRestartPreStopCommmands) {
-							CommandUtils.dispatchCommandAsConsole(command);
+							BukkitUtils.dispatchCommandAsConsole(command);
 						}
 					}
 				}, 10);

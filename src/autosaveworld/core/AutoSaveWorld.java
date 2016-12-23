@@ -38,7 +38,6 @@ import autosaveworld.features.restart.AutoRestartThread;
 import autosaveworld.features.restart.CrashRestartThread;
 import autosaveworld.features.restart.RestartShutdownHook;
 import autosaveworld.features.save.AutoSaveThread;
-import autosaveworld.utils.CommandUtils;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ListenerUtils;
 import autosaveworld.utils.ReflectionUtils;
@@ -82,7 +81,6 @@ public class AutoSaveWorld extends JavaPlugin {
 		SchedulerUtils.init(this);
 		ListenerUtils.init(this);
 		ReflectionUtils.init();
-		CommandUtils.init();
 		FileUtils.init();
 		StringUtils.init();
 		// Load messages

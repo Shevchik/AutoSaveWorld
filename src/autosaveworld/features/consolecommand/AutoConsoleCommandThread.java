@@ -23,7 +23,7 @@ import java.util.List;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.utils.CommandUtils;
+import autosaveworld.utils.BukkitUtils;
 import autosaveworld.utils.SchedulerUtils;
 
 public class AutoConsoleCommandThread extends Thread {
@@ -78,7 +78,7 @@ public class AutoConsoleCommandThread extends Thread {
 				@Override
 				public void run() {
 					for (String command : commands) {
-						CommandUtils.dispatchCommandAsConsole(command);
+						BukkitUtils.dispatchCommandAsConsole(command);
 					}
 				}
 			});
