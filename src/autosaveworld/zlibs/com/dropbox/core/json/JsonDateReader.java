@@ -1,6 +1,8 @@
 package autosaveworld.zlibs.com.dropbox.core.json;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -8,9 +10,6 @@ import java.util.TimeZone;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 public class JsonDateReader
 {

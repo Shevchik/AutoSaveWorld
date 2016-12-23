@@ -4,14 +4,36 @@
  */
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
-import java.io.*;
+import java.io.CharArrayReader;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.lang.ref.SoftReference;
 import java.net.URL;
 
 import autosaveworld.zlibs.com.fasterxml.jackson.core.format.InputAccessor;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.format.MatchStrength;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.io.*;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.json.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharacterEscapes;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.DataOutputAsStream;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.InputDecorator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.OutputDecorator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.SerializedString;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.io.UTF8Writer;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.ByteSourceJsonBootstrapper;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.ReaderBasedJsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.UTF8DataInputJsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.UTF8JsonGenerator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.json.WriterBasedJsonGenerator;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.util.BufferRecycler;
@@ -37,7 +59,6 @@ import autosaveworld.zlibs.com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
  *
  * @author Tatu Saloranta
  */
-@SuppressWarnings("resource")
 public class JsonFactory
     implements Versioned,
         java.io.Serializable // since 2.1 (for Android, mostly)

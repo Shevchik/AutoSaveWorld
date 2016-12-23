@@ -20,11 +20,11 @@ package autosaveworld.features.purge.plugins.wg;
 import java.util.LinkedList;
 import java.util.UUID;
 
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.purge.taskqueue.Task;
-
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.purge.taskqueue.Task;
 
 public class DomainClearTask implements Task {
 

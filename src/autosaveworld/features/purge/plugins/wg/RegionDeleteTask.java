@@ -19,12 +19,12 @@ package autosaveworld.features.purge.plugins.wg;
 
 import org.bukkit.World;
 
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.purge.taskqueue.Task;
-
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.purge.taskqueue.Task;
 
 public class RegionDeleteTask implements Task {
 

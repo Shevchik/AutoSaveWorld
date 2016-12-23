@@ -3,8 +3,6 @@
 
 package autosaveworld.zlibs.com.dropbox.core.v2.files;
 
-import java.io.IOException;
-
 import autosaveworld.zlibs.com.dropbox.core.DbxUploader;
 import autosaveworld.zlibs.com.dropbox.core.DbxWrappedException;
 import autosaveworld.zlibs.com.dropbox.core.http.HttpRequestor;

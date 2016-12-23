@@ -1,6 +1,8 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Helper class to support use of {@link DataOutput} for output, directly,

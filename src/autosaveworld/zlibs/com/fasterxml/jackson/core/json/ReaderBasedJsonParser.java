@@ -1,15 +1,30 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.json;
 
-import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.*;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_FALSE;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_FIELD_NAME;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_FLOAT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_INT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_STRING;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_TRUE;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Base64Variant;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.base.ParserBase;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharTypes;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.util.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.util.ByteArrayBuilder;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.util.TextBuffer;
 
 /**
  * This is a concrete implementation of {@link JsonParser}, which is
@@ -464,7 +479,6 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
             _tokenIncomplete = false;
         } else { // may actually require conversion...
             if (_binaryValue == null) {
-                @SuppressWarnings("resource")
                 ByteArrayBuilder builder = _getByteArrayBuilder();
                 _decodeBase64(getText(), builder, b64variant);
                 _binaryValue = builder.toByteArray();
@@ -2642,7 +2656,6 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
      * Efficient handling for incremental parsing of base64-encoded
      * textual content.
      */
-    @SuppressWarnings("resource")
     protected byte[] _decodeBase64(Base64Variant b64variant) throws IOException
     {
         ByteArrayBuilder builder = _getByteArrayBuilder();

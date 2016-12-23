@@ -19,11 +19,6 @@ package autosaveworld.features.purge.plugins.mywarp;
 
 import java.util.List;
 
-import me.taylorkelly.mywarp.MyWarp;
-import me.taylorkelly.mywarp.bukkit.MyWarpPlugin;
-import me.taylorkelly.mywarp.util.profile.Profile;
-import me.taylorkelly.mywarp.warp.Warp;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.base.Predicate;
@@ -34,6 +29,10 @@ import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.features.purge.taskqueue.TaskExecutor;
 import autosaveworld.utils.ReflectionUtils;
+import me.taylorkelly.mywarp.MyWarp;
+import me.taylorkelly.mywarp.bukkit.MyWarpPlugin;
+import me.taylorkelly.mywarp.util.profile.Profile;
+import me.taylorkelly.mywarp.warp.Warp;
 
 public class MyWarpPurge extends DataPurge {
 

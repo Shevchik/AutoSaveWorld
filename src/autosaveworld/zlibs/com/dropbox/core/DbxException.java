@@ -1,7 +1,5 @@
 package autosaveworld.zlibs.com.dropbox.core;
 
-import java.io.IOException;
-
 /**
  * The base exception thrown by Dropbox API calls.  Normally, you'll need to do something specific
  * for {@link InvalidAccessTokenException} and possibly for {@link RetryException}.  The rest you

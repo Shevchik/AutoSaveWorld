@@ -17,10 +17,9 @@
 
 package autosaveworld.features.purge.plugins.mywarp;
 
+import autosaveworld.features.purge.taskqueue.Task;
 import me.taylorkelly.mywarp.warp.Warp;
 import me.taylorkelly.mywarp.warp.WarpManager;
-
-import autosaveworld.features.purge.taskqueue.Task;
 
 public class MyWapWarpDeleteTask implements Task {
 

@@ -17,11 +17,11 @@
 
 package autosaveworld.features.worldregen.plugins;
 
-import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+
+import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 
 public class GriefPreventionDataProvider extends DataProvider {
 

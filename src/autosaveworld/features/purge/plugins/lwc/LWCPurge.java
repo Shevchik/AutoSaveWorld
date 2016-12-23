@@ -19,15 +19,15 @@ package autosaveworld.features.purge.plugins.lwc;
 
 import java.util.List;
 
+import com.griefcraft.lwc.LWC;
+import com.griefcraft.model.Permission;
+import com.griefcraft.model.Protection;
+
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.features.purge.taskqueue.TaskExecutor;
-
-import com.griefcraft.lwc.LWC;
-import com.griefcraft.model.Permission;
-import com.griefcraft.model.Protection;
 
 public class LWCPurge extends DataPurge {
 

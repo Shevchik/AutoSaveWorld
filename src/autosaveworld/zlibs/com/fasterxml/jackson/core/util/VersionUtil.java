@@ -1,6 +1,8 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -98,7 +100,6 @@ public class VersionUtil
      * @deprecated Since 2.6: functionality not used by any official Jackson component, should be
      *   moved out if anyone needs it
      */
-    @SuppressWarnings("resource")
     @Deprecated // since 2.6
     public static Version mavenVersionFor(ClassLoader cl, String groupId, String artifactId)
     {

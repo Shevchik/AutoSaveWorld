@@ -1,7 +1,6 @@
 package autosaveworld.zlibs.com.dropbox.core.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;

@@ -17,10 +17,10 @@
 
 package autosaveworld.config.loader;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import autosaveworld.config.loader.postload.NoPostLoad;
 import autosaveworld.config.loader.postload.PostLoad;

@@ -1,10 +1,15 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.base;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Base64Variant;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Version;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.NumberInput;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.json.DupDetector;
@@ -464,7 +469,6 @@ public abstract class ParserBase extends ParserMinimalBase
         return false;
     }
 
-    @SuppressWarnings("resource")
     @Override // since 2.7
     public byte[] getBinaryValue(Base64Variant variant) throws IOException
     {

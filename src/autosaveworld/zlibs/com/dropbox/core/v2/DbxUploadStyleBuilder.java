@@ -3,8 +3,9 @@ package autosaveworld.zlibs.com.dropbox.core.v2;
 import java.io.IOException;
 import java.io.InputStream;
 
-import autosaveworld.zlibs.com.dropbox.core.*;
-import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
+import autosaveworld.zlibs.com.dropbox.core.DbxApiException;
+import autosaveworld.zlibs.com.dropbox.core.DbxException;
+import autosaveworld.zlibs.com.dropbox.core.DbxUploader;
 
 /**
  * The common interface for all builders associated with upload style methods. After setting any

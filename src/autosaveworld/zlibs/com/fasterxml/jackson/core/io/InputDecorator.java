@@ -1,6 +1,10 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.io;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.FilterReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 /**
  * Handler class that can be used to decorate input sources.

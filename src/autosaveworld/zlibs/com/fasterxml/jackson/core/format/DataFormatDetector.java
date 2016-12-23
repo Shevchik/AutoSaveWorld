@@ -1,9 +1,10 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.format;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonFactory;
 
 /**
  * Simple helper class that allows data format (content type) auto-detection,

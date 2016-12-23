@@ -1,16 +1,28 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.json;
 
-import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.*;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_FIELD_NAME;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_FLOAT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_INT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_STRING;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Arrays;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.Base64Variant;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonLocation;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParseException;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.ObjectCodec;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.base.ParserBase;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.CharTypes;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.IOContext;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.util.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 /**
  * This is a concrete implementation of {@link JsonParser}, which is
@@ -548,7 +560,6 @@ public class UTF8StreamJsonParser
             _tokenIncomplete = false;
         } else { // may actually require conversion...
             if (_binaryValue == null) {
-                @SuppressWarnings("resource")
                 ByteArrayBuilder builder = _getByteArrayBuilder();
                 _decodeBase64(getText(), builder, b64variant);
                 _binaryValue = builder.toByteArray();
@@ -3566,7 +3577,6 @@ public class UTF8StreamJsonParser
      * Efficient handling for incremental parsing of base64-encoded
      * textual content.
      */
-    @SuppressWarnings("resource")
     protected final byte[] _decodeBase64(Base64Variant b64variant) throws IOException
     {
         ByteArrayBuilder builder = _getByteArrayBuilder();

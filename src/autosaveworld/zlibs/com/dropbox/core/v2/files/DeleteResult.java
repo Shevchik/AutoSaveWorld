@@ -6,7 +6,6 @@ package autosaveworld.zlibs.com.dropbox.core.v2.files;
 import java.io.IOException;
 import java.util.Arrays;
 
-import autosaveworld.zlibs.com.dropbox.core.stone.StoneSerializers;
 import autosaveworld.zlibs.com.dropbox.core.stone.StructSerializer;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerationException;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;

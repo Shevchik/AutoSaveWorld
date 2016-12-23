@@ -1,8 +1,10 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
-import java.io.*;
+import java.io.IOException;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonGenerator;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.PrettyPrinter;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.SerializableString;
 import autosaveworld.zlibs.com.fasterxml.jackson.core.io.SerializedString;
 
 /**
@@ -388,7 +390,6 @@ public class DefaultPrettyPrinter
      */
     public static class FixedSpaceIndenter extends NopIndenter
     {
-        @SuppressWarnings("hiding")
         public static final FixedSpaceIndenter instance = new FixedSpaceIndenter();
 
         @Override

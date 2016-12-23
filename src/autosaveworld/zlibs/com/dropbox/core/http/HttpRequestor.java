@@ -1,7 +1,5 @@
 package autosaveworld.zlibs.com.dropbox.core.http;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import java.util.concurrent.TimeUnit;
 
 import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;

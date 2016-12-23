@@ -21,8 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -33,6 +31,7 @@ import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.SchedulerUtils;
+import net.milkbowl.vault.permission.Permission;
 
 public class VaultPurge extends DataPurge {
 

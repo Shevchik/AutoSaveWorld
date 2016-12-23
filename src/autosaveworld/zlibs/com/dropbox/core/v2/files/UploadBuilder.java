@@ -6,7 +6,6 @@ package autosaveworld.zlibs.com.dropbox.core.v2.files;
 import java.util.Date;
 
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
-import autosaveworld.zlibs.com.dropbox.core.util.LangUtil;
 import autosaveworld.zlibs.com.dropbox.core.v2.DbxUploadStyleBuilder;
 
 /**

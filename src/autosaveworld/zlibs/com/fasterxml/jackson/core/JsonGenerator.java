@@ -4,9 +4,26 @@
  */
 package autosaveworld.zlibs.com.fasterxml.jackson.core;
 
-import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.*;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_EMBEDDED_OBJECT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_END_ARRAY;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_END_OBJECT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_FALSE;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_FIELD_NAME;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NOT_AVAILABLE;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NULL;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_FLOAT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_NUMBER_INT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_START_ARRAY;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_START_OBJECT;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_STRING;
+import static autosaveworld.zlibs.com.fasterxml.jackson.core.JsonTokenId.ID_TRUE;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.Flushable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import autosaveworld.zlibs.com.dropbox.core.util.Collector;
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
 
 public class JsonArrayReader<T,L> extends JsonReader<L>
 {

@@ -190,7 +190,6 @@ public final class JsonStringEncoder
      * Will quote given JSON String value using standard quoting, encode
      * results as UTF-8, and return result as a byte array.
      */
-    @SuppressWarnings("resource")
     public byte[] quoteAsUTF8(String text)
     {
         ByteArrayBuilder bb = _bytes;
@@ -287,7 +286,6 @@ public final class JsonStringEncoder
      * Will encode given String as UTF-8 (without any quoting), return
      * resulting byte array.
      */
-    @SuppressWarnings("resource")
     public byte[] encodeAsUTF8(String text)
     {
         ByteArrayBuilder byteBuilder = _bytes;

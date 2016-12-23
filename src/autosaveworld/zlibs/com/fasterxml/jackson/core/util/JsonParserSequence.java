@@ -1,9 +1,11 @@
 package autosaveworld.zlibs.com.fasterxml.jackson.core.util;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import autosaveworld.zlibs.com.fasterxml.jackson.core.*;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonParser;
+import autosaveworld.zlibs.com.fasterxml.jackson.core.JsonToken;
 
 /**
  * Helper class that can be used to sequence multiple physical
@@ -111,8 +113,7 @@ public class JsonParserSequence extends JsonParserDelegate
     public static JsonParserSequence createFlattened(JsonParser first, JsonParser second) {
         return createFlattened(false, first, second);
     }
-    
-    @SuppressWarnings("resource")
+
     protected void addFlattenedActiveParsers(List<JsonParser> listToAddIn)
     {
         for (int i = _nextParserIndex-1, len = _parsers.length; i < len; ++i) {

@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -26,15 +25,11 @@ import autosaveworld.zlibs.com.dropbox.core.util.IOUtil;
  * </p>
  */
 public class StandardHttpRequestor extends HttpRequestor {
-    private static final Logger LOGGER = Logger.getLogger(StandardHttpRequestor.class.getCanonicalName());
-
     /**
      * A thread-safe instance of {@code StandardHttpRequestor} that connects directly
      * (as opposed to using a proxy).
      */
     public static final StandardHttpRequestor INSTANCE = new StandardHttpRequestor(Config.DEFAULT_INSTANCE);
-
-    private static volatile boolean certPinningWarningLogged = false;
 
     private final Config config;
 

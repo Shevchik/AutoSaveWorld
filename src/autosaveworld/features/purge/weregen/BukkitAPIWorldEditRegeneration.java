@@ -23,12 +23,6 @@ import java.util.LinkedList;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.purge.weregen.UtilClasses.BlockToPlaceBack;
-import autosaveworld.features.purge.weregen.UtilClasses.ItemSpawnListener;
-import autosaveworld.features.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
-import autosaveworld.utils.BukkitUtils;
-
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
@@ -38,6 +32,12 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
+
+import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.purge.weregen.UtilClasses.BlockToPlaceBack;
+import autosaveworld.features.purge.weregen.UtilClasses.ItemSpawnListener;
+import autosaveworld.features.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
+import autosaveworld.utils.BukkitUtils;
 
 //TODO: Migrate to new WorldEdit API
 public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInterface {
