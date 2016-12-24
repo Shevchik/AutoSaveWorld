@@ -20,6 +20,7 @@ package autosaveworld.features.purge.plugins;
 import java.io.File;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
@@ -39,15 +40,12 @@ public class DatfilePurge extends DataPurge {
 		File worldfolder = Bukkit.getWorlds().get(0).getWorldFolder();
 		File playersdatfolder = FileUtils.buildFile(worldfolder, "playerdata");
 		File playersstatsfolder = FileUtils.buildFile(worldfolder, "stats");
-		for (File playerfile : FileUtils.safeListFiles(playersdatfolder)) {
-			if (playerfile.getName().endsWith(".dat")) {
-				String playeruuid = playerfile.getName().substring(0, playerfile.getName().length() - 4);
-				if (!activeplayerslist.isActiveUUID(playeruuid)) {
-					MessageLogger.debug(playeruuid + " is inactive. Removing dat file");
-					playerfile.delete();
-					FileUtils.buildFile(playersstatsfolder, playerfile.getName()).delete();
-					incDeleted();
-				}
+		for (OfflinePlayer player : activeplayerslist.getAllPlayers()) {
+			if (!activeplayerslist.isActiveUUID(player.getUniqueId())) {
+				MessageLogger.debug(player.getUniqueId() + " is inactive. Removing dat file");
+				FileUtils.buildFile(playersdatfolder, player.getUniqueId().toString() + ".dat").delete();
+				FileUtils.buildFile(playersstatsfolder, player.getUniqueId().toString() + ".dat").delete();
+				incDeleted();
 			}
 		}
 
