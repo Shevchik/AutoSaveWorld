@@ -63,18 +63,28 @@ public class AutoSaveWorld extends JavaPlugin {
 			MessageLogger.warn("Instance wasn't null when enabling, this is not a good sign");
 		}
 		instance = this;
+		//important to create instance here
+		config = new AutoSaveWorldConfig();
+		configmsg = new AutoSaveWorldConfigMSG();
+		saveThread = new AutoSaveThread();
+		backupThread = new AutoBackupThread();
+		purgeThread = new AutoPurgeThread();
+		autorestartThread = new AutoRestartThread();
+		crashrestartThread = new CrashRestartThread(Thread.currentThread());
+		consolecommandThread = new AutoConsoleCommandThread();
+		watcher = new NetworkWatcher();
 	}
 
-	private final AutoSaveWorldConfig config = new AutoSaveWorldConfig();
-	private final AutoSaveWorldConfigMSG configmsg = new AutoSaveWorldConfigMSG();
+	private final AutoSaveWorldConfig config;
+	private final AutoSaveWorldConfigMSG configmsg;
 
-	private final AutoSaveThread saveThread = new AutoSaveThread();
-	private final AutoBackupThread backupThread = new AutoBackupThread();
-	private final AutoPurgeThread purgeThread = new AutoPurgeThread();
-	private final AutoRestartThread autorestartThread = new AutoRestartThread();
-	private final CrashRestartThread crashrestartThread = new CrashRestartThread(Thread.currentThread());
-	private final AutoConsoleCommandThread consolecommandThread = new AutoConsoleCommandThread();
-	private final NetworkWatcher watcher = new NetworkWatcher();
+	private final AutoSaveThread saveThread;
+	private final AutoBackupThread backupThread;
+	private final AutoPurgeThread purgeThread;
+	private final AutoRestartThread autorestartThread;
+	private final CrashRestartThread crashrestartThread;
+	private final AutoConsoleCommandThread consolecommandThread;
+	private final NetworkWatcher watcher;
 
 	public AutoSaveWorldConfig getMainConfig() {
 		return config;
@@ -146,10 +156,8 @@ public class AutoSaveWorld extends JavaPlugin {
 			MessageLogger.debug("Saving");
 			saveThread.performSaveNow();
 		}
-		MessageLogger.debug("Saving config");
 		ConfigLoader.save(config);
 		ConfigLoader.save(configmsg);
-		MessageLogger.debug("Stopping Threads");
 		stopThread(saveThread);
 		stopThread(backupThread);
 		stopThread(purgeThread);
