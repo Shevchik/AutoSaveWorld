@@ -7,15 +7,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.UserMap;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 
 public class EssentialsPurge extends DataPurge {
 
-	public EssentialsPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		super(config, activeplayerslist);
+	public EssentialsPurge(ActivePlayersList activeplayerslist) {
+		super(activeplayerslist);
 	}
 
 	@Override

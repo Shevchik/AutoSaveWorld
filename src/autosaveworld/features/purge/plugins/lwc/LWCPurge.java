@@ -23,7 +23,7 @@ import com.griefcraft.lwc.LWC;
 import com.griefcraft.model.Permission;
 import com.griefcraft.model.Protection;
 
-import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
@@ -31,8 +31,8 @@ import autosaveworld.features.purge.taskqueue.TaskExecutor;
 
 public class LWCPurge extends DataPurge {
 
-	public LWCPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		super(config, activeplayerslist);
+	public LWCPurge(ActivePlayersList activeplayerslist) {
+		super(activeplayerslist);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class LWCPurge extends DataPurge {
 				if (!activeplayerslist.isActiveName(pr.getOwner()) && !activeplayerslist.isActiveUUID(pr.getOwner()) && (clearTask.getPlayerToClearCount() == pr.getPermissions().size())) {
 					MessageLogger.debug("Protection owner "+pr.getOwner()+" is inactive");
 					// regen block if needed
-					if (config.purgeLWCDelProtectedBlocks) {
+					if (AutoSaveWorld.getInstance().getMainConfig().purgeLWCDelProtectedBlocks) {
 						LWCRegenTask regenTask = new LWCRegenTask(pr);
 						queue.execute(regenTask);
 					}

@@ -19,27 +19,27 @@ package autosaveworld.features.purge.plugins.permissions;
 
 import org.bukkit.Bukkit;
 
-import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.utils.BukkitUtils;
 
 public class PermissionsPurge extends DataPurge {
 
-	public PermissionsPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		super(config, activeplayerslist);
+	public PermissionsPurge(ActivePlayersList activeplayerslist) {
+		super(activeplayerslist);
 	}
 
 	@Override
 	public void doPurge() {
 		if (Bukkit.getPluginManager().getPlugin("GroupManager") != null) {
-			new GroupManagerPurge(config, activeplayerslist).doPurge();
+			new GroupManagerPurge(activeplayerslist).doPurge();
 			return;
 		}
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
-			new VaultPurge(config, activeplayerslist).doPurge();
+			new VaultPurge(activeplayerslist).doPurge();
 		}
-		BukkitUtils.dispatchCommandAsConsole(config.purgePermsSaveCMD);
+		BukkitUtils.dispatchCommandAsConsole(AutoSaveWorld.getInstance().getMainConfig().purgePermsSaveCMD);
 	}
 
 }

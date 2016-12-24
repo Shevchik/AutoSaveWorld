@@ -25,15 +25,14 @@ import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 
 public class GroupManagerPurge extends DataPurge {
 
-	public GroupManagerPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		super(config, activeplayerslist);
+	public GroupManagerPurge(ActivePlayersList activeplayerslist) {
+		super(activeplayerslist);
 	}
 
 	public void doPurge() {

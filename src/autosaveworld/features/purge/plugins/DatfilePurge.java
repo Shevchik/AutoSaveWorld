@@ -22,7 +22,6 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
@@ -30,8 +29,8 @@ import autosaveworld.utils.FileUtils;
 
 public class DatfilePurge extends DataPurge {
 
-	public DatfilePurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		super(config, activeplayerslist);
+	public DatfilePurge(ActivePlayersList activeplayerslist) {
+		super(activeplayerslist);
 	}
 
 	public void doPurge() {

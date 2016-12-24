@@ -21,7 +21,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
@@ -31,8 +30,8 @@ import net.milkbowl.vault.permission.Permission;
 
 public class VaultPurge extends DataPurge {
 
-	public VaultPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		super(config, activeplayerslist);
+	public VaultPurge(ActivePlayersList activeplayerslist) {
+		super(activeplayerslist);
 	}
 
 	public void doPurge() {

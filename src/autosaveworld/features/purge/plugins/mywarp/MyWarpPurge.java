@@ -23,7 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.base.Predicate;
 
-import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
@@ -36,8 +35,8 @@ import me.taylorkelly.mywarp.warp.Warp;
 
 public class MyWarpPurge extends DataPurge {
 
-	public MyWarpPurge(AutoSaveWorldConfig config, ActivePlayersList activeplayerslist) {
-		super(config, activeplayerslist);
+	public MyWarpPurge(ActivePlayersList activeplayerslist) {
+		super(activeplayerslist);
 	}
 
 	@Override

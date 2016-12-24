@@ -28,7 +28,7 @@ import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import autosaveworld.config.AutoSaveWorldConfig;
+import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
@@ -36,8 +36,8 @@ import autosaveworld.features.purge.taskqueue.TaskExecutor;
 
 public class WGPurge extends DataPurge {
 
-	public WGPurge(AutoSaveWorldConfig config, ActivePlayersList activelist) {
-		super(config, activelist);
+	public WGPurge(ActivePlayersList activelist) {
+		super(activelist);
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class WGPurge extends DataPurge {
 					// remove region if all owners and members are inactive
 					if (domainClearTask.getPlayersToClearCount() == (rg.getOwners().size() + rg.getMembers().size())) {
 						// regen region if needed
-						if (config.purgeWGRegenRg) {
-							RegionRegenTask regenTask = new RegionRegenTask(w, rg, config.purgeWGNoregenOverlap);
+						if (AutoSaveWorld.getInstance().getMainConfig().purgeWGRegenRg) {
+							RegionRegenTask regenTask = new RegionRegenTask(w, rg, AutoSaveWorld.getInstance().getMainConfig().purgeWGNoregenOverlap);
 							queue.execute(regenTask);
 						}
 						// delete region

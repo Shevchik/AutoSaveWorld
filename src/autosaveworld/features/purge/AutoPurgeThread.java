@@ -70,27 +70,27 @@ public class AutoPurgeThread extends IntervalTaskThread {
 		PluginManager pm = Bukkit.getPluginManager();
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
 			MessageLogger.debug("WG found, adding to purge list");
-			purges.add(new WGPurge(config, activelist));
+			purges.add(new WGPurge(activelist));
 		}
 		if ((pm.getPlugin("LWC") != null) && config.purgeLWC) {
 			MessageLogger.debug("LWC found, adding to purge list");
-			purges.add(new LWCPurge(config, activelist));
+			purges.add(new LWCPurge(activelist));
 		}
 		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
 			MessageLogger.debug("MyWarp found, adding to purge list");
-			purges.add(new MyWarpPurge(config, activelist));
+			purges.add(new MyWarpPurge(activelist));
 		}
 		if ((pm.getPlugin("Essentials") != null && config.purgeEssentials)) {
 			MessageLogger.debug("Essentials found, adding to purge list");
-			purges.add(new EssentialsPurge(config, activelist));
+			purges.add(new EssentialsPurge(activelist));
 		}
 		if (config.purgePerms) {
 			MessageLogger.debug("Permissions purge is enabled, adding to purge list");
-			purges.add(new PermissionsPurge(config, activelist));
+			purges.add(new PermissionsPurge(activelist));
 		}
 		if (config.purgeDat) {
 			MessageLogger.debug("Dat purge is enabled, adding to purge list");
-			purges.add(new DatfilePurge(config, activelist));
+			purges.add(new DatfilePurge(activelist));
 		}
 
 		for (DataPurge datapurge : purges) {
