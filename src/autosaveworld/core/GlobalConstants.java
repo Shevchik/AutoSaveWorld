@@ -19,34 +19,24 @@ package autosaveworld.core;
 
 import java.io.File;
 
+import autosaveworld.utils.FileUtils;
+
 public class GlobalConstants {
 
-	public static void init(AutoSaveWorld plugin) {
-		pluginfolder = plugin.getDataFolder().getPath() + File.separator;
+	public static File getAutoSaveWorldFolder() {
+		return AutoSaveWorld.getInstance().getDataFolder();
 	}
 
-	// main
-	private static String pluginfolder;
-
-	public static String getAutoSaveWorldFolder() {
-		return pluginfolder;
+	public static File getPluginsFolder() {
+		return getAutoSaveWorldFolder().getParentFile();
 	}
 
-	public static String getPluginsFolder() {
-		return new File(pluginfolder).getParentFile().getPath();
+	public static File getMainConfigPath() {
+		return FileUtils.buildFile(getAutoSaveWorldFolder(), "config.yml");
 	}
 
-	// config
-	private static String configfile = "config.yml";
-
-	public static String getConfigPath() {
-		return getAutoSaveWorldFolder() + configfile;
-	}
-
-	private static String configmsgfile = "configmsg.yml";
-
-	public static String getConfigMSGPath() {
-		return getAutoSaveWorldFolder() + configmsgfile;
+	public static File getMessageConfigPath() {
+		return FileUtils.buildFile(getAutoSaveWorldFolder(), "configmsg.yml");
 	}
 
 }

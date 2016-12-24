@@ -85,7 +85,7 @@ public class VirtualBackupManager {
 			}
 		}
 		if (backupplugins) {
-			foldersToBackup.add(new File(GlobalConstants.getPluginsFolder()));
+			foldersToBackup.add(GlobalConstants.getPluginsFolder());
 		}
 		for (String otherfolder : otherfolders) {
 			foldersToBackup.add(new File(otherfolder));

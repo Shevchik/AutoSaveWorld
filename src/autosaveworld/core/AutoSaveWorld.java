@@ -102,14 +102,9 @@ public class AutoSaveWorld extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		GlobalConstants.init(this);
 		ConfigLoader.loadAndSave(config);
 		ConfigLoader.loadAndSave(configmsg);
-		SchedulerUtils.init();
-		ReflectionUtils.init();
-		FileUtils.init();
-		StringUtils.init();
-		RestartWaiter.init();
+		preloadClasses();
 		try {
 			CommandsHandler commandshandler = new CommandsHandler();
 			commandshandler.initSubCommandHandlers();
@@ -130,6 +125,15 @@ public class AutoSaveWorld extends JavaPlugin {
 		crashrestartThread.start();
 		consolecommandThread.start();
 		watcher.register();
+	}
+
+	private static void preloadClasses() {
+		//preload core classes, so replacing jar file won't break plugin completely (Some core functions should work)
+		SchedulerUtils.init();
+		ReflectionUtils.init();
+		FileUtils.init();
+		StringUtils.init();
+		RestartWaiter.init();
 	}
 
 	@Override

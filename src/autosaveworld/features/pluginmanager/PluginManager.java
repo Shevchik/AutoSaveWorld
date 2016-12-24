@@ -120,7 +120,7 @@ public class PluginManager {
 			if (args[0].equalsIgnoreCase("load")) {
 				String input = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
 				ArrayList<String> result = new ArrayList<String>();
-				for (File pluginfile : FileUtils.safeListFiles(new File(GlobalConstants.getPluginsFolder()))) {
+				for (File pluginfile : FileUtils.safeListFiles(GlobalConstants.getPluginsFolder())) {
 					String pluginName = getPluginName(pluginfile);
 					if (
 						(pluginName != null) &&
@@ -268,7 +268,7 @@ public class PluginManager {
 	}
 
 	private File findPluginFile(String pluginname) {
-		for (File pluginfile : FileUtils.safeListFiles(new File(GlobalConstants.getPluginsFolder()))) {
+		for (File pluginfile : FileUtils.safeListFiles(GlobalConstants.getPluginsFolder())) {
 			String pluginName = getPluginName(pluginfile);
 			if ((pluginName != null) && (pluginname.equalsIgnoreCase(pluginName) || pluginname.equalsIgnoreCase(pluginName.replace(" ", "_")))) {
 				return pluginfile;

@@ -55,9 +55,8 @@ public class LocalFSBackupOperations {
 
 	public void backupPlugins(int maxBackupsCount, String latestbackuptimestamp) {
 		try {
-			File fromfolder = new File(GlobalConstants.getPluginsFolder()).getAbsoluteFile();
 			String destfolder = extpath + File.separator + "backups" + File.separator + "plugins";
-			backupFolder(fromfolder, destfolder, maxBackupsCount, latestbackuptimestamp);
+			backupFolder(GlobalConstants.getPluginsFolder(), destfolder, maxBackupsCount, latestbackuptimestamp);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

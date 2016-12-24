@@ -17,11 +17,9 @@
 
 package autosaveworld.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -74,8 +72,7 @@ public class LocaleChanger {
 	// load needed locale file
 	private void loadLocaleFile(String locale) {
 		try (InputStream is = LocaleFiles.class.getResourceAsStream("configmsg_" + locale + ".yml")) {
-			Path file = new File(GlobalConstants.getConfigMSGPath()).toPath();
-			Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(is, GlobalConstants.getMessageConfigPath().toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 		}
 	}

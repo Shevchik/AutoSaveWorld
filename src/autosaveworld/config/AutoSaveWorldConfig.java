@@ -251,7 +251,7 @@ public class AutoSaveWorldConfig implements Config {
 
 	@Override
 	public File getFile() {
-		return new File(GlobalConstants.getConfigPath());
+		return GlobalConstants.getMainConfigPath();
 	}
 
 }

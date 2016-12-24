@@ -48,7 +48,7 @@ public class AutoSaveWorldConfigMSG implements Config {
 
 	@Override
 	public File getFile() {
-		return new File(GlobalConstants.getConfigMSGPath());
+		return GlobalConstants.getMessageConfigPath();
 	}
 
 }
