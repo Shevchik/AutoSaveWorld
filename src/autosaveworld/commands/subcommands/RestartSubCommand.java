@@ -29,7 +29,7 @@ public class RestartSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		AutoSaveWorld.getInstance().autorestartThread.triggerRestart(false);
+		AutoSaveWorld.getInstance().getRestartThread().triggerRestart(false);
 	}
 
 	@Override

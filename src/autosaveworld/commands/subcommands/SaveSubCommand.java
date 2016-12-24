@@ -29,7 +29,7 @@ public class SaveSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		AutoSaveWorld.getInstance().saveThread.triggerTaskRun();
+		AutoSaveWorld.getInstance().getSaveThread().triggerTaskRun();
 	}
 
 	@Override

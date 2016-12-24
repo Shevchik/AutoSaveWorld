@@ -88,15 +88,15 @@ public class NoTabCompleteCommandsHandler implements CommandExecutor {
 		// now handle commands
 		if (commandName.equalsIgnoreCase("autosave")) {
 			// "autosave" command handler
-			AutoSaveWorld.getInstance().saveThread.triggerTaskRun();
+			AutoSaveWorld.getInstance().getSaveThread().triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autobackup")) {
 			// "autobackup" command handler
-			AutoSaveWorld.getInstance().backupThread.triggerTaskRun();
+			AutoSaveWorld.getInstance().getBackupThread().triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autopurge")) {
 			// "autopurge" command handler
-			AutoSaveWorld.getInstance().purgeThread.triggerTaskRun();
+			AutoSaveWorld.getInstance().getPurgeThread().triggerTaskRun();
 			return true;
 		} else if (commandName.equalsIgnoreCase("autosaveworld")) {
 			// "autosaveworld" command handler

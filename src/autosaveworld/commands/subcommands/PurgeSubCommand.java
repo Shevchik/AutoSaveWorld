@@ -29,7 +29,7 @@ public class PurgeSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		AutoSaveWorld.getInstance().purgeThread.triggerTaskRun();
+		AutoSaveWorld.getInstance().getPurgeThread().triggerTaskRun();
 	}
 
 	@Override

@@ -19,6 +19,7 @@ package autosaveworld.core;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import autosaveworld.commands.CommandsHandler;
@@ -28,7 +29,6 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.config.AutoSaveWorldConfigMSG;
 import autosaveworld.config.loader.ConfigLoader;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.ThreadType;
 import autosaveworld.features.backup.AutoBackupThread;
 import autosaveworld.features.consolecommand.AutoConsoleCommandThread;
 import autosaveworld.features.networkwatcher.NetworkWatcher;
@@ -42,20 +42,9 @@ import autosaveworld.utils.FileUtils;
 import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.StringUtils;
+import autosaveworld.utils.Threads.SIntervalTaskThread;
 
 public class AutoSaveWorld extends JavaPlugin {
-
-	// save
-	public AutoSaveThread saveThread;
-	// backup
-	public AutoBackupThread backupThread;
-	// purge
-	public AutoPurgeThread purgeThread;
-	// restart
-	public CrashRestartThread crashrestartThread;
-	public AutoRestartThread autorestartThread;
-	// autoconsolecommand
-	public AutoConsoleCommandThread consolecommandThread;
 
 	private static AutoSaveWorld instance;
 
@@ -66,9 +55,25 @@ public class AutoSaveWorld extends JavaPlugin {
 		return instance;
 	}
 
+	public AutoSaveWorld() {
+		if (!Bukkit.isPrimaryThread()) {
+			throw new IllegalStateException("Init not fom main thread");
+		}
+		if (instance != null) {
+			MessageLogger.warn("Instance wasn't null when enabling, this is not a good sign");
+		}
+		instance = this;
+	}
+
 	private final AutoSaveWorldConfig config = new AutoSaveWorldConfig();
 	private final AutoSaveWorldConfigMSG configmsg = new AutoSaveWorldConfigMSG();
 
+	private final AutoSaveThread saveThread = new AutoSaveThread();
+	private final AutoBackupThread backupThread = new AutoBackupThread();
+	private final AutoPurgeThread purgeThread = new AutoPurgeThread();
+	private final AutoRestartThread autorestartThread = new AutoRestartThread();
+	private final CrashRestartThread crashrestartThread = new CrashRestartThread(Thread.currentThread());
+	private final AutoConsoleCommandThread consolecommandThread = new AutoConsoleCommandThread();
 	private final NetworkWatcher watcher = new NetworkWatcher();
 
 	public AutoSaveWorldConfig getMainConfig() {
@@ -79,11 +84,20 @@ public class AutoSaveWorld extends JavaPlugin {
 		return configmsg;
 	}
 
-	public AutoSaveWorld() {
-		if (instance != null) {
-			MessageLogger.warn("Instance wasn't null when enabling, this is not a good sign");
-		}
-		instance = this;
+	public AutoSaveThread getSaveThread() {
+		return saveThread;
+	}
+
+	public AutoBackupThread getBackupThread() {
+		return backupThread;
+	}
+
+	public AutoPurgeThread getPurgeThread() {
+		return purgeThread;
+	}
+
+	public AutoRestartThread getRestartThread() {
+		return autorestartThread;
 	}
 
 	@Override
@@ -109,13 +123,13 @@ public class AutoSaveWorld extends JavaPlugin {
 				getCommand(commandName).setExecutor(commandshandler);
 			}
 		}
+		saveThread.start();
+		backupThread.start();
+		purgeThread.start();
+		autorestartThread.start();
+		crashrestartThread.start();
+		consolecommandThread.start();
 		watcher.register();
-		startThread(ThreadType.SAVE);
-		startThread(ThreadType.BACKUP);
-		startThread(ThreadType.PURGE);
-		startThread(ThreadType.CRASHRESTART);
-		startThread(ThreadType.AUTORESTART);
-		startThread(ThreadType.CONSOLECOMMAND);
 	}
 
 	@Override
@@ -132,136 +146,20 @@ public class AutoSaveWorld extends JavaPlugin {
 		ConfigLoader.save(config);
 		ConfigLoader.save(configmsg);
 		MessageLogger.debug("Stopping Threads");
-		stopThread(ThreadType.SAVE);
-		stopThread(ThreadType.BACKUP);
-		stopThread(ThreadType.PURGE);
-		stopThread(ThreadType.CRASHRESTART);
-		stopThread(ThreadType.AUTORESTART);
-		stopThread(ThreadType.CONSOLECOMMAND);
+		stopThread(saveThread);
+		stopThread(backupThread);
+		stopThread(purgeThread);
+		stopThread(autorestartThread);
+		stopThread(crashrestartThread);
+		stopThread(consolecommandThread);
 		watcher.unregister();
 	}
 
-	protected void startThread(ThreadType type) {
-		switch (type) {
-			case SAVE: {
-				if ((saveThread == null) || !saveThread.isAlive()) {
-					saveThread = new AutoSaveThread();
-					saveThread.start();
-				}
-				return;
-			}
-			case BACKUP: {
-				if ((backupThread == null) || !backupThread.isAlive()) {
-					backupThread = new AutoBackupThread();
-					backupThread.start();
-				}
-				return;
-			}
-			case PURGE: {
-				if ((purgeThread == null) || !purgeThread.isAlive()) {
-					purgeThread = new AutoPurgeThread();
-					purgeThread.start();
-				}
-				return;
-			}
-			case CRASHRESTART: {
-				if ((crashrestartThread == null) || !crashrestartThread.isAlive()) {
-					crashrestartThread = new CrashRestartThread(Thread.currentThread());
-					crashrestartThread.start();
-				}
-				return;
-			}
-			case AUTORESTART: {
-				if ((autorestartThread == null) || !autorestartThread.isAlive()) {
-					autorestartThread = new AutoRestartThread();
-					autorestartThread.start();
-				}
-				return;
-			}
-			case CONSOLECOMMAND: {
-				if ((consolecommandThread == null) || !consolecommandThread.isAlive()) {
-					consolecommandThread = new AutoConsoleCommandThread();
-					consolecommandThread.start();
-				}
-				return;
-			}
-		}
-	}
-
-	protected void stopThread(ThreadType type) {
-		switch (type) {
-			case SAVE: {
-				if (saveThread != null) {
-					saveThread.stopThread();
-					try {
-						saveThread.join(2000);
-						saveThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop AutoSaveThread");
-					}
-				}
-				return;
-			}
-			case BACKUP: {
-				if (backupThread != null) {
-					backupThread.stopThread();
-					try {
-						backupThread.join(2000);
-						backupThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop AutoBackupThread");
-					}
-				}
-				return;
-			}
-			case PURGE: {
-				if (purgeThread != null) {
-					purgeThread.stopThread();
-					try {
-						purgeThread.join(2000);
-						purgeThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop AutoPurgeThread");
-					}
-				}
-				return;
-			}
-			case CRASHRESTART: {
-				if (crashrestartThread != null) {
-					crashrestartThread.stopThread();
-					try {
-						crashrestartThread.join(2000);
-						crashrestartThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop CrashRestartThread");
-					}
-				}
-				return;
-			}
-			case AUTORESTART: {
-				if (autorestartThread != null) {
-					autorestartThread.stopThread();
-					try {
-						autorestartThread.join(2000);
-						autorestartThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop AutoRestartThread");
-					}
-				}
-				return;
-			}
-			case CONSOLECOMMAND: {
-				if (consolecommandThread != null) {
-					consolecommandThread.stopThread();
-					try {
-						consolecommandThread.join(2000);
-						consolecommandThread = null;
-					} catch (InterruptedException e) {
-						MessageLogger.warn("Could not stop ConsoleCommandThread");
-					}
-				}
-				return;
-			}
+	private static void stopThread(SIntervalTaskThread tt) {
+		tt.stopThread();
+		try {
+			tt.join(2000);
+		} catch (InterruptedException e) {
 		}
 	}
 

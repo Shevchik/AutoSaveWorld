@@ -156,7 +156,7 @@ public class WorldRegenThread extends Thread {
 		Runtime.getRuntime().addShutdownHook(wrsh);
 		RestartWaiter.incrementWait();
 
-		AutoSaveWorld.getInstance().autorestartThread.triggerRestart(true);
+		AutoSaveWorld.getInstance().getRestartThread().triggerRestart(true);
 	}
 
 }

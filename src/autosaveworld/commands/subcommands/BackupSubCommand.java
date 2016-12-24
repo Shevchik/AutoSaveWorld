@@ -29,7 +29,7 @@ public class BackupSubCommand implements ISubCommand {
 
 	@Override
 	public void handle(CommandSender sender, String[] args) {
-		AutoSaveWorld.getInstance().backupThread.triggerTaskRun();
+		AutoSaveWorld.getInstance().getBackupThread().triggerTaskRun();
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class AutoBackupThread extends IntervalTaskThread {
 	public void performBackup() throws Exception {
 
 		if (AutoSaveWorld.getInstance().getMainConfig().backupsaveBefore) {
-			AutoSaveWorld.getInstance().saveThread.performSave();
+			AutoSaveWorld.getInstance().getSaveThread().performSave();
 		}
 
 		long timestart = System.currentTimeMillis();
