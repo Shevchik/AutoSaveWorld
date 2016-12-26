@@ -37,7 +37,11 @@ public class AutoBackupThread extends IntervalTaskThread {
 		super("AutoBackupThread");
 	}
 
-	public static volatile boolean backupRunning = false;
+	private boolean backupRunning = false;
+
+	public boolean isBackupInProcess() {
+		return backupRunning;
+	}
 
 	@Override
 	public boolean isEnabled() {
@@ -52,8 +56,11 @@ public class AutoBackupThread extends IntervalTaskThread {
 	@Override
 	public void doTask() throws Exception {
 		backupRunning = true;
-		performBackup();
-		backupRunning = false;
+		try {
+			performBackup();
+		} finally {
+			backupRunning = false;
+		}
 	}
 
 	public void performBackup() throws Exception {

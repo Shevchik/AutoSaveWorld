@@ -25,7 +25,6 @@ import org.bukkit.World;
 
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
-import autosaveworld.features.backup.AutoBackupThread;
 import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.Threads.IntervalTaskThread;
@@ -59,7 +58,7 @@ public class AutoSaveThread extends IntervalTaskThread {
 
 	@Override
 	public void doTask() {
-		if (AutoBackupThread.backupRunning) {
+		if (AutoSaveWorld.getInstance().getBackupThread().isBackupInProcess()) {
 			MessageLogger.debug("Backup is running, skipping autosave");
 			return;
 		}
