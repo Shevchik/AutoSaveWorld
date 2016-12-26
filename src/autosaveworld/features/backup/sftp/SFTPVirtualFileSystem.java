@@ -30,7 +30,7 @@ import autosaveworld.zlibs.com.jcraft.jsch.SftpException;
 
 public class SFTPVirtualFileSystem extends VirtualFileSystem {
 
-	private ChannelSftp sftpclient;
+	private final ChannelSftp sftpclient;
 	public SFTPVirtualFileSystem(ChannelSftp sftpclient) {
 		this.sftpclient = sftpclient;
 	}

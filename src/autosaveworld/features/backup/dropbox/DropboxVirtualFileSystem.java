@@ -38,8 +38,8 @@ import autosaveworld.zlibs.com.dropbox.core.v2.files.UploadSessionStartResult;
 
 public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
-	private DbxClientV2 dbxclient;
-	private ArrayList<String> currentpath = new ArrayList<String>();
+	private final DbxClientV2 dbxclient;
+	private final ArrayList<String> currentpath = new ArrayList<String>();
 	public DropboxVirtualFileSystem(DbxClientV2 dbxclient) {
 		this.dbxclient = dbxclient;
 	}
@@ -61,7 +61,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public void leaveDirectory() throws IOException {
         if (currentpath.isEmpty()) {
-        	throw new IOException("Can't get parent directory of a root dir");
+        	throw new IOException("Can't leave root directory");
         }
         currentpath.remove(currentpath.size() - 1);
 	}

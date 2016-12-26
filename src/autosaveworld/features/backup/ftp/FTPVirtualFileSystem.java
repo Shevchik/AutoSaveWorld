@@ -28,7 +28,7 @@ import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 
 public class FTPVirtualFileSystem extends VirtualFileSystem {
 
-	private FTPClient ftpclient;
+	private final FTPClient ftpclient;
 	public FTPVirtualFileSystem(FTPClient ftpclient) {
 		this.ftpclient = ftpclient;
 	}
