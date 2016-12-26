@@ -159,6 +159,27 @@ public class AutoSaveWorldConfig implements Config {
 	public int backupDropboxMaxNumberOfBackups = 4;
 	@ConfigOption(path = "backup.dropbox.zip")
 	public boolean backupDropboxZipEnabled = false;
+	// google drive backup
+	@ConfigOption(path = "backup.googledrive.enabled")
+	public boolean backupGDriveEnabled = false;
+	@ConfigOption(path = "backup.googledrive.authfilepath")
+	public String backupGDriveAuthFile = "";
+	@ConfigOption(path = "backup.googledrive.rootfolderid")
+	public String backupGDRiveRootFolder = "";
+	@ConfigOption(path = "backup.googledrive.path")
+	public String backupGDrivePath = "asw";
+	@ConfigOption(path = "backup.googledrive.worlds", transform = ListClone.class, postload = AstListAppend.class)
+	public List<String> backupGDriveWorldsList = new ArrayList<>();
+	@ConfigOption(path = "backup.googledrive.pluginsfolder")
+	public boolean backupGDrivePluginsFolder = false;
+	@ConfigOption(path = "backup.googledrive.otherfolders", transform = ListClone.class)
+	public List<String> backupGDriveOtherFolders = new ArrayList<>();
+	@ConfigOption(path = "backup.googledrive.excludefolders", transform = ListClone.class)
+	public List<String> backupGDriveExcludeFolders = new ArrayList<>();
+	@ConfigOption(path = "backup.googledrive.maxNumberOfBackups")
+	public int backupGDriveMaxNumberOfBackups = 4;
+	@ConfigOption(path = "backup.googledrive.zip")
+	public boolean backupGDriveZipEnabled = false;
 	// purge
 	@ConfigOption(path = "purge.enabled")
 	public boolean purgeEnabled = false;

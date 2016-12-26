@@ -21,6 +21,7 @@ import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.dropbox.DropboxBackup;
 import autosaveworld.features.backup.ftp.FTPBackup;
+import autosaveworld.features.backup.googledrive.GoogleDriveBackup;
 import autosaveworld.features.backup.localfs.LocalFSBackup;
 import autosaveworld.features.backup.script.ScriptBackup;
 import autosaveworld.features.backup.sftp.SFTPBackup;
@@ -110,6 +111,16 @@ public class AutoBackupThread extends IntervalTaskThread {
 				MessageLogger.debug("Dropbox backup Finished");
 			} catch (Exception e) {
 				MessageLogger.exception("Error occured while performing DropBox backup", e);
+			}
+		}
+
+		if (AutoSaveWorld.getInstance().getMainConfig().backupGDriveEnabled) {
+			MessageLogger.debug("Starting Google Drive backup");
+			try {
+				new GoogleDriveBackup().performBackup();
+				MessageLogger.debug("Google Drive backup finished");
+			} catch (Exception e) {
+				MessageLogger.exception("Error occured while performing Google Drive backup", e);
 			}
 		}
 
