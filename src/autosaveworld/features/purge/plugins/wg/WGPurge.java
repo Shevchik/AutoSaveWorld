@@ -37,13 +37,11 @@ import autosaveworld.features.purge.taskqueue.TaskExecutor;
 public class WGPurge extends DataPurge {
 
 	public WGPurge(ActivePlayersList activelist) {
-		super(activelist);
+		super("WorldGuard", activelist);
 	}
 
 	@Override
 	public void doPurge() {
-		MessageLogger.debug("WG purge started");
-
 		try (TaskExecutor queue = new TaskExecutor(30)) {
 			for (World w : Bukkit.getWorlds()) {
 				MessageLogger.debug("Checking WG protections in world " + w.getName());
@@ -92,8 +90,6 @@ public class WGPurge extends DataPurge {
 				}
 			}
 		}
-
-		MessageLogger.debug("WG purge finished, deleted " + getDeleted() + " regions, cleaned "+getCleaned()+ "region");
 	}
 
 }

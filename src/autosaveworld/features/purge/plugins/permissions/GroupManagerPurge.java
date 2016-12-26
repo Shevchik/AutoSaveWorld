@@ -32,12 +32,10 @@ import autosaveworld.features.purge.DataPurge;
 public class GroupManagerPurge extends DataPurge {
 
 	public GroupManagerPurge(ActivePlayersList activeplayerslist) {
-		super(activeplayerslist);
+		super("Permissions(GroupManager)", activeplayerslist);
 	}
 
 	public void doPurge() {
-		MessageLogger.debug("Player permissions purge started");
-
 		GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 		for (OverloadedWorldHolder holder : groupManager.getWorldsHolder().allWorldsDataList()) {
 			Map<String, User> users = holder.getUsers();
@@ -50,8 +48,6 @@ public class GroupManagerPurge extends DataPurge {
 				}
 			}
 		}
-
-		MessageLogger.debug("Player permissions purge finished, deleted " + getDeleted() + " players permissions");
 	}
 
 }

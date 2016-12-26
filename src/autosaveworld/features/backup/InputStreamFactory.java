@@ -24,12 +24,12 @@ import java.io.InputStream;
 
 import autosaveworld.features.backup.utils.ratelimitedstreams.RateLimitedInputStream;
 
-public class InputStreamConstruct {
+public class InputStreamFactory {
 
 	private static long rate = 0;
 
 	protected static void setRateLimit(long rate) {
-		InputStreamConstruct.rate = rate;
+		InputStreamFactory.rate = rate;
 	}
 
 	public static boolean isRateLimited() {

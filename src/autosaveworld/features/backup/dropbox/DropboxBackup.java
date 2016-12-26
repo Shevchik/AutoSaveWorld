@@ -21,11 +21,16 @@ import java.io.IOException;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.features.backup.Backup;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.com.dropbox.core.DbxRequestConfig;
 import autosaveworld.zlibs.com.dropbox.core.v2.DbxClientV2;
 
-public class DropboxBackup {
+public class DropboxBackup extends Backup {
+
+	public DropboxBackup() {
+		super("Dropbox");
+	}
 
 	private final DbxRequestConfig dconfig = DbxRequestConfig.newBuilder(AutoSaveWorld.getInstance().getName()).withAutoRetryEnabled().withUserLocaleFromPreferences().build();
 

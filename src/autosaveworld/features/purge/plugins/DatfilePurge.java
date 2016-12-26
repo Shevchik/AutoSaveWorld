@@ -30,12 +30,10 @@ import autosaveworld.utils.FileUtils;
 public class DatfilePurge extends DataPurge {
 
 	public DatfilePurge(ActivePlayersList activeplayerslist) {
-		super(activeplayerslist);
+		super("Player data files", activeplayerslist);
 	}
 
 	public void doPurge() {
-		MessageLogger.debug("Player .dat file purge started");
-
 		File worldfolder = Bukkit.getWorlds().get(0).getWorldFolder();
 		File playersdatfolder = FileUtils.buildFile(worldfolder, "playerdata");
 		File playersstatsfolder = FileUtils.buildFile(worldfolder, "stats");
@@ -48,8 +46,6 @@ public class DatfilePurge extends DataPurge {
 				incDeleted();
 			}
 		}
-
-		MessageLogger.debug("Player .dat purge finished, deleted " + getDeleted() + " player .dat files");
 	}
 
 }

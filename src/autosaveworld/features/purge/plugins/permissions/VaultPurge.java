@@ -21,7 +21,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
-import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.ActivePlayersList;
 import autosaveworld.features.purge.DataPurge;
 import autosaveworld.features.purge.taskqueue.Task;
@@ -31,12 +30,10 @@ import net.milkbowl.vault.permission.Permission;
 public class VaultPurge extends DataPurge {
 
 	public VaultPurge(ActivePlayersList activeplayerslist) {
-		super(activeplayerslist);
+		super("Permissions(Vault)", activeplayerslist);
 	}
 
 	public void doPurge() {
-		MessageLogger.debug("Player permissions purge started");
-
 		final Permission permission = Bukkit.getServicesManager().getRegistration(Permission.class).getProvider();
 
 		try (TaskExecutor queue = new TaskExecutor(80)) {
@@ -61,8 +58,6 @@ public class VaultPurge extends DataPurge {
 				}
 			}
 		}
-
-		MessageLogger.debug("Player permissions purge finished, deleted " + getDeleted() + " players permissions");
 	}
 
 }

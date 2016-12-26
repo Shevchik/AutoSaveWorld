@@ -36,7 +36,7 @@ import org.bukkit.World;
 import autosaveworld.core.GlobalConstants;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.BackupUtils;
-import autosaveworld.features.backup.InputStreamConstruct;
+import autosaveworld.features.backup.InputStreamFactory;
 import autosaveworld.features.backup.utils.PipedZip;
 
 public class VirtualBackupManager {
@@ -124,7 +124,7 @@ public class VirtualBackupManager {
 
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				try (InputStream is = InputStreamConstruct.getFileInputStream(file.toFile())) {
+				try (InputStream is = InputStreamFactory.getFileInputStream(file.toFile())) {
 					storeFile(is, file.getFileName().toString());
 				}
 				return FileVisitResult.CONTINUE;

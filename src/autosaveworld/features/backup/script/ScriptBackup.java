@@ -22,8 +22,13 @@ import java.io.File;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.backup.Backup;
 
-public class ScriptBackup {
+public class ScriptBackup extends Backup {
+
+	public ScriptBackup() {
+		super("Script");
+	}
 
 	public void performBackup() {
 		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();

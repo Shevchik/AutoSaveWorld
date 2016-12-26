@@ -25,8 +25,13 @@ import org.bukkit.World;
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.features.backup.Backup;
 
-public class LocalFSBackup {
+public class LocalFSBackup extends Backup {
+
+	public LocalFSBackup() {
+		super("Local FileSystem");
+	}
 
 	public void performBackup() {
 		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();

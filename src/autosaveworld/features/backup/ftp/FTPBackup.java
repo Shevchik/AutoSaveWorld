@@ -22,12 +22,17 @@ import java.net.SocketException;
 
 import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
+import autosaveworld.features.backup.Backup;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTP;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPClient;
 import autosaveworld.zlibs.org.apache.commons.net.ftp.FTPReply;
 
-public class FTPBackup {
+public class FTPBackup extends Backup {
+
+	public FTPBackup() {
+		super("FTP");
+	}
 
 	public void performBackup() throws SocketException, IOException {
 		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();

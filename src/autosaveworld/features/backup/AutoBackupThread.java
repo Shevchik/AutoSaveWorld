@@ -17,6 +17,10 @@
 
 package autosaveworld.features.backup;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+
+import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.dropbox.DropboxBackup;
@@ -53,80 +57,52 @@ public class AutoBackupThread extends IntervalTaskThread {
 	}
 
 	public void performBackup() throws Exception {
+		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
 
-		if (AutoSaveWorld.getInstance().getMainConfig().backupsaveBefore) {
+		if (config.backupsaveBefore) {
 			AutoSaveWorld.getInstance().getSaveThread().performSave();
 		}
 
 		long timestart = System.currentTimeMillis();
 
-		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageBackupBroadcastPre, AutoSaveWorld.getInstance().getMainConfig().backupBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageBackupBroadcastPre, config.backupBroadcast);
 
-		InputStreamConstruct.setRateLimit(AutoSaveWorld.getInstance().getMainConfig().backupRateLimit);
+		InputStreamFactory.setRateLimit(config.backupRateLimit);
 
-		if (AutoSaveWorld.getInstance().getMainConfig().backupLFSEnabled) {
-			MessageLogger.debug("Starting LocalFS backup");
+		ArrayList<Backup> backups = new ArrayList<Backup>();
+
+		if (config.backupLFSEnabled) {
+			backups.add(new LocalFSBackup());
+		}
+		if (config.backupFTPEnabled) {
+			backups.add(new FTPBackup());
+		}
+		if (config.backupSFTPEnabled) {
+			backups.add(new SFTPBackup());
+		}
+		if (config.backupScriptEnabled) {
+			backups.add(new ScriptBackup());
+		}
+		if (config.backupDropboxEnabled) {
+			backups.add(new DropboxBackup());
+		}
+		if (config.backupGDriveEnabled) {
+			backups.add(new GoogleDriveBackup());
+		}
+
+		for (Backup backup : backups) {
+			MessageLogger.debug(MessageFormat.format("Starting {0} backup", backup.getName()));
 			try {
-				new LocalFSBackup().performBackup();
-				MessageLogger.debug("LocalFS backup finished");
-			} catch (Exception e) {
-				MessageLogger.exception("Error occured while performing LocalFS backup", e);
+				backup.performBackup();
+				MessageLogger.debug(MessageFormat.format("Finished {0} backup", backup.getName()));
+			} catch (Throwable t) {
+				MessageLogger.exception(MessageFormat.format("Failed {0} backup", backup.getName()), t);
 			}
 		}
 
-		if (AutoSaveWorld.getInstance().getMainConfig().backupFTPEnabled) {
-			MessageLogger.debug("Starting FTP backup");
-			try {
-				new FTPBackup().performBackup();
-				MessageLogger.debug("FTP backup finished");
-			} catch (Exception e) {
-				MessageLogger.exception("Error occured while performing FTP backup", e);
-			}
-		}
+		MessageLogger.debug(MessageFormat.format("Backup took {0} milliseconds", System.currentTimeMillis() - timestart));
 
-		if (AutoSaveWorld.getInstance().getMainConfig().backupSFTPEnabled) {
-			MessageLogger.debug("Starting SFTP backup");
-			try {
-				new SFTPBackup().performBackup();
-				MessageLogger.debug("SFTP backup finished");
-			} catch (Exception e) {
-				MessageLogger.exception("Error occured while performing SFTP backup", e);
-			}
-		}
-
-		if (AutoSaveWorld.getInstance().getMainConfig().backupScriptEnabled) {
-			MessageLogger.debug("Starting Script backup");
-			try {
-				new ScriptBackup().performBackup();
-				MessageLogger.debug("Script Backup Finished");
-			} catch (Exception e) {
-				MessageLogger.exception("Error occured while performing Script backup", e);
-			}
-		}
-
-		if (AutoSaveWorld.getInstance().getMainConfig().backupDropboxEnabled) {
-			MessageLogger.debug("Starting Dropbox backup");
-			try {
-				new DropboxBackup().performBackup();
-				MessageLogger.debug("Dropbox backup Finished");
-			} catch (Exception e) {
-				MessageLogger.exception("Error occured while performing DropBox backup", e);
-			}
-		}
-
-		if (AutoSaveWorld.getInstance().getMainConfig().backupGDriveEnabled) {
-			MessageLogger.debug("Starting Google Drive backup");
-			try {
-				new GoogleDriveBackup().performBackup();
-				MessageLogger.debug("Google Drive backup finished");
-			} catch (Exception e) {
-				MessageLogger.exception("Error occured while performing Google Drive backup", e);
-			}
-		}
-
-		MessageLogger.debug("Full backup time: " + (System.currentTimeMillis() - timestart) + " milliseconds");
-
-		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageBackupBroadcastPost, AutoSaveWorld.getInstance().getMainConfig().backupBroadcast);
+		MessageLogger.broadcast(AutoSaveWorld.getInstance().getMessageConfig().messageBackupBroadcastPost, config.backupBroadcast);
 
 	}
 

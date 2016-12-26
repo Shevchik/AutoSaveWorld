@@ -17,6 +17,7 @@
 
 package autosaveworld.features.purge;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
@@ -64,40 +65,39 @@ public class AutoPurgeThread extends IntervalTaskThread {
 		MessageLogger.debug("Finiding active players");
 		ActivePlayersList activelist = new ActivePlayersList(config.purgeIgnoredNicks, config.purgeIgnoredUUIDs);
 		activelist.calculateActivePlayers(AutoSaveWorld.getInstance().getMainConfig().purgeAwayTime * 1000);
-		MessageLogger.debug("Found " + activelist.getActivePlayersCount() + " active players");
+		MessageLogger.debug(MessageFormat.format("Found {0} active players", activelist.getActivePlayersCount()));
 
 		ArrayList<DataPurge> purges = new ArrayList<DataPurge>();
 		PluginManager pm = Bukkit.getPluginManager();
 		if ((pm.getPlugin("WorldGuard") != null) && config.purgeWG) {
-			MessageLogger.debug("WG found, adding to purge list");
 			purges.add(new WGPurge(activelist));
 		}
 		if ((pm.getPlugin("LWC") != null) && config.purgeLWC) {
-			MessageLogger.debug("LWC found, adding to purge list");
 			purges.add(new LWCPurge(activelist));
 		}
 		if ((pm.getPlugin("MyWarp") != null) && config.purgeMyWarp) {
-			MessageLogger.debug("MyWarp found, adding to purge list");
 			purges.add(new MyWarpPurge(activelist));
 		}
 		if ((pm.getPlugin("Essentials") != null && config.purgeEssentials)) {
-			MessageLogger.debug("Essentials found, adding to purge list");
 			purges.add(new EssentialsPurge(activelist));
 		}
 		if (config.purgePerms) {
-			MessageLogger.debug("Permissions purge is enabled, adding to purge list");
-			purges.add(new PermissionsPurge(activelist));
+			DataPurge permspurge = PermissionsPurge.selectDataPurge(activelist);
+			if (permspurge != null) {
+				purges.add(permspurge);
+			}
 		}
 		if (config.purgeDat) {
-			MessageLogger.debug("Dat purge is enabled, adding to purge list");
 			purges.add(new DatfilePurge(activelist));
 		}
 
 		for (DataPurge datapurge : purges) {
+			MessageLogger.debug(MessageFormat.format("Started {0} purge", datapurge.getName()));
 			try {
 				datapurge.doPurge();
+				MessageLogger.debug(MessageFormat.format("Finished {0} purge. Removed {1} entries, cleaned {2} entries", datapurge.getName(), datapurge.getDeleted(), datapurge.getCleaned()));
 			} catch (Throwable t) {
-				MessageLogger.exception("Failed data purge " + datapurge.getClass().getSimpleName(), t);
+				MessageLogger.exception(MessageFormat.format("Failed {0} purge", datapurge.getName()), t);
 			}
 		}
 

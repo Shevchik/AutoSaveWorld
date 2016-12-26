@@ -26,7 +26,7 @@ import java.util.List;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.BackupUtils;
-import autosaveworld.features.backup.InputStreamConstruct;
+import autosaveworld.features.backup.InputStreamFactory;
 import autosaveworld.utils.FileUtils;
 
 public class LocalFSUtils {
@@ -40,7 +40,7 @@ public class LocalFSUtils {
 				}
 			}
 		} else {
-			if (!InputStreamConstruct.isRateLimited()) {
+			if (!InputStreamFactory.isRateLimited()) {
 				try {
 					Files.copy(sourceLocation.toPath(), targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				} catch (IOException e) {
@@ -48,7 +48,7 @@ public class LocalFSUtils {
 					targetLocation.delete();
 				}
 			} else {
-				try (InputStream is = InputStreamConstruct.getFileInputStream(sourceLocation)) {
+				try (InputStream is = InputStreamFactory.getFileInputStream(sourceLocation)) {
 					Files.copy(is, targetLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				} catch (IOException e) {
 					MessageLogger.warn("Failed to backup file: " + sourceLocation);

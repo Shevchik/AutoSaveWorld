@@ -30,7 +30,7 @@ import java.util.zip.ZipOutputStream;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.backup.BackupUtils;
-import autosaveworld.features.backup.InputStreamConstruct;
+import autosaveworld.features.backup.InputStreamFactory;
 import autosaveworld.utils.FileUtils;
 
 public class ZipUtils {
@@ -78,7 +78,7 @@ public class ZipUtils {
 		InputStream inStream = null;
 		try {
 			//first attempt to construct the input stream, may throw exception if file gone missing or some other thing happened
-			inStream = InputStreamConstruct.getFileInputStream(srcFile);
+			inStream = InputStreamFactory.getFileInputStream(srcFile);
 		} catch (IOException e) {
 			MessageLogger.warn("Failed to backup file: "+srcFile.getAbsolutePath() + ", reason: exception when opening reading channel: "+e.getMessage());
 			return;

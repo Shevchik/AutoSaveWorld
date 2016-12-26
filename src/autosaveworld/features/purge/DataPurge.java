@@ -20,8 +20,14 @@ package autosaveworld.features.purge;
 public abstract class DataPurge {
 
 	protected final ActivePlayersList activeplayerslist;
-	public DataPurge(ActivePlayersList activeplayerslist) {
+	protected final String name;
+	public DataPurge(String name, ActivePlayersList activeplayerslist) {
+		this.name = name;
 		this.activeplayerslist = activeplayerslist;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public abstract void doPurge();

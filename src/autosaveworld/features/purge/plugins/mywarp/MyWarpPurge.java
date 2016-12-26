@@ -36,13 +36,11 @@ import me.taylorkelly.mywarp.warp.Warp;
 public class MyWarpPurge extends DataPurge {
 
 	public MyWarpPurge(ActivePlayersList activeplayerslist) {
-		super(activeplayerslist);
+		super("MyWarp", activeplayerslist);
 	}
 
 	@Override
 	public void doPurge() {
-		MessageLogger.debug("MyWarp purge started");
-
 		MyWarpPlugin mywarpplugin = JavaPlugin.getPlugin(MyWarpPlugin.class);
 		MyWarp mywarp;
 		try {
@@ -82,8 +80,6 @@ public class MyWarpPurge extends DataPurge {
 				}
 			}
 		}
-
-		MessageLogger.debug("MyWarp purge finished, deleted " + getDeleted() + " warps, cleaned " + getCleaned() + " warps");
 	}
 
 }

@@ -32,13 +32,11 @@ import autosaveworld.features.purge.taskqueue.TaskExecutor;
 public class LWCPurge extends DataPurge {
 
 	public LWCPurge(ActivePlayersList activeplayerslist) {
-		super(activeplayerslist);
+		super("LWC", activeplayerslist);
 	}
 
 	@Override
 	public void doPurge() {
-		MessageLogger.debug("LWC purge started");
-
 		try (TaskExecutor queue = new TaskExecutor(30)) {
 			List<Protection> protections = LWC.getInstance().getPhysicalDatabase().loadProtections();
 			for (final Protection pr : protections) {
@@ -68,8 +66,6 @@ public class LWCPurge extends DataPurge {
 				}
 			}
 		}
-
-		MessageLogger.debug("LWC purge finished, deleted " + getDeleted() + " protections, cleaned "+ getCleaned() + " protections");
 	}
 
 }
