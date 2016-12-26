@@ -44,6 +44,7 @@ public class DatfilePurge extends DataPurge {
 				MessageLogger.debug(player.getUniqueId() + " is inactive. Removing dat file");
 				FileUtils.buildFile(playersdatfolder, player.getUniqueId().toString() + ".dat").delete();
 				FileUtils.buildFile(playersstatsfolder, player.getUniqueId().toString() + ".dat").delete();
+				FileUtils.buildFile(playersstatsfolder, player.getUniqueId().toString() + ".json").delete();
 				incDeleted();
 			}
 		}
