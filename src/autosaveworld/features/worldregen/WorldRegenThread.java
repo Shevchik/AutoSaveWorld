@@ -132,6 +132,7 @@ public class WorldRegenThread extends Thread {
 						}
 					} catch (Throwable e) {
 						MessageLogger.printOut("Failed to process regionfile "+regionfile.getName());
+						MessageLogger.printOutException(e);
 					}
 				}
 			}

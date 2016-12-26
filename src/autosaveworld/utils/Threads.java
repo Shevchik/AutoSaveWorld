@@ -46,8 +46,11 @@ public class Threads {
 				if (isEnabled()) {
 					try {
 						doTask();
-					} catch (Exception t) {
+					} catch (Throwable t) {
 						MessageLogger.exception("Exception while performing interval task", t);
+						if (t instanceof ThreadDeath) {
+							ReflectionUtils.throwException(t);
+						}
 					}
 				}
 				try {

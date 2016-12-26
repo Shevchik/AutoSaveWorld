@@ -94,7 +94,11 @@ public class AutoPurgeThread extends IntervalTaskThread {
 		}
 
 		for (DataPurge datapurge : purges) {
-			datapurge.doPurge();
+			try {
+				datapurge.doPurge();
+			} catch (Throwable t) {
+				MessageLogger.exception("Failed data purge " + datapurge.getClass().getSimpleName(), t);
+			}
 		}
 
 		MessageLogger.debug("Purge finished");
