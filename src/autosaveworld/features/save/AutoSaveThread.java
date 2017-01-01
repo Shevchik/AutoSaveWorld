@@ -18,13 +18,17 @@
 package autosaveworld.features.save;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.core.logging.MessageLogger;
+import autosaveworld.utils.BukkitUtils;
+import autosaveworld.utils.CollectionsUtils;
 import autosaveworld.utils.ReflectionUtils;
 import autosaveworld.utils.SchedulerUtils;
 import autosaveworld.utils.Threads.IntervalTaskThread;
@@ -87,11 +91,13 @@ public class AutoSaveThread extends IntervalTaskThread {
 
 		// Save the players
 		MessageLogger.debug("Saving players");
-		if (isRunning()) {
+		for (final Collection<Player> playersPart : CollectionsUtils.split(BukkitUtils.getOnlinePlayers(), 6)) {
 			SchedulerUtils.callSyncTaskAndWait(new Runnable() {
 				@Override
 				public void run() {
-					Bukkit.savePlayers();
+					for (Player player : playersPart) {
+						player.saveData();
+					}
 				}
 			});
 		}
@@ -100,14 +106,12 @@ public class AutoSaveThread extends IntervalTaskThread {
 		// Save the worlds
 		MessageLogger.debug("Saving worlds");
 		for (final World world : Bukkit.getWorlds()) {
-			if (isRunning()) {
-				SchedulerUtils.callSyncTaskAndWait(new Runnable() {
-					@Override
-					public void run() {
-						saveWorld(world);
-					}
-				});
-			}
+			SchedulerUtils.callSyncTaskAndWait(new Runnable() {
+				@Override
+				public void run() {
+					saveWorld(world);
+				}
+			});
 		}
 		MessageLogger.debug("Saved Worlds");
 
