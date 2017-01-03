@@ -60,48 +60,43 @@ public class JSch {
 
 		config.put("dh", autosaveworld.zlibs.com.jcraft.jsch.jce.DH.class.getName());
 		config.put("3des-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.TripleDESCBC.class.getName());
-		config.put("blowfish-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.BlowfishCBC.class.getName());
-		config.put("hmac-sha1", autosaveworld.zlibs.com.jcraft.jsch.jce.HMACSHA1.class.getName());
-		config.put("hmac-sha1-96", autosaveworld.zlibs.com.jcraft.jsch.jce.HMACSHA196.class.getName());
-		config.put("hmac-sha2-256", autosaveworld.zlibs.com.jcraft.jsch.jce.HMACSHA256.class.getName());
+		config.put("blowfish-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.BlowfishCBC.class.getName());
+		config.put("hmac-sha1", autosaveworld.zlibs.com.jcraft.jsch.jce.mac.HMACSHA1.class.getName());
+		config.put("hmac-sha1-96", autosaveworld.zlibs.com.jcraft.jsch.jce.mac.HMACSHA196.class.getName());
+		config.put("hmac-sha2-256", autosaveworld.zlibs.com.jcraft.jsch.jce.mac.HMACSHA256.class.getName());
 
-		config.put("hmac-md5", autosaveworld.zlibs.com.jcraft.jsch.jce.HMACMD5.class.getName());
-		config.put("hmac-md5-96", autosaveworld.zlibs.com.jcraft.jsch.jce.HMACMD596.class.getName());
-		config.put("sha-1", autosaveworld.zlibs.com.jcraft.jsch.jce.SHA1.class.getName());
-		config.put("sha-256", autosaveworld.zlibs.com.jcraft.jsch.jce.SHA256.class.getName());
-		config.put("md5", autosaveworld.zlibs.com.jcraft.jsch.jce.MD5.class.getName());
+		config.put("hmac-md5", autosaveworld.zlibs.com.jcraft.jsch.jce.mac.HMACMD5.class.getName());
+		config.put("hmac-md5-96", autosaveworld.zlibs.com.jcraft.jsch.jce.mac.HMACMD596.class.getName());
+		config.put("sha-1", autosaveworld.zlibs.com.jcraft.jsch.jce.hash.SHA1.class.getName());
+		config.put("sha-256", autosaveworld.zlibs.com.jcraft.jsch.jce.hash.SHA256.class.getName());
+		config.put("md5", autosaveworld.zlibs.com.jcraft.jsch.jce.hash.MD5.class.getName());
 		config.put("signature.dss", autosaveworld.zlibs.com.jcraft.jsch.jce.SignatureDSA.class.getName());
 		config.put("signature.rsa", autosaveworld.zlibs.com.jcraft.jsch.jce.SignatureRSA.class.getName());
-		config.put("keypairgen.dsa", autosaveworld.zlibs.com.jcraft.jsch.jce.KeyPairGenDSA.class.getName());
-		config.put("keypairgen.rsa", autosaveworld.zlibs.com.jcraft.jsch.jce.KeyPairGenRSA.class.getName());
 		config.put("random", autosaveworld.zlibs.com.jcraft.jsch.jce.Random.class.getName());
 
 		config.put("none", autosaveworld.zlibs.com.jcraft.jsch.CipherNone.class.getName());
 
-		config.put("aes128-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.AES128CBC.class.getName());
-		config.put("aes192-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.AES192CBC.class.getName());
-		config.put("aes256-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.AES256CBC.class.getName());
+		config.put("aes128-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.AES128CBC.class.getName());
+		config.put("aes192-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.AES192CBC.class.getName());
+		config.put("aes256-cbc", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.AES256CBC.class.getName());
 
-		config.put("aes128-ctr", autosaveworld.zlibs.com.jcraft.jsch.jce.AES128CTR.class.getName());
-		config.put("aes192-ctr", autosaveworld.zlibs.com.jcraft.jsch.jce.AES192CTR.class.getName());
-		config.put("aes256-ctr", autosaveworld.zlibs.com.jcraft.jsch.jce.AES256CTR.class.getName());
+		config.put("aes128-ctr", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.AES128CTR.class.getName());
+		config.put("aes192-ctr", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.AES192CTR.class.getName());
+		config.put("aes256-ctr", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.AES256CTR.class.getName());
 		config.put("3des-ctr", autosaveworld.zlibs.com.jcraft.jsch.jce.TripleDESCTR.class.getName());
-		config.put("arcfour", autosaveworld.zlibs.com.jcraft.jsch.jce.ARCFOUR.class.getName());
-		config.put("arcfour128", autosaveworld.zlibs.com.jcraft.jsch.jce.ARCFOUR128.class.getName());
-		config.put("arcfour256", autosaveworld.zlibs.com.jcraft.jsch.jce.ARCFOUR256.class.getName());
+		config.put("arcfour", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.ARCFOUR.class.getName());
+		config.put("arcfour128", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.ARCFOUR128.class.getName());
+		config.put("arcfour256", autosaveworld.zlibs.com.jcraft.jsch.jce.cipher.ARCFOUR256.class.getName());
 
 		config.put("userauth.none", autosaveworld.zlibs.com.jcraft.jsch.UserAuthNone.class.getName());
 		config.put("userauth.password", autosaveworld.zlibs.com.jcraft.jsch.UserAuthPassword.class.getName());
-
-		config.put("zlib", autosaveworld.zlibs.com.jcraft.jsch.jcraft.Compression.class.getName());
-		config.put("zlib@openssh.com", autosaveworld.zlibs.com.jcraft.jsch.jcraft.Compression.class.getName());
 
 		config.put("pbkdf", autosaveworld.zlibs.com.jcraft.jsch.jce.PBKDF.class.getName());
 
 		config.put("StrictHostKeyChecking", "no");
 		config.put("HashKnownHosts", "no");
 
-		config.put("PreferredAuthentications", "gssapi-with-mic,publickey,keyboard-interactive,password");
+		config.put("PreferredAuthentications", "password");
 
 		config.put("CheckCiphers", "aes256-ctr,aes192-ctr,aes128-ctr,aes256-cbc,aes192-cbc,aes128-cbc,3des-ctr,arcfour,arcfour128,arcfour256");
 		config.put("CheckKexes", "diffie-hellman-group14-sha1");
@@ -111,16 +106,6 @@ public class JSch {
 	}
 
 	private java.util.Vector<Session> sessionPool = new java.util.Vector<Session>();
-
-	private ConfigRepository configRepository = null;
-
-	public ConfigRepository getConfigRepository() {
-		return configRepository;
-	}
-
-	public void setConfigRepository(ConfigRepository configRepository) {
-		this.configRepository = configRepository;
-	}
 
 	private static final Logger DEVNULL = new Logger() {
 		@Override
@@ -221,21 +206,6 @@ public class JSch {
 	public static String getConfig(String key) {
 		synchronized (config) {
 			return (config.get(key));
-		}
-	}
-
-	/**
-	 * Sets or Overrides the configuration.
-	 *
-	 * @param newconf
-	 *            configurations
-	 */
-	public static void setConfig(java.util.Hashtable<String, String> newconf) {
-		synchronized (config) {
-			for (java.util.Enumeration<?> e = newconf.keys(); e.hasMoreElements();) {
-				String key = (String) (e.nextElement());
-				config.put(key, (newconf.get(key)));
-			}
 		}
 	}
 

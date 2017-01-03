@@ -17,9 +17,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import autosaveworld.zlibs.com.google.api.client.googleapis.MethodOverride;
-import autosaveworld.zlibs.com.google.api.client.googleapis.batch.BatchCallback;
-import autosaveworld.zlibs.com.google.api.client.googleapis.batch.BatchRequest;
-import autosaveworld.zlibs.com.google.api.client.googleapis.media.MediaHttpDownloader;
 import autosaveworld.zlibs.com.google.api.client.googleapis.media.MediaHttpUploader;
 import autosaveworld.zlibs.com.google.api.client.http.AbstractInputStreamContent;
 import autosaveworld.zlibs.com.google.api.client.http.EmptyContent;
@@ -91,9 +88,6 @@ public abstract class AbstractGoogleClientRequest<T> extends GenericData {
 
   /** Media HTTP uploader or {@code null} for none. */
   private MediaHttpUploader uploader;
-
-  /** Media HTTP downloader or {@code null} for none. */
-  private MediaHttpDownloader downloader;
 
   /**
    * @param abstractGoogleClient Google client
@@ -238,18 +232,6 @@ public abstract class AbstractGoogleClientRequest<T> extends GenericData {
     if (httpContent != null) {
       this.uploader.setMetadata(httpContent);
     }
-  }
-
-  /** Returns the media HTTP downloader or {@code null} for none. */
-  public final MediaHttpDownloader getMediaHttpDownloader() {
-    return downloader;
-  }
-
-  /** Initializes the media HTTP downloader. */
-  protected final void initializeMediaDownload() {
-    HttpRequestFactory requestFactory = abstractGoogleClient.getRequestFactory();
-    this.downloader =
-        new MediaHttpDownloader(requestFactory.getTransport(), requestFactory.getInitializer());
   }
 
   /**
@@ -539,47 +521,6 @@ public abstract class AbstractGoogleClientRequest<T> extends GenericData {
    */
   public void executeAndDownloadTo(OutputStream outputStream) throws IOException {
     executeUnparsed().download(outputStream);
-  }
-
-  /**
-   * Sends the media request to the server and writes the media content input stream of
-   * {@link HttpResponse} into the given destination output stream.
-   *
-   * <p>
-   * This method closes the content of the HTTP response from {@link HttpResponse#getContent()}.
-   * </p>
-   *
-   * <p>
-   * Subclasses may override by calling the super implementation.
-   * </p>
-   *
-   * @param outputStream destination output stream
-   */
-  protected void executeMediaAndDownloadTo(OutputStream outputStream) throws IOException {
-    if (downloader == null) {
-      executeMedia().download(outputStream);
-    } else {
-      downloader.download(buildHttpRequestUrl(), requestHeaders, outputStream);
-    }
-  }
-
-  /**
-   * Queues the request into the specified batch request container using the specified error class.
-   *
-   * <p>
-   * Batched requests are then executed when {@link BatchRequest#execute()} is called.
-   * </p>
-   *
-   * @param batchRequest batch request container
-   * @param errorClass data class the unsuccessful response will be parsed into or
-   *        {@code Void.class} to ignore the content
-   * @param callback batch callback
-   */
-  public final <E> void queue(
-      BatchRequest batchRequest, Class<E> errorClass, BatchCallback<T, E> callback)
-      throws IOException {
-    Preconditions.checkArgument(uploader == null, "Batching media requests is not supported");
-    batchRequest.queue(buildHttpRequest(), getResponseClass(), errorClass, callback);
   }
 
   // @SuppressWarnings was added here because this is generic class.

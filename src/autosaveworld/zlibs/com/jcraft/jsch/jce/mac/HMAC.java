@@ -1,6 +1,6 @@
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /*
- Copyright (c) 2002-2014 ymnk, JCraft,Inc. All rights reserved.
+ Copyright (c) 2012-2014 ymnk, JCraft,Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -27,56 +27,64 @@
  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package autosaveworld.zlibs.com.jcraft.jsch;
+package autosaveworld.zlibs.com.jcraft.jsch.jce.mac;
 
-class ChannelSession extends Channel {
+import javax.crypto.Mac;
+import javax.crypto.ShortBufferException;
+import javax.crypto.spec.SecretKeySpec;
 
-	private static byte[] _session = Util.str2byte("session");
+import autosaveworld.zlibs.com.jcraft.jsch.MAC;
 
-	ChannelSession() {
-		super();
-		type = _session;
-		io = new IO();
+abstract class HMAC implements MAC {
+	protected String name;
+	protected int bsize;
+	protected String algorithm;
+	private Mac mac;
+
+	@Override
+	public int getBlockSize() {
+		return bsize;
+	};
+
+	@Override
+	public void init(byte[] key) throws Exception {
+		if (key.length > bsize) {
+			byte[] tmp = new byte[bsize];
+			System.arraycopy(key, 0, tmp, 0, bsize);
+			key = tmp;
+		}
+		SecretKeySpec skey = new SecretKeySpec(key, algorithm);
+		mac = Mac.getInstance(algorithm);
+		mac.init(skey);
+	}
+
+	private final byte[] tmp = new byte[4];
+
+	@Override
+	public void update(int i) {
+		tmp[0] = (byte) (i >>> 24);
+		tmp[1] = (byte) (i >>> 16);
+		tmp[2] = (byte) (i >>> 8);
+		tmp[3] = (byte) i;
+		update(tmp, 0, 4);
 	}
 
 	@Override
-	public void run() {
-		Buffer buf = new Buffer(rmpsize);
-		Packet packet = new Packet(buf);
-		int i = -1;
-		try {
-			while (isConnected() && (thread != null) && (io != null) && (io.in != null)) {
-				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14 - Session.buffer_margin);
-				if (i == 0) {
-					continue;
-				}
-				if (i == -1) {
-					eof();
-					break;
-				}
-				if (close) {
-					break;
-				}
-				// System.out.println("write: "+i);
-				packet.reset();
-				buf.putByte((byte) Session.SSH_MSG_CHANNEL_DATA);
-				buf.putInt(recipient);
-				buf.putInt(i);
-				buf.skip(i);
-				getSession().write(packet, this, i);
-			}
-		} catch (Exception e) {
-			// System.err.println("# ChannelExec.run");
-			// e.printStackTrace();
-		}
-		Thread _thread = thread;
-		if (_thread != null) {
-			synchronized (_thread) {
-				_thread.notifyAll();
-			}
-		}
-		thread = null;
-		// System.err.println(this+":run <");
+	public void update(byte foo[], int s, int l) {
+		mac.update(foo, s, l);
 	}
 
+	@Override
+	public void doFinal(byte[] buf, int offset) {
+		try {
+			mac.doFinal(buf, offset);
+		} catch (ShortBufferException e) {
+			System.err.println(e);
+		}
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
 }

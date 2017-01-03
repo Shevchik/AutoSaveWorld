@@ -227,13 +227,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
   private Labels labels;
 
   /**
-   * The last user to modify this file.
-   * The value may be {@code null}.
-   */
-  @autosaveworld.zlibs.com.google.api.client.util.Key
-  private User lastModifyingUser;
-
-  /**
    * Name of the last user to modify this file.
    * The value may be {@code null}.
    */
@@ -318,13 +311,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
   private java.util.List<java.lang.String> ownerNames;
 
   /**
-   * The owner(s) of this file.
-   * The value may be {@code null}.
-   */
-  @autosaveworld.zlibs.com.google.api.client.util.Key
-  private java.util.List<User> owners;
-
-  /**
    * Collection of parent folders which contain this file. Setting this field will put the file in
    * all of the provided folders. On insert, if no folders are provided, the file will be placed in
    * the default root folder.
@@ -332,20 +318,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
    */
   @autosaveworld.zlibs.com.google.api.client.util.Key
   private java.util.List<ParentReference> parents;
-
-  /**
-   * The list of permissions for users with access to this file.
-   * The value may be {@code null}.
-   */
-  @autosaveworld.zlibs.com.google.api.client.util.Key
-  private java.util.List<Permission> permissions;
-
-  /**
-   * The list of properties.
-   * The value may be {@code null}.
-   */
-  @autosaveworld.zlibs.com.google.api.client.util.Key
-  private java.util.List<Property> properties;
 
   /**
    * The number of quota bytes used by this file.
@@ -383,13 +355,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
   private autosaveworld.zlibs.com.google.api.client.util.DateTime sharedWithMeDate;
 
   /**
-   * User that shared the item with the current user, if available.
-   * The value may be {@code null}.
-   */
-  @autosaveworld.zlibs.com.google.api.client.util.Key
-  private User sharingUser;
-
-  /**
    * The list of spaces which contain the file. Supported values are 'drive', 'appDataFolder' and
    * 'photos'.
    * The value may be {@code null}.
@@ -418,13 +383,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
    */
   @autosaveworld.zlibs.com.google.api.client.util.Key
   private java.lang.String title;
-
-  /**
-   * The permissions for the authenticated user on this file.
-   * The value may be {@code null}.
-   */
-  @autosaveworld.zlibs.com.google.api.client.util.Key
-  private Permission userPermission;
 
   /**
    * A monotonically increasing version number for the file. This reflects every change made to the
@@ -930,23 +888,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
   }
 
   /**
-   * The last user to modify this file.
-   * @return value or {@code null} for none
-   */
-  public User getLastModifyingUser() {
-    return lastModifyingUser;
-  }
-
-  /**
-   * The last user to modify this file.
-   * @param lastModifyingUser lastModifyingUser or {@code null} for none
-   */
-  public File setLastModifyingUser(User lastModifyingUser) {
-    this.lastModifyingUser = lastModifyingUser;
-    return this;
-  }
-
-  /**
    * Name of the last user to modify this file.
    * @return value or {@code null} for none
    */
@@ -1148,23 +1089,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
   }
 
   /**
-   * The owner(s) of this file.
-   * @return value or {@code null} for none
-   */
-  public java.util.List<User> getOwners() {
-    return owners;
-  }
-
-  /**
-   * The owner(s) of this file.
-   * @param owners owners or {@code null} for none
-   */
-  public File setOwners(java.util.List<User> owners) {
-    this.owners = owners;
-    return this;
-  }
-
-  /**
    * Collection of parent folders which contain this file. Setting this field will put the file in
    * all of the provided folders. On insert, if no folders are provided, the file will be placed in
    * the default root folder.
@@ -1182,40 +1106,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
    */
   public File setParents(java.util.List<ParentReference> parents) {
     this.parents = parents;
-    return this;
-  }
-
-  /**
-   * The list of permissions for users with access to this file.
-   * @return value or {@code null} for none
-   */
-  public java.util.List<Permission> getPermissions() {
-    return permissions;
-  }
-
-  /**
-   * The list of permissions for users with access to this file.
-   * @param permissions permissions or {@code null} for none
-   */
-  public File setPermissions(java.util.List<Permission> permissions) {
-    this.permissions = permissions;
-    return this;
-  }
-
-  /**
-   * The list of properties.
-   * @return value or {@code null} for none
-   */
-  public java.util.List<Property> getProperties() {
-    return properties;
-  }
-
-  /**
-   * The list of properties.
-   * @param properties properties or {@code null} for none
-   */
-  public File setProperties(java.util.List<Property> properties) {
-    this.properties = properties;
     return this;
   }
 
@@ -1305,23 +1195,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
   }
 
   /**
-   * User that shared the item with the current user, if available.
-   * @return value or {@code null} for none
-   */
-  public User getSharingUser() {
-    return sharingUser;
-  }
-
-  /**
-   * User that shared the item with the current user, if available.
-   * @param sharingUser sharingUser or {@code null} for none
-   */
-  public File setSharingUser(User sharingUser) {
-    this.sharingUser = sharingUser;
-    return this;
-  }
-
-  /**
    * The list of spaces which contain the file. Supported values are 'drive', 'appDataFolder' and
    * 'photos'.
    * @return value or {@code null} for none
@@ -1390,23 +1263,6 @@ public final class File extends autosaveworld.zlibs.com.google.api.client.json.G
    */
   public File setTitle(java.lang.String title) {
     this.title = title;
-    return this;
-  }
-
-  /**
-   * The permissions for the authenticated user on this file.
-   * @return value or {@code null} for none
-   */
-  public Permission getUserPermission() {
-    return userPermission;
-  }
-
-  /**
-   * The permissions for the authenticated user on this file.
-   * @param userPermission userPermission or {@code null} for none
-   */
-  public File setUserPermission(Permission userPermission) {
-    this.userPermission = userPermission;
     return this;
   }
 

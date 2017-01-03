@@ -37,7 +37,6 @@ import autosaveworld.zlibs.com.google.api.client.auth.oauth2.CredentialRefreshLi
 import autosaveworld.zlibs.com.google.api.client.auth.oauth2.DataStoreCredentialRefreshListener;
 import autosaveworld.zlibs.com.google.api.client.auth.oauth2.TokenRequest;
 import autosaveworld.zlibs.com.google.api.client.auth.oauth2.TokenResponse;
-import autosaveworld.zlibs.com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets.Details;
 import autosaveworld.zlibs.com.google.api.client.googleapis.util.Utils;
 import autosaveworld.zlibs.com.google.api.client.http.GenericUrl;
 import autosaveworld.zlibs.com.google.api.client.http.HttpExecuteInterceptor;
@@ -167,7 +166,6 @@ import autosaveworld.zlibs.com.google.api.client.util.store.DataStoreFactory;
  */
 public class GoogleCredential extends Credential {
 
-  static final String USER_FILE_TYPE = "authorized_user";
   static final String SERVICE_ACCOUNT_FILE_TYPE = "service_account";
 
   /**
@@ -210,16 +208,13 @@ public class GoogleCredential extends Credential {
     if (fileType == null) {
       throw new IOException("Error reading credentials from stream, 'type' field not specified.");
     }
-    if (USER_FILE_TYPE.equals(fileType)) {
-      return fromStreamUser(fileContents, transport, jsonFactory);
-    }
     if (SERVICE_ACCOUNT_FILE_TYPE.equals(fileType)) {
       return fromStreamServiceAccount(fileContents, transport, jsonFactory);
     }
     throw new IOException(String.format(
         "Error reading credentials from stream, 'type' value '%s' not recognized."
-            + " Expecting '%s' or '%s'.",
-        fileType, USER_FILE_TYPE, SERVICE_ACCOUNT_FILE_TYPE));
+            + " Expecting '%s'.",
+        fileType, SERVICE_ACCOUNT_FILE_TYPE));
   }
 
   /**
@@ -505,21 +500,6 @@ public class GoogleCredential extends Credential {
     }
 
     /**
-     * Sets the client secrets.
-     *
-     * <p>
-     * Overriding is only supported for the purpose of calling the super implementation and changing
-     * the return type, but nothing else.
-     * </p>
-     */
-    public Builder setClientSecrets(GoogleClientSecrets clientSecrets) {
-      Details details = clientSecrets.getDetails();
-      setClientAuthentication(
-          new ClientParametersAuthentication(details.getClientId(), details.getClientSecret()));
-      return this;
-    }
-
-    /**
      * Returns the service account ID (typically an e-mail address) or {@code null} for none.
      */
     public final String getServiceAccountId() {
@@ -705,29 +685,6 @@ public class GoogleCredential extends Credential {
     public Builder setClientAuthentication(HttpExecuteInterceptor clientAuthentication) {
       return (Builder) super.setClientAuthentication(clientAuthentication);
     }
-  }
-
-  @Beta
-  private static GoogleCredential fromStreamUser(GenericJson fileContents, HttpTransport transport,
-      JsonFactory jsonFactory) throws IOException {
-    String clientId = (String) fileContents.get("client_id");
-    String clientSecret = (String) fileContents.get("client_secret");
-    String refreshToken = (String) fileContents.get("refresh_token");
-    if (clientId == null || clientSecret == null || refreshToken == null) {
-      throw new IOException("Error reading user credential from stream, "
-          + " expecting 'client_id', 'client_secret' and 'refresh_token'.");
-    }
-
-    GoogleCredential credential = new GoogleCredential.Builder()
-        .setClientSecrets(clientId, clientSecret)
-        .setTransport(transport)
-        .setJsonFactory(jsonFactory)
-        .build();
-    credential.setRefreshToken(refreshToken);
-
-    // Do a refresh so we can fail early rather than return an unusable credential
-    credential.refreshToken();
-    return credential;
   }
 
   @Beta

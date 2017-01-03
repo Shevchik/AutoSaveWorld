@@ -27,56 +27,12 @@
  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package autosaveworld.zlibs.com.jcraft.jsch;
+package autosaveworld.zlibs.com.jcraft.jsch.jce.mac;
 
-class ChannelSession extends Channel {
-
-	private static byte[] _session = Util.str2byte("session");
-
-	ChannelSession() {
-		super();
-		type = _session;
-		io = new IO();
+public class HMACMD5 extends HMAC {
+	public HMACMD5() {
+		name = "hmac-md5";
+		bsize = 16;
+		algorithm = "HmacMD5";
 	}
-
-	@Override
-	public void run() {
-		Buffer buf = new Buffer(rmpsize);
-		Packet packet = new Packet(buf);
-		int i = -1;
-		try {
-			while (isConnected() && (thread != null) && (io != null) && (io.in != null)) {
-				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14 - Session.buffer_margin);
-				if (i == 0) {
-					continue;
-				}
-				if (i == -1) {
-					eof();
-					break;
-				}
-				if (close) {
-					break;
-				}
-				// System.out.println("write: "+i);
-				packet.reset();
-				buf.putByte((byte) Session.SSH_MSG_CHANNEL_DATA);
-				buf.putInt(recipient);
-				buf.putInt(i);
-				buf.skip(i);
-				getSession().write(packet, this, i);
-			}
-		} catch (Exception e) {
-			// System.err.println("# ChannelExec.run");
-			// e.printStackTrace();
-		}
-		Thread _thread = thread;
-		if (_thread != null) {
-			synchronized (_thread) {
-				_thread.notifyAll();
-			}
-		}
-		thread = null;
-		// System.err.println(this+":run <");
-	}
-
 }

@@ -27,56 +27,61 @@
  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package autosaveworld.zlibs.com.jcraft.jsch;
+package autosaveworld.zlibs.com.jcraft.jsch.jce.cipher;
 
-class ChannelSession extends Channel {
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
-	private static byte[] _session = Util.str2byte("session");
+import autosaveworld.zlibs.com.jcraft.jsch.Cipher;
 
-	ChannelSession() {
-		super();
-		type = _session;
-		io = new IO();
+public class BlowfishCBC implements Cipher {
+	private static final int ivsize = 8;
+	private static final int bsize = 16;
+	private javax.crypto.Cipher cipher;
+
+	@Override
+	public int getIVSize() {
+		return ivsize;
 	}
 
 	@Override
-	public void run() {
-		Buffer buf = new Buffer(rmpsize);
-		Packet packet = new Packet(buf);
-		int i = -1;
-		try {
-			while (isConnected() && (thread != null) && (io != null) && (io.in != null)) {
-				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14 - Session.buffer_margin);
-				if (i == 0) {
-					continue;
-				}
-				if (i == -1) {
-					eof();
-					break;
-				}
-				if (close) {
-					break;
-				}
-				// System.out.println("write: "+i);
-				packet.reset();
-				buf.putByte((byte) Session.SSH_MSG_CHANNEL_DATA);
-				buf.putInt(recipient);
-				buf.putInt(i);
-				buf.skip(i);
-				getSession().write(packet, this, i);
-			}
-		} catch (Exception e) {
-			// System.err.println("# ChannelExec.run");
-			// e.printStackTrace();
-		}
-		Thread _thread = thread;
-		if (_thread != null) {
-			synchronized (_thread) {
-				_thread.notifyAll();
-			}
-		}
-		thread = null;
-		// System.err.println(this+":run <");
+	public int getBlockSize() {
+		return bsize;
 	}
 
+	@Override
+	public void init(int mode, byte[] key, byte[] iv) throws Exception {
+		String pad = "NoPadding";
+		// if(padding) pad="PKCS5Padding";
+		byte[] tmp;
+		if (iv.length > ivsize) {
+			tmp = new byte[ivsize];
+			System.arraycopy(iv, 0, tmp, 0, tmp.length);
+			iv = tmp;
+		}
+		if (key.length > bsize) {
+			tmp = new byte[bsize];
+			System.arraycopy(key, 0, tmp, 0, tmp.length);
+			key = tmp;
+		}
+		try {
+			SecretKeySpec skeySpec = new SecretKeySpec(key, "Blowfish");
+			cipher = javax.crypto.Cipher.getInstance("Blowfish/CBC/" + pad);
+			synchronized (javax.crypto.Cipher.class) {
+				cipher.init((mode == ENCRYPT_MODE ? javax.crypto.Cipher.ENCRYPT_MODE : javax.crypto.Cipher.DECRYPT_MODE), skeySpec, new IvParameterSpec(iv));
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public void update(byte[] foo, int s1, int len, byte[] bar, int s2) throws Exception {
+		cipher.update(foo, s1, len, bar, s2);
+	}
+
+	@Override
+	public boolean isCBC() {
+		return true;
+	}
 }

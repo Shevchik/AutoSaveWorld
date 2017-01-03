@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import autosaveworld.zlibs.com.jcraft.jsch.Channel.ChannelType;
@@ -101,9 +100,6 @@ public class Session implements Runnable {
 	private byte[] s2cmac_result1;
 	private byte[] s2cmac_result2;
 
-	private Compression deflater;
-	private Compression inflater;
-
 	private IO io;
 	private Socket socket;
 	private int timeout = 0;
@@ -114,9 +110,6 @@ public class Session implements Runnable {
 
 	private Thread connectThread = null;
 	private Object lock = new Object();
-
-	InputStream in = null;
-	OutputStream out = null;
 
 	static Random random;
 
@@ -131,7 +124,6 @@ public class Session implements Runnable {
 
 	private java.util.Hashtable<String, String> config = null;
 
-	private Proxy proxy = null;
 	private UserInfo userinfo;
 
 	private int serverAliveInterval = 0;
@@ -145,7 +137,6 @@ public class Session implements Runnable {
 	int auth_failures = 0;
 
 	String host = "127.0.0.1";
-	String org_host = "127.0.0.1";
 	int port = 22;
 
 	String username = null;
@@ -159,10 +150,8 @@ public class Session implements Runnable {
 		buf = new Buffer();
 		packet = new Packet(buf);
 		this.username = username;
-		org_host = this.host = host;
+		this.host = host;
 		this.port = port;
-
-		applyConfig();
 
 		if (this.username == null) {
 			try {
@@ -181,6 +170,7 @@ public class Session implements Runnable {
 		connect(timeout);
 	}
 
+	@SuppressWarnings("resource")
 	public void connect(int connectTimeout) throws JSchException {
 		if (isConnected) {
 			throw new JSchException("session is already connected");
@@ -204,30 +194,21 @@ public class Session implements Runnable {
 		try {
 			int i, j;
 
-			if (proxy == null) {
-				InputStream in;
-				OutputStream out;
-				if (socket_factory == null) {
-					socket = Util.createSocket(host, port, connectTimeout);
-					in = socket.getInputStream();
-					out = socket.getOutputStream();
-				} else {
-					socket = socket_factory.createSocket(host, port);
-					in = socket_factory.getInputStream(socket);
-					out = socket_factory.getOutputStream(socket);
-				}
-				// if(timeout>0){ socket.setSoTimeout(timeout); }
-				socket.setTcpNoDelay(true);
-				io.setInputStream(in);
-				io.setOutputStream(out);
+			InputStream in;
+			OutputStream out;
+			if (socket_factory == null) {
+				socket = Util.createSocket(host, port, connectTimeout);
+				in = socket.getInputStream();
+				out = socket.getOutputStream();
 			} else {
-				synchronized (proxy) {
-					proxy.connect(socket_factory, host, port, connectTimeout);
-					io.setInputStream(proxy.getInputStream());
-					io.setOutputStream(proxy.getOutputStream());
-					socket = proxy.getSocket();
-				}
+				socket = socket_factory.createSocket(host, port);
+				in = socket_factory.getInputStream(socket);
+				out = socket_factory.getOutputStream(socket);
 			}
+			// if(timeout>0){ socket.setSoTimeout(timeout); }
+			socket.setTcpNoDelay(true);
+			io.setInputStream(in);
+			io.setOutputStream(out);
 
 			if ((connectTimeout > 0) && (socket != null)) {
 				socket.setSoTimeout(connectTimeout);
@@ -496,8 +477,6 @@ public class Session implements Runnable {
 						connectThread.setDaemon(daemon_thread);
 					}
 					connectThread.start();
-
-					requestPortForwarding();
 				} else {
 					// The session has been already down and
 					// we don't have to start new thread.
@@ -670,9 +649,6 @@ public class Session implements Runnable {
 			Channel channel = Channel.getChannel(ctype);
 			addChannel(channel);
 			channel.init();
-			if (channel instanceof ChannelSession) {
-				applyConfigChannel((ChannelSession) channel);
-			}
 			return channel;
 		} catch (Exception e) {
 			// e.printStackTrace();
@@ -687,11 +663,6 @@ public class Session implements Runnable {
 		// if(packet.buffer.getCommand()==96){
 		// Thread.dumpStack();
 		// }
-		if (deflater != null) {
-			compress_len[0] = packet.buffer.index;
-			packet.buffer.buffer = deflater.compress(packet.buffer.buffer, 5, compress_len);
-			packet.buffer.index = compress_len[0];
-		}
 		if (c2scipher != null) {
 			// packet.padding(c2scipher.getIVSize());
 			packet.padding(c2scipher_size);
@@ -716,9 +687,6 @@ public class Session implements Runnable {
 			packet.buffer.skip(c2smac.getBlockSize());
 		}
 	}
-
-	int[] uncompress_len = new int[1];
-	int[] compress_len = new int[1];
 
 	private int s2ccipher_size = 8;
 	private int c2scipher_size = 8;
@@ -780,20 +748,6 @@ public class Session implements Runnable {
 
 			seqi++;
 
-			if (inflater != null) {
-				// inflater.uncompress(buf);
-				int pad = buf.buffer[4];
-				uncompress_len[0] = buf.index - 5 - pad;
-				byte[] foo = inflater.uncompress(buf.buffer, 5, uncompress_len);
-				if (foo != null) {
-					buf.buffer = foo;
-					buf.index = 5 + uncompress_len[0];
-				} else {
-					System.err.println("fail in inflater");
-					break;
-				}
-			}
-
 			int type = buf.getCommand() & 0xff;
 			// System.err.println("read: "+type);
 			if (type == SSH_MSG_DISCONNECT) {
@@ -832,13 +786,6 @@ public class Session implements Runnable {
 				}
 			} else if (type == UserAuth.SSH_MSG_USERAUTH_SUCCESS) {
 				isAuthed = true;
-				if ((inflater == null) && (deflater == null)) {
-					String method;
-					method = guess[KeyExchange.PROPOSAL_COMP_ALGS_CTOS];
-					initDeflater(method);
-					method = guess[KeyExchange.PROPOSAL_COMP_ALGS_STOC];
-					initInflater(method);
-				}
 				break;
 			} else {
 				break;
@@ -985,12 +932,6 @@ public class Session implements Runnable {
 			c2smac = (MAC) (c.newInstance());
 			MACc2s = expandKey(buf, K, H, MACc2s, hash, c2smac.getBlockSize());
 			c2smac.init(MACc2s);
-
-			method = guess[KeyExchange.PROPOSAL_COMP_ALGS_CTOS];
-			initDeflater(method);
-
-			method = guess[KeyExchange.PROPOSAL_COMP_ALGS_STOC];
-			initInflater(method);
 		} catch (Exception e) {
 			if (e instanceof JSchException) {
 				throw e;
@@ -1245,39 +1186,7 @@ public class Session implements Runnable {
 						break;
 
 					case SSH_MSG_CHANNEL_EXTENDED_DATA:
-						buf.getInt();
-						buf.getShort();
-						i = buf.getInt();
-						channel = Channel.getChannel(i, this);
-						buf.getInt(); // data_type_code == 1
-						foo = buf.getString(start, length);
-						// System.err.println("stderr: "+new
-						// String(foo,start[0],length[0]));
-						if (channel == null) {
-							break;
-						}
-
-						if (length[0] == 0) {
-							break;
-						}
-
-						channel.write_ext(foo, start[0], length[0]);
-
-						len = length[0];
-						channel.setLocalWindowSize(channel.lwsize - len);
-						if (channel.lwsize < (channel.lwsize_max / 2)) {
-							packet.reset();
-							buf.putByte((byte) SSH_MSG_CHANNEL_WINDOW_ADJUST);
-							buf.putInt(channel.getRecipient());
-							buf.putInt(channel.lwsize_max - channel.lwsize);
-							synchronized (channel) {
-								if (!channel.close) {
-									write(packet);
-								}
-							}
-							channel.setLocalWindowSize(channel.lwsize_max);
-						}
-						break;
+						throw new IllegalStateException("Can't operate ext data");
 
 					case SSH_MSG_CHANNEL_WINDOW_ADJUST:
 						buf.getInt();
@@ -1459,8 +1368,6 @@ public class Session implements Runnable {
 
 		isConnected = false;
 
-		PortWatcher.delPort(this);
-
 		synchronized (lock) {
 			if (connectThread != null) {
 				Thread.yield();
@@ -1477,19 +1384,9 @@ public class Session implements Runnable {
 				if (io.out != null) {
 					io.out.close();
 				}
-				if (io.out_ext != null) {
-					io.out_ext.close();
-				}
 			}
-			if (proxy == null) {
-				if (socket != null) {
-					socket.close();
-				}
-			} else {
-				synchronized (proxy) {
-					proxy.close();
-				}
-				proxy = null;
+			if (socket != null) {
+				socket.close();
 			}
 		} catch (Exception e) {
 			// e.printStackTrace();
@@ -1505,266 +1402,8 @@ public class Session implements Runnable {
 		// System.gc();
 	}
 
-	/**
-	 * Registers the local port forwarding for loop-back interface. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
-	 *
-	 * @param lport
-	 *            local port for local port forwarding
-	 * @param host
-	 *            host address for local port forwarding
-	 * @param rport
-	 *            remote port number for local port forwarding
-	 * @return an allocated local TCP port number
-	 * @see #setPortForwardingL(String bind_address, int lport, String host, int rport, ServerSocketFactory ssf, int connectTimeout)
-	 */
-	public int setPortForwardingL(int lport, String host, int rport) throws JSchException {
-		return setPortForwardingL("127.0.0.1", lport, host, rport);
-	}
-
-	/**
-	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or '*', the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
-	 *
-	 * @param bind_address
-	 *            bind address for local port forwarding
-	 * @param lport
-	 *            local port for local port forwarding
-	 * @param host
-	 *            host address for local port forwarding
-	 * @param rport
-	 *            remote port number for local port forwarding
-	 * @return an allocated local TCP port number
-	 * @see #setPortForwardingL(String bind_address, int lport, String host, int rport, ServerSocketFactory ssf, int connectTimeout)
-	 */
-	public int setPortForwardingL(String bind_address, int lport, String host, int rport) throws JSchException {
-		return setPortForwardingL(bind_address, lport, host, rport, null);
-	}
-
-	/**
-	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
-	 *
-	 * @param bind_address
-	 *            bind address for local port forwarding
-	 * @param lport
-	 *            local port for local port forwarding
-	 * @param host
-	 *            host address for local port forwarding
-	 * @param rport
-	 *            remote port number for local port forwarding
-	 * @param ssf
-	 *            socket factory
-	 * @return an allocated local TCP port number
-	 * @see #setPortForwardingL(String bind_address, int lport, String host, int rport, ServerSocketFactory ssf, int connectTimeout)
-	 */
-	public int setPortForwardingL(String bind_address, int lport, String host, int rport, ServerSocketFactory ssf) throws JSchException {
-		return setPortForwardingL(bind_address, lport, host, rport, ssf, 0);
-	}
-
-	/**
-	 * Registers the local port forwarding. If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or <code>null</code>, the listening port will be bound for local use only. If <code>lport</code> is <code>0</code>, the tcp port will be allocated.
-	 *
-	 * @param bind_address
-	 *            bind address for local port forwarding
-	 * @param lport
-	 *            local port for local port forwarding
-	 * @param host
-	 *            host address for local port forwarding
-	 * @param rport
-	 *            remote port number for local port forwarding
-	 * @param ssf
-	 *            socket factory
-	 * @param connectTimeout
-	 *            timeout for establishing port connection
-	 * @return an allocated local TCP port number
-	 */
-	public int setPortForwardingL(String bind_address, int lport, String host, int rport, ServerSocketFactory ssf, int connectTimeout) throws JSchException {
-		PortWatcher pw = PortWatcher.addPort(this, bind_address, lport, host, rport, ssf);
-		pw.setConnectTimeout(connectTimeout);
-		Thread tmp = new Thread(pw);
-		tmp.setName("PortWatcher Thread for " + host);
-		if (daemon_thread) {
-			tmp.setDaemon(daemon_thread);
-		}
-		tmp.start();
-		return pw.lport;
-	}
-
-	/**
-	 * Cancels the local port forwarding assigned at local TCP port <code>lport</code> on loopback interface.
-	 *
-	 * @param lport
-	 *            local TCP port
-	 */
-	public void delPortForwardingL(int lport) throws JSchException {
-		delPortForwardingL("127.0.0.1", lport);
-	}
-
-	/**
-	 * Cancels the local port forwarding assigned at local TCP port <code>lport</code> on <code>bind_address</code> interface.
-	 *
-	 * @param bind_address
-	 *            bind_address of network interfaces
-	 * @param lport
-	 *            local TCP port
-	 */
-	public void delPortForwardingL(String bind_address, int lport) throws JSchException {
-		PortWatcher.delPort(this, bind_address, lport);
-	}
-
-	/**
-	 * Lists the registered local port forwarding.
-	 *
-	 * @return a list of "lport:host:hostport"
-	 */
-	public String[] getPortForwardingL() throws JSchException {
-		return PortWatcher.getPortForwarding(this);
-	}
-
-	private class Forwarding {
-		String bind_address = null;
-		int port = -1;
-		String host = null;
-		int hostport = -1;
-	}
-
-	/**
-	 * The given argument may be "[bind_address:]port:host:hostport" or "[bind_address:]port host:hostport", which is from LocalForward command of ~/.ssh/config .
-	 */
-	private Forwarding parseForwarding(String conf) throws JSchException {
-		String[] tmp = conf.split(" ");
-		if (tmp.length > 1) { // "[bind_address:]port host:hostport"
-			Vector<String> foo = new Vector<String>();
-			for (int i = 0; i < tmp.length; i++) {
-				if (tmp[i].length() == 0) {
-					continue;
-				}
-				foo.addElement(tmp[i].trim());
-			}
-			StringBuffer sb = new StringBuffer(); // join
-			for (int i = 0; i < foo.size(); i++) {
-				sb.append((foo.elementAt(i)));
-				if ((i + 1) < foo.size()) {
-					sb.append(":");
-				}
-			}
-			conf = sb.toString();
-		}
-
-		String org = conf;
-		Forwarding f = new Forwarding();
-		try {
-			if (conf.lastIndexOf(":") == -1) {
-				throw new JSchException("parseForwarding: " + org);
-			}
-			f.hostport = Integer.parseInt(conf.substring(conf.lastIndexOf(":") + 1));
-			conf = conf.substring(0, conf.lastIndexOf(":"));
-			if (conf.lastIndexOf(":") == -1) {
-				throw new JSchException("parseForwarding: " + org);
-			}
-			f.host = conf.substring(conf.lastIndexOf(":") + 1);
-			conf = conf.substring(0, conf.lastIndexOf(":"));
-			if (conf.lastIndexOf(":") != -1) {
-				f.port = Integer.parseInt(conf.substring(conf.lastIndexOf(":") + 1));
-				conf = conf.substring(0, conf.lastIndexOf(":"));
-				if ((conf.length() == 0) || conf.equals("*")) {
-					conf = "0.0.0.0";
-				}
-				if (conf.equals("localhost")) {
-					conf = "127.0.0.1";
-				}
-				f.bind_address = conf;
-			} else {
-				f.port = Integer.parseInt(conf);
-				f.bind_address = "127.0.0.1";
-			}
-		} catch (NumberFormatException e) {
-			throw new JSchException("parseForwarding: " + e.toString());
-		}
-		return f;
-	}
-
-	/**
-	 * Registers the local port forwarding. The argument should be in the format like "[bind_address:]port:host:hostport". If <code>bind_address</code> is an empty string or <code>"*"</code>, the port should be available from all interfaces. If <code>bind_address</code> is <code>"localhost"</code> or is not given, the listening port will be bound for local use only.
-	 *
-	 * @param conf
-	 *            configuration of local port forwarding
-	 * @return an assigned port number
-	 * @see #setPortForwardingL(String bind_address, int lport, String host, int rport)
-	 */
-	public int setPortForwardingL(String conf) throws JSchException {
-		Forwarding f = parseForwarding(conf);
-		return setPortForwardingL(f.bind_address, f.port, f.host, f.hostport);
-	}
-
-	/**
-	 * Instantiates an instance of stream-forwarder to <code>host</code>: <code>port</code>. Set I/O stream to the given channel, and then invoke Channel#connect() method.
-	 *
-	 * @param host
-	 *            remote host, which the given stream will be plugged to.
-	 * @param port
-	 *            remote port, which the given stream will be plugged to.
-	 */
-	public Channel getStreamForwarder(String host, int port) throws JSchException {
-		ChannelDirectTCPIP channel = new ChannelDirectTCPIP();
-		channel.init();
-		addChannel(channel);
-		channel.setHost(host);
-		channel.setPort(port);
-		return channel;
-	}
-
-	private void initDeflater(String method) throws JSchException {
-		if (method.equals("none")) {
-			deflater = null;
-			return;
-		}
-		String foo = getConfig(method);
-		if (foo != null) {
-			if (method.equals("zlib") || (isAuthed && method.equals("zlib@openssh.com"))) {
-				try {
-					Class<?> c = Class.forName(foo);
-					deflater = (Compression) (c.newInstance());
-					int level = 6;
-					try {
-						level = Integer.parseInt(getConfig("compression_level"));
-					} catch (Exception ee) {
-					}
-					deflater.init(Compression.DEFLATER, level);
-				} catch (NoClassDefFoundError ee) {
-					throw new JSchException(ee.toString(), ee);
-				} catch (Exception ee) {
-					throw new JSchException(ee.toString(), ee);
-					// System.err.println(foo+" isn't accessible.");
-				}
-			}
-		}
-	}
-
-	private void initInflater(String method) throws JSchException {
-		if (method.equals("none")) {
-			inflater = null;
-			return;
-		}
-		String foo = getConfig(method);
-		if (foo != null) {
-			if (method.equals("zlib") || (isAuthed && method.equals("zlib@openssh.com"))) {
-				try {
-					Class<?> c = Class.forName(foo);
-					inflater = (Compression) (c.newInstance());
-					inflater.init(Compression.INFLATER, 0);
-				} catch (Exception ee) {
-					throw new JSchException(ee.toString(), ee);
-					// System.err.println(foo+" isn't accessible.");
-				}
-			}
-		}
-	}
-
 	void addChannel(Channel channel) {
 		channel.setSession(this);
-	}
-
-	public void setProxy(Proxy proxy) {
-		this.proxy = proxy;
 	}
 
 	public void setHost(String host) {
@@ -1787,14 +1426,6 @@ public class Session implements Runnable {
 		return userinfo;
 	}
 
-	public void setInputStream(InputStream in) {
-		this.in = in;
-	}
-
-	public void setOutputStream(OutputStream out) {
-		this.out = out;
-	}
-
 	public void setPassword(String password) {
 		if (password != null) {
 			this.password = Util.str2byte(password);
@@ -1805,26 +1436,6 @@ public class Session implements Runnable {
 		if (password != null) {
 			this.password = new byte[password.length];
 			System.arraycopy(password, 0, this.password, 0, password.length);
-		}
-	}
-
-	public void setConfig(java.util.Properties newconf) {
-		java.util.Hashtable<String, String> table = new java.util.Hashtable<String, String>();
-		for (Entry<Object, Object> entry : newconf.entrySet()) {
-			table.put((String) entry.getKey(), (String) entry.getValue());
-		}
-		setConfig(table);
-	}
-
-	public void setConfig(java.util.Hashtable<String, String> newconf) {
-		synchronized (lock) {
-			if (config == null) {
-				config = new java.util.Hashtable<String, String>();
-			}
-			for (java.util.Enumeration<?> e = newconf.keys(); e.hasMoreElements();) {
-				String key = (String) (e.nextElement());
-				config.put(key, (newconf.get(key)));
-			}
 		}
 	}
 
@@ -2072,120 +1683,6 @@ public class Session implements Runnable {
 			return true;
 		} catch (Exception e) {
 			return false;
-		}
-	}
-
-	private void applyConfig() throws JSchException {
-		ConfigRepository configRepository = jsch.getConfigRepository();
-		if (configRepository == null) {
-			return;
-		}
-
-		ConfigRepository.Config config = configRepository.getConfig(org_host);
-
-		String value = null;
-
-		value = config.getUser();
-		if (value != null) {
-			username = value;
-		}
-
-		value = config.getHostname();
-		if (value != null) {
-			host = value;
-		}
-
-		int port = config.getPort();
-		if (port != -1) {
-			this.port = port;
-		}
-
-		checkConfig(config, "kex");
-		checkConfig(config, "server_host_key");
-
-		checkConfig(config, "cipher.c2s");
-		checkConfig(config, "cipher.s2c");
-		checkConfig(config, "mac.c2s");
-		checkConfig(config, "mac.s2c");
-		checkConfig(config, "compression.c2s");
-		checkConfig(config, "compression.s2c");
-		checkConfig(config, "compression_level");
-
-		checkConfig(config, "StrictHostKeyChecking");
-		checkConfig(config, "HashKnownHosts");
-		checkConfig(config, "PreferredAuthentications");
-		checkConfig(config, "MaxAuthTries");
-		checkConfig(config, "ClearAllForwardings");
-
-		value = config.getValue("ServerAliveInterval");
-		if (value != null) {
-			try {
-				setServerAliveInterval(Integer.parseInt(value));
-			} catch (NumberFormatException e) {
-			}
-		}
-
-		value = config.getValue("ConnectTimeout");
-		if (value != null) {
-			try {
-				setTimeout(Integer.parseInt(value));
-			} catch (NumberFormatException e) {
-			}
-		}
-
-		value = config.getValue("MaxAuthTries");
-		if (value != null) {
-			setConfig("MaxAuthTries", value);
-		}
-
-		value = config.getValue("ClearAllForwardings");
-		if (value != null) {
-			setConfig("ClearAllForwardings", value);
-		}
-
-	}
-
-	private void applyConfigChannel(ChannelSession channel) throws JSchException {
-		ConfigRepository configRepository = jsch.getConfigRepository();
-		if (configRepository == null) {
-			return;
-		}
-
-		ConfigRepository.Config config = configRepository.getConfig(org_host);
-
-		String value = null;
-
-		value = config.getValue("RequestTTY");
-		if (value != null) {
-			channel.setPty(value.equals("yes"));
-		}
-	}
-
-	private void requestPortForwarding() throws JSchException {
-
-		if (getConfig("ClearAllForwardings").equals("yes")) {
-			return;
-		}
-
-		ConfigRepository configRepository = jsch.getConfigRepository();
-		if (configRepository == null) {
-			return;
-		}
-
-		ConfigRepository.Config config = configRepository.getConfig(org_host);
-
-		String[] values = config.getValues("LocalForward");
-		if (values != null) {
-			for (int i = 0; i < values.length; i++) {
-				setPortForwardingL(values[i]);
-			}
-		}
-	}
-
-	private void checkConfig(ConfigRepository.Config config, String key) {
-		String value = config.getValue(key);
-		if (value != null) {
-			this.setConfig(key, value);
 		}
 	}
 

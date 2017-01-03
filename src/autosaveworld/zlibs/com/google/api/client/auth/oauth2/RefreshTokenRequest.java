@@ -16,7 +16,6 @@ package autosaveworld.zlibs.com.google.api.client.auth.oauth2;
 
 import java.util.Collection;
 
-import autosaveworld.zlibs.com.google.api.client.http.BasicAuthentication;
 import autosaveworld.zlibs.com.google.api.client.http.GenericUrl;
 import autosaveworld.zlibs.com.google.api.client.http.HttpExecuteInterceptor;
 import autosaveworld.zlibs.com.google.api.client.http.HttpRequestInitializer;

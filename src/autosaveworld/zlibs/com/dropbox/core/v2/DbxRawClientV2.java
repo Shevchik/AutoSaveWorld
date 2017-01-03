@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Random;
 
 import autosaveworld.zlibs.com.dropbox.core.BadResponseException;
-import autosaveworld.zlibs.com.dropbox.core.DbxDownloader;
 import autosaveworld.zlibs.com.dropbox.core.DbxException;
 import autosaveworld.zlibs.com.dropbox.core.DbxHost;
 import autosaveworld.zlibs.com.dropbox.core.DbxRequestConfig;
@@ -104,65 +103,6 @@ public abstract class DbxRawClientV2 {
                     }
                 } catch (JsonProcessingException ex) {
                     String requestId = DbxRequestUtil.getRequestId(response);
-                    throw new BadResponseException(requestId, "Bad JSON: " + ex.getMessage(), ex);
-                } catch (IOException ex) {
-                    throw new NetworkIOException(ex);
-                }
-            }
-        });
-    }
-
-    public <ArgT,ResT,ErrT> DbxDownloader<ResT> downloadStyle(final String host,
-                                                              final String path,
-                                                              final ArgT arg,
-                                                              final boolean noAuth,
-                                                              final List<HttpRequestor.Header> extraHeaders,
-                                                              final StoneSerializer<ArgT> argSerializer,
-                                                              final StoneSerializer<ResT> responseSerializer,
-                                                              final StoneSerializer<ErrT> errorSerializer)
-        throws DbxWrappedException, DbxException {
-
-        final List<HttpRequestor.Header> headers = new ArrayList<HttpRequestor.Header>(extraHeaders);
-        if (!noAuth) {
-            addAuthHeaders(headers);
-        }
-        addUserLocaleHeader(headers, requestConfig);
-        headers.add(new HttpRequestor.Header("Dropbox-API-Arg", headerSafeJson(argSerializer, arg)));
-        headers.add(new HttpRequestor.Header("Content-Type", ""));
-
-        final byte[] body = new byte[0];
-
-        return executeRetriable(requestConfig.getMaxRetries(), new RetriableExecution<DbxDownloader<ResT>>() {
-            @Override
-            public DbxDownloader<ResT> execute() throws DbxWrappedException, DbxException {
-                HttpRequestor.Response response = DbxRequestUtil.startPostRaw(requestConfig, USER_AGENT_ID, host, path, body, headers);
-                String requestId = DbxRequestUtil.getRequestId(response);
-
-                try {
-                    switch (response.getStatusCode()) {
-                        case 200:
-                            // fall-through
-                        case 206:
-                            List<String> resultHeaders = response.getHeaders().get("dropbox-api-result");
-                            if (resultHeaders == null) {
-                                throw new BadResponseException(requestId, "Missing Dropbox-API-Result header; " + response.getHeaders());
-                            }
-                            if (resultHeaders.size() == 0) {
-                                throw new BadResponseException(requestId, "No Dropbox-API-Result header; " + response.getHeaders());
-                            }
-                            String resultHeader = resultHeaders.get(0);
-                            if (resultHeader == null) {
-                                throw new BadResponseException(requestId, "Null Dropbox-API-Result header; " + response.getHeaders());
-                            }
-
-                            ResT result = responseSerializer.deserialize(resultHeader);
-                            return new DbxDownloader<ResT>(result, response.getBody());
-                        case 409:
-                            throw DbxWrappedException.fromResponse(errorSerializer, response);
-                        default:
-                            throw DbxRequestUtil.unexpectedStatus(response);
-                    }
-                } catch(JsonProcessingException ex) {
                     throw new BadResponseException(requestId, "Bad JSON: " + ex.getMessage(), ex);
                 } catch (IOException ex) {
                     throw new NetworkIOException(ex);

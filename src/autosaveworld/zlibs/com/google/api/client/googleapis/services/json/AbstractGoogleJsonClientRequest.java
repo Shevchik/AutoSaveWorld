@@ -14,11 +14,6 @@
 
 package autosaveworld.zlibs.com.google.api.client.googleapis.services.json;
 
-import java.io.IOException;
-
-import autosaveworld.zlibs.com.google.api.client.googleapis.batch.BatchRequest;
-import autosaveworld.zlibs.com.google.api.client.googleapis.batch.json.JsonBatchCallback;
-import autosaveworld.zlibs.com.google.api.client.googleapis.json.GoogleJsonErrorContainer;
 import autosaveworld.zlibs.com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import autosaveworld.zlibs.com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import autosaveworld.zlibs.com.google.api.client.http.HttpHeaders;
@@ -74,38 +69,6 @@ public abstract class AbstractGoogleJsonClientRequest<T> extends AbstractGoogleC
   @Override
   public AbstractGoogleJsonClientRequest<T> setRequestHeaders(HttpHeaders headers) {
     return (AbstractGoogleJsonClientRequest<T>) super.setRequestHeaders(headers);
-  }
-
-  /**
-   * Queues the request into the specified batch request container.
-   *
-   * <p>
-   * Batched requests are then executed when {@link BatchRequest#execute()} is called.
-   * </p>
-   * <p>
-   * Example usage:
-   * </p>
-   *
-   * <pre>
-     request.queue(batchRequest, new JsonBatchCallback&lt;SomeResponseType&gt;() {
-
-       public void onSuccess(SomeResponseType content, HttpHeaders responseHeaders) {
-         log("Success");
-       }
-
-       public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders) {
-         log(e.getMessage());
-       }
-     });
-   * </pre>
-   *
-   *
-   * @param batchRequest batch request container
-   * @param callback batch callback
-   */
-  public final void queue(BatchRequest batchRequest, JsonBatchCallback<T> callback)
-      throws IOException {
-    super.queue(batchRequest, GoogleJsonErrorContainer.class, callback);
   }
 
   @Override

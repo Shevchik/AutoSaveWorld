@@ -27,56 +27,36 @@
  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package autosaveworld.zlibs.com.jcraft.jsch;
+package autosaveworld.zlibs.com.jcraft.jsch.jce.hash;
 
-class ChannelSession extends Channel {
+import java.security.MessageDigest;
 
-	private static byte[] _session = Util.str2byte("session");
+import autosaveworld.zlibs.com.jcraft.jsch.HASH;
 
-	ChannelSession() {
-		super();
-		type = _session;
-		io = new IO();
+public class SHA256 implements HASH {
+	MessageDigest md;
+
+	@Override
+	public int getBlockSize() {
+		return 32;
 	}
 
 	@Override
-	public void run() {
-		Buffer buf = new Buffer(rmpsize);
-		Packet packet = new Packet(buf);
-		int i = -1;
+	public void init() throws Exception {
 		try {
-			while (isConnected() && (thread != null) && (io != null) && (io.in != null)) {
-				i = io.in.read(buf.buffer, 14, buf.buffer.length - 14 - Session.buffer_margin);
-				if (i == 0) {
-					continue;
-				}
-				if (i == -1) {
-					eof();
-					break;
-				}
-				if (close) {
-					break;
-				}
-				// System.out.println("write: "+i);
-				packet.reset();
-				buf.putByte((byte) Session.SSH_MSG_CHANNEL_DATA);
-				buf.putInt(recipient);
-				buf.putInt(i);
-				buf.skip(i);
-				getSession().write(packet, this, i);
-			}
+			md = MessageDigest.getInstance("SHA-256");
 		} catch (Exception e) {
-			// System.err.println("# ChannelExec.run");
-			// e.printStackTrace();
+			System.err.println(e);
 		}
-		Thread _thread = thread;
-		if (_thread != null) {
-			synchronized (_thread) {
-				_thread.notifyAll();
-			}
-		}
-		thread = null;
-		// System.err.println(this+":run <");
 	}
 
+	@Override
+	public void update(byte[] foo, int start, int len) throws Exception {
+		md.update(foo, start, len);
+	}
+
+	@Override
+	public byte[] digest() throws Exception {
+		return md.digest();
+	}
 }

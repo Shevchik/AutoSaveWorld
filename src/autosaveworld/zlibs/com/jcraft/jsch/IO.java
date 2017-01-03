@@ -37,11 +37,9 @@ public class IO {
 
 	InputStream in;
 	OutputStream out;
-	OutputStream out_ext;
 
 	private boolean in_dontclose = false;
 	private boolean out_dontclose = false;
-	private boolean out_ext_dontclose = false;
 
 	void setOutputStream(OutputStream out) {
 		this.out = out;
@@ -50,15 +48,6 @@ public class IO {
 	void setOutputStream(OutputStream out, boolean dontclose) {
 		out_dontclose = dontclose;
 		setOutputStream(out);
-	}
-
-	void setExtOutputStream(OutputStream out) {
-		out_ext = out;
-	}
-
-	void setExtOutputStream(OutputStream out, boolean dontclose) {
-		out_ext_dontclose = dontclose;
-		setExtOutputStream(out);
 	}
 
 	void setInputStream(InputStream in) {
@@ -78,11 +67,6 @@ public class IO {
 	void put(byte[] array, int begin, int length) throws IOException {
 		out.write(array, begin, length);
 		out.flush();
-	}
-
-	void put_ext(byte[] array, int begin, int length) throws IOException {
-		out_ext.write(array, begin, length);
-		out_ext.flush();
 	}
 
 	int getByte() throws IOException {
@@ -124,14 +108,6 @@ public class IO {
 		}
 
 		out_close();
-
-		try {
-			if ((out_ext != null) && !out_ext_dontclose) {
-				out_ext.close();
-			}
-			out_ext = null;
-		} catch (Exception ee) {
-		}
 	}
 
 }

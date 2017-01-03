@@ -30,8 +30,6 @@
 package autosaveworld.zlibs.com.jcraft.jsch;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
@@ -50,30 +48,10 @@ public abstract class Channel implements Runnable {
 	private static java.util.Vector<Channel> pool = new java.util.Vector<Channel>();
 
 	public static enum ChannelType {
-		SESSION, DIRECT_TCPIP, SFTP;
-		public static ChannelType fromName(String name) {
-			switch (name) {
-				case "session": {
-					return SESSION;
-				}
-				case "direct-tcpip": {
-					return DIRECT_TCPIP;
-				}
-				case "sftp": {
-					return SFTP;
-				}
-			}
-			throw new IllegalArgumentException("Protocol is not supported");
-		}
+		SFTP;
 	}
 
 	static Channel getChannel(ChannelType ctype) {
-		if (ctype == ChannelType.SESSION) {
-			return new ChannelSession();
-		}
-		if (ctype == ChannelType.DIRECT_TCPIP) {
-			return new ChannelDirectTCPIP();
-		}
 		if (ctype == ChannelType.SFTP) {
 			return new ChannelSftp();
 		}
@@ -183,172 +161,7 @@ public abstract class Channel implements Runnable {
 		setRemotePacketSize(buf.getInt());
 	}
 
-	public void setInputStream(InputStream in) {
-		io.setInputStream(in, false);
-	}
-
-	public void setInputStream(InputStream in, boolean dontclose) {
-		io.setInputStream(in, dontclose);
-	}
-
-	public void setOutputStream(OutputStream out) {
-		io.setOutputStream(out, false);
-	}
-
-	public void setOutputStream(OutputStream out, boolean dontclose) {
-		io.setOutputStream(out, dontclose);
-	}
-
-	public void setExtOutputStream(OutputStream out) {
-		io.setExtOutputStream(out, false);
-	}
-
-	public void setExtOutputStream(OutputStream out, boolean dontclose) {
-		io.setExtOutputStream(out, dontclose);
-	}
-
-	public InputStream getInputStream() throws IOException {
-		int max_input_buffer_size = 32 * 1024;
-		try {
-			max_input_buffer_size = Integer.parseInt(getSession().getConfig("max_input_buffer_size"));
-		} catch (Exception e) {
-		}
-		PipedInputStream in = new MyPipedInputStream(32 * 1024, // this value
-				// should be
-				// customizable.
-				max_input_buffer_size);
-		boolean resizable = (32 * 1024) < max_input_buffer_size;
-		io.setOutputStream(new PassiveOutputStream(in, resizable), false);
-		return in;
-	}
-
-	public InputStream getExtInputStream() throws IOException {
-		int max_input_buffer_size = 32 * 1024;
-		try {
-			max_input_buffer_size = Integer.parseInt(getSession().getConfig("max_input_buffer_size"));
-		} catch (Exception e) {
-		}
-		PipedInputStream in = new MyPipedInputStream(32 * 1024, // this value
-				// should be
-				// customizable.
-				max_input_buffer_size);
-		boolean resizable = (32 * 1024) < max_input_buffer_size;
-		io.setExtOutputStream(new PassiveOutputStream(in, resizable), false);
-		return in;
-	}
-
-	public OutputStream getOutputStream() throws IOException {
-
-		final Channel channel = this;
-		OutputStream out = new OutputStream() {
-			private int dataLen = 0;
-			private Buffer buffer = null;
-			private Packet packet = null;
-			private boolean closed = false;
-
-			private synchronized void init() throws java.io.IOException {
-				buffer = new Buffer(rmpsize);
-				packet = new Packet(buffer);
-
-				byte[] _buf = buffer.buffer;
-				if ((_buf.length - (14 + 0) - Session.buffer_margin) <= 0) {
-					buffer = null;
-					packet = null;
-					throw new IOException("failed to initialize the channel.");
-				}
-
-			}
-
-			byte[] b = new byte[1];
-
-			@Override
-			public void write(int w) throws java.io.IOException {
-				b[0] = (byte) w;
-				write(b, 0, 1);
-			}
-
-			@Override
-			public void write(byte[] buf, int s, int l) throws java.io.IOException {
-				if (packet == null) {
-					init();
-				}
-
-				if (closed) {
-					throw new java.io.IOException("Already closed");
-				}
-
-				byte[] _buf = buffer.buffer;
-				int _bufl = _buf.length;
-				while (l > 0) {
-					int _l = l;
-					if (l > (_bufl - (14 + dataLen) - Session.buffer_margin)) {
-						_l = _bufl - (14 + dataLen) - Session.buffer_margin;
-					}
-
-					if (_l <= 0) {
-						flush();
-						continue;
-					}
-
-					System.arraycopy(buf, s, _buf, 14 + dataLen, _l);
-					dataLen += _l;
-					s += _l;
-					l -= _l;
-				}
-			}
-
-			@Override
-			public void flush() throws java.io.IOException {
-				if (closed) {
-					throw new java.io.IOException("Already closed");
-				}
-				if (dataLen == 0) {
-					return;
-				}
-				packet.reset();
-				buffer.putByte((byte) Session.SSH_MSG_CHANNEL_DATA);
-				buffer.putInt(recipient);
-				buffer.putInt(dataLen);
-				buffer.skip(dataLen);
-				try {
-					int foo = dataLen;
-					dataLen = 0;
-					synchronized (channel) {
-						if (!channel.close) {
-							getSession().write(packet, channel, foo);
-						}
-					}
-				} catch (Exception e) {
-					close();
-					throw new java.io.IOException(e.toString());
-				}
-
-			}
-
-			@Override
-			public void close() throws java.io.IOException {
-				if (packet == null) {
-					try {
-						init();
-					} catch (java.io.IOException e) {
-						// close should be finished silently.
-						return;
-					}
-				}
-				if (closed) {
-					return;
-				}
-				if (dataLen > 0) {
-					flush();
-				}
-				channel.eof();
-				closed = true;
-			}
-		};
-		return out;
-	}
-
-	class MyPipedInputStream extends PipedInputStream {
+	static class MyPipedInputStream extends PipedInputStream {
 		private int BUFFER_SIZE = 1024;
 		private int max_buffer_size = BUFFER_SIZE;
 
@@ -482,13 +295,6 @@ public abstract class Channel implements Runnable {
 	void write(byte[] foo, int s, int l) throws IOException {
 		try {
 			io.put(foo, s, l);
-		} catch (NullPointerException e) {
-		}
-	}
-
-	void write_ext(byte[] foo, int s, int l) throws IOException {
-		try {
-			io.put_ext(foo, s, l);
 		} catch (NullPointerException e) {
 		}
 	}
@@ -638,70 +444,6 @@ public abstract class Channel implements Runnable {
 			return _session.isConnected() && connected;
 		}
 		return false;
-	}
-
-	public void sendSignal(String signal) throws Exception {
-		RequestSignal request = new RequestSignal();
-		request.setSignal(signal);
-		request.request(getSession(), this);
-	}
-
-	// public String toString(){
-	// return "Channel: type="+new
-	// String(type)+",id="+id+",recipient="+recipient+",window_size="+window_size+",packet_size="+packet_size;
-	// }
-
-	/*
-	 * class OutputThread extends Thread{ Channel c; OutputThread(Channel c){ this.c=c;} public void run(){c.output_thread();} }
-	 */
-
-	class PassiveInputStream extends MyPipedInputStream {
-		PipedOutputStream out;
-
-		PassiveInputStream(PipedOutputStream out, int size) throws IOException {
-			super(out, size);
-			this.out = out;
-		}
-
-		PassiveInputStream(PipedOutputStream out) throws IOException {
-			super(out);
-			this.out = out;
-		}
-
-		@Override
-		public void close() throws IOException {
-			if (out != null) {
-				out.close();
-			}
-			out = null;
-		}
-	}
-
-	class PassiveOutputStream extends PipedOutputStream {
-		private MyPipedInputStream _sink = null;
-
-		PassiveOutputStream(PipedInputStream in, boolean resizable_buffer) throws IOException {
-			super(in);
-			if (resizable_buffer && (in instanceof MyPipedInputStream)) {
-				_sink = (MyPipedInputStream) in;
-			}
-		}
-
-		@Override
-		public void write(int b) throws IOException {
-			if (_sink != null) {
-				_sink.checkSpace(1);
-			}
-			super.write(b);
-		}
-
-		@Override
-		public void write(byte[] b, int off, int len) throws IOException {
-			if (_sink != null) {
-				_sink.checkSpace(len);
-			}
-			super.write(b, off, len);
-		}
 	}
 
 	void setExitStatus(int status) {

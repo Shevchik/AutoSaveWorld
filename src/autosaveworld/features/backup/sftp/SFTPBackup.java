@@ -59,7 +59,7 @@ public class SFTPBackup extends Backup {
 		.setVFS(new SFTPVirtualFileSystem(channelSftp))
 		.create().backup();
 
-		channelSftp.exit();
+		channelSftp.disconnect();
 		session.disconnect();
 	}
 

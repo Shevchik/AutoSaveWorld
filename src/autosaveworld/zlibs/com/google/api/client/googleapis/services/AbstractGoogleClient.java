@@ -15,8 +15,6 @@ package autosaveworld.zlibs.com.google.api.client.googleapis.services;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import autosaveworld.zlibs.com.google.api.client.googleapis.batch.BatchRequest;
-import autosaveworld.zlibs.com.google.api.client.http.GenericUrl;
 import autosaveworld.zlibs.com.google.api.client.http.HttpRequestFactory;
 import autosaveworld.zlibs.com.google.api.client.http.HttpRequestInitializer;
 import autosaveworld.zlibs.com.google.api.client.http.HttpTransport;
@@ -186,51 +184,6 @@ public abstract class AbstractGoogleClient {
     if (getGoogleClientRequestInitializer() != null) {
       getGoogleClientRequestInitializer().initialize(httpClientRequest);
     }
-  }
-
-  /**
-   * Create an {@link BatchRequest} object from this Google API client instance.
-   *
-   * <p>
-   * Sample usage:
-   * </p>
-   *
-   * <pre>
-     client.batch()
-         .queue(...)
-         .queue(...)
-         .execute();
-   * </pre>
-   *
-   * @return newly created Batch request
-   */
-  public final BatchRequest batch() {
-    return batch(null);
-  }
-
-  /**
-   * Create an {@link BatchRequest} object from this Google API client instance.
-   *
-   * <p>
-   * Sample usage:
-   * </p>
-   *
-   * <pre>
-     client.batch(httpRequestInitializer)
-         .queue(...)
-         .queue(...)
-         .execute();
-   * </pre>
-   *
-   * @param httpRequestInitializer The initializer to use when creating the top-level batch HTTP
-   *        request or {@code null} for none
-   * @return newly created Batch request
-   */
-  public final BatchRequest batch(HttpRequestInitializer httpRequestInitializer) {
-    BatchRequest batch =
-        new BatchRequest(getRequestFactory().getTransport(), httpRequestInitializer);
-    batch.setBatchUrl(new GenericUrl(getRootUrl() + "batch"));
-    return batch;
   }
 
   /** Returns whether discovery pattern checks should be suppressed on required parameters. */
