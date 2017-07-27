@@ -44,7 +44,7 @@ public abstract class VirtualFileSystem {
 			if (!exists(path)) {
 				createDirectory0(path);	
 			}
-			enterDirectory0(dirname);
+			enterDirectory0(path);
 			createdCount++;
 		}
 		while (createdCount-- > 0) {
