@@ -61,7 +61,17 @@ public class FTPVirtualFileSystem extends VirtualFileSystem {
 	public boolean exists(String path) throws IOException {
 		//there is no standard way to check if path exists
 		//list files and use contains check, that may take a lot of time
-		return getEntries().contains(path);
+		
+		Set<String> directory_list = getEntries();
+		
+		if (directory_list.contains(path)) // traditional check
+			return true;
+			
+		for (String list_element : directory_list) // maybe it's listing absolute?
+			if (list_element.substring(list_element.lastIndexOf("/")+1).equals(path))
+				return true;	
+		
+		return false;
 	}
 
 	@Override
