@@ -59,7 +59,7 @@ public class ZipUtils {
 			File srcFile = new File(zipDir, child);
 
 			if (srcFile.isDirectory()) {
-				if (!BackupUtils.isFolderExcluded(excludefolders, srcDir.getName() + '/' + currentDir + child)) {
+				if (!BackupUtils.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) {
 					zipDir(excludefolders, zipOutStream, srcDir, currentDir + child + '/');
 				}
 			} else {
