@@ -60,10 +60,10 @@ public class ZipUtils {
 
 			if (srcFile.isDirectory()) {
 				if (!BackupUtils.isFolderExcluded(excludefolders, srcDir.getName() + File.separator + currentDir + child)) {
-					zipDir(excludefolders, zipOutStream, srcDir, currentDir + child + File.separator);
+					zipDir(excludefolders, zipOutStream, srcDir, currentDir + child + '/');
 				}
 			} else {
-				zipFile(zipOutStream, srcFile, srcDir.getName() + File.separator + currentDir + child);
+				zipFile(zipOutStream, srcFile, srcDir.getName() + '/' + currentDir + child);
 			}
 		}
 	}
