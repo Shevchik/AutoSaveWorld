@@ -20,18 +20,19 @@ package autosaveworld.features.purge.weregen;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.blocks.Blocks;
+import com.sk89q.worldedit.world.block.BaseBlock;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.Vector2D;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.blocks.BlockType;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldguard.bukkit.BukkitUtil;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.weregen.UtilClasses.BlockToPlaceBack;
@@ -39,15 +40,14 @@ import autosaveworld.features.purge.weregen.UtilClasses.ItemSpawnListener;
 import autosaveworld.features.purge.weregen.WorldEditRegeneration.WorldEditRegenrationInterface;
 import autosaveworld.utils.BukkitUtils;
 
-//TODO: Migrate to new WorldEdit API
 public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInterface {
 
 	private ItemSpawnListener itemremover = new ItemSpawnListener();
 
 	@Override
 	public void regenerateRegion(World world, org.bukkit.util.Vector minpoint, org.bukkit.util.Vector maxpoint) {
-		Vector minbpoint = BukkitUtil.toVector(minpoint);
-		Vector maxbpoint = BukkitUtil.toVector(maxpoint);
+		Vector minbpoint = new Vector(minpoint.getX(), minpoint.getY(), minpoint.getZ());
+		Vector maxbpoint = new Vector(maxpoint.getX(), maxpoint.getY(), maxpoint.getZ());
 		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
@@ -55,7 +55,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 	@SuppressWarnings("deprecation")
 	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
 		BukkitWorld bw = new BukkitWorld(world);
-		EditSession es = new EditSession(bw, Integer.MAX_VALUE);
+		EditSession es = WorldEdit.getInstance().getEditSessionFactory().getEditSession(bw, Integer.MAX_VALUE);
 		es.setFastMode(true);
 		int maxy = bw.getMaxY() + 1;
 		Region region = new CuboidRegion(bw, minpoint, maxpoint);
@@ -72,7 +72,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 					for (int z = 0; z < 16; ++z) {
 						Vector pt = min.add(x, y, z);
 						if (!region.contains(pt)) {
-							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt)));
+							placeBackQueue.add(new BlockToPlaceBack(pt, es.getBlock(pt).toBaseBlock()));
 						}
 					}
 				}
@@ -104,21 +104,22 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
 			@Override
 			public boolean shouldPlaceBack(BaseBlock block) {
-				return !BlockType.shouldPlaceLast(block.getId()) && !BlockType.shouldPlaceFinal(block.getId());
+				//Blocks.shouldPlaceLast(block.getBlockType())
+				return !Blocks.shouldPlaceLast(block.getBlockType()) && !Blocks.shouldPlaceFinal(block.getBlockType());
 			}
 		}),
 		// last stage place back
 		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
 			@Override
 			public boolean shouldPlaceBack(BaseBlock block) {
-				return BlockType.shouldPlaceLast(block.getId());
+				return Blocks.shouldPlaceLast(block.getBlockType());
 			}
 		}),
 		// final stage place back
 		new PlaceBackStage(new PlaceBackStage.PlaceBackCheck() {
 			@Override
 			public boolean shouldPlaceBack(BaseBlock block) {
-				return BlockType.shouldPlaceFinal(block.getId());
+				return Blocks.shouldPlaceFinal(block.getBlockType());
 			}
 		})
 	};
@@ -146,7 +147,7 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 						// set block to air to fix one really weird problem
 						world.getBlockAt(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ()).setType(Material.AIR);
 						// set block back if it is not air
-						if (!block.isAir()) {
+						if (!block.getBlockType().equals(BlockTypes.AIR)) {
 							es.rawSetBlock(pt, block);
 						}
 					} catch (Exception t) {

@@ -20,10 +20,11 @@ package autosaveworld.features.purge.plugins.wg;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
-import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -45,7 +46,7 @@ public class WGPurge extends DataPurge {
 		try (TaskExecutor queue = new TaskExecutor(30)) {
 			for (World w : Bukkit.getWorlds()) {
 				MessageLogger.debug("Checking WG protections in world " + w.getName());
-				RegionManager regionmanager = WGBukkit.getRegionManager(w);
+				RegionManager regionmanager =  WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(w));
 				ArrayList<ProtectedRegion> regions = new ArrayList<ProtectedRegion>(regionmanager.getRegions().values());
 				for (ProtectedRegion rg : regions) {
 					MessageLogger.debug("Checking region " + rg.getId());
