@@ -41,6 +41,8 @@ public class AutoSaveWorldConfig implements Config {
 	@ConfigOption(path = "var.commandsonlyfromconsole")
 	public boolean commandOnlyFromConsole = false;
 	// save
+	@ConfigOption(path = "save.enabled")
+	public boolean saveEnabled = true;
 	@ConfigOption(path = "save.interval")
 	public int saveInterval = 900;
 	@ConfigOption(path = "save.broadcast")
