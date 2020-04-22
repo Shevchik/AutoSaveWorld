@@ -127,7 +127,7 @@ public class GoogleDriveVirtualFileSystem extends VirtualFileSystem {
 	}
 
 	private File findFile(String dirname) throws IOException {
-		List<File> files = driveclient.files().list().setQ(quotes(getCurrentFolder()) + " in parents and title = " +  quotes(dirname)).execute().getFiles();
+		List<File> files = driveclient.files().list().setQ(quotes(getCurrentFolder()) + " in parents and name = " +  quotes(dirname)).execute().getFiles();
 		if (files.isEmpty()) {
 			return null;
 		}
