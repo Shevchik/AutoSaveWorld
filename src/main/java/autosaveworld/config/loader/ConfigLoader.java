@@ -38,7 +38,7 @@ public class ConfigLoader {
 				field.setAccessible(true);
 				ConfigOption option = field.getAnnotation(ConfigOption.class);
 				if (option != null) {
-					YamlTransform transform = option.transform().newInstance();
+					YamlTransform transform = option.transform().getDeclaredConstructor().newInstance();
 					String path = option.path();
 					Object newvalue = field.get(config);
 					if (yconfig.contains(path)) {
@@ -51,7 +51,7 @@ public class ConfigLoader {
 							}
 						}
 					}
-					option.postload().newInstance().postLoad(newvalue);
+					option.postload().getDeclaredConstructor().newInstance().postLoad(newvalue);
 					field.set(config, newvalue);
 				}
 			}
@@ -67,7 +67,7 @@ public class ConfigLoader {
 				field.setAccessible(true);
 				ConfigOption option = field.getAnnotation(ConfigOption.class);
 				if (option != null) {
-					YamlTransform transform = option.transform().newInstance();
+					YamlTransform transform = option.transform().getDeclaredConstructor().newInstance();
 					yconfig.set(option.path(), transform.toYaml(field.get(config)));
 				}
 			}
