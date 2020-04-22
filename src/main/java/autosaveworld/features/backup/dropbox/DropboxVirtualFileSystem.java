@@ -26,15 +26,15 @@ import java.util.Set;
 
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
 import autosaveworld.utils.StringUtils;
-import autosaveworld.zlibs.com.dropbox.core.DbxException;
-import autosaveworld.zlibs.com.dropbox.core.v2.DbxClientV2;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.CommitInfo;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.FolderMetadata;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.GetMetadataErrorException;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.ListFolderResult;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.Metadata;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.UploadSessionCursor;
-import autosaveworld.zlibs.com.dropbox.core.v2.files.UploadSessionStartResult;
+import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.CommitInfo;
+import com.dropbox.core.v2.files.FolderMetadata;
+import com.dropbox.core.v2.files.GetMetadataErrorException;
+import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.Metadata;
+import com.dropbox.core.v2.files.UploadSessionCursor;
+import com.dropbox.core.v2.files.UploadSessionStartResult;
 
 public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
@@ -52,7 +52,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 	@Override
 	public void createDirectory0(String dirname) throws IOException {
 		try {
-			dbxclient.files().createFolder(getPath(dirname));
+			dbxclient.files().createFolderV2(getPath(dirname));
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}
@@ -149,7 +149,7 @@ public class DropboxVirtualFileSystem extends VirtualFileSystem {
 
 	private void delete(String name) throws IOException {
 		try {
-			dbxclient.files().delete(getPath(name));
+			dbxclient.files().deleteV2(getPath(name));
 		} catch (DbxException e) {
 			throw wrapException(e);
 		}

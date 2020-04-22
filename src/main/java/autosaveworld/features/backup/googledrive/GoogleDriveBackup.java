@@ -26,10 +26,13 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.backup.Backup;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
-import autosaveworld.zlibs.com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import autosaveworld.zlibs.com.google.api.client.json.jackson2.JacksonFactory;
-import autosaveworld.zlibs.com.google.api.services.drive.Drive;
-import autosaveworld.zlibs.com.google.api.services.drive.DriveScopes;
+import com.google.api.client.googleapis.util.Utils;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 
 public class GoogleDriveBackup extends Backup {
 
@@ -40,22 +43,24 @@ public class GoogleDriveBackup extends Backup {
 	public void performBackup() throws IOException {
 		AutoSaveWorldConfig config = AutoSaveWorld.getInstance().getMainConfig();
 
-		GoogleCredential cred = GoogleCredential
-		.fromStream(new FileInputStream(new File(config.backupGDriveAuthFile)))
-		.createScoped(Collections.singletonList(DriveScopes.DRIVE));
-		Drive driveclient = new Drive.Builder(cred.getTransport(), JacksonFactory.getDefaultInstance(), cred)
-		.setApplicationName(AutoSaveWorld.getInstance().getName()).build();
+		HttpRequestInitializer httpRequestInitializer = new HttpCredentialsAdapter(
+			GoogleCredentials
+					.fromStream(new FileInputStream(new File(config.backupGDriveAuthFile)))
+					.createScoped(Collections.singletonList(DriveScopes.DRIVE))
+		);
+		Drive driveclient = new Drive.Builder(Utils.getDefaultTransport(), JacksonFactory.getDefaultInstance(), httpRequestInitializer)
+				.setApplicationName(AutoSaveWorld.getInstance().getName()).build();
 
 		VirtualBackupManager.builder()
-		.setBackupPath(config.backupGDrivePath)
-		.setWorldList(config.backupGDriveWorldsList)
-		.setBackupPlugins(config.backupGDrivePluginsFolder)
-		.setOtherFolders(config.backupGDriveOtherFolders)
-		.setExcludedFolders(config.backupGDriveExcludeFolders)
-		.setMaxBackupNumber(config.backupGDriveMaxNumberOfBackups)
-		.setZip(config.backupGDriveZipEnabled)
-		.setVFS(new GoogleDriveVirtualFileSystem(driveclient, config.backupGDRiveRootFolder))
-		.create().backup();
+				.setBackupPath(config.backupGDrivePath)
+				.setWorldList(config.backupGDriveWorldsList)
+				.setBackupPlugins(config.backupGDrivePluginsFolder)
+				.setOtherFolders(config.backupGDriveOtherFolders)
+				.setExcludedFolders(config.backupGDriveExcludeFolders)
+				.setMaxBackupNumber(config.backupGDriveMaxNumberOfBackups)
+				.setZip(config.backupGDriveZipEnabled)
+				.setVFS(new GoogleDriveVirtualFileSystem(driveclient, config.backupGDRiveRootFolder))
+				.create().backup();
 	}
 
 }

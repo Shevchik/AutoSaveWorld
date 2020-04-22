@@ -23,8 +23,8 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.backup.Backup;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
-import autosaveworld.zlibs.com.dropbox.core.DbxRequestConfig;
-import autosaveworld.zlibs.com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
 
 public class DropboxBackup extends Backup {
 

@@ -24,9 +24,9 @@ import java.util.Set;
 import java.util.Vector;
 
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualFileSystem;
-import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
-import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp.LsEntry;
-import autosaveworld.zlibs.com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
+import com.jcraft.jsch.SftpException;
 
 public class SFTPVirtualFileSystem extends VirtualFileSystem {
 
@@ -106,6 +106,7 @@ public class SFTPVirtualFileSystem extends VirtualFileSystem {
 	public Set<String> getEntries() throws IOException {
 		try {
 			HashSet<String> files = new HashSet<String>();
+			@SuppressWarnings("unchecked")
 			Vector<LsEntry> names = sftpclient.ls(".");
 			for (int i = 0; i < names.size(); i++) {
 				String filename = names.get(i).getFilename();
