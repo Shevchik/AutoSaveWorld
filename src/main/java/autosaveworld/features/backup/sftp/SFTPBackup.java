@@ -23,12 +23,11 @@ import autosaveworld.config.AutoSaveWorldConfig;
 import autosaveworld.core.AutoSaveWorld;
 import autosaveworld.features.backup.Backup;
 import autosaveworld.features.backup.utils.virtualfilesystem.VirtualBackupManager;
-import autosaveworld.zlibs.com.jcraft.jsch.Channel;
-import autosaveworld.zlibs.com.jcraft.jsch.Channel.ChannelType;
-import autosaveworld.zlibs.com.jcraft.jsch.ChannelSftp;
-import autosaveworld.zlibs.com.jcraft.jsch.JSch;
-import autosaveworld.zlibs.com.jcraft.jsch.JSchException;
-import autosaveworld.zlibs.com.jcraft.jsch.Session;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 
 public class SFTPBackup extends Backup {
 
@@ -44,7 +43,7 @@ public class SFTPBackup extends Backup {
 		session.setTimeout(10000);
 		session.setPassword(config.backupSFTPPassworld);
 		session.connect();
-		Channel channel = session.openChannel(ChannelType.SFTP);
+		Channel channel = session.openChannel("sftp");
 		channel.connect();
 		ChannelSftp channelSftp = (ChannelSftp) channel;
 
