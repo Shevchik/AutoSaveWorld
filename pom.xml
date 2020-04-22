@@ -218,8 +218,24 @@
                         <configuration>
                             <relocations>
                                 <relocation>
-                                    <pattern>org.codehaus.plexus.util</pattern>
-                                    <shadedPattern>org.shaded.plexus.util</shadedPattern>
+                                    <pattern>com.dropbox</pattern>
+                                    <shadedPattern>autosaveworld.zlibs.com.dropbox</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.fasterxml</pattern>
+                                    <shadedPattern>autosaveworld.zlibs.com.fasterxml</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google</pattern>
+                                    <shadedPattern>autosaveworld.zlibs.com.google</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.jcraft</pattern>
+                                    <shadedPattern>autosaveworld.zlibs.com.jcraft</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.net</pattern>
+                                    <shadedPattern>autosaveworld.zlibs.org.apache.commons.net</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
