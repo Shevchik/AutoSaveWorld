@@ -1,0 +1,15 @@
+broadcast:
+  pre: '&9Cохраняем сервер'
+  post: '&9Сохранение завершено'
+broadcastbackup:
+  pre: '&9Делаем бэкап'
+  post: '&9Автобэкап сделан'
+broadcastpurge:
+  pre: '&9Очищаем сервер'
+  post: '&9Очистка завершена'
+autorestart:
+  restarting: '&9Сервер перезагружается'
+  countdown: '&9Сервер перезагрузится через {SECONDS} секунд'
+worldregen:
+  kickmessage: '&9Сервер регенерирует карту, вернитесь позже'
+insufficentpermissions: '&9У вас нет доступа к этой команде'

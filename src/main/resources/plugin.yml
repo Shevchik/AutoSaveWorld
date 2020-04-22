@@ -1,0 +1,22 @@
+name: AutoSaveWorld
+main: autosaveworld.core.AutoSaveWorld
+version: 4.15
+author: _Shevchik_
+load: STARTUP
+commands:
+  autosaveworld:
+    description: All AutoSaveWorld commands
+    aliases: asw
+    usage: Use /asw help  to show all commands available in plugin
+  autosave:
+    description: AutoSaveWorld /asw save command
+    aliases: save
+    usage: Use /save to run AutoSave
+  autobackup:
+    description: AutoSaveWorld /asw backup command
+    aliases: backup
+    usage: Use /backup to run AutoBackup
+  autopurge:
+    description: AutoSaveWorld /asw purge command
+    aliases: purge
+    usage: Use /purge to run AutoPurge

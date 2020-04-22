@@ -1,0 +1,16 @@
+Download jars from these links and put in libs directory. 
+
+PreciousStones
+http://jenkins.elmakers.com/job/PreciousStones/
+
+Factions & MassiveCore
+https://www.spigotmc.org/resources/factions3-for-1-13.63602/
+
+Towny
+https://www.spigotmc.org/resources/towny-advanced.72694/
+
+Residence
+https://zrips.net/Residence/
+
+MyWarp
+https://dev.bukkit.org/projects/mywarp

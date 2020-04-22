@@ -7,3 +7,11 @@ target/
 *.project
 *.classpath
 *.prefs
+
+# IDE setting files
+.vscode/
+
+.settings/
+.factorypath
+
+libs/
