@@ -21,23 +21,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BaseBlock;
 
 public class UtilClasses {
 
 	public static class BlockToPlaceBack {
 
-		private Vector position;
+		private BlockVector3 position;
 
 		private BaseBlock block;
 
-		public BlockToPlaceBack(Vector position, BaseBlock block) {
+		public BlockToPlaceBack(BlockVector3 position, BaseBlock block) {
 			this.position = position;
 			this.block = block;
 		}
 
-		public Vector getPosition() {
+		public BlockVector3 getPosition() {
 			return position;
 		}
 

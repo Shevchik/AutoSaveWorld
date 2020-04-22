@@ -21,8 +21,9 @@ import java.util.LinkedList;
 
 import autosaveworld.core.logging.MessageLogger;
 import autosaveworld.features.purge.taskqueue.Task;
-import me.taylorkelly.mywarp.util.profile.Profile;
-import me.taylorkelly.mywarp.warp.Warp;
+
+import io.github.mywarp.mywarp.util.playermatcher.PlayerMatcher;
+import io.github.mywarp.mywarp.warp.Warp;
 
 public class MyWarpInvitesClearTask implements Task {
 
@@ -32,18 +33,18 @@ public class MyWarpInvitesClearTask implements Task {
 		this.warp = warp;
 	}
 
-	private LinkedList<Profile> profiles = new LinkedList<Profile>();
+	private LinkedList<PlayerMatcher> invitations = new LinkedList<PlayerMatcher>();
 
-	public void add(Profile profile) {
-		profiles.add(profile);
+	public void add(PlayerMatcher profile) {
+		invitations.add(profile);
 	}
 
 	public boolean hasPlayersToClear() {
-		return !profiles.isEmpty();
+		return !invitations.isEmpty();
 	}
 
 	public int getPlayerToClearCount() {
-		return profiles.size();
+		return invitations.size();
 	}
 
 	@Override
@@ -53,10 +54,10 @@ public class MyWarpInvitesClearTask implements Task {
 
 	@Override
 	public void performTask() {
-		MessageLogger.debug("Cleaning invites for warp "+warp.getName());
-		for (Profile name : profiles) {
-			warp.uninvitePlayer(name);
+		MessageLogger.debug("Cleaning invites for warp " + warp.getName());
+		for (PlayerMatcher invitation : invitations) {
+			warp.removeInvitation(invitation);
 		}
+		// warp.removeInvitation(player -> invitations.stream().map(Profile::getUuid).anyMatch(player.getUniqueId()::equals));
 	}
-
 }
