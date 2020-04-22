@@ -1,5 +1,11 @@
 Download jars from these links and put in libs directory. 
 
+paperspigot
+https://papermc.io/downloads
+download paperclip and run server.
+then, copy ./cache/patched_<version>.jar into libs.
+finally, rename patched_<version>.jar to paperspigot.jar
+
 PreciousStones
 http://jenkins.elmakers.com/job/PreciousStones/
 

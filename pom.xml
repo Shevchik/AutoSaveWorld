@@ -11,10 +11,6 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>enginehub-maven</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
@@ -59,14 +55,6 @@
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>3.6</version>
-        </dependency>
-
-        <!-- spigot api -->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- available dependency -->
@@ -121,9 +109,9 @@
 
         <!-- unavailable libs in maven repo -->
         <dependency>
-            <groupId>paperspigot</groupId>
-            <artifactId>PaperSpigot</artifactId>
-            <version>1.0</version>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper</artifactId>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${basedir}/libs/paperspigot.jar</systemPath>
         </dependency>
