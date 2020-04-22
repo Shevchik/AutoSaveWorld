@@ -133,8 +133,9 @@ public class AutoSaveThread extends IntervalTaskThread {
 				Object worldserver = getNMSWorld(world);
 				// invoke saveLevel method which waits for all chunks to save and than dumps RegionFileCache
 				ReflectionUtils.getMethod(worldserver.getClass(), NMSNames.getSaveLevelMethodName(), 0).invoke(worldserver);
-			} catch (Exception e) {
-				MessageLogger.exception("Could not dump RegionFileCache", e);
+			} catch (Exception ignored) {
+				// after 1.13, this saveLevel method is removed.
+				// MessageLogger.exception("Could not dump RegionFileCache", e);
 			}
 		}
 	}
