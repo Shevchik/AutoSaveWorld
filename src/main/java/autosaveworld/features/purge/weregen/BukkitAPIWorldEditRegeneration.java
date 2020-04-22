@@ -46,8 +46,8 @@ public class BukkitAPIWorldEditRegeneration implements WorldEditRegenrationInter
 
 	@Override
 	public void regenerateRegion(World world, Vector minpoint, Vector maxpoint) {
-		BlockVector3 minbpoint = BukkitAdapter.adapt(minpoint.toLocation(null)).toVector().toBlockPoint();
-		BlockVector3 maxbpoint = BukkitAdapter.adapt(maxpoint.toLocation(null)).toVector().toBlockPoint();
+		BlockVector3 minbpoint = BukkitAdapter.adapt(minpoint.toLocation(world)).toVector().toBlockPoint();
+		BlockVector3 maxbpoint = BukkitAdapter.adapt(maxpoint.toLocation(world)).toVector().toBlockPoint();
 		regenerateRegion(world, minbpoint, maxbpoint);
 	}
 
