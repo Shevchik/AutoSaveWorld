@@ -32,7 +32,7 @@ public class TownyDataProvider extends DataProvider {
 
 	@Override
 	protected void init() throws NotRegisteredException {
-		for (Town town : TownyAPI.getInstance().getDataSource().getWorld(world.getName()).getTowns()) {
+		for (Town town : TownyAPI.getInstance().getDataSource().getWorld(world.getName()).getTowns().values()) {
 			for (TownBlock tb : town.getTownBlocks()) {
 				if (tb.getWorld().getName().equalsIgnoreCase(world.getName())) {
 					addChunkAtCoord(tb.getX(), tb.getZ());
