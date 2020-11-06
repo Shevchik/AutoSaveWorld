@@ -6,14 +6,8 @@ download paperclip and run server.
 then, copy ./cache/patched_<version>.jar into libs.
 finally, rename patched_<version>.jar to paperspigot.jar
 
-PreciousStones
-http://jenkins.elmakers.com/job/PreciousStones/
-
 Factions & MassiveCore
 https://www.spigotmc.org/resources/factions3-for-1-13.63602/
-
-Towny
-https://www.spigotmc.org/resources/towny-advanced.72694/
 
 Residence
 https://zrips.net/Residence/

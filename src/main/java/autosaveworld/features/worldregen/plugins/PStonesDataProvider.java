@@ -20,7 +20,7 @@ package autosaveworld.features.worldregen.plugins;
 import org.bukkit.World;
 
 import net.sacredlabyrinth.Phaed.PreciousStones.PreciousStones;
-import net.sacredlabyrinth.Phaed.PreciousStones.vectors.Field;
+import net.sacredlabyrinth.Phaed.PreciousStones.field.Field;
 
 public class PStonesDataProvider extends DataProvider {
 
