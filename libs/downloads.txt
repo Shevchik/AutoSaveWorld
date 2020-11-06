@@ -1,0 +1,16 @@
+Download jars from these links and put in libs directory. 
+
+paperspigot
+https://papermc.io/downloads
+download paperclip and run server.
+then, copy ./cache/patched_<version>.jar into libs.
+finally, rename patched_<version>.jar to paperspigot.jar
+
+Factions & MassiveCore
+https://www.spigotmc.org/resources/factions3-for-1-13.63602/
+
+Residence
+https://zrips.net/Residence/
+
+MyWarp
+https://dev.bukkit.org/projects/mywarp
